@@ -1,0 +1,5 @@
+# UNCONFIGURED FSTAB FOR BASE SYSTEM
+/dev/ram0       /               ext2    defaults        1 1
+proc            /proc           proc    defaults        0 0
+#none		/tmp		tmpfs	size=64m	0 0
+#cgroup		/cgroup		cgroup	defaults	0 0

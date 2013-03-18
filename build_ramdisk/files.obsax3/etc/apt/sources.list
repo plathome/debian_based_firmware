@@ -1,0 +1,11 @@
+
+deb ftp://ftp.plathome.co.jp/pub/debian squeeze main
+deb-src ftp://ftp.plathome.co.jp/pub/debian squeeze main
+
+deb ftp://ftp.plathome.co.jp/pub/debian-security squeeze/updates main
+deb-src ftp://ftp.plathome.co.jp/pub/debian-security squeeze/updates main
+
+#deb ftp://ftp.plathome.co.jp/pub/debian-backports squeeze-backports main
+#deb-src ftp://ftp.plathome.co.jp/pub/debian-backports squeeze-backports main
+
+deb ftp://ftp.plathome.co.jp/pub/OBSAX3/debian/squeeze ./

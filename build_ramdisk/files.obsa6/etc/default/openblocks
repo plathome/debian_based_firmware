@@ -1,0 +1,20 @@
+# OpenBlocks with Debian GNU/Linux
+#
+# required by
+# * /etc/init.d/openblocks-setup
+# * /usr/sbin/flashcfg
+
+MODEL="obsa6"
+
+UNIONFS_DIRS="etc bin home lib sbin usr var root opt srv media"
+RW_TMPFS_SIZE="256m"
+
+MTREE_LIST="/etc/mtree.list"
+MTREE_DIRS="/var/log /var/run"
+
+MTD_FIRM_DEV=mtd4
+MTD_CONF_DEV=mtd3
+MTD_USER_DEV=mtd5
+MTD_OPT_DEV=
+
+USBREST_GPIO_PORTS="32"

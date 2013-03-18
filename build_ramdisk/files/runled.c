@@ -1,0 +1,524 @@
+/*	$ssdlinux: runled.c,v 1.8 2013/01/08 07:28:32 shimura Exp $	*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <signal.h>
+#include <string.h>
+#include <getopt.h>
+#include <time.h>
+#include <errno.h>
+#include <linux/version.h>
+
+extern int errno;
+
+#define PID_FILE "/var/run/segled.pid"
+
+#define LED_0_33	(500*1000)	/* CPU  0% -  33% */
+#define LED_34_66	(250*1000)	/* CPU 34% -  66% */
+#define LED_67_100	(125*1000)	/* CPU 67% - 100% */
+
+#define PM_INTVL		60	/* check temperature intervall sec */
+#ifdef CONFIG_OBSAX3
+#define TEMP_INPUT		"/sys/devices/platform/axp-temp.0/temp1_input"
+#define CPU_GOVERNOR	"/sys/devices/system/cpu/cpu%d/cpufreq/scaling_governor"
+#define CPU_ONLINE		"/sys/devices/system/cpu/cpu%d/online"
+#define PM_TEMP_MAX	105 * 1000
+#define PM_TEMP_MIN	10  * 1000
+
+static int PM_CTRL_CLK = 0;
+static int PM_DOWN_CLK	= PM_TEMP_MAX;
+static int PM_UP_CLK	= 90;
+static int PM_CTRL_CPU = 0;
+static int PM_DOWN_CPU = PM_TEMP_MAX;
+static int PM_UP_CPU = 90;
+#endif
+
+#ifdef DEBUG
+#define LED_DEBUG(str...)       printf ("runled: " str)
+#else
+#define LED_DEBUG(str...)       /* nothing */
+#endif
+
+void donothing(int i){}
+void die(int i){exit(0);}
+
+static int led_speed = LED_0_33;
+static int spdctl= 1;
+static int prevuse[2];
+
+/* some variables used in getopt (3) */
+extern char *optarg;
+extern int optind;
+extern int optopt;
+extern int opterr;
+extern int optreset;
+
+/*
+	Read /proc/stat and get CPU used time
+*/
+int get_usetime(int* use){
+	FILE *fp;
+	char str[128];
+	char *strend;
+	char *sta, *end;
+	char buf[32];
+
+	if((fp = fopen("/proc/stat", "r")) == NULL){
+		return 0;
+	}
+	if(fgets(str, sizeof(str) - 1, fp) == NULL){
+		fclose(fp);
+		return 0;
+	}
+	fclose(fp);
+
+	/* get end of string */
+	strend = str + strlen(str);
+
+	/*********************************************
+		      arg1 arg2 arg3 arg4 arg5
+		str = cpu  xxxx xxxx xxxx xxxx xxxx ...
+	**********************************************/
+	sta = str;
+	/* search top */
+	while(*sta != ' ' && *sta != '\t'){
+		sta++;
+		if(sta >= strend)
+			return 0;
+	}
+
+	/* search arg2 start */
+	while(*sta == ' ' || *sta == '\t'){
+		sta++;
+		if(sta >= strend)
+			return 0;
+	}
+	/* search arg2 end */
+	end = sta;
+	while(*end != ' ' && *end != '\t'){
+		end++;
+		if(sta >= strend)
+			return 0;
+	}
+	/* get arg2 */
+	strncpy(buf, sta, end-sta);
+	buf[end-sta] = 0x0;
+	use[0] = atoi(buf);
+
+	sta = end;
+	/* search arg3 start */
+	while(*sta == ' ' || *sta == '\t'){
+		sta++;
+		if(sta >= strend)
+			return 0;
+	}
+	/* search arg3 end */
+	end = sta;
+	while(*end != ' ' && *end != '\t'){
+		end++;
+		if(sta >= strend)
+			return 0;
+	}
+	/* get arg3 */
+	strncpy(buf, sta, end-sta);
+	buf[end-sta] = 0x0;
+	use[0] += atoi(buf);
+
+	sta = end;
+	/* search arg4 start */
+	while(*sta == ' ' || *sta == '\t'){
+		sta++;
+		if(sta >= strend)
+			return 0;
+	}
+	/* search arg4 end */
+	end = sta;
+	while(*end != ' ' && *end != '\t'){
+		end++;
+		if(sta >= strend)
+			return 0;
+	}
+	/* get arg4 */
+	strncpy(buf, sta, end-sta);
+	buf[end-sta] = 0x0;
+	use[0] += atoi(buf);
+
+	sta = end;
+	/* search arg5 start */
+	while(*sta == ' ' || *sta == '\t'){
+		sta++;
+		if(sta >= strend)
+			return 0;
+	}
+	/* search arg5 end */
+	end = sta;
+	while(*end != ' ' && *end != '\t'){
+		end++;
+		if(sta >= strend)
+			return 0;
+	}
+	/* get arg5 */
+	strncpy(buf, sta, end-sta);
+	buf[end-sta] = 0x0;
+	use[1] = use[0] + atoi(buf);
+
+	return 1;
+}
+
+/*
+	Calc LED Sleep Time
+*/
+void calc_ledspeed(void){
+	int tempuse[2];
+	int total;
+
+	if(!get_usetime(tempuse)){
+		led_speed = LED_0_33;
+		return;
+	}
+
+	/* calc used */
+	total = tempuse[0] - prevuse[0];
+	if(total)
+		total = total / (tempuse[1]-prevuse[1]) * 100;
+
+	if(total < 34){
+		if(led_speed != LED_0_33){
+			led_speed = LED_0_33;
+			LED_DEBUG("change led speed 500ms(total=%f)\n", total);
+		}
+	}
+	else if(total >= 34 && total < 67){
+		if(led_speed != LED_34_66){
+			led_speed = LED_34_66;
+			LED_DEBUG("change led speed 250ms(total=%f)\n", total);
+		}
+	}
+	else{
+		if(led_speed != LED_67_100){
+			led_speed = LED_67_100;
+			LED_DEBUG("change led speed 125ms(total=%f)\n", total);
+		}
+	}
+	memcpy(prevuse, tempuse, sizeof(prevuse));
+}
+
+
+#ifdef CONFIG_OBSAX3
+int get_temp(void)
+{
+	FILE *fp;
+	char buf[128];
+	int now, mode=0;
+
+	if((fp = fopen(TEMP_INPUT, "r")) == NULL){
+		printf("runled%d: %s\n", __LINE__, strerror(errno));
+		return;
+	}
+	if(fgets(buf, sizeof(buf), fp) == NULL){
+		printf("runled%d: %s\n", __LINE__, strerror(errno));
+		fclose(fp);
+		return;
+	}
+	fclose(fp);
+
+//#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,2,34))
+	now = atoi(buf);
+//#else
+//	now = atoi(buf) / 1000;
+//#endif
+	return now;
+}
+#endif
+
+#ifdef CONFIG_OBSAX3
+void ctrl_cpu(int temp)
+{
+	FILE *fp;
+	char buf[128];
+	int i, num;
+
+#if defined(CONFIG_OBSAX3)
+	num = 2;
+#elif defined(CONFIG_OBSAX3_4CORE)
+	num = 4;
+#endif
+	if(temp >= PM_DOWN_CPU){
+		for(i=1; i<num; i++){	// start i = 1
+			sprintf(buf, CPU_ONLINE, i);
+			if((fp = fopen(buf, "w")) == NULL){
+				printf("runled%d: cpu%d %s\n", __LINE__, num, strerror(errno));
+				return;
+			}
+			fputs("0", fp);
+			fclose(fp);
+		}
+	}
+#if 0
+	else if(temp <= PM_UP_CPU){
+		for(i=1; i<num; i++){	// start i = 1
+			sprintf(buf, CPU_ONLINE, i);
+			if((fp = fopen(buf, "w")) == NULL){
+				printf("runled%d: cpu%d %s\n", __LINE__, num, strerror(errno));
+				return;
+			}
+			fputs("1", fp);
+			fclose(fp);
+		}
+	}
+#endif
+}
+#endif
+
+#ifdef CONFIG_OBSAX3
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,2,34))
+void ctrl_clk(int temp)
+{
+	FILE *fp;
+	char buf[128];
+	int i, num;
+
+#if defined(CONFIG_OBSAX3)
+	num = 2;
+#elif defined(CONFIG_OBSAX3_4CORE)
+	num = 4;
+#endif
+	if(temp >= PM_DOWN_CLK){
+		for(i=0; i<num; i++){
+			sprintf(buf, CPU_GOVERNOR, i);
+			if((fp = fopen(buf, "w")) == NULL){
+				printf("runled%d: cpu%d %s\n", __LINE__, num, strerror(errno));
+				return;
+			}
+			fputs("powersave", fp);
+			fclose(fp);
+		}
+	}
+	else if(temp <= PM_UP_CLK){
+		for(i=0; i<num; i++){
+			sprintf(buf, CPU_GOVERNOR, i);
+			if((fp = fopen(buf, "w")) == NULL){
+				printf("runled%d: cpu%d %s\n", __LINE__, num, strerror(errno));
+				return;
+			}
+			fputs("ondemand", fp);
+			fclose(fp);
+		}
+	}
+}
+#endif
+#endif
+
+void
+dancer()
+{
+	int	fd, temp;
+	time_t t;
+	time_t prev = time(NULL) + PM_INTVL;
+
+	for (;;) {
+		if ((fd = open("/dev/segled", O_RDWR)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		write(fd, "1", 1);
+		close(fd);
+		usleep(led_speed);
+		if ((fd = open("/dev/segled", O_RDWR)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		write(fd, "2", 1);
+		close(fd);
+		usleep(led_speed);
+		if ((fd = open("/dev/segled", O_RDWR)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		write(fd, "4", 1);
+		close(fd);
+		usleep(led_speed);
+		if ((fd = open("/dev/segled", O_RDWR)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		write(fd, "2", 1);
+		close(fd);
+		usleep(led_speed);
+		if(spdctl)
+			calc_ledspeed();	/* control LED speed */
+
+#if defined(CONFIG_OBSAX3)
+		t = time(NULL);
+		if(!prev || t >= prev){
+			prev = t + PM_INTVL;
+			temp = get_temp();
+			if(PM_CTRL_CPU)
+				ctrl_cpu(temp);
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,2,34))
+			if(PM_CTRL_CLK)
+				ctrl_clk(temp);
+#endif
+		}
+#endif
+	}
+}
+
+void usage(void)
+{
+#ifdef CONFIG_OBSAX3
+	fprintf(stderr, "runled [-cds] [-j maxtemp] [-k mintemp] [-l uptemp] [-m downtemp]\n");
+#else
+	fprintf(stderr, "runled [-s]\n");
+#endif
+
+	fprintf(stderr, "option:\n");
+
+#ifdef CONFIG_OBSAX3
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,2,34))
+	fprintf(stderr, "\t-c : control cpu clock\n");
+	fprintf(stderr, "\t-j : cpu clock DOWN temperature\n");
+	fprintf(stderr, "\t-k : cpu clock UP temperature\n");
+#endif
+	fprintf(stderr, "\t-d : control cpu core\n");
+	fprintf(stderr, "\t-l : cpu core DOWN temperature\n");
+#if 0
+	fprintf(stderr, "\t-m : cpu core UP temperature\n");
+#endif
+#endif
+	fprintf(stderr, "\t-s : cancel LED speed control\n");
+}
+
+int
+main(int argc, char *argv[])
+{
+	int fd;
+	int pid;
+	int i;
+	int val;
+
+	if (getuid()) {
+		fprintf(stderr, "must be super user\n");
+		return 1;
+	}
+
+#ifdef CONFIG_OBSAX3
+	if(argc == 1){
+		usage();
+		return (0);
+	}
+#endif
+
+#ifdef CONFIG_OBSAX3
+	while ((i = getopt(argc, argv, "j:k:l:m:cds")) != -1) {
+#else
+	while ((i = getopt(argc, argv, "s")) != -1) {
+#endif
+		switch (i) {
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,2,34))
+		case 'c':	// control CPU clock
+			PM_CTRL_CLK = 1;
+			break;
+		case 'j':	// clock down temp
+			break;
+		case 'k':	// clock up temp
+			break;
+#endif
+#ifdef CONFIG_OBSAX3
+		case 'd':	// control CPU up/down
+			PM_CTRL_CPU = 1;
+			break;
+		case 'l':	// CPU down temp
+			PM_DOWN_CPU = atoi(optarg) * 1000;
+			break;
+#if 0
+		case 'm':	// CPU up temp
+			PM_UP_CPU = atoi(optarg);
+			break;
+#endif
+#endif
+		case 's':	// cancel LED speed control
+			spdctl = 0;
+			break;
+		default:
+			usage();
+			return (0);
+		}
+	}
+
+#ifdef CONFIG_OBSAX3
+//	if(PM_DOWN_CPU > PM_TEMP_MAX || PM_UP_CPU < PM_TEMP_MIN || PM_DOWN_CPU <= PM_UP_CPU){
+	if(PM_DOWN_CPU > PM_TEMP_MAX){
+		printf("runled%d: Invalid CPU control temperature\n", __LINE__);
+		return -1;
+	}
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,2,34))
+	if(PM_DOWN_CLK > PM_TEMP_MAX || PM_UP_CLK < PM_TEMP_MIN || PM_DOWN_CLK <= PM_UP_CLK){
+		printf("runled%d: Invalid CLOCK control temperature\n", __LINE__);
+		return -1;
+	}
+#endif
+#endif
+
+	if ((pid = fork())) {
+		/* parent */
+		char tmp[100];
+		if ((fd = open(PID_FILE, O_CREAT|O_WRONLY|O_TRUNC)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		sprintf(tmp, "%d\n", pid);
+		if (write(fd, tmp, strlen(tmp)) != strlen(tmp)) {
+			perror("write");
+			close(fd);
+			exit(-2);
+		}
+		close(fd);
+		return 0;
+	} else {
+		/* daemon */
+		close(STDIN_FILENO);
+		close(STDOUT_FILENO);
+		close(STDERR_FILENO);
+		if(setsid() == -1)
+			exit(4);
+
+		/* child */
+		signal( SIGHUP,donothing);
+		signal( SIGINT,die);
+		signal( SIGQUIT,die);
+		signal( SIGILL,die);
+		signal( SIGTRAP,die);
+		signal( SIGABRT,die);
+		signal( SIGIOT,die);
+		signal( SIGBUS,die);
+		signal( SIGFPE,die);
+		signal( SIGKILL,die);
+		signal( SIGUSR1,die);
+		signal( SIGSEGV,die);
+		signal( SIGUSR2,die);
+		signal( SIGPIPE,die);
+		signal( SIGALRM,die);
+		signal( SIGTERM,die);
+		signal( SIGSTKFLT,die);
+		signal( SIGCHLD,die);
+		signal( SIGCONT,die);
+		signal( SIGSTOP,die);
+		signal( SIGTSTP,die);
+		signal( SIGTTIN,die);
+		signal( SIGTTOU,die);
+		signal( SIGURG,die);
+		signal( SIGXCPU,die);
+		signal( SIGXFSZ,die);
+		signal( SIGVTALRM,die);
+		signal( SIGPROF,die);
+		signal( SIGWINCH,die);
+		signal( SIGIO,die);
+		signal( SIGPWR,die);
+		signal( SIGSYS,die);
+		dancer();
+	}
+	return 0;
+}
