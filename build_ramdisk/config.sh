@@ -2,16 +2,14 @@
 export TARGET
 TARGET=${TARGET:=obsax3}
 
+DIST=squeeze
+
 case ${TARGET} in
 obsax3)
 	RAMDISK_SIZE=128
 	KERNEL=3.0.6
 	# 2013/03/06
 	PATCHLEVEL=11
-
-	# for 3.2.x
-#	KERNEL=3.2.36
-#	PATCHLEVEL=1
 ;;
 obsa6)
 	RAMDISK_SIZE=128
@@ -26,12 +24,12 @@ esac
 
 WRKDIR=$(cd $(dirname $0)/..; pwd)
 
-SQUEEZEDIR=${WRKDIR}/squeeze_${TARGET}
+DISTDIR=${WRKDIR}/${DIST}_${TARGET}
 
 FILESDIR=${PWD}/files
 FILESDIR_ADD=${PWD}/files.${TARGET}
 
-RAMDISK_IMG=ramdisk-squeeze.${TARGET}.img
+RAMDISK_IMG=ramdisk-${DIST}.${TARGET}.img
 
 case $(uname -m) in
 arm*) ARCH=armel ;;

@@ -2,4 +2,4 @@
 
 . `dirname $0`/config.sh
 
-mkdir -p ${SQUEEZEDIR}/cgroup
+mkdir -p ${DISTDIR}/cgroup

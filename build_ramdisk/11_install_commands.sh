@@ -2,14 +2,14 @@
 
 . `dirname $0`/config.sh
 
-cp ${FILESDIR}/flashcfg.sh ${SQUEEZEDIR}/usr/sbin/flashcfg
-chmod 555 ${SQUEEZEDIR}/usr/sbin/flashcfg
+cp ${FILESDIR}/flashcfg.sh ${DISTDIR}/usr/sbin/flashcfg
+chmod 555 ${DISTDIR}/usr/sbin/flashcfg
 
-cp ${FILESDIR}/usbreset.sh ${SQUEEZEDIR}/usr/sbin/usbreset
-chmod 555 ${SQUEEZEDIR}/usr/sbin/usbreset
+cp ${FILESDIR}/usbreset.sh ${DISTDIR}/usr/sbin/usbreset
+chmod 555 ${DISTDIR}/usr/sbin/usbreset
 
 (cd ${FILESDIR}; ./build_obstools.sh $TARGET) || exit 1
 
 for cmd in flashcfg-debian runled pshd; do
-	(cd ${FILESDIR}; install -c -s -o root -g root -m 555 $cmd ${SQUEEZEDIR}/usr/sbin/$cmd)
+	(cd ${FILESDIR}; install -c -s -o root -g root -m 555 $cmd ${DISTDIR}/usr/sbin/$cmd)
 done

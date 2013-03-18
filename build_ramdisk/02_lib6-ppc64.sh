@@ -4,4 +4,4 @@
 
 [ "${ARCH}" != "powerpc" ] && exit
 
-chroot ${SQUEEZEDIR} /usr/bin/aptitude purge -y libc6-ppc64
+chroot ${DISTDIR} /usr/bin/aptitude purge -y libc6-ppc64

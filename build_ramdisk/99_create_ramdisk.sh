@@ -17,7 +17,7 @@ echo y | mke2fs ${RAMDISK_IMG}
 mkdir -p /mnt
 mount -o loop ${RAMDISK_IMG} /mnt
 
-(cd ${SQUEEZEDIR};tar --numeric-owner -cpf - . | tar -xvf - -C /mnt)
+(cd ${DISTDIR};tar --numeric-owner -cpf - . | tar -xvf - -C /mnt)
 
 umount /mnt
 
