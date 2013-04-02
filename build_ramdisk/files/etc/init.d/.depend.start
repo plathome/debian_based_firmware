@@ -1,8 +1,0 @@
-TARGETS = rsyslog killprocs bootlogs single cron ssh rc.local rmnologin stop-bootlogd runled pshd
-INTERACTIVE =
-single: killprocs bootlogs
-cron: rsyslog
-ssh: rsyslog
-rc.local: rsyslog bootlogs cron ssh
-rmnologin: rsyslog bootlogs cron ssh
-stop-bootlogd: rsyslog bootlogs cron ssh
