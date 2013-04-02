@@ -18,6 +18,7 @@ rm -rf  $pkgdir
 mkdir -p $pkgdir
 (cd template;tar --exclude=CVS -cf - .) | tar -xvf - -C $pkgdir/
 
+mkdir -p $pkgdir/etc
 echo $VERSION > $pkgdir/etc/openblocks-release
 sed -e "s|__VERSION__|$VERSION|" \
 	< $pkgdir/DEBIAN/control > /tmp/control.new
