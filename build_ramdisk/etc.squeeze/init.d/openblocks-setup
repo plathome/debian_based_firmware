@@ -1,10 +1,10 @@
 #!/bin/bash
 ### BEGIN INIT INFO
 # Provides:          openblocks-setup
-# Required-Start:    glibc
+# Required-Start:    
 # Required-Stop:     umountfs
 # Default-Start:     S
-# Default-Stop:      6
+# Default-Stop:      6 0
 # Short-Description: Config storage area for OpenBlocks
 # Description:
 ### END INIT INFO
