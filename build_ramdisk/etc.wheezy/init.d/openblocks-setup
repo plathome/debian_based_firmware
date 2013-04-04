@@ -1,13 +1,23 @@
 #!/bin/bash
 ### BEGIN INIT INFO
 # Provides:          openblocks-setup
-# Required-Start:    
+# Required-Start:    mountkernfs udev
 # Required-Stop:     umountfs
 # Default-Start:     S
 # Default-Stop:      6 0
 # Short-Description: Config storage area for OpenBlocks
 # Description:
 ### END INIT INFO
+
+DESC="filesystem layout configuration"
+NAME="openblocks-setup"
+
+# Load the VERBOSE setting and other rcS variables
+. /lib/init/vars.sh
+
+# Define LSB log_* functions.
+# Depend on lsb-base (>= 3.0-6) to ensure that this file is present.
+. /lib/lsb/init-functions
 
 #set -x
 
@@ -193,12 +203,6 @@ sshd_create_keys() {
 
 case "$1" in
 start)
-	#/etc/init.d/hwclockfirst.sh start
-
-	#if [ -f "lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko" ]; then
-	#	modprobe usb-storage
-	#fi
-
 	protect_mtd
 
 	depmod -a
@@ -276,20 +280,6 @@ start)
 		if_exists_execute_config_script
 	fi
 
-	# unionfs to aufs
-#	if [ ! -f ${RW_DIR}/.wh..wh.aufs ] && grep -q 'aufs' /proc/filesystems; then
-#		echo -n "Renaming unionfs whiteout files for aufs .... "
-#		for opq in `find ${RW_DIR}/ -name ".wh.__dir_opaque"`;do
-#			mv -f $opq ${opq/.wh.__dir_opaque/.wh..wh..opq}
-#		done
-#
-#		touch /tmp/.aufs
-#		find /.rw -type f -name ".wh.*" | xargs chmod 444 /tmp/.aufs
-#		rm -f /tmp/.aufs
-#		echo "done"
-#	fi
-
-
 	# mount filesystems
 	for dir in ${UNIONFS_DIRS} ; do
 		mawk '{print $2}' < /etc/fstab | grep -q "^/$dir" && continue
@@ -297,9 +287,6 @@ start)
 		mount -n -t ${union_fs} \
 			-o ${union_opt}dirs=${RW_DIR}/$dir=rw:/$dir=ro ${union_fs} /$dir
 	done
-
-	# for inittab
-	#telinit q
 
 	# extract Oracle Java
 	# /usr/lib/jre directory and /etc/profile.d/java.(sh|csh) file.
@@ -335,10 +322,18 @@ start)
 		umount $confdev
 	fi
 
+	# reload inittab 
+	kill -1 1
+
+	# correct for debian7
+	ln -sf /proc/mounts /etc/mtab
+
 ;;
 stop)
 	if [ -f /sys/devices/system/cpu/cpu1/online ]; then
+		echo
 		echo 0 > /sys/devices/system/cpu/cpu1/online
+		echo
 	fi
 ;;
 esac

@@ -18,7 +18,7 @@
 
 # PATH should only include /usr/* if it runs after the mountnfs.sh script
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
-DESC="runled daemon"
+DESC="LED control daemon for openblocks"
 NAME=runled
 DAEMON=/usr/sbin/$NAME
 DAEMON_ARGS=""
@@ -30,8 +30,11 @@ SCRIPTNAME=/etc/init.d/$NAME
 
 # Read configuration variable file if it is present
 [ -r /etc/default/openblocks ] && . /etc/default/openblocks
-if [ "$MODEL" = "obsax3" ] && [ -n "${CPU_DOWN_TEMP:=105}" ]; then
-	DAEMON_ARGS="-d -l $CPU_DOWN_TEMP"
+if [ "$MODEL" = "obsax3" ] && [ -n "${CORE_STOP_TEMP:=105}" ]; then
+	DAEMON_ARGS="-d -l $CORE_STOP_TEMP"
+	if [ -n "${CORE_RESTART_TEMP}" ]; then
+		DAEMON_ARGS="${DAEMON_ARGS} -m ${CORE_RESTART_TEMP}"
+	fi
 else
 	DAEMON_ARGS=""
 fi
@@ -42,6 +45,8 @@ fi
 # Define LSB log_* functions.
 # Depend on lsb-base (>= 3.0-6) to ensure that this file is present.
 . /lib/lsb/init-functions
+
+VERBOSE=yes
 
 #
 # Function that starts the daemon/service

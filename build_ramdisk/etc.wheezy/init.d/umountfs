@@ -16,7 +16,7 @@ PATH=/sbin:/usr/sbin:/bin:/usr/bin
 
 umask 022
 
-VERBOSE=yes
+#VERBOSE=yes
 
 do_stop () {
 	PROTECTED_MOUNTS="$(sed -n ':a;/^[^ ]* \/ /!{H;n;ba};{H;s/.*//;x;s/\n//;p}' /proc/mounts)"
