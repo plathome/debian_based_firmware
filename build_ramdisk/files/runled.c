@@ -1,4 +1,4 @@
-/*	$ssdlinux: runled.c,v 1.9 2013/04/04 05:17:45 shimura Exp $	*/
+/*	$ssdlinux: runled.c,v 1.10 2013/04/04 08:41:45 shimura Exp $	*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -10,6 +10,7 @@
 #include <time.h>
 #include <errno.h>
 #include <linux/version.h>
+#include <syslog.h>
 
 extern int errno;
 
@@ -19,16 +20,19 @@ extern int errno;
 #define LED_34_66	(250*1000)	/* CPU 34% -  66% */
 #define LED_67_100	(125*1000)	/* CPU 67% - 100% */
 
-#define PM_INTVL		60	/* check temperature intervall sec */
+#define PM_INTVL		10	/* check temperature intervall sec */
 #ifdef CONFIG_OBSAX3
 #define TEMP_INPUT		"/sys/devices/platform/axp-temp.0/temp1_input"
 #define CPU_ONLINE		"/sys/devices/system/cpu/cpu%d/online"
 #define PM_TEMP_MAX	105 * 1000
 #define PM_TEMP_MIN	10  * 1000
+#define PM_TEMP_UP	90  * 1000
+#define PM_CPU_UP	1
+#define PM_CPU_DONW 0
 
 static int PM_CTRL_CPU = 0;
 static int PM_DOWN_CPU = PM_TEMP_MAX;
-static int PM_UP_CPU = 90;
+static int PM_UP_CPU = PM_TEMP_UP;
 #endif
 
 #ifdef DEBUG
@@ -230,10 +234,22 @@ void ctrl_cpu(int temp)
 	char buf[128], val[8];
 	int i;
 
-	if(temp > PM_DOWN_CPU && prev <= PM_DOWN_CPU)
+	if(temp > PM_DOWN_CPU && prev <= PM_DOWN_CPU){
 		strcpy(val, "0");
-	else if(temp < PM_UP_CPU && prev >= PM_UP_CPU)
+#if 0
+		openlog("runled", LOG_CONS | LOG_PID, LOG_USER);
+		syslog(LOG_INFO, "temperature: %d degrees, shutdown CPU core other than CPU0\n");
+		closelog();
+#endif
+	}
+	else if(temp < PM_UP_CPU && prev >= PM_UP_CPU){
 		strcpy(val, "1");
+#if 0
+		openlog("runled", LOG_CONS | LOG_PID, LOG_USER);
+		syslog(LOG_INFO, "temperature: %d degrees, bootup CPU core other than CPU0\n");
+		closelog();
+#endif
+	}
 	else{
 		prev = temp;
 		return;
@@ -360,7 +376,7 @@ main(int argc, char *argv[])
 			break;
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,2,34))
 		case 'm':	// CPU up temp
-			PM_UP_CPU = atoi(optarg);
+			PM_UP_CPU = atoi(optarg) * 1000;
 			break;
 #endif
 #endif
@@ -375,6 +391,8 @@ main(int argc, char *argv[])
 
 #ifdef CONFIG_OBSAX3
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,2,34))
+//printf("PM_DOWN_CPU=%d PM_UP_CPU=%d PM_TEMP_MAX=%d PM_TEMP_MIN=%d PM_TEMP_UP=%d\n",
+//	PM_DOWN_CPU, PM_UP_CPU, PM_TEMP_MAX, PM_TEMP_MIN, PM_TEMP_UP);
 	if(PM_DOWN_CPU > PM_TEMP_MAX || PM_UP_CPU < PM_TEMP_MIN || PM_DOWN_CPU <= PM_UP_CPU){
 #else
 	if(PM_DOWN_CPU > PM_TEMP_MAX){
