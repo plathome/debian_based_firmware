@@ -1,12 +1,14 @@
 #!/bin/bash 
 
+. `dirname $0`/../config.sh
+
 TARGET=${1:-obsax3}
 if [ "$TARGET" == "obsax3" ] ; then
 	MODEL="-DCONFIG_OBSAX3"
-	LINUX_INC=/usr/src/ax3/linux-3.0.6/include
+	LINUX_INC=/usr/src/ax3/linux-${KERNEL}/include
 else
 	MODEL="-DCONFIG_OBSA6"
-	LINUX_INC=/usr/src/a6/linux-2.6.31.8/include
+	LINUX_INC=/usr/src/a6/linux-${KERNEL}/include
 fi
 
 CFLAGS="-Wall -I$LINUX_INC -DDEBIAN ${MODEL}"
