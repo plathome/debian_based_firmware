@@ -11,15 +11,16 @@ fi
 
 CFLAGS="-Wall -I$LINUX_INC -DDEBIAN ${MODEL}"
 
-set -x
 
 echo "FLASHCFG"
 gcc -lz -o flashcfg-debian flashcfg.c -DFLASHCFG_S -DEXTRACT_LZMA $CFLAGS
+ls -l flashcfg-debian
 
 echo "RUNLED"
 gcc -o runled runled.c $CFLAGS
+ls -l runled
 
 echo "PSHD"
 gcc -DHAVE_PUSHSW_OBSAXX_H -o pshd pshd.c $CFLAGS
+ls -l pshd
 
-set +x
