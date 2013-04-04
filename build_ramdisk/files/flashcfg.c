@@ -1,4 +1,4 @@
-/*	$ssdlinux: flashcfg.c,v 1.16 2013/02/22 02:08:11 kimura Exp $	*/
+/*	$ssdlinux: flashcfg.c,v 1.18 2013/03/05 08:05:05 shimura Exp $	*/
 
 #undef DEBUG
 
@@ -239,9 +239,17 @@ main(int argc, char *argv[])
 
 	ret = NORMAL_END;
 #ifdef DEBIAN
+#if defined(CONFIG_OBSAX3)
 	while ((i = getopt(argc, argv, "c:f:s:S:j:dDxXJrtT")) != -1) {
 #else
+	while ((i = getopt(argc, argv, "c:f:s:S:j:dDxXJr")) != -1) {
+#endif
+#else
+#if defined(CONFIG_OBSAX3)
 	while ((i = getopt(argc, argv, "c:f:s:S:E:L:j:xXdDhRrJtT")) != -1) {
+#else
+	while ((i = getopt(argc, argv, "c:f:s:S:E:L:j:xXdDhRrJ")) != -1) {
+#endif
 #endif
 		switch (i) {
 		case 'c':
@@ -446,6 +454,7 @@ invalid_arg:
 			mtd_protect(MTD_KERNEL, 1);
 			fprintf(stderr, "done\n");
 			return NORMAL_END;
+#if defined(CONFIG_OBSAX3)
 		case 't':
 			read_proc_mtd();
 			return test_core_area();
@@ -454,6 +463,7 @@ invalid_arg:
 			read_proc_mtd();
 			return read_core_area();
 			break;
+#endif
 		case 'h':
 		default:
 			break;

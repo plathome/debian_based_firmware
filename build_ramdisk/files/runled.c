@@ -1,4 +1,4 @@
-/*	$ssdlinux: runled.c,v 1.8 2013/01/08 07:28:32 shimura Exp $	*/
+/*	$ssdlinux: runled.c,v 1.7 2012/11/19 02:29:47 kimura Exp $	*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>

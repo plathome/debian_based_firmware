@@ -1,4 +1,4 @@
-/*	$ssdlinux: obs600_pshd.c,v 1.6 2012/10/16 07:00:27 shimura Exp $	*/
+/*	$ssdlinux: obs600_pshd.c,v 1.5 2012/07/11 05:00:24 yamagata Exp $	*/
 /*
  * Push SW deamon
  */
