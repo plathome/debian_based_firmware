@@ -1,4 +1,4 @@
-/*	$ssdlinux: runled.c,v 1.7 2012/11/19 02:29:47 kimura Exp $	*/
+/*	$ssdlinux: runled.c,v 1.9 2013/04/04 05:17:45 shimura Exp $	*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -22,14 +22,10 @@ extern int errno;
 #define PM_INTVL		60	/* check temperature intervall sec */
 #ifdef CONFIG_OBSAX3
 #define TEMP_INPUT		"/sys/devices/platform/axp-temp.0/temp1_input"
-#define CPU_GOVERNOR	"/sys/devices/system/cpu/cpu%d/cpufreq/scaling_governor"
 #define CPU_ONLINE		"/sys/devices/system/cpu/cpu%d/online"
 #define PM_TEMP_MAX	105 * 1000
 #define PM_TEMP_MIN	10  * 1000
 
-static int PM_CTRL_CLK = 0;
-static int PM_DOWN_CLK	= PM_TEMP_MAX;
-static int PM_UP_CLK	= 90;
 static int PM_CTRL_CPU = 0;
 static int PM_DOWN_CPU = PM_TEMP_MAX;
 static int PM_UP_CPU = 90;
@@ -205,7 +201,6 @@ void calc_ledspeed(void){
 	memcpy(prevuse, tempuse, sizeof(prevuse));
 }
 
-
 #ifdef CONFIG_OBSAX3
 int get_temp(void)
 {
@@ -224,91 +219,35 @@ int get_temp(void)
 	}
 	fclose(fp);
 
-//#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,2,34))
 	now = atoi(buf);
-//#else
-//	now = atoi(buf) / 1000;
-//#endif
 	return now;
 }
-#endif
 
-#ifdef CONFIG_OBSAX3
 void ctrl_cpu(int temp)
 {
+	static int prev=PM_TEMP_MIN;
 	FILE *fp;
-	char buf[128];
-	int i, num;
+	char buf[128], val[8];
+	int i;
 
-#if defined(CONFIG_OBSAX3)
-	num = 2;
-#elif defined(CONFIG_OBSAX3_4CORE)
-	num = 4;
-#endif
-	if(temp >= PM_DOWN_CPU){
-		for(i=1; i<num; i++){	// start i = 1
-			sprintf(buf, CPU_ONLINE, i);
-			if((fp = fopen(buf, "w")) == NULL){
-				printf("runled%d: cpu%d %s\n", __LINE__, num, strerror(errno));
-				return;
-			}
-			fputs("0", fp);
-			fclose(fp);
-		}
+	if(temp > PM_DOWN_CPU && prev <= PM_DOWN_CPU)
+		strcpy(val, "0");
+	else if(temp < PM_UP_CPU && prev >= PM_UP_CPU)
+		strcpy(val, "1");
+	else{
+		prev = temp;
+		return;
 	}
-#if 0
-	else if(temp <= PM_UP_CPU){
-		for(i=1; i<num; i++){	// start i = 1
-			sprintf(buf, CPU_ONLINE, i);
-			if((fp = fopen(buf, "w")) == NULL){
-				printf("runled%d: cpu%d %s\n", __LINE__, num, strerror(errno));
-				return;
-			}
-			fputs("1", fp);
-			fclose(fp);
-		}
+
+	for(i=1; i<4; i++){	// start i = 1
+		sprintf(buf, CPU_ONLINE, i);
+		if((fp = fopen(buf, "w")) == NULL)
+			break;
+		fputs(val, fp);
+		fclose(fp);
 	}
-#endif
+	prev = temp;
 }
-#endif
-
-#ifdef CONFIG_OBSAX3
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,2,34))
-void ctrl_clk(int temp)
-{
-	FILE *fp;
-	char buf[128];
-	int i, num;
-
-#if defined(CONFIG_OBSAX3)
-	num = 2;
-#elif defined(CONFIG_OBSAX3_4CORE)
-	num = 4;
-#endif
-	if(temp >= PM_DOWN_CLK){
-		for(i=0; i<num; i++){
-			sprintf(buf, CPU_GOVERNOR, i);
-			if((fp = fopen(buf, "w")) == NULL){
-				printf("runled%d: cpu%d %s\n", __LINE__, num, strerror(errno));
-				return;
-			}
-			fputs("powersave", fp);
-			fclose(fp);
-		}
-	}
-	else if(temp <= PM_UP_CLK){
-		for(i=0; i<num; i++){
-			sprintf(buf, CPU_GOVERNOR, i);
-			if((fp = fopen(buf, "w")) == NULL){
-				printf("runled%d: cpu%d %s\n", __LINE__, num, strerror(errno));
-				return;
-			}
-			fputs("ondemand", fp);
-			fclose(fp);
-		}
-	}
-}
-#endif
 #endif
 
 void
@@ -357,10 +296,6 @@ dancer()
 			temp = get_temp();
 			if(PM_CTRL_CPU)
 				ctrl_cpu(temp);
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,2,34))
-			if(PM_CTRL_CLK)
-				ctrl_clk(temp);
-#endif
 		}
 #endif
 	}
@@ -369,7 +304,11 @@ dancer()
 void usage(void)
 {
 #ifdef CONFIG_OBSAX3
-	fprintf(stderr, "runled [-cds] [-j maxtemp] [-k mintemp] [-l uptemp] [-m downtemp]\n");
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,2,34))
+	fprintf(stderr, "runled [-ds] [-l downtemp] [-m uptemp]\n");
+#else
+	fprintf(stderr, "runled [-ds] [-l downtemp]\n");
+#endif
 #else
 	fprintf(stderr, "runled [-s]\n");
 #endif
@@ -377,14 +316,9 @@ void usage(void)
 	fprintf(stderr, "option:\n");
 
 #ifdef CONFIG_OBSAX3
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,2,34))
-	fprintf(stderr, "\t-c : control cpu clock\n");
-	fprintf(stderr, "\t-j : cpu clock DOWN temperature\n");
-	fprintf(stderr, "\t-k : cpu clock UP temperature\n");
-#endif
 	fprintf(stderr, "\t-d : control cpu core\n");
 	fprintf(stderr, "\t-l : cpu core DOWN temperature\n");
-#if 0
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,2,34))
 	fprintf(stderr, "\t-m : cpu core UP temperature\n");
 #endif
 #endif
@@ -412,20 +346,11 @@ main(int argc, char *argv[])
 #endif
 
 #ifdef CONFIG_OBSAX3
-	while ((i = getopt(argc, argv, "j:k:l:m:cds")) != -1) {
+	while ((i = getopt(argc, argv, "l:m:ds")) != -1) {
 #else
 	while ((i = getopt(argc, argv, "s")) != -1) {
 #endif
 		switch (i) {
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,2,34))
-		case 'c':	// control CPU clock
-			PM_CTRL_CLK = 1;
-			break;
-		case 'j':	// clock down temp
-			break;
-		case 'k':	// clock up temp
-			break;
-#endif
 #ifdef CONFIG_OBSAX3
 		case 'd':	// control CPU up/down
 			PM_CTRL_CPU = 1;
@@ -433,7 +358,7 @@ main(int argc, char *argv[])
 		case 'l':	// CPU down temp
 			PM_DOWN_CPU = atoi(optarg) * 1000;
 			break;
-#if 0
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,2,34))
 		case 'm':	// CPU up temp
 			PM_UP_CPU = atoi(optarg);
 			break;
@@ -449,17 +374,14 @@ main(int argc, char *argv[])
 	}
 
 #ifdef CONFIG_OBSAX3
-//	if(PM_DOWN_CPU > PM_TEMP_MAX || PM_UP_CPU < PM_TEMP_MIN || PM_DOWN_CPU <= PM_UP_CPU){
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,2,34))
+	if(PM_DOWN_CPU > PM_TEMP_MAX || PM_UP_CPU < PM_TEMP_MIN || PM_DOWN_CPU <= PM_UP_CPU){
+#else
 	if(PM_DOWN_CPU > PM_TEMP_MAX){
+#endif
 		printf("runled%d: Invalid CPU control temperature\n", __LINE__);
 		return -1;
 	}
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,2,34))
-	if(PM_DOWN_CLK > PM_TEMP_MAX || PM_UP_CLK < PM_TEMP_MIN || PM_DOWN_CLK <= PM_UP_CLK){
-		printf("runled%d: Invalid CLOCK control temperature\n", __LINE__);
-		return -1;
-	}
-#endif
 #endif
 
 	if ((pid = fork())) {
