@@ -12,7 +12,8 @@ wheezy)
 		RAMDISK_SIZE=160
 		KERNEL=3.2.36
 		# 2013/xx/xx
-		PATCHLEVEL=0
+		PATCHLEVEL=1
+		ARCH=armhf
 	;;
 	obsa6)
 		RAMDISK_SIZE=128
@@ -41,5 +42,15 @@ squeeze)
 ;;
 esac
 
-. _config.sh
+
+
+
+if [ -f _config.sh ] ; then
+	. _config.sh
+elif [ -f ../_config.sh ] ; then
+	. ../_config.sh
+else
+	echo "could't read _config.sh"
+	exit 1
+fi
 

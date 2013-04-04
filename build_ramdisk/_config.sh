@@ -10,10 +10,12 @@ ETCDIR_ADD=${PWD}/etc.${DIST}.${TARGET}
 
 RAMDISK_IMG=ramdisk-${DIST}.${TARGET}.img
 
-case $(uname -m) in
-arm*) ARCH=armel ;;
-ppc)  ARCH=powerpc ;;
-*)    ARCH=unknown ;;
-esac
+if [ -z "$ARCH" ] ; then
+	case $(uname -m) in
+	arm*) ARCH=armel ;;
+	ppc)  ARCH=powerpc ;;
+	*)    ARCH=unknown ;;
+	esac
+fi
 
 trap 'echo;echo "arch: ${ARCH}, dist: ${DIST}, target: ${TARGET}"' EXIT

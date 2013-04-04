@@ -13,6 +13,10 @@ fi
 
 CFLAGS="-Wall -I$LINUX_INC -DDEBIAN ${MODEL}"
 
+if [ "$ARCH" == "armhf" ] ; then
+	CFLAGS="$CFLAGS -march=armv7-a -mhard-float -mfloat-abi=softfp -mfpu=vfpv3-d16"
+fi
+
 
 echo "FLASHCFG"
 gcc -lz -o flashcfg-debian flashcfg.c -DFLASHCFG_S -DEXTRACT_LZMA $CFLAGS
