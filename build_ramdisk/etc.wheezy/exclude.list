@@ -3,6 +3,7 @@ etc/exclude.list
 etc/init.d/openblocks-setup
 etc/init.d/pshd
 etc/init.d/runled
+etc/init.d/telinitq
 etc/init.d/umountfs
 etc/mtab
 etc/udev/rules.d/70-persistent-net.rules
