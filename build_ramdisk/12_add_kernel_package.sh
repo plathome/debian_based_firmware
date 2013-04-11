@@ -3,7 +3,7 @@
 . `dirname $0`/config.sh
 
 (cd ${PWD}/kernel-image; rm -f dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb)
-(cd ${PWD}/kernel-image; ./mkdummy.sh ${KERNEL}-${PATCHLEVEL})
+(cd ${PWD}/kernel-image; ./mkdummy.sh ${KERNEL}-${PATCHLEVEL} ${ARCH})
 
 cp -f ${PWD}/kernel-image/dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb ${DISTDIR}/
 chroot ${DISTDIR} dpkg -r kernel-image
