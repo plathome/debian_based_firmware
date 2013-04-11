@@ -297,10 +297,8 @@ start)
 	# for Measures to rename network interface
 	rm -f /etc/udev/rules.d/70-persistent-net.rules
 
-	# for kernel oops error with CF mode
-	# (__lookup_hash in linux/fs/namei.c)
 	rm -rf /etc/network/run
-	ln -sf /dev/shm/network /etc/network/run
+	ln -sf /run/network /etc/network/run
 
 	# create ssh keys for openssh-server
 	if [ -x /usr/sbin/sshd ] ; then
