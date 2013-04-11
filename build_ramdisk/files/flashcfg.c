@@ -1,4 +1,4 @@
-/*	$ssdlinux: flashcfg.c,v 1.18 2013/03/05 08:05:05 shimura Exp $	*/
+/*	$ssdlinux: flashcfg.c,v 1.24 2013/04/11 10:18:10 kimura Exp $	*/
 
 #undef DEBUG
 
@@ -16,7 +16,7 @@
 #if defined(CONFIG_OBSA6)
 #include <mtd/mtd-abi.h>
 #endif
-#include <zlib.h>
+#include <linux/zlib.h>
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <errno.h>
@@ -110,7 +110,7 @@ static char* tarpath;
  *      mtd6: JAVA_SIZE	    SECT_SIZE  "OpenBlocks A series Java Image"
  */
 
-#define VERSION "1.2"
+#define VERSION "$Revision: 1.24 $"
 
 int SECT_SIZE = 0;
 int MONITOR_SIZE = 0;
@@ -149,6 +149,7 @@ unsigned char *spare = NULL;
 FILE *fp_log = NULL;
 
 int flash_set_bootdev(int, char *);
+int flash_set_pmlevel(int, char *);
 int flash_prog_kern(char *);
 int flash_save_param(int i, char *);
 int flash_delete_param(int i);
@@ -174,7 +175,7 @@ void dump(unsigned char *, int);
 void
 usage()
 {
-	fprintf(stderr, "Flash Memory Configuration Tool flashcfg version %s\n", VERSION);
+	fprintf(stderr, "Flash Memory Configuration Tool (%s)\n\n", VERSION);
 	fprintf(stderr, "usage: flashcfg                 Show this.\n");
 #if 0
 	fprintf(stderr, "       flashcfg -b              Show current boot setting\n");
@@ -207,6 +208,9 @@ usage()
 #endif
 	fprintf(stderr, "       flashcfg -t              Test read and write in coredump save area\n");
 	fprintf(stderr, "       flashcfg -T              Read message in coredump save area\n");
+#if defined(CONFIG_OBSAX3)
+	fprintf(stderr, "       flashcfg -p (now|wfi|idle|snooze) Print or set Power Management Level\n");
+#endif
 	fprintf(stderr, "       flashcfg -h              Show this.\n");
 }
 
@@ -240,13 +244,13 @@ main(int argc, char *argv[])
 	ret = NORMAL_END;
 #ifdef DEBIAN
 #if defined(CONFIG_OBSAX3)
-	while ((i = getopt(argc, argv, "c:f:s:S:j:dDxXJrtT")) != -1) {
+	while ((i = getopt(argc, argv, "c:f:p:s:S:j:dDxXJrtT")) != -1) {
 #else
 	while ((i = getopt(argc, argv, "c:f:s:S:j:dDxXJr")) != -1) {
 #endif
 #else
 #if defined(CONFIG_OBSAX3)
-	while ((i = getopt(argc, argv, "c:f:s:S:E:L:j:xXdDhRrJtT")) != -1) {
+	while ((i = getopt(argc, argv, "c:f:p:s:S:E:L:j:xXdDhRrJtT")) != -1) {
 #else
 	while ((i = getopt(argc, argv, "c:f:s:S:E:L:j:xXdDhRrJ")) != -1) {
 #endif
@@ -462,6 +466,26 @@ invalid_arg:
 		case 'T':
 			read_proc_mtd();
 			return read_core_area();
+			break;
+		case 'p':
+			if(strcmp(optarg, "now") && strcmp(optarg, "wfi") && strcmp(optarg, "idle") && strcmp(optarg, "snooze")){
+				fprintf(stderr, "invalid option %s\n", optarg);
+				return ERROR_END;
+			}
+			if(mtd_protect(MTD_UBOOTENV, 0) != 0){
+				fprintf(stderr, "Fail to kernel image protect off\n");
+				ret = ERROR_END;
+			}
+			if(flash_set_pmlevel(i, optarg) < 0){
+				fprintf(stderr, "Fail to Boot device change\n");
+				mtd_protect(MTD_UBOOTENV, 1);
+				return ERROR_END;
+			}
+			if(mtd_protect(MTD_UBOOTENV, 1) != 0){
+				fprintf(stderr, "Fail to kernel image protect off\n");
+				ret = ERROR_END;
+			}
+			return NORMAL_END;
 			break;
 #endif
 		case 'h':
@@ -772,7 +796,7 @@ dump(env_area2, ENV_SIZE);
 					strcpy(buf, "root=/dev/ram");
 				else if(strncmp("sd", arg, 2) == 0)
 					strcpy(buf, "root=LABEL=/");
-				else	/* arg = "cf" */
+				else	/* arg = "ext" */
 					strcpy(buf, wk_prev);
 
 				if(wk_now - p_now > strlen(buf)){
@@ -891,15 +915,13 @@ dump(env_area2, ENV_SIZE);
 #endif
 	/* save 0xfff60000 */
 	fprintf(stderr, "Change 1st U-Boot environment area\n");
-//	if(flash_prog_bootdev(env_area1, 0) < 0){
-	if(flash_prog_bootdev(p_now, 0) < 0){
+	if(flash_prog_bootdev(env_area1, 0) < 0){
 		fprintf(stderr, "ERROR: flash memory write error in area1\n");
 		return -1;
 	}
 	/* save 0xfff80000 */
 	fprintf(stderr, "Change 2nd U-Boot environment area\n");
-//	if(flash_prog_bootdev(env_area2, ENV_AREA >> 1) < 0){
-	if(flash_prog_bootdev(p_now, ENV_AREA >> 1) < 0){
+	if(flash_prog_bootdev(env_area2, ENV_AREA >> 1) < 0){
 		fprintf(stderr, "ERROR: flash memory write error in area2)\n");
 		return -1;
 	}
@@ -1421,7 +1443,9 @@ flash_save_param(int target, char *list)
 
 	if ((pid = fork()) == 0) {
 		/* in child */
-		execl(tarpath, "tar", "cvpTzf", list, localbuf, NULL);
+//		execl(tarpath, "tar", "cvpTzf", list, localbuf, NULL);
+//printf("list=%s buf=%s\n", list, localbuf);
+		execl(tarpath, "tar", "cvz", "-T", list, "-f", localbuf, NULL);
 		/* not reached here */
 	} else {
 		wait(&st);
@@ -2272,6 +2296,340 @@ int read_core_area(void)
 	free(mtd);
 	return NORMAL_END;
 }
+
+/*
+	u-boot environment area 0xfff60000 - 0xfff9ffff
+	offset	0x0     - 0x1FFFF	now environment area	    use 0x4000 of 0x20000
+		0x20000 - 0x3FFFF	previous environmet area    use 0x4000 of 0x20000
+*/
+#if 0
+int
+flash_set_pmlevel(int target, char *arg)
+{
+#define OFFSET		5
+	FILE *fp;
+	char env_area1[ENV_SIZE];		// u-boot environment area1
+	char env_area2[ENV_SIZE];		// u-boot environment area2
+	char *p_prev, *p_now, *wk_prev, *wk_now;
+	unsigned long crc1, crc2;
+	char buf[512];
+	char *p;
+
+	memset(env_area1, 0x0, ENV_SIZE);
+	memset(env_area2, 0x0, ENV_SIZE);
+
+	read_proc_mtd();
+
+	if((fp = fopen(mtdname[MTD_UBOOTENV], "r")) == NULL){
+		fprintf(stderr, "ERROR%d: %s %s\n", __LINE__, mtdname[MTD_UBOOTENV], strerror(errno));
+		return -1;
+	}
+	/* read area1 */
+	if(fread(env_area1, ENV_SIZE, 1, fp) != 1){
+		fprintf(stderr, "ERROR%d: fread %s\n", __LINE__, strerror(errno));
+		fclose(fp);
+		return -1;
+	}
+	if(fseek(fp, ENV_AREA >> 1, SEEK_SET) != 0){
+		fprintf(stderr, "ERROR%d: fseek %s\n", __LINE__, strerror(errno));
+		fclose(fp);
+		return -1;
+	}
+	/* read area2 */
+	if(fread(env_area2, ENV_SIZE, 1, fp) != 1){
+		fprintf(stderr, "ERROR%d: fread %s\n", __LINE__, strerror(errno));
+		fclose(fp);
+		return -1;
+	}
+	fclose(fp);
+
+#if 0
+dump(env_area1, ENV_SIZE);
+printf("\n");
+printf("\n");
+dump(env_area2, ENV_SIZE);
+#endif
+
+	crc1 = crc32(0, (unsigned char*)&env_area1[OFFSET], ENV_SIZE-OFFSET);
+	crc2 = crc32(0, (unsigned char*)&env_area2[OFFSET], ENV_SIZE-OFFSET);
+
+	if(!crc1 && !crc2){			/* Invalid both */
+		fprintf(stderr, "ERROR%d: environment area is empty\n", __LINE__);
+		return -1;
+	}
+	else if(crc1 && !crc2){		/* Invalid area2 */
+		p_now = env_area2;
+		p_prev = env_area1;
+		memset(p_now, 0x0, ENV_SIZE);
+	}
+	else if(!crc1 && crc2){		/* Invalid area1 */
+		p_now = env_area1;
+		p_prev = env_area2;
+		memset(p_now, 0x0, ENV_SIZE);
+	}
+	else if(env_area1[4] == 1 && env_area2[4] == 1){	/* both is active */
+		p_now = env_area2;
+		p_prev = env_area1;
+		memset(p_now, 0x0, ENV_SIZE);
+	}
+	else if(env_area1[4] == 1 && env_area2[4] == 0){	/* area1 is active */
+		p_now = env_area2;
+		p_prev = env_area1;
+		memset(p_now, 0x0, ENV_SIZE);
+	}
+	else if(env_area1[4] == 0 && env_area2[4] == 1){	/* area2 is active */
+		p_now = env_area1;
+		p_prev = env_area2;
+		memset(p_now, 0x0, ENV_SIZE);
+	}
+	else if(env_area1[4] == 0 && env_area2[4] == 0){	/* both is obsolete */
+		p_now = env_area2;
+		p_prev = env_area1;
+		memset(p_now, 0x0, ENV_SIZE);
+	}
+	else if(env_area1[4] == 0xff && env_area2[4] != 0xff){	/* area1 is empty */
+		p_now = env_area1;
+		p_prev = env_area2;
+		memset(p_now, 0x0, ENV_SIZE);
+	}
+	else if(env_area1[4] != 0xff && env_area2[4] == 0xff){	/* area2 is empty */
+		p_now = env_area2;
+		p_prev = env_area1;
+		memset(p_now, 0x0, ENV_SIZE);
+	}
+	else{	/* other case */
+		fprintf(stderr, "ERROR%d: environment area is empty\n", __LINE__);
+		return -1;
+	}
+
+	wk_prev = p_prev;
+	wk_now = p_now;
+	/* previous environment -> now environment */
+	while(wk_prev < p_prev + (ENV_SIZE-OFFSET)){
+		if((p=strstr(wk_prev, "pm_level=")) && p == wk_prev){		/* found "pm_level=" */
+			if(strcmp(arg, "now") == 0){
+				if((p = strchr(wk_prev, '=')))
+					printf("The current state is %s\n", ++p);
+				else
+					printf("The current state is wfi\n");
+				return NORMAL_END;
+			}
+			else
+				sprintf(buf, "miscargs=pm_level=%s", arg);
+
+			if(wk_now - p_now > strlen(buf)){
+				strcpy(wk_now, buf);
+				wk_now += strlen(buf) + 1;
+			}
+			else{
+				fprintf(stderr, "ERROR%d: bootargs string is too long\n", __LINE__);
+				return -1;
+			}
+		}
+		else{
+			/* no change */
+			strcpy(wk_now, wk_prev);
+			wk_now += strlen(wk_prev) + 1;
+		}
+		wk_prev += strlen(wk_prev) + 1;	/* +1 = '\0' */
+	}
+	crc1 = crc32(0, (unsigned char*)&p_now[OFFSET], ENV_SIZE-OFFSET);
+	memcpy(p_now, &crc1, sizeof(crc1));
+
+	/* set flag */
+	p_now[4] = 0x1;		/* active */
+	p_prev[4] = 0x0;	/* obsolete */
+
+	fprintf(stderr, "Change 1st U-Boot environment area\n");
+	if(flash_prog_bootdev(p_now, 0) < 0){
+		fprintf(stderr, "ERROR%d: flash memory write error in area1\n", __LINE__);
+		return -1;
+	}
+	fprintf(stderr, "Change 2nd U-Boot environment area\n");
+	if(flash_prog_bootdev(p_prev, ENV_AREA >> 1) < 0){
+		fprintf(stderr, "ERROR%d: flash memory write error in area2)\n", __LINE__);
+		return -1;
+	}
+#ifdef DEBUG
+	if((fp = fopen("/tmp/now.env", "w")) != NULL){
+		fwrite(p_now, ENV_SIZE, 1, fp);
+		fclose(fp);
+	}
+	if((fp = fopen("/tmp/prev.env", "w")) != NULL){
+		fwrite(p_prev, ENV_SIZE, 1, fp);
+		fclose(fp);
+	}
+#endif
+	fprintf(stderr, "Power management level change to %s\n", arg);
+	return NORMAL_END;
+}
+#else
+/*
+	u-boot environment area 0xfff60000 - 0xfff9ffff
+	offset	0x0     - 0x1FFFF	now environment area	    use 0x4000 of 0x20000
+		0x20000 - 0x3FFFF	previous environmet area    use 0x4000 of 0x20000
+*/
+int
+flash_set_pmlevel(int target, char *arg)
+{
+#define OFFSET		5
+	FILE *fp;
+	char env_area1[ENV_SIZE];		// u-boot environment area1
+	char env_area2[ENV_SIZE];		// u-boot environment area2
+	char *p_prev, *p_now, *wk_prev, *wk_now;
+	unsigned long crc1, crc2;
+	char buf[512];
+	char *p;
+	int flag=0;
+
+	memset(env_area1, 0x0, ENV_SIZE);
+	memset(env_area2, 0x0, ENV_SIZE);
+
+	read_proc_mtd();
+
+	if((fp = fopen(mtdname[MTD_UBOOTENV], "r")) == NULL){
+		fprintf(stderr, "ERROR%d: %s %s\n", __LINE__, mtdname[MTD_UBOOTENV], strerror(errno));
+		return -1;
+	}
+	/* read area1 */
+	if(fread(env_area1, ENV_SIZE, 1, fp) != 1){
+		fprintf(stderr, "ERROR%d: fread %s\n", __LINE__, strerror(errno));
+		fclose(fp);
+		return -1;
+	}
+	if(fseek(fp, ENV_AREA >> 1, SEEK_SET) != 0){
+		fprintf(stderr, "ERROR%d: fseek %s\n", __LINE__, strerror(errno));
+		fclose(fp);
+		return -1;
+	}
+	/* read area2 */
+	if(fread(env_area2, ENV_SIZE, 1, fp) != 1){
+		fprintf(stderr, "ERROR%d: fread %s\n", __LINE__, strerror(errno));
+		fclose(fp);
+		return -1;
+	}
+	fclose(fp);
+
+	crc1 = crc32(0, (unsigned char*)&env_area1[OFFSET], ENV_SIZE-OFFSET);
+	crc2 = crc32(0, (unsigned char*)&env_area2[OFFSET], ENV_SIZE-OFFSET);
+
+	if(!crc1 && !crc2){			/* Invalid both */
+		fprintf(stderr, "ERROR%d: environment area is empty\n", __LINE__);
+		return -1;
+	}
+	else if(crc1 && !crc2){		/* Invalid area2 */
+		p_now = env_area2;
+		p_prev = env_area1;
+		memset(p_now, 0x0, ENV_SIZE);
+	}
+	else if(!crc1 && crc2){		/* Invalid area1 */
+		p_now = env_area1;
+		p_prev = env_area2;
+		memset(p_now, 0x0, ENV_SIZE);
+	}
+	else if(env_area1[4] == 1 && env_area2[4] == 1){	/* both is active */
+		p_now = env_area2;
+		p_prev = env_area1;
+		memset(p_now, 0x0, ENV_SIZE);
+	}
+	else if(env_area1[4] == 1 && env_area2[4] == 0){	/* area1 is active */
+		p_now = env_area2;
+		p_prev = env_area1;
+		memset(p_now, 0x0, ENV_SIZE);
+	}
+	else if(env_area1[4] == 0 && env_area2[4] == 1){	/* area2 is active */
+		p_now = env_area1;
+		p_prev = env_area2;
+		memset(p_now, 0x0, ENV_SIZE);
+	}
+	else if(env_area1[4] == 0 && env_area2[4] == 0){	/* both is obsolete */
+		p_now = env_area2;
+		p_prev = env_area1;
+		memset(p_now, 0x0, ENV_SIZE);
+	}
+	else if(env_area1[4] == 0xff && env_area2[4] != 0xff){	/* area1 is empty */
+		p_now = env_area1;
+		p_prev = env_area2;
+		memset(p_now, 0x0, ENV_SIZE);
+	}
+	else if(env_area1[4] != 0xff && env_area2[4] == 0xff){	/* area2 is empty */
+		p_now = env_area2;
+		p_prev = env_area1;
+		memset(p_now, 0x0, ENV_SIZE);
+	}
+	else{	/* other case */
+		fprintf(stderr, "ERROR%d: environment area is empty\n", __LINE__);
+		return -1;
+	}
+
+	wk_prev = p_prev;
+	wk_now = p_now;
+	/* previous environment -> now environment */
+	while(wk_prev < p_prev + (ENV_SIZE-OFFSET)){
+		if(!wk_prev[0])		/* last of environment */
+			break;
+		if((p=strstr(wk_prev, "miscargs=")) && p == wk_prev){	/* found "miscargs=" */
+			flag=1;												/* miscargs exist */
+			if(strcmp(arg, "now") == 0){
+				if((p = strchr(wk_prev, '='))){
+					if((p = strchr(++p, '=')))
+						printf("The current setting is %s\n", ++p);
+				}
+				else
+					printf("The current setting is unknown\n");
+				return NORMAL_END;
+			}
+			else
+				sprintf(buf, "miscargs=pm_level=%s", arg);
+
+			if(wk_now - p_now > strlen(buf)){
+				strcpy(wk_now, buf);
+				wk_now += strlen(buf) + 1;
+			}
+			else{
+				fprintf(stderr, "ERROR%d: bootargs string is too long\n", __LINE__);
+				return -1;
+			}
+		}
+		else{
+			/* no change */
+			strcpy(wk_now, wk_prev);
+			wk_now += strlen(wk_prev) + 1;
+		}
+		wk_prev += strlen(wk_prev) + 1;	/* +1 = '\0' */
+	}
+	if(!flag){												/* not found "miscargs=" */
+		if(strcmp(arg, "now") == 0){
+			printf("The current setting is unknown\n");
+			return NORMAL_END;
+		}
+		else{
+			sprintf(buf, "miscargs=pm_level=%s", arg);
+			if(wk_now - p_now > strlen(buf))
+				strcpy(wk_now, buf);
+		}
+	}
+	crc1 = crc32(0, (unsigned char*)&p_now[OFFSET], ENV_SIZE-OFFSET);
+	memcpy(p_now, &crc1, sizeof(crc1));
+
+	/* set flag */
+	p_now[4] = 0x1;		/* active */
+	p_prev[4] = 0x0;	/* obsolete */
+
+	fprintf(stderr, "Change 1st U-Boot environment area\n");
+	if(flash_prog_bootdev(p_now, 0) < 0){
+		fprintf(stderr, "ERROR%d: flash memory write error in area1\n", __LINE__);
+		return -1;
+	}
+	fprintf(stderr, "Change 2nd U-Boot environment area\n");
+	if(flash_prog_bootdev(p_prev, ENV_AREA >> 1) < 0){
+		fprintf(stderr, "ERROR%d: flash memory write error in area2)\n", __LINE__);
+		return -1;
+	}
+	fprintf(stderr, "Power management level change to %s\n", arg);
+	return NORMAL_END;
+}
+#endif
 #endif
 
 #ifdef DEBUG
