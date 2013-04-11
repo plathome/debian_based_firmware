@@ -88,6 +88,7 @@ function _usage() {
 	echo "    -y      Assume yes for save and erase."
 #	echo "    -t      Test read and write in coredump save area."
 	echo "    -T      Read messages in coredump save area."
+	echo "    -p [pm] Print or set power management level. [now|wfi|idle|snooze]"
 	echo "    -h      This messages."
 	echo
 	exit 1
@@ -233,7 +234,7 @@ function _yesno() {
 
 RUN=help
 
-while getopts c:f:u:bBeEsSTlhxXy OPT;do
+while getopts c:f:p:u:bBeEsSTlhxXy OPT;do
 	case $OPT in
 	c) RUN=rootcfg; ROOT_TARGET=$OPTARG ;;
 	f) RUN=firmware; FIRM_FILE=$OPTARG; MTD_DEV=/dev/${MTD_CONF_DEV} ;;
@@ -242,6 +243,7 @@ while getopts c:f:u:bBeEsSTlhxXy OPT;do
 	u) RUN=backup; FLG_LISTBKUP=true; FILE_LIST=$OPTARG ;;
 	e) RUN=delete ;;
 	E) RUN=delete; FLG_ALLDEL=true;;
+	p) RUN=pm; pm_level=$OPTARG ;;
 	s)
 		RUN=save
 		ROM_SIZE=${MTD_CONF_SIZE}
@@ -334,6 +336,9 @@ extract)
 ;;
 coredump)
 	flashcfg-debian -${CMDARG}
+;;
+pm)
+	flashcfg-debian -p ${pm_level:-now}
 ;;
 *)
 	_usage
