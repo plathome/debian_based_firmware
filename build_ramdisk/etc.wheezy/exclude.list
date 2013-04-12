@@ -1,4 +1,3 @@
-etc/default/openblocks
 etc/exclude.list
 etc/init.d/openblocks-setup
 etc/init.d/pshd

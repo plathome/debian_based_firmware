@@ -21,10 +21,15 @@ NAME="openblocks-setup"
 
 #set -x
 
-#init_extract_files="etc/fstab etc/default/openblocks"
-#[ "$#" -ne 0 ] && tar -xpzf /dev/mtd1 -C / $init_extract_files 2> /dev/null
-
 [ -f /etc/default/openblocks ] && . /etc/default/openblocks
+
+if [ "$1" == "start"  ] ; then
+	tar -xpzf /dev/${MTD_CONF_DEV} -C /tmp \
+		etc/default/openblocks 2> /dev/null
+	[ -f /tmp/etc/default/openblocks ] && . /tmp/etc/default/openblocks
+	rm -rf /tmp/etc
+fi
+
 
 RW_DIR="${RW_DIR:=/.rw}"
 RW_CF_LABEL="${RW_CF_LABEL:=DEBIAN}"
@@ -244,7 +249,7 @@ start)
 			rwdev_fs=ext4
 		fi
 		mount -o ro -t $rwdev_fs $rwdev ${RW_DIR}
-		[ -f "${RW_DIR}/etc/easyblocks/revision" ] && FLG_INIT=false
+		[ -e "${RW_DIR}/etc/easyblocks" ] && FLG_INIT=false
 		umount ${RW_DIR}
 	fi
 
@@ -310,9 +315,6 @@ start)
 
 	# make directory tree
 	mkdir_mtree_list
-
-	#touch /var/spool/cron/crontabs/
-	#touch $init_extract_files
 
 	# exectute postscript and unmount DEB_CONFIG storage.
 	if [ -n "$confdev" ] ; then
