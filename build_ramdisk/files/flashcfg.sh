@@ -270,6 +270,8 @@ done
 
 case $RUN in
 show)
+	[ "${MTD_USER_SIZE_MB}" -eq 0 ] && MTD_USER_SIZE_MB=unknown
+	[ "${MTD_CONF_SIZE_MB}" -eq 0 ] && MTD_CONF_SIZE_MB=unknown
 	echo
 	echo "Show FlashROM last saved size"
 	echo
@@ -286,14 +288,19 @@ save)
 	_yesno "FlashROM overwrites the current data."
 
 	mkdir -p ${WORK_DIR}
+	[ "${ROM_SIZE}" -eq 0 ] && ROM_SIZE=$((512*1024))
 	mount -t tmpfs -o size=${ROM_SIZE}k none ${WORK_DIR}
 	
 	if ${COMMAND}; then
-		flashcfg-debian ${FLASHCFG_ARG} ${WORK_DIR}/${SAVE_FILE} || exit 1
+		if echo ${MTD_DEV} | grep -q '/dev/mtd'; then
+			flashcfg-debian ${FLASHCFG_ARG} ${WORK_DIR}/${SAVE_FILE} || exit 1
+		else
+			dd if=${WORK_DIR}/${SAVE_FILE} of=${MTD_DEV}
+		fi
 		echo
 	else
 		echo
-		echo "ERROR: Can't write archive file to FlashROM(${MTD_DEV})."
+		echo "ERROR: Can't archiving files. (${MTD_DEV})"
 		echo
 	fi
 
