@@ -234,7 +234,7 @@ function _yesno() {
 
 RUN=help
 
-while getopts c:f:p:u:bBeEsSTlhxXy OPT;do
+while getopts c:f:p:u:bBeEsSTlhxXyZ OPT;do
 	case $OPT in
 	c) RUN=rootcfg; ROOT_TARGET=$OPTARG ;;
 	f) RUN=firmware; FIRM_FILE=$OPTARG; MTD_DEV=/dev/${MTD_CONF_DEV} ;;
@@ -243,6 +243,7 @@ while getopts c:f:p:u:bBeEsSTlhxXy OPT;do
 	u) RUN=backup; FLG_LISTBKUP=true; FILE_LIST=$OPTARG ;;
 	e) RUN=delete ;;
 	E) RUN=delete; FLG_ALLDEL=true;;
+	Z) RUN=save_default ;;
 	p) RUN=pm; pm_level=$OPTARG ;;
 	s)
 		RUN=save
@@ -346,6 +347,14 @@ coredump)
 ;;
 pm)
 	flashcfg-debian -p ${pm_level:-now}
+;;
+save_default)
+	target=$(awk '{gsub(":", "")} /config/ {print $1}' < /proc/mtd)
+	echo "0xC00" > /sys/devices/virtual/mtd/${target}/flags
+	(cd /; tar cvzf /tmp/.openblocks.tgz etc/default/openblocks)
+	flashcfg-debian -s /tmp/.openblocks.tgz
+	rm -f /tmp/.openblocks.tgz
+	echo "0x800" > /sys/devices/virtual/mtd/${target}/flags
 ;;
 *)
 	_usage
