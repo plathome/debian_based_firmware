@@ -15,6 +15,7 @@ CFLAGS="-Wall -I$LINUX_INC -DDEBIAN ${MODEL}"
 
 if [ "$ARCH" == "armhf" ] ; then
 	CFLAGS="$CFLAGS -march=armv7-a -mhard-float -mfloat-abi=softfp -mfpu=vfpv3-d16"
+	CFLAGS="$CFLAGS -DCONFIG_LINUX_3_2_X"
 fi
 
 
