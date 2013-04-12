@@ -141,7 +141,10 @@ do_stop () {
 		if [ "$VERBOSE" = no ]
 		then
 			log_action_begin_msg "Unmounting union filesystems"
-			umount -n -f -r -d $UNIONFS_MTPTS 2> /dev/null
+			#umount -n -f -r -d $UNIONFS_MTPTS 2> /dev/null
+			for dir in ${UNIONFS_MTPTS} ; do
+				umount -n -f -r -d $dir
+			done 2> /dev/null
 			log_action_end_msg $?
 		else
 			log_daemon_msg "Will now unmount union filesystems"
