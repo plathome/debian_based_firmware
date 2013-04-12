@@ -1,4 +1,4 @@
-/*	$ssdlinux: runled.c,v 1.10 2013/04/04 08:41:45 shimura Exp $	*/
+/*	$ssdlinux: runled.c,v 1.12 2013/04/12 08:48:43 shimura Exp $	*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -238,18 +238,20 @@ void ctrl_cpu(int temp)
 		strcpy(val, "0");
 #if 0
 		openlog("runled", LOG_CONS | LOG_PID, LOG_USER);
-		syslog(LOG_INFO, "temperature: %d degrees, shutdown CPU core other than CPU0\n");
+		syslog(LOG_INFO, "temperature: %d degrees, shutdown CPU core other than CPU0\n", temp);
 		closelog();
 #endif
 	}
+#ifdef CONFIG_LINUX_3_2_X
 	else if(temp < PM_UP_CPU && prev >= PM_UP_CPU){
 		strcpy(val, "1");
 #if 0
 		openlog("runled", LOG_CONS | LOG_PID, LOG_USER);
-		syslog(LOG_INFO, "temperature: %d degrees, bootup CPU core other than CPU0\n");
+		syslog(LOG_INFO, "temperature: %d degrees, bootup CPU core other than CPU0\n", temp);
 		closelog();
 #endif
 	}
+#endif
 	else{
 		prev = temp;
 		return;
@@ -320,7 +322,7 @@ dancer()
 void usage(void)
 {
 #ifdef CONFIG_OBSAX3
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,2,34))
+#ifdef CONFIG_LINUX_3_2_X
 	fprintf(stderr, "runled [-ds] [-l downtemp] [-m uptemp]\n");
 #else
 	fprintf(stderr, "runled [-ds] [-l downtemp]\n");
@@ -334,7 +336,7 @@ void usage(void)
 #ifdef CONFIG_OBSAX3
 	fprintf(stderr, "\t-d : control cpu core\n");
 	fprintf(stderr, "\t-l : cpu core DOWN temperature\n");
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,2,34))
+#ifdef CONFIG_LINUX_3_2_X
 	fprintf(stderr, "\t-m : cpu core UP temperature\n");
 #endif
 #endif
@@ -362,7 +364,11 @@ main(int argc, char *argv[])
 #endif
 
 #ifdef CONFIG_OBSAX3
+#ifdef CONFIG_LINUX_3_2_X
 	while ((i = getopt(argc, argv, "l:m:ds")) != -1) {
+#else
+	while ((i = getopt(argc, argv, "m:ds")) != -1) {
+#endif
 #else
 	while ((i = getopt(argc, argv, "s")) != -1) {
 #endif
@@ -374,7 +380,7 @@ main(int argc, char *argv[])
 		case 'l':	// CPU down temp
 			PM_DOWN_CPU = atoi(optarg) * 1000;
 			break;
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,2,34))
+#ifdef CONFIG_LINUX_3_2_X
 		case 'm':	// CPU up temp
 			PM_UP_CPU = atoi(optarg) * 1000;
 			break;
@@ -390,9 +396,7 @@ main(int argc, char *argv[])
 	}
 
 #ifdef CONFIG_OBSAX3
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,2,34))
-//printf("PM_DOWN_CPU=%d PM_UP_CPU=%d PM_TEMP_MAX=%d PM_TEMP_MIN=%d PM_TEMP_UP=%d\n",
-//	PM_DOWN_CPU, PM_UP_CPU, PM_TEMP_MAX, PM_TEMP_MIN, PM_TEMP_UP);
+#ifdef CONFIG_LINUX_3_2_X
 	if(PM_DOWN_CPU > PM_TEMP_MAX || PM_UP_CPU < PM_TEMP_MIN || PM_DOWN_CPU <= PM_UP_CPU){
 #else
 	if(PM_DOWN_CPU > PM_TEMP_MAX){
