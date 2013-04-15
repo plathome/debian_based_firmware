@@ -351,6 +351,7 @@ pm)
 	flashcfg-debian -p ${pm_level:-now}
 ;;
 save_default)
+	_del_flashrom
 	target=$(awk '{gsub(":", "")} /config/ {print $1}' < /proc/mtd)
 	echo "0xC00" > /sys/devices/virtual/mtd/${target}/flags
 	(cd /; tar cvzf /tmp/.openblocks.tgz etc/default/openblocks)
