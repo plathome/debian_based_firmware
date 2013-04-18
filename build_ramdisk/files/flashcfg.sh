@@ -72,7 +72,7 @@ function _usage() {
 	echo "Archiving userland files to FlashROM and some configuration."
 	echo
 	#echo "usage: $(basename $0) [-c type] [-f file] [-u list] [-bBeEsSly]"
-	echo "usage: $(basename $0) [-f file] [-u list] [-bBeEsSly]"
+	echo "usage: $(basename $0) [-f file] [-u list] [-bBeEpsSTly]"
 	echo
 	echo "    -b      Save config to BACKUP(LABEL=DEB_CONFIG) storage."
 	echo "    -B      Save userland and config to BACKUP(LABEL=DEB_CONFIG) storage."
