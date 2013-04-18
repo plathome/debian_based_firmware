@@ -9,3 +9,4 @@ cp -f ${PWD}/kernel-image/dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb ${DISTD
 chroot ${DISTDIR} dpkg -r kernel-image
 chroot ${DISTDIR} dpkg -i /dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb
 rm -f ${DISTDIR}/dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb
+rm -f ${PWD}/kernel-image/dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb
