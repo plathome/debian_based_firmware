@@ -1,0 +1,57 @@
+#!/bin/bash
+#
+# kernel-image
+#
+### BEGIN INIT INFO
+# Provides:          kernel-image
+# Required-Start:
+# Required-Stop:
+# X-Start-Before:    easyblockssync easyblocks-standalone
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Starts kernel-image
+# Description:       Starts kernel-image
+### END INIT INFO
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+#includes lsb functions 
+. /lib/lsb/init-functions
+
+EBDIR=/etc/easyblocks
+. ${EBDIR}/lib/common
+
+[ -f /etc/default/openblocks ] && . /etc/default/openblocks
+
+
+if initsw_pushed; then
+	exit 0
+fi
+
+set -e
+
+#debug=echo
+
+case "$1" in
+start)
+	_ver=$(dd if=/dev/${MTD_FIRM_DEV:-mtd0}ro bs=1 count=32 skip=32 2> /dev/null)
+	ver=$(echo $_ver)
+	
+	_firm_ver=$(dd if=/etc/uImage.initrd bs=1 count=32 skip=32 2> /dev/null)
+	firm_ver=$(echo $_firm_ver)
+
+	if [ "$ver" != "$firm_ver" ] ; then
+		echo "Writing firmware file ($firm_ver) ..."
+		syslog_raw info "Writing firmware file ($firm_ver) ..."
+		$debug flashcfg -y -f /etc/uImage.initrd
+		$debug reboot
+	fi
+        ;;
+	stop)
+	;;
+	*)
+		echo "Usage: /etc/init.d/$NAME {start|stop}" >&2
+	exit 1
+	;;
+esac
+
+exit 0

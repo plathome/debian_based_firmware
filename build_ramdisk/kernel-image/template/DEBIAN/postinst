@@ -10,8 +10,11 @@
 case "$1" in
 configure)
 	[ -f /.chroot ] && exit 0
-	if [ -f /etc/uImage.initrd ] ; then
-		if flashcfg -y -f /etc/uImage.initrd; then
+	if [ -e /etc/init.d/easyblockssync ] ; then
+		/usr/sbin/update-rc.d kernel-image defaults
+		/etc/init.d/kernel-image start
+	elif [ -f /etc/uImage.initrd ] ; then
+		if /usr/sbin/flashcfg -y -f /etc/uImage.initrd; then
 			rm -f /etc/uImage.initrd
 		else
 			exit 1
