@@ -1,5 +1,5 @@
 
-DIST=wheezy
+DIST=${DIST:=wheezy}
 
 TARGET=${TARGET:=obsax3}
 
@@ -28,8 +28,8 @@ squeeze)
 	obsax3)
 		RAMDISK_SIZE=128
 		KERNEL=3.0.6
-		# 2013/03/06
-		PATCHLEVEL=11
+		# 2013/04/18
+		PATCHLEVEL=12
 	;;
 	obsa6)
 		RAMDISK_SIZE=128
