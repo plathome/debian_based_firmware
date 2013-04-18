@@ -1,0 +1,29 @@
+# OpenBlocks with Debian GNU/Linux
+#
+# required by
+# * /etc/init.d/openblocks-setup
+# * /usr/sbin/flashcfg
+
+# BEGIN: don't edit
+MODEL="obsa6"
+
+MTREE_LIST="/etc/mtree.list"
+MTREE_DIRS="/var/log /var/run"
+
+MTD_FIRM_DEV=mtd4
+MTD_CONF_DEV=mtd3
+MTD_USER_DEV=mtd5
+MTD_OPT_DEV=
+
+USBREST_GPIO_PORTS="32"
+
+# END: dont't edit
+
+
+# Set union filesysytem target directories.
+# The first item is "etc" always.
+UNIONFS_DIRS="etc bin home lib sbin usr var root opt srv media"
+
+# Set tmpfs size for ramdisk mode. Recommend over to 384m.
+RW_TMPFS_SIZE="256m"
+
