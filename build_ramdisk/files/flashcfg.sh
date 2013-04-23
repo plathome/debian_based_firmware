@@ -88,7 +88,9 @@ function _usage() {
 	echo "    -y      Assume yes for save and erase."
 #	echo "    -t      Test read and write in coredump save area."
 	echo "    -T      Read messages in coredump save area."
+if [ "$MODEL" == "obsax3" ] ; then
 	echo "    -p [pm] Print or set power management level. [now|wfi|idle|snooze]"
+fi
 	echo "    -h      This messages."
 	echo
 	exit 1
