@@ -5,6 +5,9 @@ DISTDIR=${WRKDIR}/${DIST}_${TARGET}
 
 FILESDIR=${PWD}/files
 
+ISOFILEDIR=${WRKDIR}/isofiles
+EXTRADEBDIR=${WRKDIR}/extradebs/${DIST}
+
 ETCDIR=${PWD}/etc.${DIST}
 ETCDIR_ADD=${PWD}/etc.${DIST}.${TARGET}
 
