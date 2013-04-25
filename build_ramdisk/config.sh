@@ -30,6 +30,9 @@ squeeze)
 		KERNEL=3.0.6
 		# 2013/04/18
 		PATCHLEVEL=12
+		# test
+		#KERNEL=3.2.36
+		#PATCHLEVEL=13
 	;;
 	obsa6)
 		RAMDISK_SIZE=128
