@@ -2,9 +2,11 @@
 
 . `dirname $0`/config.sh
 
-rm -rf ${DISTDIR}/*.deb
+rm -f ${DISTDIR}/*.deb
 cp ${EXTRADEBDIR}/*${ARCH}.deb ${DISTDIR}/
 
 debs=$(cd ${DISTDIR}/; ls -1 *${ARCH}.deb)
 
 chroot ${DISTDIR} dpkg -i $debs
+
+rm -f ${DISTDIR}/*.deb
