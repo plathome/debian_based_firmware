@@ -10,7 +10,7 @@ mkdir -p ${DISTDIR}
 REPO=http://ftp.us.debian.org/debian
 
 # disabled
-ISOFILE=
+#ISOFILE=
 if [ -n "$ISOFILE" ] ;then
 	_REPO=/media/${DIST}-${ARCH}
 	REPO=file://${_REPO}/debian
@@ -19,10 +19,12 @@ if [ -n "$ISOFILE" ] ;then
 	$debug mount -o loop ${ISOFILEDIR}/${ISOFILE} ${_REPO}
 fi
 
+EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano"
+#INCLUDE="gnu-fdisk,udev,openssh-server,lzma,strace"
+INCLUDE="udev,openssh-server,lzma,strace"
+
 $debug debootstrap --arch=${ARCH} \
-	--exclude=quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano \
-	--include=gnu-fdisk,udev,openssh-server,lzma,strace \
-	${DIST} ${DISTDIR} ${REPO}
+	--exclude=${EXCLUDE} --include=${INCLUDE} ${DIST} ${DISTDIR} ${REPO}
 
 
 $debug rm -f  ${DISTDIR}/etc/udev/rules.d/70-persistent-net.rules

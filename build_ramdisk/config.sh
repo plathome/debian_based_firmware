@@ -7,24 +7,24 @@ export TARGET DIST
 
 case ${DIST} in
 wheezy)
+	KERNEL=3.2.36
 	case ${TARGET} in
 	obsax3)
+		ISOFILE=debian-testing-armhf-DVD-1.iso
 		RAMDISK_SIZE=160
-		KERNEL=3.2.36
-		# 2013/xx/xx
 		PATCHLEVEL=0
 		ARCH=armhf
 	;;
 	obsa6)
+		ISOFILE=debian-testing-armel-DVD-1.iso
 		RAMDISK_SIZE=144
-		KERNEL=3.2.36
 		PATCHLEVEL=0
 	;;
 	*) exit 1 ;;
 	esac
 ;;
 squeeze)
-	ISOFILE=debian-6.0.5-armel-DVD-1.iso
+#	ISOFILE=debian-6.0.5-armel-DVD-1.iso
 	case ${TARGET} in
 	obsax3)
 		RAMDISK_SIZE=128
