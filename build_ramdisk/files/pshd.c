@@ -1,4 +1,4 @@
-/*	$ssdlinux: obs600_pshd.c,v 1.5 2012/07/11 05:00:24 yamagata Exp $	*/
+/*	$ssdlinux: obs600_pshd.c,v 1.7 2013/04/30 02:32:47 shimura Exp $	*/
 /*
  * Push SW deamon
  */
@@ -33,7 +33,12 @@ void die(int i);
 
 #define MIN_SEC		1
 #define MAX_SEC		3600
+
+#if defined(HAVE_PUSHSW_OBSAXX_H)
+#define INTERVAL	500 * 1000	// 200ms(5 times a second)
+#else
 #define INTERVAL	200 * 1000	// 200ms(5 times a second)
+#endif
 #define SEGLED_PID	"/var/run/segled.pid"
 #define SEGLED_DEV	"/dev/segled"
 
@@ -74,7 +79,9 @@ void watch_pushsw(void)
 	char buf[16];
 
 	if ((fd = open("/dev/pushsw", O_RDONLY | O_NONBLOCK)) < 0) {
+#ifdef DEBUG
 		perror("open");
+#endif
 		exit(-1);
 	}
 	while(flag){
@@ -95,14 +102,19 @@ printf("stat=%08x\n", rv);
 						PSW_DEBUG("runled pid=%d\n", atoi(buf));
 						kill(atoi(buf), SIGTERM);
 					}
+					fclose(fp);
 				}
+#ifdef DEBUG
 				else{
 					perror(SEGLED_PID);
 					fprintf(stderr, "pshd can't control LED\n");
 				}
+#endif
 				if ((ledfd = open(SEGLED_DEV, O_RDWR)) < 0){
+#ifdef DEBUG
 					perror(SEGLED_DEV);
 					fprintf(stderr, "pshd can't control LED\n");
+#endif
 				}
 			}
 			//count++;
