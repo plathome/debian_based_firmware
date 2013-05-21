@@ -238,7 +238,13 @@ function _yesno() {
 
 RUN=help
 
-while getopts c:f:p:u:bBeEsSTlhxXyZ OPT;do
+if [ "$MODEL" == "obsa6" ] ; then
+	GETOPTS_ARG="c:f:u:x:X:bBeEsSTlhyZ"
+else
+	GETOPTS_ARG="c:f:p:u:bBeEsSTlhxXyZ"
+fi
+
+while getopts $GETOPTS_ARG OPT;do
 	case $OPT in
 	c) RUN=rootcfg; ROOT_TARGET=$OPTARG ;;
 	f) RUN=firmware; FIRM_FILE=$OPTARG; MTD_DEV=/dev/${MTD_CONF_DEV} ;;

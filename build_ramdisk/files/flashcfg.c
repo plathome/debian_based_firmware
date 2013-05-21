@@ -1,4 +1,4 @@
-/*	$ssdlinux: flashcfg.c,v 1.24 2013/04/11 10:18:10 kimura Exp $	*/
+/*	$ssdlinux: flashcfg.c,v 1.25 2013/05/15 08:50:55 shimura Exp $	*/
 
 #undef DEBUG
 
@@ -110,7 +110,7 @@ static char* tarpath;
  *      mtd6: JAVA_SIZE	    SECT_SIZE  "OpenBlocks A series Java Image"
  */
 
-#define VERSION "$Revision: 1.24 $"
+#define VERSION "$Revision: 1.25 $"
 
 int SECT_SIZE = 0;
 int MONITOR_SIZE = 0;
@@ -244,15 +244,15 @@ main(int argc, char *argv[])
 	ret = NORMAL_END;
 #ifdef DEBIAN
 #if defined(CONFIG_OBSAX3)
-	while ((i = getopt(argc, argv, "c:f:p:s:S:j:dDxXJrtT")) != -1) {
+	while ((i = getopt(argc, argv, "c:f:p::s:S:j:x::X::dDJrtT")) != -1) {
 #else
-	while ((i = getopt(argc, argv, "c:f:s:S:j:dDxXJr")) != -1) {
+	while ((i = getopt(argc, argv, "c:f:s:S:j:x::X::dDJr")) != -1) {
 #endif
 #else
 #if defined(CONFIG_OBSAX3)
-	while ((i = getopt(argc, argv, "c:f:p:s:S:E:L:j:xXdDhRrJtT")) != -1) {
+	while ((i = getopt(argc, argv, "c:f:p::s:S:E:L:j:x::X::dDhRrJtT")) != -1) {
 #else
-	while ((i = getopt(argc, argv, "c:f:s:S:E:L:j:xXdDhRrJ")) != -1) {
+	while ((i = getopt(argc, argv, "c:f:s:S:E:L:j:x::X::dDhRrJ")) != -1) {
 #endif
 #endif
 		switch (i) {
@@ -391,6 +391,15 @@ invalid_arg:
 
 		case 'x':
 		case 'X':
+			if(optarg){
+				SECT_SIZE = strtol(optarg, NULL, 16);
+#ifdef DEBUG
+printf("%d: SECT_SIZE=%08x\n", __LINE__, SECT_SIZE);
+#endif
+			}
+			else
+				read_proc_mtd();
+
 			if(flash_extract_param(i) < 0){
 				fprintf(stderr, "Fail to environment extract\n");
 				return ERROR_END;
@@ -468,7 +477,8 @@ invalid_arg:
 			return read_core_area();
 			break;
 		case 'p':
-			if(strcmp(optarg, "now") && strcmp(optarg, "wfi") && strcmp(optarg, "idle") && strcmp(optarg, "snooze")){
+			if(strcmp(optarg, "now") && strcmp(optarg, "wfi")
+							&& strcmp(optarg, "idle") && strcmp(optarg, "snooze")){
 				fprintf(stderr, "invalid option %s\n", optarg);
 				return ERROR_END;
 			}
@@ -1890,7 +1900,7 @@ read_proc_mtd(void) {
 		}
 	}
 	fclose(ifp);
-#if 0
+#ifdef DEBUG
 	printf("SECT_SIZE:    %d\n", SECT_SIZE);
 	printf("MONITOR_SIZE: %d\n", MONITOR_SIZE);
 	printf("PARAM_SIZE:   %d\n", PARAM_SIZE);
@@ -1998,10 +2008,18 @@ int mount_mtddev(int mtd)
 	}
 
 	/* mount tmpfs */
+	if(!USER_SIZE)
+		USER_SIZE = 0xb7a0000;	/* max USER_SIZE */
+	if(!PARAM_SIZE)
+		PARAM_SIZE = 0x540000;	/* max PARAM_SIZE */
+
 	if(mtd == MTD_USRCONF)
-		strcpy(opt, "size=4M");
+		sprintf(opt, "size=%dM", (PARAM_SIZE / 1024 / 1024) + 1);
 	else
-		strcpy(opt, "size=60M");
+		sprintf(opt, "size=%dM", (USER_SIZE / 1024 / 1024) + 1);
+#ifdef DEBUG
+printf("%d: opt=%s USER=%d PARAM=%d\n", __LINE__, opt, USER_SIZE, PARAM_SIZE);
+#endif
 
 	if((ret = mount("none", TMPFS, "tmpfs", 0, opt)) == -1){
 		printf("%d: %s\n", __LINE__, strerror(errno));
@@ -2017,7 +2035,9 @@ int get_mtdfile(int mtd, char* fname)
 	char *p;
 	int i, len;
 	
+#if 0
 	SECT_SIZE = 16384;
+#endif
 
 	erase64.start = 0;
 	erase64.length = SECT_SIZE;
