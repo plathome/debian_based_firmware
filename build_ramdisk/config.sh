@@ -24,7 +24,7 @@ wheezy)
 	esac
 ;;
 squeeze)
-	ISOFILE=debian-6.0.5-armel-DVD-1.iso
+#	ISOFILE=debian-6.0.5-armel-DVD-1.iso
 	case ${TARGET} in
 	obsax3)
 		RAMDISK_SIZE=128
