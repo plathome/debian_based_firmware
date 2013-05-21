@@ -10,13 +10,13 @@ wheezy)
 	KERNEL=3.2.36
 	case ${TARGET} in
 	obsax3)
-		ISOFILE=debian-testing-armhf-DVD-1.iso
+		ISOFILE=debian-7.0.0-armhf-DVD-1.iso
 		RAMDISK_SIZE=160
 		PATCHLEVEL=0
 		ARCH=armhf
 	;;
 	obsa6)
-		ISOFILE=debian-testing-armel-DVD-1.iso
+		ISOFILE=debian-7.0.0-armel-DVD-1.iso
 		RAMDISK_SIZE=144
 		PATCHLEVEL=0
 	;;
