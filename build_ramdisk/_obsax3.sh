@@ -8,4 +8,5 @@ esac
 
 for sh in [0-9][0-9]_*.sh;do
 	TARGET=$TARGET ./${sh} || exit 1
+	sleep 1
 done

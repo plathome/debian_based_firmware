@@ -20,14 +20,6 @@ LINUX_SRC=${WRKDIR}/source/${TARGET}/linux-${KERNEL}
 #LINUX_INC=${LINUX_SRC}/include
 
 
-if [ -z "$ARCH" ] ; then
-	case $(uname -m) in
-	arm*) ARCH=armel ;;
-	ppc)  ARCH=powerpc ;;
-	*)    ARCH=unknown ;;
-	esac
-fi
-
 case $ARCH in
 armel|armhf) CC=arm-linux-gnueabi-gcc; STRIP=arm-linux-gnueabi-strip ;;
 powrpc) CC=powerpc-linux-gnueabi-gcc; STRIP=powerpc-linux-gnueabi-strip ;;

@@ -20,12 +20,15 @@ wheezy)
 		ISOFILE=debian-7.0.0-armel-DVD-1.iso
 		RAMDISK_SIZE=144
 		PATCHLEVEL=0
+		ARCH=armel
+		LZMA_LEVEL=9
 	;;
 	*) exit 1 ;;
 	esac
 ;;
 squeeze)
 #	ISOFILE=debian-6.0.5-armel-DVD-1.iso
+	ARCH=armel
 	case ${TARGET} in
 	obsax3)
 		RAMDISK_SIZE=128
@@ -38,6 +41,7 @@ squeeze)
 		KERNEL=2.6.31
 		# 2013/01/31
 		PATCHLEVEL=8
+		LZMA_LEVEL=9
 	;;
 	*) exit 1 ;;
 	esac
