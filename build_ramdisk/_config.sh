@@ -1,3 +1,6 @@
+LANG=C
+LANGUAGE=C
+LC_ALL=C
 
 WRKDIR=$(cd $(dirname $0)/..; pwd)
 
