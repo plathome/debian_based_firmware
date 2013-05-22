@@ -40,7 +40,7 @@ $debug debootstrap ${FOREIGN} ${NOGPG} --arch=${ARCH} \
 
 if [ "$CROSS" == "true" ]; then
 	# http://wiki.debian.org/EmDebian/CrossDebootstrap
-	cp -fv /usr/bin/qemu-arm-static ${DISTDIR}/usr/bin/
+	cp -fv $(which $QEMU_BIN) ${DISTDIR}/usr/bin/
 	DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
 	LC_ALL=C LANGUAGE=C LANG=C \
 	chroot ${DISTDIR} /debootstrap/debootstrap --second-stage

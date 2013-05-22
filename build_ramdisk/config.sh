@@ -7,6 +7,7 @@ export TARGET DIST
 
 case ${DIST} in
 wheezy)
+	QEMU_BIN=qemu-arm-static
 	KERNEL=3.2.36
 	case ${TARGET} in
 	obsax3)
