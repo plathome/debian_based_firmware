@@ -7,6 +7,10 @@
 (cd ${ETCDIR};tar --exclude=CVS -cvf - .)| tar xvf - -C ${DISTDIR}/etc/
 (cd ${ETCDIR_ADD};tar --exclude=CVS -cvf - .)| tar xvf - -C ${DISTDIR}/etc/
 
+(cd ${DISTDIR}/etc; (cd ${ETCDIR};find . -type f) | xargs chown root:root ${DISTDIR}/etc)
+
+(cd ${DISTDIR}/etc; (cd ${ETCDIR_ADD};find . -type f) | xargs chown root:root ${DISTDIR}/etc)
+
 
 for sh in openblocks-setup pshd runled ;do
 	chmod 755 ${DISTDIR}/etc/init.d/$sh
