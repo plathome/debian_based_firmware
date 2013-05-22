@@ -1,11 +1,11 @@
 
-deb ftp://ftp.plathome.co.jp/pub/debian wheezy main
-deb-src ftp://ftp.plathome.co.jp/pub/debian wheezy main
+deb http://ftp.plathome.co.jp/pub/debian wheezy main
+deb-src http://ftp.plathome.co.jp/pub/debian wheezy main
 
-deb ftp://ftp.plathome.co.jp/pub/debian-security wheezy/updates main
-deb-src ftp://ftp.plathome.co.jp/pub/debian-security wheezy/updates main
+deb http://ftp.plathome.co.jp/pub/debian wheezy-backports main
+deb-src http://ftp.plathome.co.jp/pub/debian wheezy-backports main
 
-#deb ftp://ftp.plathome.co.jp/pub/debian-backports wheezy-backports main
-#deb-src ftp://ftp.plathome.co.jp/pub/debian-backports wheezy-backports main
+deb http://ftp.plathome.co.jp/pub/debian-security wheezy/updates main
+deb-src http://ftp.plathome.co.jp/pub/debian-security wheezy/updates main
 
-deb ftp://ftp.plathome.co.jp/pub/OBSA6/debian/wheezy ./
+deb http://ftp.plathome.co.jp/pub/OBSA6/debian/wheezy ./
