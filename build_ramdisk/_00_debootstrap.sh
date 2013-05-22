@@ -4,20 +4,26 @@
 
 #debug=echo
 
-rm -rf   ${DISTDIR}
-mkdir -p ${DISTDIR}
-
 REPO=http://ftp.us.debian.org/debian
 
 # disabled
 #ISOFILE=
 if [ -n "$ISOFILE" ] ;then
+	if [ ! -f "${ISOFILEDIR}/${ISOFILE}" ]; then
+		echo
+		echo "$ISOFILE is not found."
+		echo
+		exit 1
+	fi
 	_REPO=/media/${DIST}-${ARCH}
 	REPO=file://${_REPO}/debian
 	$debug umount ${_REPO} 2> /dev/null
 	$debug mkdir -p ${_REPO}
 	$debug mount -o loop ${ISOFILEDIR}/${ISOFILE} ${_REPO}
 fi
+
+rm -rf   ${DISTDIR}
+mkdir -p ${DISTDIR}
 
 EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano"
 #INCLUDE="gnu-fdisk,udev,openssh-server,lzma,strace"
