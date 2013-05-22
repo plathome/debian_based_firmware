@@ -23,8 +23,7 @@ if [ -n "$ISOFILE" ] ;then
 	$debug mount -o loop ${ISOFILEDIR}/${ISOFILE} ${_REPO}
 fi
 
-if [ "$(uname -m)" == "x86_64" ] || [ "$(uname -m)" == "i686" ]; then
-	CROSS=true
+if [ "$CROSS" == "true" ]; then
 	FOREIGN="--foreign"
 fi
 

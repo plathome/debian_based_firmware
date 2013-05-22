@@ -16,12 +16,27 @@ ETCDIR_ADD=${PWD}/etc.${DIST}.${TARGET}
 
 RAMDISK_IMG=ramdisk-${DIST}.${TARGET}.img
 
+LINUX_SRC=${WRKDIR}/source/${TARGET}/linux-${KERNEL}
+#LINUX_INC=${LINUX_SRC}/include
+
+
 if [ -z "$ARCH" ] ; then
 	case $(uname -m) in
 	arm*) ARCH=armel ;;
 	ppc)  ARCH=powerpc ;;
 	*)    ARCH=unknown ;;
 	esac
+fi
+
+case $ARCH in
+armel|armhf) CC=arm-linux-gnueabi-gcc; STRIP=arm-linux-gnueabi-strip ;;
+powrpc) CC=powerpc-linux-gnueabi-gcc; STRIP=powerpc-linux-gnueabi-strip ;;
+*) CC=gcc; STRIP=strip ;;
+esac
+
+
+if [ "$(uname -m)" == "x86_64" ] || [ "$(uname -m)" == "i686" ]; then
+        CROSS=true
 fi
 
 trap 'echo;echo "arch: ${ARCH}, dist: ${DIST}, target: ${TARGET}"' EXIT
