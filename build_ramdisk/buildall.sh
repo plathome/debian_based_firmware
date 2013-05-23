@@ -38,7 +38,7 @@ fi
 SCRIPTS="build_debootstrap.sh build_ramdisk.sh build_kernel.sh release_firmware.sh"
 
 for sh in $SCRIPTS; do
-	DIST=${_DIST} TARGET=${_TARGET} ./$sh
+	DIST=${_DIST} TARGET=${_TARGET} ./$sh || exit 1
 done
 
 
