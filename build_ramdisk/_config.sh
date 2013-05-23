@@ -4,7 +4,9 @@ LC_ALL=C
 
 WRKDIR=$(cd $(dirname $0)/..; pwd)
 
-DISTDIR=${WRKDIR}/${DIST}_${TARGET}
+DISTDIR=${WRKDIR}/rootfs/${DIST}_${TARGET}
+
+RELEASEDIR=${WRKDIR}/release/${TARGET}/${DIST}/${KERNEL}-${PATCHLEVEL}
 
 FILESDIR=${PWD}/files
 
@@ -20,10 +22,24 @@ LINUX_SRC=${WRKDIR}/source/${TARGET}/linux-${KERNEL}
 #LINUX_INC=${LINUX_SRC}/include
 
 
+
 case $ARCH in
-armel|armhf) CC=arm-linux-gnueabi-gcc; STRIP=arm-linux-gnueabi-strip ;;
-powrpc) CC=powerpc-linux-gnueabi-gcc; STRIP=powerpc-linux-gnueabi-strip ;;
-*) CC=gcc; STRIP=strip ;;
+armel|armhf)
+	CROSS_COMPILE=arm-linux-gnueabi-
+	CC=${CROSS_COMPILE}gcc
+	STRIP=${CROSS_COMPILE}strip
+	KERN_ARCH=arm
+;;
+powrpc)
+	CROSS_COMPILE=powerpc-linux-gnueabi-
+	CC=${CROSS_COMPILE}gcc
+	STRIP=${CROSS_COMPILE}strip
+	KERN_ARCH=powerpc
+ ;;
+*)
+	CC=gcc
+	STRIP=strip
+;;
 esac
 
 

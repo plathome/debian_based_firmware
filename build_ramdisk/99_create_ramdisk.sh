@@ -8,19 +8,19 @@ cd ${WRKDIR}
 
 umount /mnt
 
-rm -f ${RAMDISK_IMG}
+_RAMDISK_IMG=${DISTDIR}/../${RAMDISK_IMG}
+rm -f ${_RAMDISK_IMG}
 
-dd if=/dev/zero of=${RAMDISK_IMG} count=0 seek=$(($size * 1024 * 1024 / 512))
+dd if=/dev/zero of=${_RAMDISK_IMG} count=0 seek=$(($size * 1024 * 1024 / 512))
 
-echo y | mke2fs ${RAMDISK_IMG}
+echo y | mke2fs ${_RAMDISK_IMG}
 
 mkdir -p /mnt
-mount -o loop ${RAMDISK_IMG} /mnt
+mount -o loop ${_RAMDISK_IMG} /mnt
 
 (cd ${DISTDIR};tar --numeric-owner --exclude=${QEMU_BIN} -cpf - . | tar -xvf - -C /mnt)
 
 umount /mnt
 
-tune2fs -c 0 -i 0 ${RAMDISK_IMG}
+tune2fs -c 0 -i 0 ${_RAMDISK_IMG}
 
-#(dd if=${RAMDISK_IMG} | gzip -9 > ${RAMDISK_IMG}.gz)
