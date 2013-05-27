@@ -329,6 +329,9 @@ start)
 	# correct for debian7
 	ln -sf /proc/mounts /etc/mtab
 
+	# correct host name
+	/etc/init.d/hostname.sh start
+
 ;;
 stop)
 	if [ -f /sys/devices/system/cpu/cpu1/online ]; then
