@@ -16,10 +16,15 @@ VERSION=$(cat /mnt/etc/openblocks-release)
 
 (cd ${LINUX_SRC}; make INSTALL_MOD_PATH=/mnt ${KERN_COMPILE_OPTS} modules_install)
 cp -f ${LINUX_SRC}/System.map /mnt/boot/
-cp -f ${LINUX_SRC}/System.map ${RELEASEDIR}
 rm -f /mnt/lib/modules/${KERNEL}/source /mnt/lib/modules/${KERNEL}/build
 
 umount /mnt
+
+if [ ! -d ${RELEASEDIR} ]; then
+	mkdir -p ${RELEASEDIR}
+fi
+
+cp -f ${LINUX_SRC}/System.map ${RELEASEDIR}
 
 gzip -9 < ${LINUX_SRC}/arch/arm/boot/zImage > ${RELEASEDIR}/zImage.gz
 
