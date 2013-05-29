@@ -1,5 +1,5 @@
 *.iso
-linux-*-obs.tar.gz
+linux-*.tar.gz
 release/obs*
 rootfs
 source/*/linux-*
