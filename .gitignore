@@ -1,0 +1,3 @@
+*.iso
+linux-*-obs.tar.gz
+source/*/linux-*
