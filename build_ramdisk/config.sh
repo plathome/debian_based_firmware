@@ -5,9 +5,10 @@ TARGET=${TARGET:=obsax3}
 
 export TARGET DIST
 
+QEMU_BIN=qemu-arm-static
+
 case ${DIST} in
 wheezy)
-	QEMU_BIN=qemu-arm-static
 	KERNEL=3.2.36
 	case ${TARGET} in
 	obsax3)
