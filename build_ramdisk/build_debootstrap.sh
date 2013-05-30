@@ -55,4 +55,6 @@ $debug rm -rf ${DISTDIR}/dev/.udev
 
 $debug mkdir -p ${DISTDIR}/usr/src/firmware
 
-$debug umount ${_REPO} 2> /dev/null
+if [ -n "$ISOFILE" ] ;then
+	$debug umount ${_REPO} 2> /dev/null
+fi
