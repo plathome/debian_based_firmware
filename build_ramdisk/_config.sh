@@ -4,6 +4,8 @@ LC_ALL=C
 
 WRKDIR=$(cd $(dirname $0)/..; pwd)
 
+MOUNTDIR=${WRKDIR}/mnt
+
 DISTDIR=${WRKDIR}/rootfs/${DIST}_${TARGET}
 
 RELEASEDIR=${WRKDIR}/release/${TARGET}/${DIST}/${KERNEL}-${PATCHLEVEL}

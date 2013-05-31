@@ -7,18 +7,18 @@ fi
 
 _RAMDISK_IMG=${DISTDIR}/../${RAMDISK_IMG}
 
-mount -o loop ${_RAMDISK_IMG} /mnt
+mount -o loop ${_RAMDISK_IMG} ${MOUNTDIR}
 
-rm -rf /mnt/lib/modules/${KERNEL}
-rm -rf /mnt/lib/firmware
+rm -rf ${MOUNTDIR}/lib/modules/${KERNEL}
+rm -rf ${MOUNTDIR}/lib/firmware
 
-VERSION=$(cat /mnt/etc/openblocks-release)
+VERSION=$(cat ${MOUNTDIR}/etc/openblocks-release)
 
-(cd ${LINUX_SRC}; make INSTALL_MOD_PATH=/mnt ${KERN_COMPILE_OPTS} modules_install)
-cp -f ${LINUX_SRC}/System.map /mnt/boot/
-rm -f /mnt/lib/modules/${KERNEL}/source /mnt/lib/modules/${KERNEL}/build
+(cd ${LINUX_SRC}; make INSTALL_MOD_PATH=${MOUNTDIR} ${KERN_COMPILE_OPTS} modules_install)
+cp -f ${LINUX_SRC}/System.map ${MOUNTDIR}/boot/
+rm -f ${MOUNTDIR}/lib/modules/${KERNEL}/source ${MOUNTDIR}/lib/modules/${KERNEL}/build
 
-umount /mnt
+umount ${MOUNTDIR}
 
 if [ ! -d ${RELEASEDIR} ]; then
 	mkdir -p ${RELEASEDIR}
