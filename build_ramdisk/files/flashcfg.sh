@@ -238,10 +238,10 @@ function _yesno() {
 
 RUN=help
 
-if [ "$MODEL" == "obsa6" ] ; then
-	GETOPTS_ARG="c:f:u:x:X:bBeEsSTlhyZ"
-else
+if [ "$MODEL" == "obsax3" ] ; then
 	GETOPTS_ARG="c:f:p:u:bBeEsSTlhxXyZ"
+else
+	GETOPTS_ARG="c:f:u:x::X::bBeEsSTlhyZ"
 fi
 
 while getopts $GETOPTS_ARG OPT;do

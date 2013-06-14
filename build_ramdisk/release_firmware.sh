@@ -28,11 +28,11 @@ cp -f ${LINUX_SRC}/System.map ${RELEASEDIR}
 
 gzip -9 < ${LINUX_SRC}/arch/arm/boot/zImage > ${RELEASEDIR}/zImage.gz
 
-lzma -${LZMA_LEVEL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/${RAMDISK_IMG}.lzma
+${COMPRESS} -${LZMA_LEVEL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/${RAMDISK_IMG}.${COMPRESS_EXT}
 
 mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}${PATCH_LEVEL}" \
 	-A arm -O linux -T multi -C gzip -a 0x8000 -e 0x8000 \
-	-d ${RELEASEDIR}/zImage.gz:${RELEASEDIR}/${RAMDISK_IMG}.lzma \
+	-d ${RELEASEDIR}/zImage.gz:${RELEASEDIR}/${RAMDISK_IMG}.${COMPRESS_EXT} \
 	${RELEASEDIR}/uImage.initrd.${TARGET}
 
 (cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb.sh ${VERSION} ${ARCH} ${RELEASEDIR}/uImage.initrd.${TARGET})

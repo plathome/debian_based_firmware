@@ -5,6 +5,7 @@
 #case $1 in
 #*obsax3*) TARGET=obsax3 ;;
 #*obsa6*)  TARGET=obsa6 ;;
+#*obsa7*)  TARGET=obsa7 ;;
 #*)        exit 1 ;;
 #esac
 

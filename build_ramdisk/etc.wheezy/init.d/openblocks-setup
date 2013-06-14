@@ -43,7 +43,7 @@ MTREE_DIRS="${MTREE_DIRS:=/var/log /var/run}"
 
 if [ "$MODEL" == "obsa6" ] ; then
 	extract_func=extract_mtd_a6
-else
+else	# obsax3 and obsa7
 	extract_func=extract_mtd
 fi
 

@@ -7,6 +7,8 @@ BUILDDIR=/tmp/obstools.$$
 if [ "$TARGET" == "obsax3" ] ; then
 	MODEL="-DCONFIG_OBSAX3"
 #	LINUX_INC=/usr/src/ax3/linux-${KERNEL}/include
+elif [ "$TARGET" == "obsa7" ] ; then
+	MODEL="-DCONFIG_OBSA7"
 else
 	MODEL="-DCONFIG_OBSA6"
 #	LINUX_INC=/usr/src/a6/linux-${KERNEL}/include

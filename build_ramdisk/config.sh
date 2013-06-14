@@ -3,6 +3,10 @@ DIST=${DIST:=wheezy}
 
 TARGET=${TARGET:=obsax3}
 
+COMPRESS=${COMPRESS:=lzma}
+
+COMPRESS_EXT=${COMPRESS_EXT:=lzma}
+
 export TARGET DIST
 
 QEMU_BIN=qemu-arm-static
@@ -23,6 +27,15 @@ wheezy)
 		PATCHLEVEL=0
 		ARCH=armel
 		LZMA_LEVEL=9
+	;;
+	obsa7)
+		ISOFILE=debian-7.0.0-armel-DVD-1.iso
+		RAMDISK_SIZE=144
+		PATCHLEVEL=0
+		ARCH=armel
+		LZMA_LEVEL=9
+		COMPRESS=gzip
+		COMPRESS_EXT=gz
 	;;
 	*) exit 1 ;;
 	esac
