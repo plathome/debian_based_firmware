@@ -47,8 +47,8 @@ squeeze)
 	obsax3)
 		RAMDISK_SIZE=128
 		KERNEL=3.0.6
-		# 2013/05/21
-		PATCHLEVEL=13
+		# 2013/06/17
+		PATCHLEVEL=14
 	;;
 	obsa6)
 		RAMDISK_SIZE=128
