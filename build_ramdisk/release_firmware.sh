@@ -3,6 +3,9 @@
 
 if [ "$CROSS" == "true" ]; then
 	KERN_COMPILE_OPTS="ARCH=$KERN_ARCH CROSS_COMPILE=${CROSS_COMPILE=}"
+	if [ "${KERNEL}" == "2.6.31" ]; then
+		KERN_COMPILE_OPTS="${KERN_COMPILE_OPTS} NOGZIP=1"
+	fi
 fi
 
 _RAMDISK_IMG=${DISTDIR}/../${RAMDISK_IMG}
@@ -17,6 +20,9 @@ VERSION=$(cat ${MOUNTDIR}/etc/openblocks-release)
 (cd ${LINUX_SRC}; make INSTALL_MOD_PATH=${MOUNTDIR} ${KERN_COMPILE_OPTS} modules_install)
 cp -f ${LINUX_SRC}/System.map ${MOUNTDIR}/boot/
 rm -f ${MOUNTDIR}/lib/modules/${KERNEL}/source ${MOUNTDIR}/lib/modules/${KERNEL}/build
+if [ "${KERNEL}" == "2.6.31" ]; then
+	rm -f ${MOUNTDIR}/lib/modules/${KERNEL}/modules.builtin.bin
+fi
 
 umount ${MOUNTDIR}
 
