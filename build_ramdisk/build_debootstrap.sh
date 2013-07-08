@@ -15,7 +15,9 @@ if [ -n "$ISOFILE" ] ;then
 		echo
 		exit 1
 	fi
-	NOGPG="--no-check-gpg"
+	if [ "$TARGET" != "obs600" ]; then
+		NOGPG="--no-check-gpg"
+	fi
 	_REPO=/media/${DIST}-${ARCH}
 	REPO=file://${_REPO}/debian
 	$debug umount ${_REPO} 2> /dev/null
@@ -30,9 +32,14 @@ fi
 rm -rf   ${DISTDIR}
 mkdir -p ${DISTDIR}
 
+if [ "$TARGET" == "obs600" ]; then
+EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano,udev,libudev0"
+INCLUDE="openssh-server,lzma,strace"
+else
 EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano"
 #INCLUDE="gnu-fdisk,udev,openssh-server,lzma,strace"
 INCLUDE="udev,openssh-server,lzma,strace"
+fi
 
 $debug debootstrap ${FOREIGN} ${NOGPG} --arch=${ARCH} \
 	--exclude=${EXCLUDE} --include=${INCLUDE} ${DIST} ${DISTDIR} ${REPO}
@@ -48,6 +55,16 @@ if [ "$CROSS" == "true" ]; then
 	chroot ${DISTDIR} dpkg --configure -a
 fi
 
+if [ "$TARGET" == "obs600" -a "$DIST" == "wheezy" ]; then
+	PKGURL="http://ftp.jp.debian.org/debian/pool/main/u/udev"
+	DESTDIR="/var/cache/apt/archives"
+	LIBUDEV="libudev0_164-3_powerpc.deb"
+	UDEV="udev_164-3_powerpc.deb"
+	wget -q -O ${DISTDIR}/${DESTDIR}/${LIBUDEV} ${PKGURL}/${LIBUDEV}
+	wget -q -O ${DISTDIR}/${DESTDIR}/${UDEV} ${PKGURL}/${UDEV}
+	chroot ${DISTDIR} dpkg -i ${DESTDIR}/${LIBUDEV}
+	chroot ${DISTDIR} dpkg -i ${DESTDIR}/${UDEV}
+fi
 
 $debug rm -f  ${DISTDIR}/etc/udev/rules.d/70-persistent-net.rules
 

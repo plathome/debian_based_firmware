@@ -212,6 +212,10 @@ start)
 
 	depmod -a
 
+	if [ "$MODEL" == "obs600" ]; then
+		hwclock --rtc=/dev/rtc0 --hctosys
+	fi
+
 	FLG_INIT=false
 	FLG_FORCE_CONFIG=false
 

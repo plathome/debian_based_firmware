@@ -238,7 +238,7 @@ function _yesno() {
 
 RUN=help
 
-if [ "$MODEL" == "obsax3" ] ; then
+if [ "$MODEL" == "obsax3" -o "$MODEL" == "obs600" ] ; then
 	GETOPTS_ARG="c:f:p:u:bBeEsSTlhxXyZ"
 else
 	GETOPTS_ARG="c:f:u:x::X::bBeEsSTlhyZ"

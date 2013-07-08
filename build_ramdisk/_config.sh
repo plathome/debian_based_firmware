@@ -32,8 +32,8 @@ armel|armhf)
 	STRIP=${CROSS_COMPILE}strip
 	KERN_ARCH=arm
 ;;
-powrpc)
-	CROSS_COMPILE=powerpc-linux-gnueabi-
+powerpc)
+	CROSS_COMPILE=powerpc-linux-gnu-
 	CC=${CROSS_COMPILE}gcc
 	STRIP=${CROSS_COMPILE}strip
 	KERN_ARCH=powerpc

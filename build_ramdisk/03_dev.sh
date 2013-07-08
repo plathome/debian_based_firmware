@@ -2,7 +2,11 @@
 
 . `dirname $0`/config.sh
 
-(cd ${DISTDIR}/dev/; rm -f rtc rtc0;  mknod rtc0 c 254 0) || exit 
+if [ "$TARGET" == "obs600" ]; then
+(cd ${DISTDIR}/dev/; rm -f rtc rtc0;  mknod rtc0 c 10 135) || exit
+else
+(cd ${DISTDIR}/dev/; rm -f rtc rtc0;  mknod rtc0 c 254 0) || exit
+fi
 
 (cd ${DISTDIR}/dev/; rm -f mtd0; mknod mtd0 c 90 0)
 (cd ${DISTDIR}/dev/; rm -f mtd1; mknod mtd1 c 90 2)

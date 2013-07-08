@@ -9,14 +9,22 @@ COMPRESS_EXT=${COMPRESS_EXT:=lzma}
 
 export TARGET DIST
 
-QEMU_BIN=qemu-arm-static
+if [ "$TARGET" == "obs600" ]; then
+       QEMU_BIN=qemu-ppc-static
+       GCCVER=4.3
+       ABI=""
+else
+ QEMU_BIN=qemu-arm-static
+       GCCVER=4.7
+       ABI=eabi
+fi
 
 case ${DIST} in
 wheezy)
 	KERNEL=3.2.36
 	case ${TARGET} in
 	obsax3)
-		ISOFILE=debian-7.0.0-armhf-DVD-1.iso
+		ISOFILE=debian-7.1.0-armhf-DVD-1.iso
 		RAMDISK_SIZE=160
 		PATCHLEVEL=0
 		ARCH=armhf
@@ -33,6 +41,16 @@ wheezy)
 		RAMDISK_SIZE=144
 		PATCHLEVEL=0
 		ARCH=armel
+		LZMA_LEVEL=9
+		COMPRESS=gzip
+		COMPRESS_EXT=gz
+	;;
+	obs600)
+		KERNEL=2.6.29
+		ISOFILE=debian-7.1.0-powerpc-DVD-1.iso
+		RAMDISK_SIZE=144
+		PATCHLEVEL=0
+		ARCH=powerpc
 		LZMA_LEVEL=9
 		COMPRESS=gzip
 		COMPRESS_EXT=gz
