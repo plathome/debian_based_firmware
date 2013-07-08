@@ -35,7 +35,7 @@ void die(int i);
 #define MAX_SEC		3600
 
 #if defined(HAVE_PUSHSW_OBSAXX_H)
-#define INTERVAL	500 * 1000	// 200ms(5 times a second)
+#define INTERVAL	500 * 1000	// 500ms(5 times a second)
 #else
 #define INTERVAL	200 * 1000	// 200ms(5 times a second)
 #endif
@@ -43,8 +43,13 @@ void die(int i);
 #define SEGLED_DEV	"/dev/segled"
 
 static int flag		= 1;		// exit() flag
+#if defined(HAVE_PUSHSW_OBSAXX_H)
+static int reboot	= 1 * 2;	// reboot time(default = 1 sec)
+static int halt		= 5 * 2;	// shutdown time(default = 5 sec)
+#else
 static int reboot	= 1 * 5;	// reboot time(default = 1 sec)
 static int halt		= 5 * 5;	// shutdown time(default = 5 sec)
+#endif
 static int wait		= 0;		// wait time
 
 /* some variables used in getopt (3) */
@@ -179,15 +184,27 @@ int main(int argc, char *argv[])
 	while ((i = getopt(argc, argv, "r:h:t")) != -1) {
 		switch (i) {
 		case 'r':
+#if defined(HAVE_PUSHSW_OBSAXX_H)
+			reboot = atoi(optarg) < MAX_SEC ? atoi(optarg) * 2 : MAX_SEC * 2;
+#else
 			reboot = atoi(optarg) < MAX_SEC ? atoi(optarg) * 5 : MAX_SEC * 5;
+#endif
 			if(!reboot) reboot++;	// 0 is no use
 			break;
 		case 'h':
+#if defined(HAVE_PUSHSW_OBSAXX_H)
+			halt = atoi(optarg) < MAX_SEC ? atoi(optarg) * 2 : MAX_SEC * 2;
+#else
 			halt = atoi(optarg) < MAX_SEC ? atoi(optarg) * 5 : MAX_SEC * 5;
+#endif
 			if(!halt) halt++;	// 0 is no use
 			break;
 		case 't':
+#if defined(HAVE_PUSHSW_OBSAXX_H)
+			wait = atoi(optarg) < MAX_SEC ? atoi(optarg) * 2 : MAX_SEC * 2;
+#else
 			wait = atoi(optarg) < MAX_SEC ? atoi(optarg) * 5 : MAX_SEC * 5;
+#endif
 			if(!wait) wait++;	// 0 is no use
 			break;
 		default:
@@ -201,7 +218,11 @@ int main(int argc, char *argv[])
 		return(1);
 	}
 
+#if defined(HAVE_PUSHSW_OBSAXX_H)
+	if ((halt - reboot) < (2 * 2)) {
+#else
 	if ((halt - reboot) < (2 * 5)) {
+#endif
 		// for Green LED
 		fprintf(stderr, "Please add differences more than two seconds to reboot and halt.\n");
 		return(1);
