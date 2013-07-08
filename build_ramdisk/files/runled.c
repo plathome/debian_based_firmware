@@ -367,7 +367,7 @@ main(int argc, char *argv[])
 #ifdef CONFIG_LINUX_3_2_X
 	while ((i = getopt(argc, argv, "l:m:ds")) != -1) {
 #else
-	while ((i = getopt(argc, argv, "m:ds")) != -1) {
+	while ((i = getopt(argc, argv, "l:ds")) != -1) {
 #endif
 #else
 	while ((i = getopt(argc, argv, "s")) != -1) {
