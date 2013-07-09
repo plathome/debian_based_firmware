@@ -35,12 +35,8 @@ if ! (echo $_TARGET | grep -Eq "$TARGET_LIST") ; then
 	_usage
 fi
 
-SCRIPTS="build_debootstrap.sh build_ramdisk.sh build_kernel.sh release_firmware.sh"
+SCRIPTS="build_debootstrap.sh build_kernel.sh build_ramdisk.sh release_firmware.sh"
 
 for sh in $SCRIPTS; do
 	DIST=${_DIST} TARGET=${_TARGET} ./$sh || exit 1
 done
-
-
-
-
