@@ -3,10 +3,9 @@
 
 if [ "$CROSS" == "true" ]; then
 	KERN_COMPILE_OPTS="ARCH=$KERN_ARCH CROSS_COMPILE=${CROSS_COMPILE=}"
-	if [ "${KERNEL}" == "2.6.31" ]; then
-		KERN_COMPILE_OPTS="${KERN_COMPILE_OPTS} NOGZIP=1"
-	fi
-	if [ $KERNEL == "2.6.29" -a $DIST == "wheezy" ]; then
+	if [ "${KERNEL}" == "2.6.31" ] ||
+	   [ "${KERNEL}" == "2.6.29" -a "${DIST}" == "wheezy" ]
+	then
 		KERN_COMPILE_OPTS+=" NOGZIP=1"
 	fi
 fi
