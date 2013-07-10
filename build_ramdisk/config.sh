@@ -30,14 +30,14 @@ wheezy)
 		ARCH=armhf
 	;;
 	obsa6)
-		ISOFILE=debian-7.0.0-armel-DVD-1.iso
+		ISOFILE=debian-7.1.0-armel-DVD-1.iso
 		RAMDISK_SIZE=144
 		PATCHLEVEL=0
 		ARCH=armel
 		LZMA_LEVEL=9
 	;;
 	obsa7)
-		ISOFILE=debian-7.0.0-armel-DVD-1.iso
+		ISOFILE=debian-7.1.0-armel-DVD-1.iso
 		RAMDISK_SIZE=144
 		PATCHLEVEL=0
 		ARCH=armel
