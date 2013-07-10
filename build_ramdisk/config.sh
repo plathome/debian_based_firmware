@@ -21,7 +21,7 @@ fi
 
 case ${DIST} in
 wheezy)
-	KERNEL=3.2.36
+	KERNEL=3.2.40
 	case ${TARGET} in
 	obsax3)
 		ISOFILE=debian-7.1.0-armhf-DVD-1.iso
