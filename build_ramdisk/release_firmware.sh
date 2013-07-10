@@ -56,3 +56,5 @@ mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}${PATCH_LEVEL}" \
 
 (cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb.sh ${VERSION} ${ARCH} ${RELEASEDIR}/uImage.initrd.${TARGET})
 fi
+
+(cd ${RELEASEDIR}; md5sum * > MD5.${TARGET})
