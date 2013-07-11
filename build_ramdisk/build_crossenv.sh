@@ -13,12 +13,12 @@ case $host_debian_version in
 		else
 			gcc_version=4.4
 		fi
-		packages="$packages gcc-${gcc_version}-${KERN_ARCH}-linux-gnu${ABI} xz-lzma"
+		packages+=" gcc-${gcc_version}-${KERN_ARCH}-linux-gnu${ABI} xz-lzma"
 	;;
 	7.*)
 		code_name=wheezy
 		gcc_version=4.7
-		packages="$packages gcc-${gcc_version}-${KERN_ARCH}-linux-gnu${ABI}"
+		packages+=" gcc-${gcc_version}-${KERN_ARCH}-linux-gnu${ABI}"
 	;;
 esac
 
@@ -42,4 +42,3 @@ if [ "$TARGET" == "obs600" ]; then
 	dpkg -i /tmp/${PKGNAME}
 	rm -f /tmp/${PKGNAME}
 fi
-
