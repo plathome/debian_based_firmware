@@ -20,6 +20,7 @@ case $host_debian_version in
 		gcc_version=4.7
 		packages+=" gcc-${gcc_version}-${KERN_ARCH}-linux-gnu${ABI}"
 	;;
+	*) exit 1 ;;
 esac
 
 cat <<_EOF >/etc/apt/sources.list.d/emdebian.list 
