@@ -2021,8 +2021,12 @@ int get_mtdfile(int mtd, char* fname)
 	char *p;
 	int i, len;
 	
-#ifdef CONFIG_OBSA7
+#ifdef CONFIG_OBSA6
 	SECT_SIZE = 16384;
+#elifdef CONFIG_OBSA7
+	SECT_SIZE = 131072;
+#else
+	SECT_SIZE = 0;
 #endif
 
 	erase64.start = 0;
