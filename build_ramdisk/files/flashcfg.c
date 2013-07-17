@@ -2021,9 +2021,9 @@ int get_mtdfile(int mtd, char* fname)
 	char *p;
 	int i, len;
 	
-#ifdef CONFIG_OBSA6
+#if defined(CONFIG_OBSA6)
 	SECT_SIZE = 16384;
-#elifdef CONFIG_OBSA7
+#elif defined(CONFIG_OBSA7)
 	SECT_SIZE = 131072;
 #else
 	SECT_SIZE = 0;
