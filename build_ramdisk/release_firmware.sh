@@ -4,7 +4,7 @@
 if [ "$CROSS" == "true" ]; then
 	KERN_COMPILE_OPTS="ARCH=$KERN_ARCH CROSS_COMPILE=${CROSS_COMPILE=}"
 	if [ "${KERNEL}" == "2.6.31" ] ||
-	   [ "${KERNEL}" == "2.6.29" -a "${DIST}" == "wheezy" ]
+	   [ "${TARGET}" == "obs600" -a "${DIST}" == "wheezy" ]
 	then
 		KERN_COMPILE_OPTS+=" NOGZIP=1"
 	fi
@@ -22,7 +22,7 @@ VERSION=$(cat ${MOUNTDIR}/etc/openblocks-release)
 (cd ${LINUX_SRC}; make INSTALL_MOD_PATH=${MOUNTDIR} ${KERN_COMPILE_OPTS} modules_install)
 cp -f ${LINUX_SRC}/System.map ${MOUNTDIR}/boot/
 rm -f ${MOUNTDIR}/lib/modules/${KERNEL}/source ${MOUNTDIR}/lib/modules/${KERNEL}/build
-if [ "${KERNEL}" == "2.6.31" -o "${KERNEL}" == "2.6.29" ]; then
+if [ "${KERNEL}" == "2.6.31" -o "${TARGET}" == "obs600" ]; then
 	rm -f ${MOUNTDIR}/lib/modules/${KERNEL}/modules.builtin.bin
 fi
 
