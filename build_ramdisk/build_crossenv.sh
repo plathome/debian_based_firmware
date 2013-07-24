@@ -1,7 +1,17 @@
 #!/bin/bash
 . `dirname $0`/config.sh
 
-packages="build-essential uboot-mkimage libncurses5-dev debootstrap libc6-armel-cross libc6-dev-armel-cross binutils-${KERN_ARCH}-linux-gnu${ABI} zlib1g-dev-armel-cross vim qemu-user-static"
+packages="build-essential uboot-mkimage libncurses5-dev debootstrap binutils-${KERN_ARCH}-linux-gnu${ABI} vim qemu-user-static"
+
+case ${KERN_ARCH} in
+	arm)
+		packages+=" libc6-armel-cross libc6-dev-armel-cross zlib1g-dev-armel-cross"
+	;;
+	powerpc)
+		packages+=" libc6-powerpc-cross libc6-dev-powerpc-cross zlib1g-dev-powerpc-cross"
+	;;
+	*) exit 1 ;;
+esac
 
 host_debian_version=`cat /etc/debian_version`
 
