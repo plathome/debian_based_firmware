@@ -7,7 +7,7 @@ TARGET_LIST="(obsax3|obsa6|obsa7)"
 
 function _usage(){
 	echo
-	echo "usage: $(basename $0) -M [obsax3|obsa6|obsa7] -D [squeeze|wheezy]"
+	echo "usage: $(basename $0) -M [obsax3|obsa6|obsa7|obs600] -D [squeeze|wheezy]"
 	echo
 	exit 1
 }
