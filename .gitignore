@@ -1,5 +1,1 @@
-*.iso
-linux-*.tar.gz
-release/obs*
 rootfs
-source/*/linux-*
