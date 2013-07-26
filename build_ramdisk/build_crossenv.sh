@@ -29,6 +29,7 @@ case $host_debian_version in
 	*) exit 1 ;;
 esac
 
+apt-get update 
 apt-get install emdebian-archive-keyring
 
 cat <<_EOF >/etc/apt/sources.list.d/emdebian.list 
