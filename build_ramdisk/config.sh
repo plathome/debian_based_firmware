@@ -26,7 +26,7 @@ wheezy)
 	obsax3)
 		ISOFILE=debian-7.1.0-armhf-DVD-1.iso
 		RAMDISK_SIZE=160
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		ARCH=armhf
 	;;
 	obsa6)
