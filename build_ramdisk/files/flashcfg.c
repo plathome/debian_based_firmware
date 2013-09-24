@@ -1,4 +1,4 @@
-/*	$ssdlinux: flashcfg.c,v 1.24 2013/04/11 10:18:10 kimura Exp $	*/
+/*	$ssdlinux: flashcfg.c,v 1.28 2013/07/17 05:58:52 yamagata Exp $	*/
 
 #undef DEBUG
 
@@ -16,7 +16,11 @@
 #if defined(CONFIG_OBSA6)
 #include <mtd/mtd-abi.h>
 #endif
+#if defined(CONFIG_OBSA6)
+#include <zlib.h>
+#else
 #include <linux/zlib.h>
+#endif
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <errno.h>
@@ -110,7 +114,7 @@ static char* tarpath;
  *      mtd6: JAVA_SIZE	    SECT_SIZE  "OpenBlocks A series Java Image"
  */
 
-#define VERSION "$Revision: 1.24 $"
+#define VERSION "$Revision: 1.28 $"
 
 int SECT_SIZE = 0;
 int MONITOR_SIZE = 0;
@@ -202,7 +206,7 @@ usage()
 //	fprintf(stderr, "       flashcfg -R              Remove saved params from U-Boot Environment area\n");
 //	fprintf(stderr, "       flashcfg -r              Delete firmware area\n");
 #endif
-#if defined(CONFIG_OBSAX3)
+#if defined(CONFIG_OBSAX3) || defined(CONFIG_OBSA7)
 	fprintf(stderr, "       flashcfg -j java_archive Save files from Java area\n");
 	fprintf(stderr, "       flashcfg -J              Restore files from Java area\n");
 #endif
@@ -343,7 +347,7 @@ invalid_arg:
 				fprintf(stderr, "done\n");
 			return ret;
 
-#if defined(CONFIG_OBSAX3)
+#if defined(CONFIG_OBSAX3) || defined(CONFIG_OBSA7)
 		case 'j':
 #ifdef DEBUG
 			fprintf(stderr, "option %c: arg = %s\n", i, optarg);
@@ -1214,7 +1218,7 @@ err_exit:
 	return ret;
 }
 
-#if defined(CONFIG_OBSAX3)
+#if defined(CONFIG_OBSAX3) || defined(CONFIG_OBSA7)
 int
 flash_prog_java(char *java)
 {
@@ -1222,13 +1226,13 @@ flash_prog_java(char *java)
 #if defined(CONFIG_OBSA6)
 	struct erase_info_user64 erase64;
 	erase_info_t erase;
+	int rts = 0;
 #else
 	erase_info_t erase;
 #endif
 	struct stat sb;
 	int sector_len;
 	unsigned short *verify = NULL;
-	//unsigned long	crc, magic;
 	unsigned long	total=0;
 	char buf[512];
 	
@@ -1324,14 +1328,45 @@ sb.st_size = JAVA_SIZE + 1;
 		retry = 2;
 RETRY:
 		fprintf(stderr, ".");
+#if defined(CONFIG_OBSA6)
+		rts = ioctl(ofd, MEMGETBADBLOCK, &erase64.start);
+		if(rts > 0){
+			erase.start += nread;
+			erase64.start += nread;
+			lseek(ofd, nread, SEEK_CUR);
+			lseek(vfd, nread, SEEK_CUR);
+			fprintf(stderr, "%cS",0x08);
+			goto RETRY;
+		}
+		else if(rts < 0)
+			break;
+#endif
 		if (ioctl(ofd, MEMERASE, &erase) != 0) {
+#if defined(CONFIG_OBSA6)
+			/* found Bad Block, Mark bad */
+			if((rts = ioctl(ofd, MEMSETBADBLOCK, &erase64.start)) < 0){
+				sprintf(buf, "ERROR%d: %s(%lx)\n", __LINE__, strerror(errno), total);
+				flash_write_log(buf);
+				ret = -1;
+				break;
+			}
+			erase.start += nread;
+			erase64.start += nread;
+			goto RETRY;
+#else
 			sprintf(buf, "ERROR%d: erase error(%lx)\n", __LINE__, total);
 			flash_write_log(buf);
 			ret = -1;
 			break;
+#endif
 		}
 		fprintf(stderr, "%c#",0x08);
+#if defined(CONFIG_OBSAX3)
 		if (write(ofd, membase, nread) < 0) {
+#else
+		// CONFIG_OBSA6
+		if (write(ofd, membase, nread < SECT_SIZE ? SECT_SIZE : nread) < 0) {
+#endif
 			sprintf(buf, "ERROR%d: write error(%lx)\n", __LINE__, total);
 			flash_write_log(buf);
 			ret = -1;
@@ -1380,6 +1415,9 @@ if(i && !(i % 10) && retry == 2){
 #endif
 		i++;
 		erase.start += nread;
+#if defined(CONFIG_OBSA6)
+		erase64.start += nread;
+#endif
 		if(i>=STATUS_COL) {
 			fprintf(stderr, "\n");
 			i=0;
@@ -1614,32 +1652,41 @@ if(i && !(i % 10) && retry == 2){
 	return ret;
 }
 
-#if defined(CONFIG_OBSAX3)
+#if defined(CONFIG_OBSAX3) || defined(CONFIG_OBSA7)
 int
 flash_extract_java(int target)
 {
 	int pid, st;
 	char buf[256];
+	char targetdevice[256];
 	int ret=NORMAL_END;
+
+#if defined(CONFIG_OBSA6)
+	sprintf(targetdevice, "%s/%s", TMPFS, FNAME);
+	if(mount_mtddev(MTD_JAVA) != 0)
+		return -1;
+	if(get_mtdfile(MTD_JAVA, targetdevice) != 0)
+		goto error;
+#endif
 
 	if ((pid = fork()) == 0) {
 		/* in child */
 #ifdef EXTRACT_LZMA
 		if(strcmp(tarpath, tarssd) == 0){
 			ret = execl(tarpath, "tar", "--warning=no-timestamp",
-					"-xvpf", mtdname[MTD_JAVA], "--lzma -C", "/", NULL);
+					"-xvpf", targetdevice, "--lzma -C", "/", NULL);
 		}
 		else{
-			sprintf(buf, "lzma -d < %s | tar xvpf - -C /", mtdname[MTD_JAVA]);
+			sprintf(buf, "lzma -d < %s | tar xvpf - -C /", targetdevice);
 			ret = execl("/bin/sh", "sh", "-c", buf, NULL);
 		}
 #else
 		if(strcmp(tarpath, tarssd) == 0){
 			ret = execl(tarpath, "tar", "--warning=no-timestamp",
-					"-xvpjf", mtdname[MTD_JAVA], "-C", "/", NULL);
+					"-xvpjf", targetdevice, "-C", "/", NULL);
 		}
 		else{
-			sprintf(buf, "bunzip2 < %s | tar xvpf - -C /", mtdname[MTD_JAVA]);
+			sprintf(buf, "bunzip2 < %s | tar xvpf - -C /", testdevice);
 			ret = execl("/bin/sh", "sh", "-c", buf, NULL);
 		}
 #endif
@@ -1655,6 +1702,10 @@ flash_extract_java(int target)
 			return -1;
 		}
 	}
+error:
+#if defined(CONFIG_OBSA6)
+	umount_mtddev();
+#endif
 	return ret;
 }
 #endif
@@ -2000,8 +2051,10 @@ int mount_mtddev(int mtd)
 	/* mount tmpfs */
 	if(mtd == MTD_USRCONF)
 		strcpy(opt, "size=4M");
-	else
-#ifdef CONFIG_OBSA7
+	else if(mtd == MTD_JAVA)
+		strcpy(opt, "size=60M");
+	else	/* MTD_USRDATA */
+#if defined(CONFIG_OBSA7)
 		strcpy(opt, "size=120M");
 #else
 		strcpy(opt, "size=60M");
@@ -2021,10 +2074,10 @@ int get_mtdfile(int mtd, char* fname)
 	char *p;
 	int i, len;
 	
-#if defined(CONFIG_OBSA6)
-	SECT_SIZE = 16384;
-#elif defined(CONFIG_OBSA7)
+#if defined(CONFIG_OBSA7)
 	SECT_SIZE = 131072;
+#elif defined(CONFIG_OBSA6)
+	SECT_SIZE = 16384;
 #else
 	SECT_SIZE = 0;
 #endif
@@ -2069,7 +2122,7 @@ int get_mtdfile(int mtd, char* fname)
 			break;
 
 		/* check GZIP header */
-		if(i == 0){
+		if((mtd == MTD_USRCONF || mtd == MTD_USRDATA) && i == 0){
 			if(*p != 0x1f || *(p+1) != 0x8b){
 				printf("%d: not in gzip format\n", __LINE__);
 				ret = -1;

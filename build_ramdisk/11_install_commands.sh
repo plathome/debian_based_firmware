@@ -8,7 +8,7 @@ FLASHCFG="flashcfg.c"
 if [ "$TARGET" == "obsax3" ] ; then
 	MODEL="-DCONFIG_OBSAX3"
 elif [ "$TARGET" == "obsa7" ] ; then
-	MODEL="-DCONFIG_OBSA7"
+	MODEL="-DCONFIG_OBSA6 -DCONFIG_OBSA7"
 elif [ "$TARGET" == "obsa6" ] ; then
 	MODEL="-DCONFIG_OBSA6"
 else

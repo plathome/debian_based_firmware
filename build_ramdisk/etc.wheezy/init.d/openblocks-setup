@@ -61,6 +61,7 @@ extract_mtd_a6(){
 	case $mtd in
 	${MTD_CONF_DEV}) cmdarg="-x"; desc="/etc config" ;;
 	${MTD_USER_DEV}) cmdarg="-X"; desc="userland" ;;
+	${MTD_OPT_DEV}) cmdarg="-J"; desc="optional" ;;
 	*) return 1;;
 	esac
 	echo -n "Extract $desc files from FlashROM($mtd)... "
