@@ -2055,7 +2055,7 @@ int mount_mtddev(int mtd)
 		strcpy(opt, "size=60M");
 	else	/* MTD_USRDATA */
 #if defined(CONFIG_OBSA7)
-		strcpy(opt, "size=120M");
+		strcpy(opt, "size=190M");
 #else
 		strcpy(opt, "size=60M");
 #endif
