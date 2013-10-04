@@ -150,7 +150,7 @@ function _save_config() {
 function _del_flashrom() {
 	echo ${MTD_CONF_DEV} | grep -q 'mtd' || MODEL=_obsa6_but_dev_is_non-mtd
 	echo -n "Eraing FlashROM... "
-	if [ "$MODEL" == "obsa6" ] ; then
+	if [ "$MODEL" == "obsa6" || "$MODEL" == "obsa7" ] ; then
 		flashcfg-debian -d 2> /dev/null
 		flashcfg-debian -D 2> /dev/null
 	else
@@ -166,7 +166,7 @@ function _del_flashrom() {
 function _del_all_flashrom() {
 	echo ${MTD_CONF_DEV} | grep -q 'mtd' || MODEL=_obsa6_but_dev_is_non-mtd
 	echo -n "Eraing FlashROM... "
-	if [ "$MODEL" == "obsa6" ] ; then
+	if [ "$MODEL" == "obsa6" || "$MODEL" == "obsa7" ] ; then
 		flashcfg-debian -d 2> /dev/null
 		flashcfg-debian -D 2> /dev/null
 	else
