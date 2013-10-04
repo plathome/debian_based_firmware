@@ -2050,7 +2050,7 @@ int mount_mtddev(int mtd)
 
 	/* mount tmpfs */
 	if(mtd == MTD_USRCONF)
-		strcpy(opt, "size=4M");
+		strcpy(opt, "size=10M");
 	else if(mtd == MTD_JAVA)
 		strcpy(opt, "size=60M");
 	else	/* MTD_USRDATA */
