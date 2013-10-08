@@ -1,4 +1,4 @@
-/*	$ssdlinux: flashcfg.c,v 1.30 2013/09/27 04:47:04 yamagata Exp $	*/
+/*	$ssdlinux: flashcfg.c,v 1.31 2013/10/08 01:29:38 yamagata Exp $	*/
 
 #undef DEBUG
 
@@ -114,7 +114,7 @@ static char* tarpath;
  *      mtd6: JAVA_SIZE	    SECT_SIZE  "OpenBlocks A series Java Image"
  */
 
-#define VERSION "$Revision: 1.30 $"
+#define VERSION "$Revision: 1.31 $"
 
 int SECT_SIZE = 0;
 int MONITOR_SIZE = 0;
