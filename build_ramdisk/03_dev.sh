@@ -2,7 +2,7 @@
 
 . `dirname $0`/config.sh
 
-if [ "$TARGET" == "obs600" && "$KERNEL" == "2.6.29" ]; then
+if [ "$TARGET" == "obs600" -a "$KERNEL" == "2.6.29" ]; then
 (cd ${DISTDIR}/dev/; rm -f rtc rtc0;  mknod rtc0 c 10 135) || exit
 else
 (cd ${DISTDIR}/dev/; rm -f rtc rtc0;  mknod rtc0 c 254 0) || exit
