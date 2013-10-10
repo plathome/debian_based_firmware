@@ -87,7 +87,7 @@ function _usage() {
 	echo "    -l      Show last save size."
 	echo "    -y      Assume yes for save and erase."
 #	echo "    -t      Test read and write in coredump save area."
-	echo "    -T      Read messages in coredump save area."
+#	echo "    -T      Read messages in coredump save area."
 if [ "$MODEL" == "obsax3" ] ; then
 	echo "    -p [pm] Print or set power management level. [now|wfi|idle|snooze]"
 fi
@@ -239,9 +239,9 @@ function _yesno() {
 RUN=help
 
 if [ "$MODEL" == "obsax3" -o "$MODEL" == "obs600" ] ; then
-	GETOPTS_ARG="c:f:p:u:bBeEsSTlhxXyZ"
+	GETOPTS_ARG="c:f:p:u:bBeEsSlhxXyZ"
 else
-	GETOPTS_ARG="c:f:u:x::X::bBeEsSTlhyZ"
+	GETOPTS_ARG="c:f:u:x::X::bBeEsSlhyZ"
 fi
 
 while getopts $GETOPTS_ARG OPT;do

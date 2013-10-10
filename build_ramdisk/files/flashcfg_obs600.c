@@ -43,6 +43,12 @@ extern int optreset;
 #define MTD_USRDATA 2
 #define MTD_UBOOTENV 5
 
+#ifdef DEBIAN
+#define EXTRACTPATH "/.rw"
+#else
+#define EXTRACTPATH "/"
+#endif
+
 char** set_mtdtype(void);
 
 const char *mtdname_old[] = {
@@ -151,6 +157,9 @@ usage()
 	fprintf(stderr, "       flashcfg -S list_file    Save files to User area\n");
 	fprintf(stderr, "       flashcfg -x              Restore files from Parameter area\n");
 	fprintf(stderr, "       flashcfg -X              Restore files from User area\n");
+#else
+	fprintf(stderr, "       flashcfg -s list_file    Save files to Parameter area\n");
+	fprintf(stderr, "       flashcfg -S list_file    Save files to User area\n");
 #endif
 	fprintf(stderr, "       flashcfg -d              Delete saved files from Parameter area\n");
 	fprintf(stderr, "       flashcfg -D              Delete saved files from User area\n");
@@ -956,7 +965,10 @@ err_exit:
 int
 flash_save_param(int target, char *list)
 {
-	int i, pid, st, ifd, ofd, vfd, nread, retry;
+	int i, ifd, ofd, vfd, nread, retry;
+#ifndef DEBIAN
+	int pid, st;
+#endif
 	struct stat sb;
 	char localbuf[256];
 	char targetdevice[256];
@@ -976,10 +988,11 @@ flash_save_param(int target, char *list)
 		return -1;
 	} 
 		
+#ifndef DEBIAN
 	strcpy(localbuf, "/tmp/flashcfg.XXXXXX");
 
 	if ((ifd = mkstemp(localbuf)) < 0) {
-		perror("mkstemp");
+		fprintf(stderr, "ERROR%d: mkstemp %s\n", __LINE__, strerror(errno));
 		return -1;
 	}
 
@@ -992,8 +1005,11 @@ flash_save_param(int target, char *list)
 		if(st)
 			return -1;
 	}
+#else
+	strcpy(localbuf, list);
+#endif
 
-#ifdef DEBUG
+#if defined(DEBUG) && !defined(DEBIAN)
 	if (st)
 		fprintf(stderr, "child returns %d\n", st);
 #endif

@@ -10,10 +10,9 @@ MODEL="obs600"
 MTREE_LIST="/etc/mtree.list"
 MTREE_DIRS="/var/log /var/run"
 
-MTD_FIRM_DEV=mtd4
-MTD_CONF_DEV=mtd3
-MTD_USER_DEV=mtd5
-MTD_OPT_DEV=mtd6
+MTD_FIRM_DEV=mtd0
+MTD_CONF_DEV=mtd1
+MTD_USER_DEV=mtd2
 
 USBREST_GPIO_PORTS=""
 
