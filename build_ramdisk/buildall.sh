@@ -3,7 +3,7 @@
 . `dirname $0`/config.sh
 
 DIST_LIST="(squeeze|wheezy)"
-TARGET_LIST="(obsax3|obsa6|obsa7)"
+TARGET_LIST="(obsax3|obsa6|obsa7|obs600)"
 
 function _usage(){
 	echo
