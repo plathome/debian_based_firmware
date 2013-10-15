@@ -34,7 +34,7 @@ mkdir -p ${DISTDIR}
 
 if [ "$TARGET" == "obs600" ]; then
 EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano,udev,libudev0"
-INCLUDE="openssh-server,lzma,strace"
+INCLUDE="openssh-server,lzma,strace,perl"
 else
 EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano"
 #INCLUDE="gnu-fdisk,udev,openssh-server,lzma,strace"
