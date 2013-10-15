@@ -1,4 +1,4 @@
-/*	$ssdlinux: flashcfg.c,v 1.23 2013/10/15 05:12:53 yamagata Exp $	*/
+/*	$ssdlinux: flashcfg.c,v 1.24 2013/10/15 07:06:38 yamagata Exp $	*/
 
 //#define DEBUG
 
@@ -17,6 +17,7 @@
 #include <linux/zlib.h>
 #else
 #include <zlib.h>
+#include <errno.h>
 #endif
 #include <sys/wait.h>
 #include <sys/types.h>
@@ -91,7 +92,7 @@ static char* tarpath;
  *      mtd6: MONITOR_SIZE             "OpenBlockS-OBS600 Uboot"
  */
 
-#define VERSION "$Revision: 1.23 $"
+#define VERSION "$Revision: 1.24 $"
 
 int SECT_SIZE = 0;
 int MONITOR_SIZE = 0;
