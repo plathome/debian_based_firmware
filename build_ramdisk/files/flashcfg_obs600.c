@@ -1,4 +1,4 @@
-/*	$ssdlinux: flashcfg.c,v 1.20 2011/05/12 07:34:59 shimura Exp $	*/
+/*	$ssdlinux: flashcfg.c,v 1.24 2013/10/15 07:06:38 yamagata Exp $	*/
 
 //#define DEBUG
 
@@ -17,6 +17,7 @@
 #include <linux/zlib.h>
 #else
 #include <zlib.h>
+#include <errno.h>
 #endif
 #include <sys/wait.h>
 #include <sys/types.h>
@@ -91,6 +92,8 @@ static char* tarpath;
  *      mtd6: MONITOR_SIZE             "OpenBlockS-OBS600 Uboot"
  */
 
+#define VERSION "$Revision: 1.24 $"
+
 int SECT_SIZE = 0;
 int MONITOR_SIZE = 0;
 int PARAM_SIZE = 0;
@@ -145,6 +148,7 @@ void flash_write_log(char*);
 void
 usage()
 {
+	fprintf(stderr, "Flash Memory Configuration Tool (%s)\n\n", VERSION);
 	fprintf(stderr, "usage: flashcfg                 Show this.\n");
 	fprintf(stderr, "       flashcfg -b              Show current boot setting\n");
 	fprintf(stderr, "       flashcfg -c rootdev      Change root file system [initrd|cf|sda-sdd[1-8]]\n");
