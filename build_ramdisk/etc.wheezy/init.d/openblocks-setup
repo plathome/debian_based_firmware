@@ -238,7 +238,7 @@ start)
 
 	# check aufs support
 	if grep -q aufs /proc/filesystems ; then
-		union_opt=noplink,
+#		union_opt=noplink,
 		union_fs=aufs
 	fi
 
