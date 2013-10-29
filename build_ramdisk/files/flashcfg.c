@@ -576,10 +576,10 @@ RETRY:
 #if defined(CONFIG_OBSA6)
 		rts = ioctl(ofd, MEMGETBADBLOCK, &erase64.start);
 		if(rts > 0){
-			erase.start += nread;
-			erase64.start += nread;
-			lseek(ofd, nread, SEEK_CUR);
-			lseek(vfd, nread, SEEK_CUR);
+			erase.start += SECT_SIZE;
+			erase64.start += SECT_SIZE;
+			lseek(ofd, SECT_SIZE, SEEK_CUR);
+			lseek(vfd, SECT_SIZE, SEEK_CUR);
 			fprintf(stderr, "%cS",0x08);
 			continue;
 		}
@@ -598,7 +598,7 @@ RETRY:
 #if defined(CONFIG_OBSAX3)
 		if (write(ofd, env, nread) < 0) {
 #else	// CONFIG_OBSA6
-		if (write(ofd, env, nread < SECT_SIZE ? SECT_SIZE : nread) < 0) {
+		if (write(ofd, env, SECT_SIZE) < 0) {
 #endif
 			fprintf(stderr, "ERROR%d: mtd %s\n", __LINE__, strerror(errno));
 			ret = -1;
@@ -1106,10 +1106,10 @@ RETRY:
 #if defined(CONFIG_OBSA6)
 		rts = ioctl(ofd, MEMGETBADBLOCK, &erase64.start);
 		if(rts > 0){
-			erase.start += nread;
-			erase64.start += nread;
-			lseek(ofd, nread, SEEK_CUR);
-			lseek(vfd, nread, SEEK_CUR);
+			erase.start += SECT_SIZE;
+			erase64.start += SECT_SIZE;
+			lseek(ofd, SECT_SIZE, SEEK_CUR);
+			lseek(vfd, SECT_SIZE, SEEK_CUR);
 			fprintf(stderr, "%cS",0x08);
 			goto RETRY;
 		}
@@ -1331,10 +1331,10 @@ RETRY:
 #if defined(CONFIG_OBSA6)
 		rts = ioctl(ofd, MEMGETBADBLOCK, &erase64.start);
 		if(rts > 0){
-			erase.start += nread;
-			erase64.start += nread;
-			lseek(ofd, nread, SEEK_CUR);
-			lseek(vfd, nread, SEEK_CUR);
+			erase.start += SECT_SIZE;
+			erase64.start += SECT_SIZE;
+			lseek(ofd, SECT_SIZE, SEEK_CUR);
+			lseek(vfd, SECT_SIZE, SEEK_CUR);
 			fprintf(stderr, "%cS",0x08);
 			goto RETRY;
 		}
@@ -1365,7 +1365,7 @@ RETRY:
 		if (write(ofd, membase, nread) < 0) {
 #else
 		// CONFIG_OBSA6
-		if (write(ofd, membase, nread < SECT_SIZE ? SECT_SIZE : nread) < 0) {
+		if (write(ofd, membase, SECT_SIZE) < 0) {
 #endif
 			sprintf(buf, "ERROR%d: write error(%lx)\n", __LINE__, total);
 			flash_write_log(buf);
@@ -1453,6 +1453,8 @@ flash_save_param(int target, char *list)
 	struct erase_info_user64 erase64;
 	erase_info_t erase;
 	int rts=0;
+	unsigned long	total=0;
+	char buf[512];
 #else
 	erase_info_t erase;
 #endif
@@ -1568,10 +1570,10 @@ RETRY:
 #if defined(CONFIG_OBSA6)
 		rts = ioctl(ofd, MEMGETBADBLOCK, &erase64.start);
 		if(rts > 0){
-			erase.start += nread;
-			erase64.start += nread;
-			lseek(ofd, nread, SEEK_CUR);
-			lseek(vfd, nread, SEEK_CUR);
+			erase.start += SECT_SIZE;
+			erase64.start += SECT_SIZE;
+			lseek(ofd, SECT_SIZE, SEEK_CUR);
+			lseek(vfd, SECT_SIZE, SEEK_CUR);
 			fprintf(stderr, "%cS",0x08);
 			goto RETRY;
 		}
@@ -1583,15 +1585,29 @@ RETRY:
 		}
 #endif
 		if (ioctl(ofd, MEMERASE, &erase) != 0) {
-			fprintf(stderr, "ERROR%d: Erase failure %s\n", __LINE__, strerror(errno));
+#if defined(CONFIG_OBSA6)
+			/* found Bad Block, Mark bad */
+			if((rts = ioctl(ofd, MEMSETBADBLOCK, &erase64.start)) < 0){
+				sprintf(buf, "ERROR%d: %s(%lx)\n", __LINE__, strerror(errno), total);
+				flash_write_log(buf);
+				ret = -1;
+				break;
+			}
+			erase.start += nread;
+			erase64.start += nread;
+			goto RETRY;
+#else
+			sprintf(buf, "ERROR%d: erase error(%lx)\n", __LINE__, total);
+			flash_write_log(buf);
 			ret = -1;
 			break;
+#endif
 		}
 		fprintf(stderr, "%c#",0x08);
 #if defined(CONFIG_OBSAX3)
 		if (write(ofd, membase, nread) < 0) {
 #else	// CONFIG_OBSA6
-		if (write(ofd, membase, nread < SECT_SIZE ? SECT_SIZE : nread) < 0) {
+		if (write(ofd, membase, SECT_SIZE) < 0) {
 #endif
 			fprintf(stderr, "ERROR%d: mtd %s\n", __LINE__, strerror(errno));
 			ret = -1;
@@ -1633,7 +1649,7 @@ if(i && !(i % 10) && retry == 2){
 		i++;
 		erase.start += nread;
 #if defined(CONFIG_OBSA6)
-		erase64.start += nread;
+		erase64.start += SECT_SIZE;
 #endif
 		if(i>=STATUS_COL) {
 			fprintf(stderr, "\n");
