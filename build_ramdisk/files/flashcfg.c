@@ -1143,7 +1143,7 @@ RETRY:
 #if defined(CONFIG_OBSAX3)
 		if (write(ofd, membase, nread) < 0) {
 #else	// CONFIG_OBSA6
-		if (write(ofd, membase, nread < SECT_SIZE ? SECT_SIZE : nread) < 0) {
+		if (write(ofd, membase, SECT_SIZE) < 0) {
 #endif
 			sprintf(buf, "ERROR%d: write error(%lx)\n", __LINE__, total);
 			flash_write_log(buf);
@@ -1649,7 +1649,7 @@ if(i && !(i % 10) && retry == 2){
 		i++;
 		erase.start += nread;
 #if defined(CONFIG_OBSA6)
-		erase64.start += SECT_SIZE;
+		erase64.start += nread;
 #endif
 		if(i>=STATUS_COL) {
 			fprintf(stderr, "\n");
