@@ -26,20 +26,20 @@ wheezy)
 	obsax3)
 		ISOFILE=debian-7.1.0-armhf-DVD-1.iso
 		RAMDISK_SIZE=160
-		PATCHLEVEL=2
+		PATCHLEVEL=3
 		ARCH=armhf
 	;;
 	obsa6)
 		ISOFILE=debian-7.1.0-armel-DVD-1.iso
 		RAMDISK_SIZE=144
-		PATCHLEVEL=1
+		PATCHLEVEL=2
 		ARCH=armel
 		LZMA_LEVEL=9
 	;;
 	obsa7)
 		ISOFILE=debian-7.1.0-armel-DVD-1.iso
 		RAMDISK_SIZE=144
-		PATCHLEVEL=2
+		PATCHLEVEL=3
 		ARCH=armel
 		LZMA_LEVEL=9
 		COMPRESS=gzip
