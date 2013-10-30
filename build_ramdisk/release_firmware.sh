@@ -37,7 +37,7 @@ cp -f ${LINUX_SRC}/System.map ${RELEASEDIR}
 if [ "$TARGET" == "obs600" ]; then
 	cp -f ${LINUX_SRC}/vmlinux.bin.gz ${RELEASEDIR}
 else
-	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/zImage ${RELEASEDIR}
+	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/zImage ${RELEASEDIR}
 fi
 
 ${COMPRESS} -${LZMA_LEVEL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/${RAMDISK_IMG}.${COMPRESS_EXT}
