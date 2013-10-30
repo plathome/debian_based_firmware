@@ -37,7 +37,7 @@ cp -f ${LINUX_SRC}/System.map ${RELEASEDIR}
 if [ "$TARGET" == "obs600" ]; then
 	cp -f ${LINUX_SRC}/vmlinux.bin.gz ${RELEASEDIR}
 else
-gzip -9 < ${LINUX_SRC}/arch/${KERN_ARCH}/boot/zImage > ${RELEASEDIR}/zImage.gz
+	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/zImage ${RELEASEDIR}
 fi
 
 ${COMPRESS} -${LZMA_LEVEL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/${RAMDISK_IMG}.${COMPRESS_EXT}
@@ -51,7 +51,7 @@ mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}${PATCH_LEVEL}" \
 else
 mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}${PATCH_LEVEL}" \
 	-A arm -O linux -T multi -C none -a 0x8000 -e 0x8000 \
-	-d ${RELEASEDIR}/zImage.gz:${RELEASEDIR}/${RAMDISK_IMG}.${COMPRESS_EXT} \
+	-d ${RELEASEDIR}/zImage:${RELEASEDIR}/${RAMDISK_IMG}.${COMPRESS_EXT} \
 	${RELEASEDIR}/uImage.initrd.${TARGET}
 
 (cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb.sh ${VERSION} ${ARCH} ${RELEASEDIR}/uImage.initrd.${TARGET})
