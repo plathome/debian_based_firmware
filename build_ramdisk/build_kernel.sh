@@ -12,10 +12,11 @@ fi
 
 cpunum=$(grep '^processor' /proc/cpuinfo  | wc -l)
 
-if [ "$TARGET" == "obs600" -a "$KERNEL" == "2.6.29" ]; then
+if [ "$TARGET" == "obs600" ]; then
 	if [ ! -h ${LINUX_SRC}/include/asm ]; then
 		cd ${LINUX_SRC}/include
-		ln -s ../arch/powerpc/include/asm .
+		ln -s ../arch/powerpc/include/asm asm-powerpc
+		ln -s asm-powerpc asm
 	fi
 fi
 

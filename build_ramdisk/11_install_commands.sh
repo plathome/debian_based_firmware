@@ -15,7 +15,7 @@ else
 	FLASHCFG="flashcfg_obs600.c"
 	if [ ! -h ${LINUX_SRC}/include/asm ]; then
 		cd ${LINUX_SRC}/include
-		ln -s ../arch/powerpc/include/asm .
+		ln -s ../arch/powerpc/include/asm asm-powerpc
 	fi
 fi
 

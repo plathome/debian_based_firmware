@@ -50,7 +50,7 @@ mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}${PATCH_LEVEL}" \
 (cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb.sh ${VERSION} ${ARCH} ${RELEASEDIR}/uImage.initrd)
 else
 mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}${PATCH_LEVEL}" \
-	-A arm -O linux -T multi -C gzip -a 0x8000 -e 0x8000 \
+	-A arm -O linux -T multi -C none -a 0x8000 -e 0x8000 \
 	-d ${RELEASEDIR}/zImage.gz:${RELEASEDIR}/${RAMDISK_IMG}.${COMPRESS_EXT} \
 	${RELEASEDIR}/uImage.initrd.${TARGET}
 

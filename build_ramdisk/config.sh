@@ -47,8 +47,8 @@ wheezy)
 	;;
 	obs600)
 		KERNEL=2.6.32
-		ISOFILE=debian-7.1.0-powerpc-DVD-1.iso
-		RAMDISK_SIZE=144
+		ISOFILE=debian-7.2.0-powerpc-DVD-1.iso
+		RAMDISK_SIZE=160
 		PATCHLEVEL=0
 		ARCH=powerpc
 		LZMA_LEVEL=9
