@@ -46,8 +46,8 @@ if [ "$TARGET" == "obs600" ]; then
 mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}${PATCH_LEVEL}" \
 	-A ppc -O linux -T multi -C gzip \
 	-d ${RELEASEDIR}/vmlinux.bin.gz:${RELEASEDIR}/${RAMDISK_IMG}.${COMPRESS_EXT}:${LINUX_SRC}/arch/${KERN_ARCH}/boot/${TARGET}.dtb \
-	${RELEASEDIR}/uImage.initrd
-(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb.sh ${VERSION} ${ARCH} ${RELEASEDIR}/uImage.initrd)
+	${RELEASEDIR}/uImage.initrd.${TARGET}
+(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb.sh ${VERSION} ${ARCH} ${RELEASEDIR}/uImage.initrd.${TARGET})
 else
 mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}${PATCH_LEVEL}" \
 	-A arm -O linux -T multi -C none -a 0x8000 -e 0x8000 \
