@@ -1,4 +1,4 @@
-/*	$ssdlinux: flashcfg.c,v 1.34 2013/10/31 14:00:50 yamagata Exp $	*/
+/*	$ssdlinux: flashcfg.c,v 1.35 2013/11/01 06:21:24 yamagata Exp $	*/
 
 #undef DEBUG
 
@@ -114,7 +114,7 @@ static char* tarpath;
  *      mtd6: JAVA_SIZE	    SECT_SIZE  "OpenBlocks A series Java Image"
  */
 
-#define VERSION "$Revision: 1.34 $"
+#define VERSION "$Revision: 1.35 $"
 
 int SECT_SIZE = 0;
 int MONITOR_SIZE = 0;
@@ -1451,15 +1451,11 @@ flash_save_param(int target, char *list)
 	char targetdevice[256];
 #if defined(CONFIG_OBSA6)
 	struct erase_info_user64 erase64;
-	erase_info_t erase;
 	int rts=0;
-	unsigned long	total=0;
-	char buf[512];
-#else
+#endif
 	erase_info_t erase;
 	unsigned long	total=0;
 	char buf[512];
-#endif
 	int maxsize;
 	unsigned short *verify = NULL;
 	int ret=0;
