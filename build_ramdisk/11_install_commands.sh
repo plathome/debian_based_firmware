@@ -29,8 +29,7 @@ else
 	CFLAGS+=" -DHAVE_PUSHSW_OBSAXX_H"
 fi
 
-if [ "$ARCH" == "armhf" ] ; then
-#	CFLAGS+=" -march=armv7-a -mhard-float -mfloat-abi=softfp -mfpu=vfpv3-d16"
+if [ "$TARGET" == "obsax3" -a "$DIST" == "wheezy" ] ; then
 	CFLAGS+=" -DCONFIG_LINUX_3_2_X"
 fi
 
