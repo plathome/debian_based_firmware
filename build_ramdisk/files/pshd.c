@@ -5,6 +5,8 @@
 
 #include <sys/types.h>
 #include <asm/ioctls.h>
+#include <sys/ioctl.h>
+#include <errno.h>
 #include <unistd.h>
 #include <getopt.h>
 #include <stdio.h>
@@ -19,6 +21,8 @@
 #elif defined(HAVE_PUSHSW_OBSAXX_H)
 #include <linux/obspushsw.h>
 #endif
+#include <linux/version.h>
+#include <time.h>
 
 #define PID_FILE "/var/run/pshd.pid"
 
@@ -41,6 +45,14 @@ void die(int i);
 #endif
 #define SEGLED_PID	"/var/run/segled.pid"
 #define SEGLED_DEV	"/dev/segled"
+#ifdef CONFIG_LINUX_3_11_X
+#define PUSHSW_DEV	"/dev/input/event0"
+#define SEGLED_DEV_G	"/sys/class/leds/green_led/brightness"
+#define SEGLED_DEV_Y	"/sys/class/leds/yellow_led/brightness"
+#define SEGLED_DEV_R	"/sys/class/leds/red_led/brightness"
+#else
+#define PUSHSW_DEV	"/dev/pushsw"
+#endif
 
 static int flag		= 1;		// exit() flag
 #if defined(HAVE_PUSHSW_OBSAXX_H)
@@ -73,7 +85,105 @@ void usage(void)
 
 static inline void flash_led(int fd, char* num)
 {
+#ifdef CONFIG_LINUX_3_11_X
+	int fh;
+	switch(num[0]){	
+	case '1':
+		if ((fh = open(SEGLED_DEV_G, O_RDWR)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		write(fh, "0", 1);
+		close(fh);
+		if ((fh = open(SEGLED_DEV_Y, O_RDWR)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		write(fh, "0", 1);
+		close(fh);
+		if ((fh = open(SEGLED_DEV_R, O_RDWR)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		write(fh, "1", 1);
+		close(fh);
+		break;
+	case '2':
+		if ((fh = open(SEGLED_DEV_Y, O_RDWR)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		write(fh, "0", 1);
+		close(fh);
+		if ((fh = open(SEGLED_DEV_R, O_RDWR)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		write(fh, "0", 1);
+		close(fh);
+		if ((fh = open(SEGLED_DEV_G, O_RDWR)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		write(fh, "1", 1);
+		close(fh);
+		break;
+	case '4':
+		if ((fh = open(SEGLED_DEV_R, O_RDWR)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		write(fh, "0", 1);
+		close(fh);
+		if ((fh = open(SEGLED_DEV_G, O_RDWR)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		write(fh, "0", 1);
+		close(fh);
+		if ((fh = open(SEGLED_DEV_Y, O_RDWR)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		write(fh, "1", 1);
+		close(fh);
+		break;
+	default:
+		break;
+	}
+#else
 	write(fd, num, 1);
+#endif
+}
+
+static int get_push_event(int fd)
+{
+	const unsigned char pushsw_ev[] = {	/* pushsw event id */
+		0x01, 0x00, 0x74, 0x00
+	};
+	static flag = 0;
+	int ret;
+	unsigned char buf[16];
+
+	if((ret = read(fd, buf, sizeof(buf))) == sizeof(buf)){
+		/* pushsw event ? */
+		if(memcmp(&buf[8], pushsw_ev, sizeof(pushsw_ev)) == 0){
+			/* pushsw on ? */
+			if(buf[12] == 0x1)
+				flag = 1;
+			else
+				flag = 0;
+			return flag;
+		}
+	}
+	else if(ret == -1){
+		/* EAGAIN == no event */
+		if(errno != EAGAIN){
+			printf("%d: %s\n", __LINE__, strerror(errno));
+			return -1;
+		}
+	}
+	return flag;
 }
 
 void watch_pushsw(void)
@@ -82,20 +192,32 @@ void watch_pushsw(void)
 	int fd, ledfd=0, rv;
 	int count = 0;		// time of push INIT switch
 	char buf[16];
+	struct timespec req, rem;
 
-	if ((fd = open("/dev/pushsw", O_RDONLY | O_NONBLOCK)) < 0) {
+	if ((fd = open(PUSHSW_DEV, O_RDONLY | O_NONBLOCK)) < 0) {
 #ifdef DEBUG
-		perror("open");
+		printf("%d: %s\n", __LINE__, strerror(errno));
 #endif
 		exit(-1);
 	}
+
+	memset(&req, 0x0, sizeof(req));
+	memset(&rem, 0x0, sizeof(rem));
+	req.tv_sec = 0;
+	req.tv_nsec = INTERVAL * 1000;
+
 	while(flag){
+#ifdef CONFIG_LINUX_3_11_X
+		rv = get_push_event(fd);
+#else
 		rv = ioctl(fd, PSWIOC_GETSTATUS, NULL);
-#ifdef DEBUG
+#endif
+#if 0
 printf("stat=%08x\n", rv);
+if(rv == -1) printf("%d: %s\n", __LINE__, strerror(errno));
 #endif
 		if (rv < 0) {
-			perror("blocked");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		else if(rv){	/* INIT switch pushed */
@@ -111,16 +233,20 @@ printf("stat=%08x\n", rv);
 				}
 #ifdef DEBUG
 				else{
-					perror(SEGLED_PID);
+					printf("%d: %s\n", __LINE__, strerror(errno));
 					fprintf(stderr, "pshd can't control LED\n");
 				}
 #endif
+#ifndef CONFIG_LINUX_3_11_X
 				if ((ledfd = open(SEGLED_DEV, O_RDWR)) < 0){
 #ifdef DEBUG
-					perror(SEGLED_DEV);
+					printf("%d: %s\n", __LINE__, strerror(errno));
 					fprintf(stderr, "pshd can't control LED\n");
 #endif
 				}
+#else
+				ledfd = 100;	/* dummy fd */
+#endif
 			}
 			//count++;
 			if(count >= reboot && count < halt){
@@ -165,7 +291,8 @@ printf("stat=%08x\n", rv);
 			}
 			count=0;
 		}
-		usleep(INTERVAL);
+		while(nanosleep(&req, &rem) == -1)
+			req.tv_nsec = rem.tv_nsec;
 	}
 	close(fd);
 }
@@ -232,19 +359,20 @@ int main(int argc, char *argv[])
 		/* parent */
 		char tmp[100];
 		if ((fd = open(PID_FILE, O_CREAT|O_WRONLY|O_TRUNC)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		sprintf(tmp, "%d\n", pid);
 		if (write(fd, tmp, strlen(tmp)) != strlen(tmp)) {
-			perror("write");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			close(fd);
 			exit(-2);
 		}
 		close(fd);
 		return 0;
 	} else {
-#ifndef DEBUG
+//#ifndef DEBUG
+#if 0
 		/* daemon */
 		close(STDIN_FILENO);
 		close(STDOUT_FILENO);

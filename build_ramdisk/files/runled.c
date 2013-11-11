@@ -22,7 +22,15 @@ extern int errno;
 
 #define PM_INTVL		10	/* check temperature intervall sec */
 #ifdef CONFIG_OBSAX3
+#ifdef CONFIG_LINUX_3_11_X
+#define TEMP_INPUT		"/sys/devices/virtual/thermal/thermal_zone0/hwmon0/temp1_input"
+#define SEGLED_DEV_G	"/sys/class/leds/green_led/brightness"
+#define SEGLED_DEV_Y	"/sys/class/leds/yellow_led/brightness"
+#define SEGLED_DEV_R	"/sys/class/leds/red_led/brightness"
+#else
 #define TEMP_INPUT		"/sys/devices/platform/axp-temp.0/temp1_input"
+#define SEGLED_DEV		"/dev/segled"
+#endif
 #define CPU_ONLINE		"/sys/devices/system/cpu/cpu%d/online"
 #define PM_TEMP_MAX	105 * 1000
 #define PM_TEMP_MIN	10  * 1000
@@ -33,6 +41,7 @@ extern int errno;
 static int PM_CTRL_CPU = 0;
 static int PM_DOWN_CPU = PM_TEMP_MAX;
 static int PM_UP_CPU = PM_TEMP_UP;
+
 #endif
 
 #ifdef DEBUG
@@ -276,33 +285,117 @@ dancer()
 	time_t prev = time(NULL) + PM_INTVL;
 
 	for (;;) {
-		if ((fd = open("/dev/segled", O_RDWR)) < 0) {
+#ifdef CONFIG_LINUX_3_11_X
+		if ((fd = open(SEGLED_DEV_G, O_RDWR)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		write(fd, "0", 1);
+		close(fd);
+		if ((fd = open(SEGLED_DEV_Y, O_RDWR)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		write(fd, "0", 1);
+		close(fd);
+		if ((fd = open(SEGLED_DEV_R, O_RDWR)) < 0) {
 			perror("open");
 			exit(-1);
 		}
 		write(fd, "1", 1);
 		close(fd);
+#else
+		if ((fd = open(SEGLED_DEV, O_RDWR)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		write(fd, "1", 1);
+		close(fd);
+#endif
 		usleep(led_speed);
-		if ((fd = open("/dev/segled", O_RDWR)) < 0) {
+#ifdef CONFIG_LINUX_3_11_X
+		if ((fd = open(SEGLED_DEV_Y, O_RDWR)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		write(fd, "0", 1);
+		close(fd);
+		if ((fd = open(SEGLED_DEV_R, O_RDWR)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		write(fd, "0", 1);
+		close(fd);
+		if ((fd = open(SEGLED_DEV_G, O_RDWR)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		write(fd, "1", 1);
+		close(fd);
+#else
+		if ((fd = open(SEGLED_DEV, O_RDWR)) < 0) {
 			perror("open");
 			exit(-1);
 		}
 		write(fd, "2", 1);
 		close(fd);
+#endif
 		usleep(led_speed);
-		if ((fd = open("/dev/segled", O_RDWR)) < 0) {
+#ifdef CONFIG_LINUX_3_11_X
+		if ((fd = open(SEGLED_DEV_R, O_RDWR)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		write(fd, "0", 1);
+		close(fd);
+		if ((fd = open(SEGLED_DEV_G, O_RDWR)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		write(fd, "0", 1);
+		close(fd);
+		if ((fd = open(SEGLED_DEV_Y, O_RDWR)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		write(fd, "1", 1);
+		close(fd);
+#else
+		if ((fd = open(SEGLED_DEV, O_RDWR)) < 0) {
 			perror("open");
 			exit(-1);
 		}
 		write(fd, "4", 1);
 		close(fd);
+#endif
 		usleep(led_speed);
-		if ((fd = open("/dev/segled", O_RDWR)) < 0) {
+#ifdef CONFIG_LINUX_3_11_X
+		if ((fd = open(SEGLED_DEV_Y, O_RDWR)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		write(fd, "0", 1);
+		close(fd);
+		if ((fd = open(SEGLED_DEV_R, O_RDWR)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		write(fd, "0", 1);
+		close(fd);
+		if ((fd = open(SEGLED_DEV_G, O_RDWR)) < 0) {
+			perror("open");
+			exit(-1);
+		}
+		write(fd, "1", 1);
+		close(fd);
+#else
+		if ((fd = open(SEGLED_DEV, O_RDWR)) < 0) {
 			perror("open");
 			exit(-1);
 		}
 		write(fd, "2", 1);
 		close(fd);
+#endif
 		usleep(led_speed);
 		if(spdctl)
 			calc_ledspeed();	/* control LED speed */
