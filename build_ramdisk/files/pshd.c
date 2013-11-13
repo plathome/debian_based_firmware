@@ -156,12 +156,13 @@ static inline void flash_led(int fd, char* num)
 #endif
 }
 
+#ifdef CONFIG_LINUX_3_11_X
 static int get_push_event(int fd)
 {
 	const unsigned char pushsw_ev[] = {	/* pushsw event id */
 		0x01, 0x00, 0x74, 0x00
 	};
-	static flag = 0;
+	static int flag = 0;
 	int ret;
 	unsigned char buf[16];
 
@@ -185,6 +186,7 @@ static int get_push_event(int fd)
 	}
 	return flag;
 }
+#endif
 
 void watch_pushsw(void)
 {
