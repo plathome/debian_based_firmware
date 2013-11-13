@@ -33,9 +33,9 @@ if [ "$TARGET" == "obsax3" -a "$DIST" == "wheezy" ] ; then
 	CFLAGS+=" -DCONFIG_LINUX_3_2_X"
 fi
 
-#if [ "$KERNEL" == "3.11.0" ] ; then
+if [ "$KERNEL" == "3.11.0" ] ; then
 	CFLAGS+=" -DCONFIG_LINUX_3_11_X"
-#fi
+fi
 
 mkdir -p ${BUILDDIR}
 
