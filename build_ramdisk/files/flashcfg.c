@@ -171,6 +171,7 @@ int get_mtdfile(int, char*);
 int umount_mtddev(void);
 int read_core_area(void);
 int test_core_area(void);
+int read_magic(char *);
 void dump(unsigned char *, int);
 #define LOGNAME		"flashcfg.log"
 #define LOGPATH_CF	"/usr/pkg/var/log/"
@@ -1728,7 +1729,7 @@ int
 flash_extract_param(int target)
 {
 	int pid, st;
-	char targetdevice[256], buf[256];
+	char targetdevice[256], buf[256], option[16];
 	int ret=NORMAL_END;
 
 #if defined(CONFIG_OBSA6)
@@ -1751,11 +1752,18 @@ flash_extract_param(int target)
 	if ((pid = fork()) == 0) {
 		/* in child */
 		if(strcmp(tarpath, tarssd) == 0){
+			if(read_magic(targetdevice))
+				strcpy(option, "-xvpJf");
+			else
+				strcpy(option, "-xvpzf");
 			ret = execl(tarpath, "tar", "--warning=no-timestamp",
-					"-xvpzf", targetdevice, "-C", EXTRACTPATH, NULL);
+					option, targetdevice, "-C", EXTRACTPATH, NULL);
 		}
 		else{
-			sprintf(buf, "gunzip < %s | tar xvpf - -C %s", targetdevice, EXTRACTPATH);
+			if(read_magic(targetdevice))
+				sprintf(buf, "unxz < %s | tar xvpf - -C %s", targetdevice, EXTRACTPATH);
+			else
+				sprintf(buf, "gunzip < %s | tar xvpf - -C %s", targetdevice, EXTRACTPATH);
 			ret = execl("/bin/sh", "sh", "-c", buf, NULL);
 		}
 
@@ -2135,6 +2143,7 @@ int get_mtdfile(int mtd, char* fname)
 		else if(!len)	/* EOF */
 			break;
 
+#if 0
 		/* check GZIP header */
 		if((mtd == MTD_USRCONF || mtd == MTD_USRDATA) && i == 0){
 			if(*p != 0x1f || *(p+1) != 0x8b){
@@ -2143,6 +2152,7 @@ int get_mtdfile(int mtd, char* fname)
 				goto error1;
 			}
 		}
+#endif
 
 		if(write(dst, p, SECT_SIZE) < 0){
 			printf("%d: %s\n", __LINE__, strerror(errno));
@@ -2708,6 +2718,32 @@ flash_set_pmlevel(int target, char *arg)
 }
 #endif
 #endif
+
+
+/*
+ * retun	0 : gzip
+ *			1 : lzma
+ *		   -1 : ERROR
+*/
+int read_magic(char *mtd)
+{
+	int fd;
+	char buf[6];
+
+	if ((fd = open(mtd, O_RDONLY)) < 0)
+		return -1;
+	if(read(fd, buf, sizeof(buf)) != sizeof(buf))
+		return -1;
+	close(fd);
+
+	if(buf[0] == 0x1f && buf[1] == 0x8b)
+		return 0;
+	else if(buf[0] == 0xfd && buf[1] == 0x37 && buf[2] == 0x7a
+				&& buf[3] == 0x58 && buf[4] == 0x5a && buf[5] == 0x00)
+		return 1;
+
+	return 0;
+}
 
 #ifdef DEBUG
 unsigned char chgchr(char c)
