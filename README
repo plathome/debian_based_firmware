@@ -1,0 +1,142 @@
+OpenBlocksファームウェア作成ガイド
+
+ぷらっとホーム株式会社
+
+Copyright (c) 2013 Plat'Home CO., LTD.
+
+1. はじめに
+
+このソフトウェアを使えばOpenBlocks(AX3, A7, A6, 600)のファームウェアを作成することができます。
+その内容は、シェルスクリプトとファームウェアに含めるファイルです。
+
+2. 対応ファームウェア
+
+このソフトウェアの対応している機種とOS(Debian GNU/Linux)の組合せを表にしました。
+
+機種 | Debian | 作成ホスト | TARGET | DIST    
+=====|========|============|========|=========
+AX3  | 7      | 7/amd64    | obsax3 | wheezy  
+-----+--------+------------+--------+---------
+AX3  | 6      | 6/amd64    | obsax3 | squeeze 
+-----+--------+------------+--------+---------
+A7   | 7      | 7/amd64    | obsa7  | wheezy  
+-----+--------+------------+--------+---------
+A6   | 7      | 7/amd64    | obsa6  | wheezy  
+-----+--------+------------+--------+---------
+A6   | 6      | 6/amd64    | obsa6  | squeeze 
+-----+--------+------------+--------+---------
+600  | 7      | 6/i386     | obs600 | wheezy  
+
+ファームウェアを作成するホストのOSはDebian GNU/Linuxです。
+そのバージョンとアーキテクチャは、ファームウェアの対象となる機種とOSによって異ります。
+表の作成ホストに「バージョン/アーキテクチャ」を記述しました。
+
+項目TARGETとDISTは、ファームウェアを作成するときに実行するシェルスクリプトに指定する文字列です。
+後節で参照します。
+
+3. 準備
+
+3.1. 作成ホスト
+
+前節の表で、ファームウェアを作成するホストのOSを確認してください。
+例えば、機種がOpenBlocks AX3でOSがDebian 7の場合、作成ホストのOSはDebian 7/amd64です。
+作成ホストを用意して、そのOSをインストールします。
+物理マシンと仮想マシンのどちらでもよろしいです。
+インターネットに接続できるよう、ネットワークの設定をしてください。
+
+3.2. Gitリポジトリの取得
+
+作成ホストにgit-coreパッケージをインストールします。
+
+  # apt-get update
+  # apt-get install git-core
+
+Gitリポジトリを取得します。
+
+  $ git clone http://git.hqlabo.plathome.co.jp/git/debian_based_firmware
+
+以下では、ディレクトリdebian_based_firmwareに移動したものとして説明します。
+
+3.3. クロス開発環境
+
+ファームウェアの作成に必要なパッケージをインストールします。
+機種に応じて以下のコマンドを実行してください。
+
+AX3, A7, A6の場合
+
+  # cd build_ramdisk
+  # ./build_crossenv.sh
+
+600の場合
+
+  # cd build_ramdisk
+  # TARGET=obs600 ./build_crossenv.sh
+
+3.4. カーネルソース
+
+カーネルソースをftp.plathome.co.jpからダウンロードしてsourceディレクトリにコピーします。
+sourceディレクトリには、TARGETをその名前としたディレクトリがあるので、そこに伸長してください。
+
+ファイルbuild_ramdisk/config.shのcase文中のKERNELとPATCHLEVELからカーネルソースの置いてある場所が分ります。
+
+TARGET=obsax3, DIST=wheezy, KERNEL=3.2.40, PATCHLEVEL=3の場合
+ftp://ftp.plathome.co.jp/pub/OBSAX3/wheezy/3.2.40-3/linux-3.2.40-20131002.tar.gz
+
+TARGET=obsa7, DIST=wheezy, KERNEL=3.2.40, PATCHLEVEL=3の場合
+ftp://ftp.plathome.co.jp/pub/OBSA7/wheezy/3.2.40-3/linux-3.2.40-20131002.tar.gz
+
+TARGET=obsa6, DIST=wheezy, KERNEL=3.2.40, PATCHLEVEL=2の場合
+ftp://ftp.plathome.co.jp/pub/OBSA6/wheezy/3.2.40-2/linux-3.2.40-20131002.tar.gz
+
+TARGET=obsax3, DIST=squeeze, KERNEL=3.0.6, PATCHLEVEL=14の場合
+ftp://ftp.plathome.co.jp/pub/OBSAX3/squeeze/3.0.6-14/source/linux-3.0.6-14.tar.gz
+
+TARGET=obsa6, DIST=squeeze, KERNEL=2.6.31, PATCHLEVEL=8の場合
+ftp://ftp.plathome.co.jp/pub/OBSA6/squeeze/2.6.31-8/source/linux-2.6.31-obs-20130131+obsa6_defconfig.tar.gz
+
+TARGET=obs600, DIST=squeeze, KERNEL=2.6.32, PATCHLEVEL=0beta0の場合
+ftp://ftp.plathome.co.jp/pub/OBS600/debian/files/wheezy/2.6.32-0beta0/linux-2.6.32-20130819-obs600.tar.gz
+
+3.5. DVDイメージ
+
+DISTがwheezyの場合、DebianのDVDイメージをダウンロードしてisofilesディレクトリにコピーします。
+DISTがsqueezeの場合は不要です。
+
+ファイルbuild_ramdisk/config.shのcase文中のISOFILEからDVDイメージのファイル名が分ります。
+
+TARGET=obsax3の場合
+debian-7.1.0-armhf-DVD-1.iso
+
+TARGET=obsa7, obsa6の場合
+debian-7.1.0-armel-DVD-1.iso
+
+TARGET=obs600の場合
+debian-7.2.0-powerpc-DVD-1.iso
+
+作成
+
+ファームウェアを作成します。
+シェルスクリプトbuild_ramdisk/buildall.shのオプション-MにTARGET、-DにDISTを指定します。
+TARGET=obsax3、DIST=wheezyの場合、以下の通りに実行します。
+
+  # cd cd build_ramdisk/
+  # ./buildall.sh -M obsax3 -D wheezy
+
+作成されたファームウェア一式は、ディレクトリrelease/TARGET/DIST/KERNEL-PATCHLEVELに置かれます。
+
+例えば、ディレクトリrelease/obsax3/wheezy/3.2.40-3には、以下のファイルがあります。
+
+MD5.obsax3: MD5チェックサムファイル
+System.map: カーネルのシステムマップファイル
+kernel-image-3.2.40-3.deb: Debianのdpkgコマンドなどでインストールするためのファームウェア
+ramdisk-wheezy.obsax3.img.lzma: ファームウェアに含まれるRAMディスクイメージ
+uImage.initrd.obsax3: flashcfgコマンドでインストールするためのファームウェア
+zImage.gz: ファームウェアのカーネルイメージ
+
+シェルスクリプトbuild_ramdisk/buildall.shは以下の通り実行しています。
+
+  # DIST=wheezy TARGET=obsax3 ./build_debootstrap.sh
+  # DIST=wheezy TARGET=obsax3 ./build_kernel.sh
+  # DIST=wheezy TARGET=obsax3 ./build_ramdisk.sh
+  # DIST=wheezy TARGET=obsax3 ./release_firmware.sh
+
