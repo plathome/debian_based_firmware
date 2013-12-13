@@ -113,7 +113,7 @@ debian-7.1.0-armel-DVD-1.iso
 TARGET=obs600の場合
 debian-7.2.0-powerpc-DVD-1.iso
 
-作成
+4. 作成
 
 ファームウェアを作成します。
 シェルスクリプトbuild_ramdisk/buildall.shのオプション-MにTARGET、-DにDISTを指定します。
