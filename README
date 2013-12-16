@@ -11,7 +11,8 @@ Copyright (c) 2013 Plat'Home CO., LTD.
 
 2. 対応ファームウェア
 
-このソフトウェアの対応している機種とOS(Debian GNU/Linux)の組合せを表にしました。
+ファームウェアは機種(AX3, A7, A6, 600)とOS(Debian GNU/Linux)によって異なります。
+このソフトウェアが対応しているファームウェアは下の表をご覧ください。
 
 機種 | Debian | 作成ホスト | TARGET | DIST    
 =====|========|============|========|=========
@@ -46,6 +47,8 @@ A6   | 6      | 6/amd64    | obsa6  | squeeze
 
 3.2. Gitリポジトリの取得
 
+このソフトウェアはGitリポジトリに格納されています。
+
 作成ホストにgit-coreパッケージをインストールします。
 
   # apt-get update
@@ -62,20 +65,24 @@ Gitリポジトリを取得します。
 ファームウェアの作成に必要なパッケージをインストールします。
 機種に応じて以下のコマンドを実行してください。
 
-AX3, A7, A6の場合
+3.3.1. AX3, A7, A6の場合
 
   # cd build_ramdisk
   # ./build_crossenv.sh
 
-600の場合
+3.3.2. 600の場合
 
   # cd build_ramdisk
   # TARGET=obs600 ./build_crossenv.sh
 
 3.4. カーネルソース
 
+3.4.1. カーネルソースの取得
+
 カーネルソースをftp.plathome.co.jpからダウンロードしてsourceディレクトリにコピーします。
 ファイルbuild_ramdisk/config.shのcase文中のKERNELとPATCHLEVELからカーネルソースのFTPサイトに置いてある場所が分ります。
+
+以下は場所の例です。
 
 TARGET=obsax3, DIST=wheezy, KERNEL=3.2.40, PATCHLEVEL=3の場合
 ftp://ftp.plathome.co.jp/pub/OBSAX3/wheezy/3.2.40-3/linux-3.2.40-20131002.tar.gz
@@ -95,15 +102,19 @@ ftp://ftp.plathome.co.jp/pub/OBSA6/squeeze/2.6.31-8/source/linux-2.6.31-obs-2013
 TARGET=obs600, DIST=squeeze, KERNEL=2.6.32, PATCHLEVEL=0beta0の場合
 ftp://ftp.plathome.co.jp/pub/OBS600/debian/files/wheezy/2.6.32-0beta0/linux-2.6.32-20130819-obs600.tar.gz
 
-sourceディレクトリには、TARGETをその名前としたディレクトリがあるので、そこに伸長してください。
+3.4.2. カーネルソースの展開
+
+sourceディレクトリには、TARGETをその名前としたディレクトリがあるので、そこに展開してください。
 カーネルソースの場所はディレクトリsource/TARGET/linux-KERNELとなります。
 
 3.5. DVDイメージ
 
-DISTがwheezyの場合、DebianのDVDイメージをダウンロードしてisofilesディレクトリにコピーします。
-DISTがsqueezeの場合は不要です。
+DIST=wheezyの場合、DebianのDVDイメージをダウンロードしてisofilesディレクトリにコピーします。
+DIST=squeezeの場合は不要です。
 
 ファイルbuild_ramdisk/config.shのcase文中のISOFILEからDVDイメージのファイル名が分ります。
+
+以下はファイル名の例です。
 
 TARGET=obsax3の場合
 debian-7.1.0-armhf-DVD-1.iso
@@ -125,7 +136,7 @@ TARGET=obsax3、DIST=wheezyの場合、以下の通りに実行します。
 
 作成されたファームウェア一式は、ディレクトリrelease/TARGET/DIST/KERNEL-PATCHLEVELに置かれます。
 
-例えば、ディレクトリrelease/obsax3/wheezy/3.2.40-3には、以下のファイルがあります。
+例えば、ディレクトリrelease/obsax3/wheezy/3.2.40-3には、以下のファイルが作成されます。
 
 MD5.obsax3: MD5チェックサムファイル
 System.map: カーネルのシステムマップファイル
@@ -144,7 +155,13 @@ zImage.gz: ファームウェアのカーネルイメージ
   # DIST=wheezy TARGET=obsax3 ./build_ramdisk.sh
   # DIST=wheezy TARGET=obsax3 ./release_firmware.sh
 
-途中で、カーネルとRAMディスクイメージのカスタマイズができます。
+build_debootstrap.sh: debootstrapを実行し、ディレクトリrootfs/DIST_TARGET以下に仮インストールしています。
+build_kernel.sh: カーネルとカーネルモジュールのコンパイルをしています。
+build_ramdisk.sh: ディレクトリrootfs/DIST_TARGET以下に仮インストールしたDebianをOpenBlocks用に変更して、RAMディスクイメージを作成しています。
+release_firmware.sh: ファームウェア一式を作成しています。
+
+上記のシェルスクリプトを手動で実行すれば、その途中で、カーネルとRAMディスクイメージのカスタマイズができます。
+
 カスタマイズの前に、シェルスクリプトbuild_ramdisk/buildall.shを実行しておいてください。
 
 5.1. カーネル
