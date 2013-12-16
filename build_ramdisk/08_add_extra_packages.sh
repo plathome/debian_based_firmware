@@ -29,8 +29,10 @@
 
 rm -f ${DISTDIR}/*.deb
 cp ${EXTRADEBDIR}/*${ARCH}.deb ${DISTDIR}/
+cp ${EXTRADEBDIR}/*all.deb ${DISTDIR}/
 
 debs=$(cd ${DISTDIR}/; ls -1 *${ARCH}.deb)
+debs+=" $(cd ${DISTDIR}/; ls -1 *all.deb)"
 
 chroot ${DISTDIR} dpkg -i $debs
 
