@@ -180,6 +180,7 @@ AX3, A7, A6の場合
 5.1.3. コンパイル
 
 シェルスクリプトbuild_ramdisk/build_kernel.shから順番に実行するか、シェルスクリプトbuild_ramdisk/buildall.shを実行してください。
+RAMディスクイメージをカスタマイズする場合、シェルスクリプトbuild_ramdisk/build_kernel.shを実行して、次節に進んでください。
 
 5.2. RAMディスクイメージ
 
@@ -201,6 +202,10 @@ AX3, A7, A6の場合
 
 5.2.3. RAMディスクイメージの作成
 
-ディレクトリrootfs/DIST_TARGET以下のファイルからRAMディスクイメージを作成します。
+ディレクトリrootfs/DIST_TARGET以下のファイルをもとにRAMディスクイメージを作成します。
 
   # DIST=wheezy TARGET=obsax3 ./99_create_ramdisk.sh
+
+ファームウェアを作成します。
+
+  # DIST=wheezy TARGET=obsax3 ./release_firmware.sh
