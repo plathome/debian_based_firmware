@@ -183,3 +183,24 @@ AX3, A7, A6の場合
 
 5.2. RAMディスクイメージ
 
+シェルスクリプトbuild_ramdisk/build_ramdisk.shの実行が終了すると、ディレクトリrootfs/DIST_TARGETに、RAMディスクに含まれるファイルが仮インストールされます。
+ディレクトリrootfs/DIST_TARGET以下のファイルを変更したり、パッケージを追加すれば、RAMディスクイメージのカスタマイズができます。
+ここでDISTとTARGETは、ご自身のものに置き換えてください。
+
+5.2.1. パッケージの取得
+
+追加するパッケージをダウンロードして、ディレクトリextradebs/DISTにコピーします。
+
+5.2.2. パッケージの追加
+
+次のコマンドを実行してパッケージを追加します。
+
+  # DIST=wheezy TARGET=obsax3 ./08_add_extra_packages.sh
+
+パッケージが追加されたかは、ファイルrootfs/DIST_TARGET/var/lib/dpkg/statusで確認できます。
+
+5.2.3. RAMディスクイメージの作成
+
+ディレクトリrootfs/DIST_TARGET以下のファイルからRAMディスクイメージを作成します。
+
+  # DIST=wheezy TARGET=obsax3 ./99_create_ramdisk.sh
