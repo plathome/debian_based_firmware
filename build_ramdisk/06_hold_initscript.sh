@@ -30,6 +30,9 @@
 [ "${ARCH}" == "powerpc" ] && exit
 
 chroot ${DISTDIR} /usr/bin/aptitude hold initscripts
-if [ "${DIST}" != "squeeze" ]; then
-	chroot ${DISTDIR} /usr/bin/apt-mark hold initscripts
-fi
+
+cat > ${DISTDIR}/tmp/hold.$$ <<_HOLD
+echo initscripts hold | dpkg --set-selections
+_HOLD
+chroot ${DISTDIR} /bin/bash /tmp/hold.$$
+rm -f ${DISTDIR}/tmp/hold.$$
