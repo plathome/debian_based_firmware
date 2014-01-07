@@ -1,6 +1,6 @@
-/*	$ssdlinux: runled.c,v 1.16 2013/12/11 06:54:59 yamagata Exp $	*/
+/*	$ssdlinux: runled.c,v 1.17 2014/01/07 07:19:06 yamagata Exp $	*/
 /*
- * Copyright (c) 2008-2013 Plat'Home CO., LTD.
+ * Copyright (c) 2008-2014 Plat'Home CO., LTD.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

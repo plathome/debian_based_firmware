@@ -1,6 +1,6 @@
-/*	$ssdlinux: flashcfg.c,v 1.25 2013/12/11 07:11:52 yamagata Exp $	*/
+/*	$ssdlinux: flashcfg.c,v 1.26 2014/01/07 07:20:55 yamagata Exp $	*/
 /*
- * Copyright (c) 2008-2013 Plat'Home CO., LTD.
+ * Copyright (c) 2008-2014 Plat'Home CO., LTD.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -120,7 +120,7 @@ static char* tarpath;
  *      mtd6: MONITOR_SIZE             "OpenBlockS-OBS600 Uboot"
  */
 
-#define VERSION "$Revision: 1.25 $"
+#define VERSION "$Revision: 1.26 $"
 
 int SECT_SIZE = 0;
 int MONITOR_SIZE = 0;
