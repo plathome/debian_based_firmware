@@ -58,7 +58,7 @@ Debian 7/amd64です。ホストを用意して、そのOSをインストール�
 
 Gitリポジトリを取得します。
 
-  $ git clone https://github.com/plathome/debian_based_firmware.git
+  $ git clone git://github.com/plathome/debian_based_firmware.git
 
 以下では、ディレクトリdebian_based_firmwareに移動したものとして説明し
 ます。
