@@ -51,7 +51,7 @@ CONFIG_POSTSCRIPT=post-init.sh
 MTREE_LIST="${MTREE_LIST:=/etc/mtree.list}"
 MTREE_DIRS="${MTREE_DIRS:=/var/log /var/run}"
 
-if [ "$MODEL" == "obsa6" ] ; then
+if [ "$MODEL" == "obsa6" -o "$MODEL" == "obsa7" ] ; then
 	extract_func=extract_mtd_a6
 else
 	extract_func=extract_mtd
