@@ -100,6 +100,14 @@ squeeze)
 		PATCHLEVEL=8
 		LZMA_LEVEL=9
 	;;
+	obsa7)
+		RAMDISK_SIZE=144
+		KERNEL=3.2.40
+		PATCHLEVEL=0beta0
+		LZMA_LEVEL=9
+		COMPRESS=gzip
+		COMPRESS_EXT=gz
+	;;
 	*) exit 1 ;;
 	esac
 ;;
