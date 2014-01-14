@@ -312,9 +312,10 @@ start)
 	# mount filesystems
 	for dir in ${UNIONFS_DIRS} ; do
 		mawk '{print $2}' < /etc/fstab | grep -q "^/$dir" && continue
+		[ "$union_fs" == "aufs" ] && xino_opt="xino=/tmp/.aufs.xino.$dir,"
 		mkdir -p ${RW_DIR}/$dir
 		mount -n -t ${union_fs} \
-			-o dirs=${RW_DIR}/$dir=rw:/$dir=ro ${union_fs} /$dir
+			-o ${union_opt}${xino_opt}dirs=${RW_DIR}/$dir=rw:/$dir=ro ${union_fs} /$dir
 	done
 
 	# for inittab
