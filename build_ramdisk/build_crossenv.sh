@@ -27,15 +27,20 @@
 
 . `dirname $0`/config.sh
 
-packages="build-essential uboot-mkimage libncurses5-dev debootstrap binutils-${KERN_ARCH}-linux-gnu${ABI} vim qemu-user-static"
+# Install packages of Debian.
 
-if [ "$TARGET" == "obs600" ]; then
-	packages+=" libc6-powerpc-cross libc6-dev-powerpc-cross zlib1g-dev-powerpc-cross"
-else
-	packages+=" libc6-armel-cross libc6-dev-armel-cross zlib1g-dev-armel-cross"
-fi
+packages="build-essential uboot-mkimage libncurses5-dev debootstrap vim qemu-user-static emdebian-archive-keyring"
 
 host_debian_version=`cat /etc/debian_version`
+
+case $host_debian_version in
+	6.*) packages+=" xz-lzma" ;;
+esac
+
+apt-get update 
+apt-get install $packages
+
+# Install packages of Emdebian.
 
 case $host_debian_version in
 	6.*)
@@ -45,24 +50,75 @@ case $host_debian_version in
 		else
 			gcc_version=4.4
 		fi
-		packages+=" gcc-${gcc_version}-${KERN_ARCH}-linux-gnu${ABI} xz-lzma"
 	;;
 	7.*)
 		code_name=wheezy
 		gcc_version=4.7
-		packages+=" gcc-${gcc_version}-${KERN_ARCH}-linux-gnu${ABI}"
 	;;
 	*) exit 1 ;;
 esac
 
-apt-get update 
-apt-get install emdebian-archive-keyring
+packages="gcc-${gcc_version}-${KERN_ARCH}-linux-gnu${ABI}"
+
+if [ "$TARGET" == "obs600" ]; then
+	xbinutils_version=2.20.1-16
+	xgcc_version=4.3.5-4
+	pkg4gomp1="libc6-powerpc-cross libgcc1-powerpc-cross"
+	packages+=" libc-dev-bin-powerpc-cross libc6-dev-powerpc-cross linux-libc-dev-powerpc-cross zlib1g-powerpc-cross zlib1g-dev-powerpc-cross"
+else
+	case $host_debian_version in
+		7.*)
+			xbinutils_version=2.22-7.1
+			xgcc_version=4.7.2-4
+		;;
+		6.*)
+			xbinutils_version=2.20.1-16
+			xgcc_version=4.4.5-8
+		;;
+	esac
+	pkg4gomp1="libc6-armel-cross libgcc1-armel-cross"
+	packages+=" libc-dev-bin-armel-cross libc6-dev-armel-cross linux-libc-dev-armel-cross zlib1g-armel-cross zlib1g-dev-armel-cross"
+fi
+
+case $(uname -m) in
+	x86_64) deb_arch=amd64 ;;
+	i686) deb_arch=i386 ;;
+	*) exit 1 ;;
+esac
 
 cat <<_EOF >/etc/apt/sources.list.d/emdebian.list 
 deb http://www.emdebian.org/debian ${code_name} main
 _EOF
 
 apt-get update 
+
+PKGURL="http://www.emdebian.org/debian/pool/main/b/binutils/"
+PKGNAME="binutils-${KERN_ARCH}-linux-gnu${ABI}_${xbinutils_version}_${deb_arch}.deb"
+wget -O /tmp/${PKGNAME} ${PKGURL}/${PKGNAME}
+dpkg -i /tmp/${PKGNAME}
+rm -f /tmp/${PKGNAME}
+
+PKGURL="http://www.emdebian.org/debian/pool/main/g/gcc-4.7/"
+PKGNAME="gcc-${gcc_version}-${KERN_ARCH}-linux-gnu${ABI}-base_${xgcc_version}_${deb_arch}.deb"
+wget -O /tmp/${PKGNAME} ${PKGURL}/${PKGNAME}
+dpkg -i /tmp/${PKGNAME}
+rm -f /tmp/${PKGNAME}
+
+PKGNAME="cpp-${gcc_version}-${KERN_ARCH}-linux-gnu${ABI}_${xgcc_version}_${deb_arch}.deb"
+wget -O /tmp/${PKGNAME} ${PKGURL}/${PKGNAME}
+dpkg -i /tmp/${PKGNAME}
+rm -f /tmp/${PKGNAME}
+
+apt-get install $pkg4gomp1
+
+if [ "$TARGET" == "obs600" ]; then
+	PKGNAME="libgomp1-powerpc-cross_${xgcc_version}_all.deb"
+else
+	PKGNAME="libgomp1-armel-cross_${xgcc_version}_all.deb"
+fi
+wget -O /tmp/${PKGNAME} ${PKGURL}/${PKGNAME}
+dpkg -i /tmp/${PKGNAME}
+rm -f /tmp/${PKGNAME}
 apt-get install $packages
 
 update-alternatives --install /usr/bin/${KERN_ARCH}-linux-gnu${ABI}-gcc ${KERN_ARCH}-linux-gnu${ABI}-gcc /usr/bin/${KERN_ARCH}-linux-gnu${ABI}-gcc-${gcc_version} 255
