@@ -99,11 +99,13 @@ fetch_install ()
 
 name=$(echo $2 | sed 's/_[0-9].*$//')
 status=$(dpkg --get-selections $name | cut -f 2- | sed 's/\t*//')
-echo status: $status
 if [ "$status" != "install" ]; then
-	wget -O /tmp/$2 $1/$2
-	dpkg -i /tmp/$2
-	rm -f /tmp/$2
+	if [ ! -d ${TMPDIR} ]; then
+		mkdir -p ${TMPDIR}
+	fi
+	wget -O ${TMPDIR}/$2 $1/$2
+	dpkg -i ${TMPDIR}/$2
+	rm -f ${TMPDIR}/$2
 fi
 }
 
