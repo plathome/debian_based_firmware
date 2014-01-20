@@ -92,33 +92,30 @@ _EOF
 
 apt-get update 
 
-PKGURL="http://www.emdebian.org/debian/pool/main/b/binutils/"
-PKGNAME="binutils-${KERN_ARCH}-linux-gnu${ABI}_${xbinutils_version}_${deb_arch}.deb"
-wget -O /tmp/${PKGNAME} ${PKGURL}/${PKGNAME}
-dpkg -i /tmp/${PKGNAME}
-rm -f /tmp/${PKGNAME}
+fetch_install ()
+{
+# fetch_install: fetch and install an package
+# args: $1=URL of package; $2=name of package
 
-PKGURL="http://www.emdebian.org/debian/pool/main/g/gcc-4.7/"
-PKGNAME="gcc-${gcc_version}-${KERN_ARCH}-linux-gnu${ABI}-base_${xgcc_version}_${deb_arch}.deb"
-wget -O /tmp/${PKGNAME} ${PKGURL}/${PKGNAME}
-dpkg -i /tmp/${PKGNAME}
-rm -f /tmp/${PKGNAME}
-
-PKGNAME="cpp-${gcc_version}-${KERN_ARCH}-linux-gnu${ABI}_${xgcc_version}_${deb_arch}.deb"
-wget -O /tmp/${PKGNAME} ${PKGURL}/${PKGNAME}
-dpkg -i /tmp/${PKGNAME}
-rm -f /tmp/${PKGNAME}
-
-apt-get install $pkg4gomp1
-
-if [ "$TARGET" == "obs600" ]; then
-	PKGNAME="libgomp1-powerpc-cross_${xgcc_version}_all.deb"
-else
-	PKGNAME="libgomp1-armel-cross_${xgcc_version}_all.deb"
+name=$(echo $2 | sed 's/_[0-9].*$//')
+status=$(dpkg --get-selections $name | cut -f 2- | sed 's/\t*//')
+echo status: $status
+if [ "$status" != "install" ]; then
+	wget -O /tmp/$2 $1/$2
+	dpkg -i /tmp/$2
+	rm -f /tmp/$2
 fi
-wget -O /tmp/${PKGNAME} ${PKGURL}/${PKGNAME}
-dpkg -i /tmp/${PKGNAME}
-rm -f /tmp/${PKGNAME}
+}
+
+fetch_install http://www.emdebian.org/debian/pool/main/b/binutils/ binutils-${KERN_ARCH}-linux-gnu${ABI}_${xbinutils_version}_${deb_arch}.deb
+fetch_install http://www.emdebian.org/debian/pool/main/g/gcc-4.7/ gcc-${gcc_version}-${KERN_ARCH}-linux-gnu${ABI}-base_${xgcc_version}_${deb_arch}.deb
+fetch_install http://www.emdebian.org/debian/pool/main/g/gcc-4.7/ cpp-${gcc_version}-${KERN_ARCH}-linux-gnu${ABI}_${xgcc_version}_${deb_arch}.deb
+apt-get install $pkg4gomp1
+if [ "$TARGET" == "obs600" ]; then
+	fetch_install http://www.emdebian.org/debian/pool/main/g/gcc-4.7/ libgomp1-powerpc-cross_${xgcc_version}_all.deb
+else
+	fetch_install http://www.emdebian.org/debian/pool/main/g/gcc-4.7/ libgomp1-armel-cross_${xgcc_version}_all.deb
+fi
 apt-get install $packages
 
 update-alternatives --install /usr/bin/${KERN_ARCH}-linux-gnu${ABI}-gcc ${KERN_ARCH}-linux-gnu${ABI}-gcc /usr/bin/${KERN_ARCH}-linux-gnu${ABI}-gcc-${gcc_version} 255
@@ -127,10 +124,6 @@ update-alternatives --install /usr/bin/${KERN_ARCH}-linux-gnu${ABI}-cpp ${KERN_A
 update-alternatives --set editor /usr/bin/vim.basic
 
 if [ "$TARGET" == "obs600" ]; then
-	PKGURL="http://ftp.jp.debian.org/debian/pool/main/q/qemu"
-	PKGNAME="qemu-user-static_1.1.2+dfsg-6a_i386.deb"
-	dpkg -r qemu-user-static
-	wget -O /tmp/${PKGNAME} ${PKGURL}/${PKGNAME}
-	dpkg -i /tmp/${PKGNAME}
-	rm -f /tmp/${PKGNAME}
+	dpkg -P qemu-user-static
+	fetch_install http://ftp.jp.debian.org/debian/pool/main/q/qemu qemu-user-static_1.1.2+dfsg-6a_i386.deb
 fi
