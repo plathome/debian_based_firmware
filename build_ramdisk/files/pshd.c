@@ -47,7 +47,7 @@
 #if defined(HAVE_PUSHSW_OBS600_H)
 #include <asm/pushsw_obs600.h>
 #elif defined(HAVE_PUSHSW_OBSAXX_H)
-#include <linux/obspushsw.h>
+#include "obspushsw.h"
 #endif
 #include <linux/version.h>
 #include <time.h>
@@ -75,9 +75,19 @@ void die(int i);
 #define SEGLED_DEV	"/dev/segled"
 #ifdef CONFIG_LINUX_3_11_X
 #define PUSHSW_DEV	"/dev/input/event0"
+#if defined(CONFIG_OBSA7)
+#define SEGLED_DEV_G	"/sys/class/leds/obsa7:green:stat/brightness"
+#define SEGLED_DEV_Y	"/sys/class/leds/obsa7:yellow:stat/brightness"
+#define SEGLED_DEV_R	"/sys/class/leds/obsa7:red:stat/brightness"
+#elif defined(CONFIG_OBSA6)
+#define SEGLED_DEV_G	"/sys/class/leds/obsa6:green:stat/brightness"
+#define SEGLED_DEV_Y	"/sys/class/leds/obsa6:yellow:stat/brightness"
+#define SEGLED_DEV_R	"/sys/class/leds/obsa6:red:stat/brightness"
+#else
 #define SEGLED_DEV_G	"/sys/class/leds/green_led/brightness"
 #define SEGLED_DEV_Y	"/sys/class/leds/yellow_led/brightness"
 #define SEGLED_DEV_R	"/sys/class/leds/red_led/brightness"
+#endif
 #else
 #define PUSHSW_DEV	"/dev/pushsw"
 #endif

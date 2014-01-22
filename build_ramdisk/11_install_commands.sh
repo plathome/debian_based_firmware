@@ -46,7 +46,11 @@ fi
 
 LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
 
+if [ ! "$KERNEL" == "3.13" ] ; then
 CFLAGS="-Wall -I$LINUX_INC -DDEBIAN ${MODEL}"
+else
+CFLAGS="-Wall -I/usr/arm-linux-gnueabi/include -L/usr/arm-linux-gnueabi/lib -DDEBIAN ${MODEL}"
+fi
 
 if [ "$TARGET" == "obs600" ]; then
 	CFLAGS+=" -DHAVE_PUSHSW_OBS600_H"
@@ -58,7 +62,7 @@ if [ "$TARGET" == "obsax3" -a "$DIST" == "wheezy" ] ; then
 	CFLAGS+=" -DCONFIG_LINUX_3_2_X"
 fi
 
-if [ "$KERNEL" == "3.11.0" ] ; then
+if [ "$KERNEL" == "3.13" ] ; then
 	CFLAGS+=" -DCONFIG_LINUX_3_11_X"
 fi
 

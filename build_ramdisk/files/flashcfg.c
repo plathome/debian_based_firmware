@@ -39,7 +39,7 @@
 #include <sys/ioctl.h>
 #include <sys/mount.h>
 #include <sys/stat.h>
-#include <linux/compiler.h>
+//#include <linux/compiler.h>
 #include <mtd/mtd-user.h>
 #if defined(CONFIG_OBSA6)
 #include <mtd/mtd-abi.h>

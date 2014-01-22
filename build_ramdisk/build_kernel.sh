@@ -50,4 +50,6 @@ make ARCH=${KERN_ARCH} CROSS_COMPILE=${CROSS_COMPILE} ${TARGET}_defconfig
 make -j$((${cpunum}+1)) ARCH=${KERN_ARCH} CROSS_COMPILE=${CROSS_COMPILE} zImage modules
 if [ "$TARGET" == "obs600" ]; then
 	make ARCH=${KERN_ARCH} ${TARGET}.dtb
+elif [ "$KERNEL" == "3.13" ]; then
+	make DTBFILE ARCH=${KERN_ARCH} CROSS_COMPILE=${CROSS_COMPILE}
 fi

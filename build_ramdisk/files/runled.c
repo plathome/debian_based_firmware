@@ -49,12 +49,25 @@ extern int errno;
 #define LED_67_100	(125*1000)	/* CPU 67% - 100% */
 
 #define PM_INTVL		10	/* check temperature intervall sec */
-#ifdef CONFIG_OBSAX3
 #ifdef CONFIG_LINUX_3_11_X
-#define TEMP_INPUT		"/sys/devices/virtual/thermal/thermal_zone0/hwmon0/temp1_input"
+#if defined(CONFIG_OBSA7)
+#define SEGLED_DEV_G	"/sys/class/leds/obsa7:green:stat/brightness"
+#define SEGLED_DEV_Y	"/sys/class/leds/obsa7:yellow:stat/brightness"
+#define SEGLED_DEV_R	"/sys/class/leds/obsa7:red:stat/brightness"
+#elif defined(CONFIG_OBSA6)
+#define SEGLED_DEV_G	"/sys/class/leds/obsa6:green:stat/brightness"
+#define SEGLED_DEV_Y	"/sys/class/leds/obsa6:yellow:stat/brightness"
+#define SEGLED_DEV_R	"/sys/class/leds/obsa6:red:stat/brightness"
+#else
 #define SEGLED_DEV_G	"/sys/class/leds/green_led/brightness"
 #define SEGLED_DEV_Y	"/sys/class/leds/yellow_led/brightness"
 #define SEGLED_DEV_R	"/sys/class/leds/red_led/brightness"
+#endif
+#endif
+
+#ifdef CONFIG_OBSAX3
+#ifdef CONFIG_LINUX_3_11_X
+#define TEMP_INPUT		"/sys/devices/virtual/thermal/thermal_zone0/hwmon0/temp1_input"
 #else
 #define TEMP_INPUT		"/sys/devices/platform/axp-temp.0/temp1_input"
 #endif
