@@ -327,7 +327,8 @@ DIST=wheezy, TARGET=obsax3の場合、
 ディレクトリ/srv/tftpを作成し、ファームウェアuImage.initrd.TARGETを
 コピーします。TARGETは、ご自身の文字列に置き換えてください。
 
-ファイル名は、固定なので、変更しないでください。
+ファイル名は、固定なので、変更しないでください。600だけは
+uImage.initrdにします。
 
 7.2. OpenBlocksの起動
 
