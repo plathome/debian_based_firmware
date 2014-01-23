@@ -39,14 +39,14 @@
 #include <sys/ioctl.h>
 #include <sys/mount.h>
 #include <sys/stat.h>
-#include <linux/compiler.h>
+//#include <linux/compiler.h>
 #include <mtd/mtd-user.h>
-#ifdef DEBIAN
-#include <linux/zlib.h>
-#else
+//#ifdef DEBIAN
+//#include <linux/zlib.h>
+//#else
 #include <zlib.h>
 #include <errno.h>
-#endif
+//#endif
 #include <sys/wait.h>
 #include <sys/types.h>
 

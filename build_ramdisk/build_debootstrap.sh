@@ -40,9 +40,7 @@ if [ -n "$ISOFILE" ] ;then
 		echo
 		exit 1
 	fi
-	if [ "$TARGET" != "obs600" ]; then
-		NOGPG="--no-check-gpg"
-	fi
+	NOGPG="--no-check-gpg"
 	_REPO=/media/${DIST}-${ARCH}
 	REPO=file://${_REPO}/debian
 	$debug umount ${_REPO} 2> /dev/null

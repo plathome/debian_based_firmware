@@ -56,8 +56,6 @@ else
 		make -j$((${cpunum}+1)) ARCH=${KERN_ARCH} CROSS_COMPILE=${CROSS_COMPILE} zImage modules
 	fi
 fi
-if [ "$TARGET" == "obs600" ]; then
-	make ARCH=${KERN_ARCH} ${TARGET}.dtb
-elif [ "$KERNEL" == "3.13" ]; then
+if [ "$KERNEL" == "3.13" -o "$TARGET" == "obs600" ]; then
 	make $DTBFILE ARCH=${KERN_ARCH} CROSS_COMPILE=${CROSS_COMPILE}
 fi

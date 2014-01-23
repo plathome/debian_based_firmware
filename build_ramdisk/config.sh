@@ -73,7 +73,8 @@ wheezy)
 		COMPRESS_EXT=gz
 	;;
 	obs600)
-		KERNEL=2.6.32
+		KERNEL=3.10.25
+		DTBFILE=obs600.dtb
 		ISOFILE=debian-7.2.0-powerpc-DVD-1.iso
 		RAMDISK_SIZE=160
 		PATCHLEVEL=0beta0

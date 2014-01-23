@@ -44,11 +44,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <signal.h>
-#if defined(HAVE_PUSHSW_OBS600_H)
-#include <asm/pushsw_obs600.h>
-#elif defined(HAVE_PUSHSW_OBSAXX_H)
 #include "obspushsw.h"
-#endif
 #include <linux/version.h>
 #include <time.h>
 
@@ -252,10 +248,6 @@ void watch_pushsw(void)
 #else
 		rv = ioctl(fd, PSWIOC_GETSTATUS, NULL);
 #endif
-#if 0
-printf("stat=%08x\n", rv);
-if(rv == -1) printf("%d: %s\n", __LINE__, strerror(errno));
-#endif
 		if (rv < 0) {
 			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
@@ -412,7 +404,7 @@ int main(int argc, char *argv[])
 		return 0;
 	} else {
 //#ifndef DEBUG
-#if 0
+#if 1
 		/* daemon */
 		close(STDIN_FILENO);
 		close(STDOUT_FILENO);

@@ -60,25 +60,18 @@ esac
 
 packages="gcc-${gcc_version}-${KERN_ARCH}-linux-gnu${ABI}"
 
-if [ "$TARGET" == "obs600" ]; then
-	xbinutils_version=2.20.1-16
-	xgcc_version=4.3.5-4
-	pkg4gomp1="libc6-powerpc-cross libgcc1-powerpc-cross"
-	packages+=" libc-dev-bin-powerpc-cross libc6-dev-powerpc-cross linux-libc-dev-powerpc-cross zlib1g-powerpc-cross zlib1g-dev-powerpc-cross"
-else
-	case $host_debian_version in
-		7.*)
-			xbinutils_version=2.22-7.1
-			xgcc_version=4.7.2-4
-		;;
-		6.*)
-			xbinutils_version=2.20.1-16
-			xgcc_version=4.4.5-8
-		;;
-	esac
-	pkg4gomp1="libc6-armel-cross libgcc1-armel-cross"
-	packages+=" libc-dev-bin-armel-cross libc6-dev-armel-cross linux-libc-dev-armel-cross zlib1g-armel-cross zlib1g-dev-armel-cross"
-fi
+case $host_debian_version in
+	7.*)
+		xbinutils_version=2.22-7.1
+		xgcc_version=4.7.2-4
+	;;
+	6.*)
+		xbinutils_version=2.20.1-16
+		xgcc_version=4.4.5-8
+	;;
+esac
+pkg4gomp1="libc6-${KERN_ARCH}-cross libgcc1-${KERN_ARCH}-cross"
+packages+=" libc-dev-bin-${KERN_ARCH}-cross libc6-dev-${KERN_ARCH}-cross linux-libc-dev-${KERN_ARCH}-cross zlib1g-${KERN_ARCH}-cross zlib1g-dev-${KERN_ARCH}-cross"
 
 case $(uname -m) in
 	x86_64) deb_arch=amd64 ;;
@@ -113,9 +106,7 @@ fetch_install http://www.emdebian.org/debian/pool/main/b/binutils/ binutils-${KE
 fetch_install http://www.emdebian.org/debian/pool/main/g/gcc-${gcc_version}/ gcc-${gcc_version}-${KERN_ARCH}-linux-gnu${ABI}-base_${xgcc_version}_${deb_arch}.deb
 fetch_install http://www.emdebian.org/debian/pool/main/g/gcc-${gcc_version}/ cpp-${gcc_version}-${KERN_ARCH}-linux-gnu${ABI}_${xgcc_version}_${deb_arch}.deb
 apt-get install $pkg4gomp1
-if [ "$TARGET" != "obs600" ]; then
-	fetch_install http://www.emdebian.org/debian/pool/main/g/gcc-${gcc_version}/ libgomp1-armel-cross_${xgcc_version}_all.deb
-fi
+fetch_install http://www.emdebian.org/debian/pool/main/g/gcc-${gcc_version}/ libgomp1-${KERN_ARCH}-cross_${xgcc_version}_all.deb
 apt-get install $packages
 
 update-alternatives --install /usr/bin/${KERN_ARCH}-linux-gnu${ABI}-gcc ${KERN_ARCH}-linux-gnu${ABI}-gcc /usr/bin/${KERN_ARCH}-linux-gnu${ABI}-gcc-${gcc_version} 255
@@ -125,5 +116,5 @@ update-alternatives --set editor /usr/bin/vim.basic
 
 if [ "$TARGET" == "obs600" ]; then
 	dpkg -P qemu-user-static
-	fetch_install http://ftp.jp.debian.org/debian/pool/main/q/qemu qemu-user-static_1.1.2+dfsg-6a_i386.deb
+	fetch_install http://ftp.jp.debian.org/debian/pool/main/q/qemu qemu-user-static_1.7.0+dfsg-3_amd64.deb
 fi

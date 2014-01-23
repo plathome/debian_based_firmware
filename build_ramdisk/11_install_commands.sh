@@ -38,18 +38,14 @@ elif [ "$TARGET" == "obsa6" ] ; then
 	MODEL="-DCONFIG_OBSA6"
 else
 	FLASHCFG="flashcfg_obs600.c"
-	if [ ! -h ${LINUX_SRC}/include/asm ]; then
-		cd ${LINUX_SRC}/include
-		ln -s ../arch/powerpc/include/asm asm-powerpc
-	fi
 fi
 
 LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
 
-if [ ! "$KERNEL" == "3.13" ] ; then
-CFLAGS="-Wall -I$LINUX_INC -DDEBIAN ${MODEL}"
+if [ "$KERNEL" == "3.13" -o "$KERNEL" == "3.10.25" ] ; then
+CFLAGS="-Wall -I/usr/${ARCH}-linux-gnu${ABI}/include -L/usr/${ARCH}-linux-gnu${ABI}/lib -DDEBIAN ${MODEL}"
 else
-CFLAGS="-Wall -I/usr/arm-linux-gnueabi/include -L/usr/arm-linux-gnueabi/lib -DDEBIAN ${MODEL}"
+CFLAGS="-Wall -I$LINUX_INC -DDEBIAN ${MODEL}"
 fi
 
 if [ "$TARGET" == "obs600" ]; then
