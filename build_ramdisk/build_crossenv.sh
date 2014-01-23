@@ -29,7 +29,7 @@
 
 # Install packages of Debian.
 
-packages="build-essential uboot-mkimage libncurses5-dev debootstrap vim qemu-user-static emdebian-archive-keyring"
+packages="build-essential uboot-mkimage libncurses5-dev debootstrap vim qemu-user-static emdebian-archive-keyring bc"
 
 host_debian_version=`cat /etc/debian_version`
 
