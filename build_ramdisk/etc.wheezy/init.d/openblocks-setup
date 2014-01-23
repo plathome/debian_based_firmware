@@ -234,6 +234,7 @@ sshd_create_keys() {
 
 case "$1" in
 start)
+	mount -oremount,rw /
 	protect_mtd
 
 	depmod -a
