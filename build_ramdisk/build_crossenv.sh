@@ -113,9 +113,7 @@ fetch_install http://www.emdebian.org/debian/pool/main/b/binutils/ binutils-${KE
 fetch_install http://www.emdebian.org/debian/pool/main/g/gcc-${gcc_version}/ gcc-${gcc_version}-${KERN_ARCH}-linux-gnu${ABI}-base_${xgcc_version}_${deb_arch}.deb
 fetch_install http://www.emdebian.org/debian/pool/main/g/gcc-${gcc_version}/ cpp-${gcc_version}-${KERN_ARCH}-linux-gnu${ABI}_${xgcc_version}_${deb_arch}.deb
 apt-get install $pkg4gomp1
-if [ "$TARGET" == "obs600" ]; then
-	fetch_install http://www.emdebian.org/debian/pool/main/g/gcc-${gcc_version}/ libgomp1-powerpc-cross_${xgcc_version}_all.deb
-else
+if [ "$TARGET" != "obs600" ]; then
 	fetch_install http://www.emdebian.org/debian/pool/main/g/gcc-${gcc_version}/ libgomp1-armel-cross_${xgcc_version}_all.deb
 fi
 apt-get install $packages
