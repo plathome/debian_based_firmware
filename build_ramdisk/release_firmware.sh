@@ -62,7 +62,7 @@ cp -f ${LINUX_SRC}/System.map ${RELEASEDIR}
 
 if [ "$TARGET" == "obs600" ]; then
 	cp -f ${LINUX_SRC}/vmlinux.bin.gz ${RELEASEDIR}
-elif [ "$TARGET" == "obsa7" ]; then
+elif [ "$KERNEL" == "3.13" ]; then
 	cat ${LINUX_SRC}/arch/${KERN_ARCH}/boot/zImage ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/${DTBFILE} > ${RELEASEDIR}/zImage.dtb
 else
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/zImage ${RELEASEDIR}

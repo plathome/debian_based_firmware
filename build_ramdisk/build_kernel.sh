@@ -47,9 +47,13 @@ fi
 
 cd ${LINUX_SRC}
 make ARCH=${KERN_ARCH} CROSS_COMPILE=${CROSS_COMPILE} ${TARGET}_defconfig
+if [ "$KERNEL" == "3.13" ]; then
+make ARCH=${KERN_ARCH} CROSS_COMPILE=${CROSS_COMPILE} zImage modules
+else
 make -j$((${cpunum}+1)) ARCH=${KERN_ARCH} CROSS_COMPILE=${CROSS_COMPILE} zImage modules
+fi
 if [ "$TARGET" == "obs600" ]; then
 	make ARCH=${KERN_ARCH} ${TARGET}.dtb
 elif [ "$KERNEL" == "3.13" ]; then
-	make DTBFILE ARCH=${KERN_ARCH} CROSS_COMPILE=${CROSS_COMPILE}
+	make $DTBFILE ARCH=${KERN_ARCH} CROSS_COMPILE=${CROSS_COMPILE}
 fi
