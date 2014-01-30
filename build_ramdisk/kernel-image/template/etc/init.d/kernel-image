@@ -12,6 +12,7 @@
 # Short-Description: Starts kernel-image
 # Description:       Starts kernel-image
 ### END INIT INFO
+NAME=kernel-image
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
 #includes lsb functions 
