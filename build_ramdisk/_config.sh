@@ -49,7 +49,7 @@ RAMDISK_IMG=ramdisk-${DIST}.${TARGET}.img
 
 LINUX_SRC=${WRKDIR}/source/${TARGET}/linux-${KERNEL}
 
-UBOOTDIR=${WRKDIR}/u-boot/${TARGET}
+UBOOTDIR=${WRKDIR}/uboot-image/${TARGET}
 
 case $ARCH in
 armel|armhf)
