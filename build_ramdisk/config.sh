@@ -35,13 +35,13 @@ COMPRESS_EXT=${COMPRESS_EXT:=lzma}
 export TARGET DIST
 
 if [ "$TARGET" == "obs600" ]; then
-       QEMU_BIN=qemu-ppc-static
-       GCCVER=4.3
-       ABI=""
+	QEMU_BIN=qemu-ppc-static
+	GCCVER=4.3
+	ABI=""
 else
- QEMU_BIN=qemu-arm-static
-       GCCVER=4.7
-       ABI=eabi
+	QEMU_BIN=qemu-arm-static
+	GCCVER=4.7
+	ABI=eabi
 fi
 
 case ${DIST} in
@@ -71,6 +71,8 @@ wheezy)
 		LZMA_LEVEL=9
 		COMPRESS=gzip
 		COMPRESS_EXT=gz
+		UBOOT_VER=1.2.12
+		UBOOT_PL=0
 	;;
 	obs600)
 		KERNEL=3.10.25

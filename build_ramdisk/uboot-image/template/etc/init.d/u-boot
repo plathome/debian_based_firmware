@@ -1,0 +1,111 @@
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:          u-boot
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Starts u-boot
+# Description:       Starts u-boot
+### END INIT INFO
+NAME=u-boot
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+if [ -e /etc/init.d/easyblockssync ]; then
+	# include lsb functions
+	. /lib/lsb/init-functions
+
+	EBDIR=/etc/easyblocks
+	. ${EBDIR}/lib/common
+
+	[ -f /etc/default/openblocks ] && . /etc/default/openblocks
+
+	if initsw_pushed; then
+		exit 0
+	fi
+fi
+
+set -e
+
+FILE_MTD0="/etc/mtd0.img.xz"
+if [ -c /dev/mtd6 ]; then
+	FILE_MTD1="/etc/mtd1_java.img.xz"
+else
+	FILE_MTD1="/etc/mtd1.img.xz"
+fi
+SYSFS_MTDDIR=/sys/devices/virtual/mtd
+SYSFS_MTD0_FLG=$SYSFS_MTDDIR/mtd0/flags
+SYSFS_MTD1_FLG=$SYSFS_MTDDIR/mtd1/flags
+UBOOT_VERSION="0"
+NEW_VERSION="@NEW_VERSION@"
+
+if [ ! -f $FILE_MTD0 ]; then
+	echo "error: $FILE_MTD0 not found."
+	exit 1
+fi
+if [ ! -f $FILE_MTD1 ]; then
+	echo "error: $FILE_MTD1 not found."
+	exit 1
+fi
+
+UBOOT_VERSION=$(grep -a "version: " /dev/mtd0 | cut -b 20- | sed "s/ .*//g")
+
+case "$1" in
+start)
+	case $UBOOT_VERSION in
+	1\.2\.[4689])
+		if [ -e /etc/init.d/easyblockssync ]; then
+			echo "Writing u-boot file ($NEW_VERSION) ..."
+			syslog_raw info "Writing u-boot file ($NEW_VERSION) ..."
+		fi
+
+		# enable to write MTD device
+		echo 0xc00 > $SYSFS_MTD0_FLG
+		echo 0xc00 > $SYSFS_MTD1_FLG
+
+		# banner
+		echo "Update u-boot to $NEW_VERSION (previous version: $UBOOT_VERSION)"
+
+		# erase u-boot area
+		echo -n "erase u-boot..."
+		flash_erase -q /dev/mtd0 0 0
+		echo "done."
+
+		# erase u-boot environment area
+		echo -n "erase u-boot environment..."
+		flash_erase -q /dev/mtd1 0 0
+		echo "done."
+
+		# write files
+		echo -n "update u-boot..."
+		xzcat $FILE_MTD0 | nandwrite -o -n -q /dev/mtd0 -
+		echo "done."
+		echo -n "update u-boot env..."
+		xzcat $FILE_MTD1 | nandwrite -o -n -q /dev/mtd1 -
+		echo "done."
+
+		# disable to write MTD device
+		echo 0x800 > $SYSFS_MTD0_FLG
+		echo 0x800 > $SYSFS_MTD1_FLG
+
+		echo ""
+		echo "Please reboot the OpenBlocks."
+		;;
+	$NEW_VERSION)
+		echo "U-Boot already updated."
+		exit 0
+		;;
+	*)
+		echo "Unknown u-boot version, updating aborted."
+		exit 1
+		;;
+	esac
+	;;
+stop)
+	;;
+*)
+	echo "Usage: /etc/init.d/$NAME {start|stop}" >&2
+	exit 1
+	;;
+esac
+
+exit 0

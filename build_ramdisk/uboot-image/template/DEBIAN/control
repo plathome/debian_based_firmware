@@ -1,0 +1,8 @@
+Package: uboot-image
+Priority: important
+Section: base
+Maintainer: Plat'Home CO., LTD. <support@plathome.co.jp>
+Architecture: @ARCH@
+Version: @VERSION@
+Depends: mtd-utils
+Description: U-Boot image for OpenBlocks
