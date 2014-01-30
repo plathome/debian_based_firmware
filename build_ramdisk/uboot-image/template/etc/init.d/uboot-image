@@ -1,13 +1,13 @@
 #!/bin/bash
 
 ### BEGIN INIT INFO
-# Provides:          u-boot
+# Provides:          uboot-image
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: Starts u-boot
-# Description:       Starts u-boot
+# Short-Description: Starts uboot-image
+# Description:       Starts uboot-image
 ### END INIT INFO
-NAME=u-boot
+NAME=uboot-image
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
 if [ -e /etc/init.d/easyblockssync ]; then

@@ -11,10 +11,10 @@ case "$1" in
 configure)
 	[ -f /.chroot ] && exit 0
 	if [ -e /etc/init.d/easyblockssync ]; then
-		/usr/sbin/update-rc.d u-boot defaults
-		/etc/init.d/u-boot start
+		/usr/sbin/update-rc.d uboot-image defaults
+		/etc/init.d/uboot-image start
 	elif [ -f /etc/mtd0.img.xz ]; then
-		if /etc/init.d/u-boot start; then
+		if /etc/init.d/uboot-image start; then
 			rm -f /etc/mtd0.img.xz
 			rm -f /etc/mtd1.img.xz
 			rm -f /etc/mtd1_java.img.xz

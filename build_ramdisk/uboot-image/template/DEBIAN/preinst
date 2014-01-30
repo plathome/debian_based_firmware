@@ -16,7 +16,7 @@ set -e
 
 case "$1" in
     install|upgrade)
-	rm -f /.rw/var/lib/dpkg/info/u-boot.*
+	rm -f /.rw/var/lib/dpkg/info/uboot-image.*
     ;;
 
     abort-upgrade)

@@ -53,9 +53,9 @@ mv -f /tmp/control.new $pkgdir/DEBIAN/control
 
 NEW_VERSION=$(echo $VERSION | sed "s/-.*//g")
 sed -e "s|@NEW_VERSION@|$NEW_VERSION|" \
-    < $pkgdir/etc/init.d/u-boot > /tmp/u-boot.new
-mv -f /tmp/u-boot.new $pkgdir/etc/init.d/u-boot
-chmod 755 $pkgdir/etc/init.d/u-boot
+    < $pkgdir/etc/init.d/uboot-image > /tmp/uboot-image.new
+mv -f /tmp/uboot-image.new $pkgdir/etc/init.d/uboot-image
+chmod 755 $pkgdir/etc/init.d/uboot-image
 
 cp -f $UBOOTDIR/${TARGET}_mtd0.img.xz $pkgdir/etc/mtd0.img.xz
 cp -f $UBOOTDIR/${TARGET}_mtd1.img.xz $pkgdir/etc/mtd1.img.xz
