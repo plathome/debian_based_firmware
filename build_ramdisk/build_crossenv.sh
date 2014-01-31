@@ -60,6 +60,15 @@ esac
 
 packages="gcc-${gcc_version}-${KERN_ARCH}-linux-gnu${ABI}"
 
+case $KERN_ARCH in
+arm)
+	XARCH=${KERN_ARCH}el
+	;;
+powerpc)
+	XARCH=${KERN_ARCH}
+	;;
+esac
+	
 case $host_debian_version in
 	7.*)
 		xbinutils_version=2.22-7.1
@@ -70,8 +79,8 @@ case $host_debian_version in
 		xgcc_version=4.4.5-8
 	;;
 esac
-pkg4gomp1="libc6-${KERN_ARCH}-cross libgcc1-${KERN_ARCH}-cross"
-packages+=" libc-dev-bin-${KERN_ARCH}-cross libc6-dev-${KERN_ARCH}-cross linux-libc-dev-${KERN_ARCH}-cross zlib1g-${KERN_ARCH}-cross zlib1g-dev-${KERN_ARCH}-cross"
+pkg4gomp1="libc6-${XARCH}-cross libgcc1-${XARCH}-cross"
+packages+=" libc-dev-bin-${XARCH}-cross libc6-dev-${XARCH}-cross linux-libc-dev-${XARCH}-cross zlib1g-${XARCH}-cross zlib1g-dev-${XARCH}-cross"
 
 case $(uname -m) in
 	x86_64) deb_arch=amd64 ;;
@@ -106,7 +115,7 @@ fetch_install http://www.emdebian.org/debian/pool/main/b/binutils/ binutils-${KE
 fetch_install http://www.emdebian.org/debian/pool/main/g/gcc-${gcc_version}/ gcc-${gcc_version}-${KERN_ARCH}-linux-gnu${ABI}-base_${xgcc_version}_${deb_arch}.deb
 fetch_install http://www.emdebian.org/debian/pool/main/g/gcc-${gcc_version}/ cpp-${gcc_version}-${KERN_ARCH}-linux-gnu${ABI}_${xgcc_version}_${deb_arch}.deb
 apt-get install $pkg4gomp1
-fetch_install http://www.emdebian.org/debian/pool/main/g/gcc-${gcc_version}/ libgomp1-${KERN_ARCH}-cross_${xgcc_version}_all.deb
+fetch_install http://www.emdebian.org/debian/pool/main/g/gcc-${gcc_version}/ libgomp1-${XARCH}-cross_${xgcc_version}_all.deb
 apt-get install $packages
 
 update-alternatives --install /usr/bin/${KERN_ARCH}-linux-gnu${ABI}-gcc ${KERN_ARCH}-linux-gnu${ABI}-gcc /usr/bin/${KERN_ARCH}-linux-gnu${ABI}-gcc-${gcc_version} 255
@@ -116,5 +125,5 @@ update-alternatives --set editor /usr/bin/vim.basic
 
 if [ "$TARGET" == "obs600" ]; then
 	dpkg -P qemu-user-static
-	fetch_install http://ftp.jp.debian.org/debian/pool/main/q/qemu qemu-user-static_1.7.0+dfsg-3_amd64.deb
+	fetch_install http://ftp.jp.debian.org/debian/pool/main/q/qemu qemu-user-static_1.7.0+dfsg-3_${deb_arch}.deb
 fi
