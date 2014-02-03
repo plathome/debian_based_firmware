@@ -76,7 +76,7 @@ mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}${PATCH_LEVEL}" \
 	-d ${RELEASEDIR}/vmlinux.bin.gz:${RELEASEDIR}/${RAMDISK_IMG}.${COMPRESS_EXT}:${LINUX_SRC}/arch/${KERN_ARCH}/boot/${TARGET}.dtb \
 	${RELEASEDIR}/uImage.initrd.${TARGET}
 (cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb.sh ${VERSION} ${ARCH} ${RELEASEDIR}/uImage.initrd.${TARGET})
-elif [ "$TARGET" == "obsa7" ]; then
+elif [ "$KERNEL" == "3.13" ]; then
 mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}${PATCH_LEVEL}" \
 	-A arm -O linux -T multi -C none -a 0x8000 -e 0x8000 \
 	-d ${RELEASEDIR}/zImage.dtb:${RELEASEDIR}/${RAMDISK_IMG}.${COMPRESS_EXT} \
