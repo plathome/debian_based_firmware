@@ -119,14 +119,14 @@ extract_mtd(){
 
 if_exists_execute_config_postscript(){
 	if [ -f "${CONFIG_DEV_MTPT}/${CONFIG_POSTSCRIPT}" ] ; then
-		sh ${CONFIG_DEV_MTPT}/${CONFIG_POSTSCRIPT}
+		bash ${CONFIG_DEV_MTPT}/${CONFIG_POSTSCRIPT}
 	fi
 	return 0
 }
 
 if_exists_execute_config_script(){
 	if [ -f "${CONFIG_DEV_MTPT}/${CONFIG_SCRIPT}" ] ; then
-		sh ${CONFIG_DEV_MTPT}/${CONFIG_SCRIPT}
+		bash ${CONFIG_DEV_MTPT}/${CONFIG_SCRIPT}
 	fi
 	return 0
 }
