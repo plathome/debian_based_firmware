@@ -34,16 +34,6 @@ COMPRESS_EXT=${COMPRESS_EXT:=lzma}
 
 export TARGET DIST
 
-if [ "$TARGET" == "obs600" ]; then
-	QEMU_BIN=qemu-ppc-static
-	GCCVER=4.3
-	ABI=""
-else
-	QEMU_BIN=qemu-arm-static
-	GCCVER=4.7
-	ABI=eabi
-fi
-
 case ${DIST} in
 wheezy)
 	KERNEL=3.2.40
@@ -118,9 +108,6 @@ squeeze)
 ;;
 esac
 
-
-
-
 if [ -f _config.sh ] ; then
 	. _config.sh
 elif [ -f ../_config.sh ] ; then
@@ -129,4 +116,3 @@ else
 	echo "could't read _config.sh"
 	exit 1
 fi
-

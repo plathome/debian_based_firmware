@@ -58,6 +58,8 @@ armel|armhf)
 	STRIP=${CROSS_COMPILE}strip
 	KERN_ARCH=arm
 	KERN_IMG=z
+	QEMU_BIN=qemu-arm-static
+	ABI=eabi
 ;;
 powerpc)
 	CROSS_COMPILE=powerpc-linux-gnu-
@@ -65,6 +67,8 @@ powerpc)
 	STRIP=${CROSS_COMPILE}strip
 	KERN_ARCH=powerpc
 	KERN_IMG=u
+	QEMU_BIN=qemu-ppc-static
+	ABI=""
 ;;
 *)
 	CC=gcc
