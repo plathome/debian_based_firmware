@@ -29,7 +29,6 @@ NOROOT=yes
 
 . `dirname $0`/config.sh
 
-
 if [ ! -d "${LINUX_SRC}" ]; then
 	echo
 	echo "Linux source not exists."
@@ -57,8 +56,7 @@ if [ -f "${WRKDIR}/source/${TARGET}/linux-${KERNEL}.dot.config" ]; then
 	make ${MAKE_OPTION} oldconfig
 fi
 
-make -j$((${cpunum}+1)) ${MAKE_OPTION} ${KERN_IMG}Image modules
+make -j$((${cpunum}+1)) ${MAKE_OPTION} ${MAKE_IMAGE} modules
 if [ -n "$DTBFILE" ]; then
 	make ${MAKE_OPTION} $DTBFILE
 fi
-
