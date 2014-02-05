@@ -32,6 +32,8 @@ COMPRESS=${COMPRESS:=lzma}
 
 COMPRESS_EXT=${COMPRESS_EXT:=lzma}
 
+MAKE_IMAGE=uImage
+
 export TARGET DIST
 
 if [ "$TARGET" == "obs600" ]; then
@@ -84,6 +86,7 @@ wheezy)
 		LZMA_LEVEL=9
 		COMPRESS=gzip
 		COMPRESS_EXT=gz
+		MAKE_IMAGE=zImage
 	;;
 	*) exit 1 ;;
 	esac

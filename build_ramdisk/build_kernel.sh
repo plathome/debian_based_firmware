@@ -37,6 +37,8 @@ fi
 
 cpunum=$(grep '^processor' /proc/cpuinfo  | wc -l)
 
+MAKE_OPTION="ARCH=${KERN_ARCH} CROSS_COMPILE=${CROSS_COMPILE}"
+
 if [ "$TARGET" == "obs600" ]; then
 	if [ ! -h ${LINUX_SRC}/include/asm ]; then
 		cd ${LINUX_SRC}/include
@@ -46,16 +48,10 @@ if [ "$TARGET" == "obs600" ]; then
 fi
 
 cd ${LINUX_SRC}
-make ARCH=${KERN_ARCH} CROSS_COMPILE=${CROSS_COMPILE} ${TARGET}_defconfig
-if [ "$KERNEL" == "3.13" ]; then
-	make -j$((${cpunum}+1)) ARCH=${KERN_ARCH} CROSS_COMPILE=${CROSS_COMPILE} zImage modules
-else
-	if [ "$TARGET" == "obs600" ]; then
-		make -j$((${cpunum}+1)) ARCH=${KERN_ARCH} CROSS_COMPILE=${CROSS_COMPILE} uImage modules
-	else
-		make -j$((${cpunum}+1)) ARCH=${KERN_ARCH} CROSS_COMPILE=${CROSS_COMPILE} zImage modules
-	fi
-fi
-if [ "$KERNEL" == "3.13" -o "$TARGET" == "obs600" ]; then
-	make $DTBFILE ARCH=${KERN_ARCH} CROSS_COMPILE=${CROSS_COMPILE}
+make ${MAKE_OPTION} ${TARGET}_defconfig
+
+make -j$((${cpunum}+1)) ${MAKE_OPTION} $MAKE_IMAGE modules
+
+if [ -n "$DTBFILE" ]; then
+	make ${MAKE_OPTION} $DTBFILE
 fi
