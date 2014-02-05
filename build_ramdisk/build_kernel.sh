@@ -25,6 +25,8 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
+NOROOT=yes
+
 . `dirname $0`/config.sh
 
 

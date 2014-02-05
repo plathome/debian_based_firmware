@@ -80,7 +80,7 @@ if [ "$(uname -m)" == "x86_64" ] || [ "$(uname -m)" == "i686" ]; then
         CROSS=true
 fi
 
-if [ "$(id -u)" -ne "0" ]; then
+if [ "$NOROOT" != "yes" ] && [ "$(id -u)" -ne "0" ]; then
 	echo
 	echo "ERROR: Please execute by root user."
 	echo "ex) sudo $(basename $0)"
