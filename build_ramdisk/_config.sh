@@ -57,12 +57,14 @@ armel|armhf)
 	CC=${CROSS_COMPILE}gcc
 	STRIP=${CROSS_COMPILE}strip
 	KERN_ARCH=arm
+	KERN_IMG=z
 ;;
 powerpc)
 	CROSS_COMPILE=powerpc-linux-gnu-
 	CC=${CROSS_COMPILE}gcc
 	STRIP=${CROSS_COMPILE}strip
 	KERN_ARCH=powerpc
+	KERN_IMG=u
 ;;
 *)
 	CC=gcc
