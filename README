@@ -176,6 +176,11 @@ DIST=wheezy, TARGET=obsax3の場合、以下の通り実行することと同じ
   # DIST=wheezy TARGET=obsax3 ./build_ramdisk.sh
   # DIST=wheezy TARGET=obsax3 ./release_firmware.sh
 
+TARGETとDISTについては、予め次のように設定することで、毎回の指定は不要
+になります。
+
+  # export DIST=wheezy TARGET=obsax3
+
 内容の詳細は各シェルスクリプトを読んでいただくことにして、簡単に説明し
 ておきます。以下のTARGETとDISTは、ご自身の文字列に置き換えてください。
 
@@ -219,19 +224,21 @@ AX3, A7, A6の場合
 
   # make ARCH=powerpc CROSS_COMPILE=powerpc-linux-gnu- menuconfig
 
+共通
+
+  # DIST=wheezy TARGET=obsax3 ./kernel_menuconfig.sh
+
 5.1.2. コンフィグレーションのコピー
 
 変更したコンフィグレーションファイル.configをコピーします。
 
-AX3, A7, A6の場合
+  # cp -a .config source/TARGET/linux-KERNEL.dot.config
 
-  # cp -a .config arch/arm/configs/TARGET_defconfig
+ここでTARGETとKERNELは、ご自身の文字列に置き換えてください。
 
-ここでTARGETは、ご自身の文字列に置き換えてください。
+コンフィグレーションの変更でkernel_menuconfig.shを使用した場合は、
+自動的にコピーまで実施します。
 
-600の場合
-
-  # cp -a .config arch/powerpc/configs/obs600_defconfig
 
 5.1.3. コンパイル
 

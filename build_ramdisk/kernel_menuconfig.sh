@@ -35,28 +35,9 @@ if [ ! -d "${LINUX_SRC}" ]; then
 	exit 1
 fi
 
-cpunum=$(grep '^processor' /proc/cpuinfo  | wc -l)
-
 MAKE_OPTION="ARCH=${KERN_ARCH} CROSS_COMPILE=${CROSS_COMPILE}"
 
-if [ "$TARGET" == "obs600" ]; then
-	if [ ! -h ${LINUX_SRC}/include/asm ]; then
-		cd ${LINUX_SRC}/include
-		ln -s ../arch/powerpc/include/asm asm-powerpc
-		ln -s asm-powerpc asm
-	fi
-fi
-
 cd ${LINUX_SRC}
-make ${MAKE_OPTION} ${TARGET}_defconfig
-
-if [ -f "${WRKDIR}/source/${TARGET}/linux-${KERNEL}.dot.config" ]; then
-	cp -f ${WRKDIR}/source/${TARGET}/linux-${KERNEL}.dot.config .config
-	make ${MAKE_OPTION} oldconfig
-fi
-
-make -j$((${cpunum}+1)) ${MAKE_OPTION} ${KERN_IMG}Image modules
-if [ -n "$DTBFILE" ]; then
-	make ${MAKE_OPTION} $DTBFILE
-fi
+make ${MAKE_OPTION} menuconfig
+cp -fv .config ${WRKDIR}/source/${TARGET}/linux-${KERNEL}.dot.config
 
