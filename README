@@ -212,35 +212,16 @@ build_ramdisk/buildall.shを実行しておいてください。
 
 5.1.1. コンフィグレーションの変更
 
-カーネルソースのディレクトリsource/TARGET/linux-KERNELに移動して、コ
-ンフィグレーションを変更します。TARGETとKERNELは、ご自身の文字列に置
-き換えてください。
-
-AX3, A7, A6の場合
-
-  # make ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- menuconfig
-
-600の場合
-
-  # make ARCH=powerpc CROSS_COMPILE=powerpc-linux-gnu- menuconfig
-
-共通
+次のコマンドを実行して、カーネルのコンフィグレーションを変更します。
+TARGETとDISTは、ご自身の文字列に置き換えてください。
 
   # DIST=wheezy TARGET=obsax3 ./kernel_menuconfig.sh
 
-5.1.2. コンフィグレーションのコピー
+変更したコンフィグレーションファイルは
+source/TARGET/linux-KERNEL.dot.configにコピーされます。TARGETとKERNEL
+は、ご自身の文字列に置き換えてください。
 
-変更したコンフィグレーションファイル.configをコピーします。
-
-  # cp -a .config source/TARGET/linux-KERNEL.dot.config
-
-ここでTARGETとKERNELは、ご自身の文字列に置き換えてください。
-
-コンフィグレーションの変更でkernel_menuconfig.shを使用した場合は、
-自動的にコピーまで実施します。
-
-
-5.1.3. コンパイル
+5.1.2. コンパイル
 
 シェルスクリプトbuild_ramdisk/build_kernel.shから順番に実行するか、シ
 ェルスクリプトbuild_ramdisk/buildall.shを実行してください。RAMディス
@@ -292,9 +273,9 @@ DIST=wheezy, TARGET=obsax3の場合、
 
 5.3. まとめ
 
-一度「5.1.2. コンフィグレーションのコピー」と「5.2.1. パッケージの取
-得」をすませておけば、シェルスクリプトbuild_ramdisk/buildall.shを実行
-するだけでカスタマイズのすんだファームウェアが作成できます。
+一度「5.1.1. コンフィグレーションの変更」と「5.2.1. パッケージの取得」
+をすませておけば、シェルスクリプトbuild_ramdisk/buildall.shを実行する
+だけでカスタマイズのすんだファームウェアが作成できます。
 
 6. ファームウェアの更新
 

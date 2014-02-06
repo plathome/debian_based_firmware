@@ -51,8 +51,8 @@ fi
 cd ${LINUX_SRC}
 make ${MAKE_OPTION} ${TARGET}_defconfig
 
-if [ -f "${WRKDIR}/source/${TARGET}/linux-${KERNEL}.dot.config" ]; then
-	cp -f ${WRKDIR}/source/${TARGET}/linux-${KERNEL}.dot.config .config
+if [ -f "${LINUX_SRC}/../linux-${KERNEL}.dot.config" ]; then
+	cp -f ${LINUX_SRC}/../linux-${KERNEL}.dot.config .config
 	make ${MAKE_OPTION} oldconfig
 fi
 
