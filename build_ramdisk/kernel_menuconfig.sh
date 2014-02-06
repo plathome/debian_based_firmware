@@ -40,6 +40,8 @@ fi
 MAKE_OPTION="ARCH=${KERN_ARCH} CROSS_COMPILE=${CROSS_COMPILE}"
 
 cd ${LINUX_SRC}
+[ -f "${WRKDIR}/source/${TARGET}/linux-${KERNEL}.dot.config" ] &&\
+	cp -fv ${WRKDIR}/source/${TARGET}/linux-${KERNEL}.dot.config .config
 make ${MAKE_OPTION} menuconfig
 cp -fv .config ${WRKDIR}/source/${TARGET}/linux-${KERNEL}.dot.config
 
