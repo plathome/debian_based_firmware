@@ -61,7 +61,7 @@ wheezy)
 		LZMA_LEVEL=9
 		COMPRESS=gzip
 		COMPRESS_EXT=gz
-		UBOOT_VER=1.2.12
+		UBOOT_VER=1.2.13
 		UBOOT_PL=0
 	;;
 	obs600)

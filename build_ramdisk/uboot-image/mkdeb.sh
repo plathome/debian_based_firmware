@@ -27,9 +27,9 @@
 
 if [ "$#" -ne "4" ] ; then
 	echo
-	echo "usage: $0 [VERSION] [ARCH] [TARGET] [obsa7_mtd0.img.xz]"
+	echo "usage: $0 [VERSION] [ARCH] [TARGET] [obsa7-mtd0-1.2.13.img.xz]"
 	echo
-	echo "ex) $0 1.2.12-0 armel obsa7 /path/obsa7_mtd0.img.xz"
+	echo "ex) $0 1.2.13-0 armel obsa7 /path/obsa7-mtd0-1.2.13.img.xz"
 	echo
 	exit 1
 fi
@@ -57,9 +57,9 @@ sed -e "s|@NEW_VERSION@|$NEW_VERSION|" \
 mv -f /tmp/uboot-image.new $pkgdir/etc/init.d/uboot-image
 chmod 755 $pkgdir/etc/init.d/uboot-image
 
-cp -f $UBOOTDIR/${TARGET}_mtd0.img.xz $pkgdir/etc/mtd0.img.xz
-cp -f $UBOOTDIR/${TARGET}_mtd1.img.xz $pkgdir/etc/mtd1.img.xz
-cp -f $UBOOTDIR/${TARGET}_mtd1_java.img.xz $pkgdir/etc/mtd1_java.img.xz
+cp -f $UBOOTDIR/${TARGET}-mtd0-${NEW_VERSION}.img.xz $pkgdir/etc/mtd0.img.xz
+cp -f $UBOOTDIR/${TARGET}-mtd1-${NEW_VERSION}.img.xz $pkgdir/etc/mtd1.img.xz
+cp -f $UBOOTDIR/${TARGET}-mtd1-${NEW_VERSION}-java.img.xz $pkgdir/etc/mtd1_java.img.xz
 
 rm -rf ${pkgdir}.deb
 
