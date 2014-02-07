@@ -52,7 +52,7 @@ UBOOT_VERSION=$(grep -a "version: " /dev/mtd0 | cut -b 20- | sed "s/ .*//g")
 case "$1" in
 start)
 	case $UBOOT_VERSION in
-	1\.2\.[4689]|1\.2\.1[2])
+	@OLD_VERSION@)
 		if [ -e /etc/init.d/easyblockssync ]; then
 			echo "Writing u-boot file ($NEW_VERSION) ..."
 			syslog_raw info "Writing u-boot file ($NEW_VERSION) ..."

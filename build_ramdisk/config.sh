@@ -63,6 +63,7 @@ wheezy)
 		COMPRESS_EXT=gz
 		UBOOT_VER=1.2.13
 		UBOOT_PL=0
+		UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
 	;;
 	obs600)
 		KERNEL=3.10.25

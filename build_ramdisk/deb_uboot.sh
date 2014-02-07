@@ -27,6 +27,6 @@
 
 . `dirname $0`/config.sh
 
-(cd ${WRKDIR}/build_ramdisk/uboot-image; ./mkdeb.sh ${UBOOT_VER}-${UBOOT_PL} ${ARCH} ${TARGET} ${UBOOTDIR}/${TARGET}-mtd0-${UBOOT_VER}.img.xz)
+(cd ${WRKDIR}/build_ramdisk/uboot-image; ./mkdeb.sh ${UBOOT_VER}-${UBOOT_PL} ${ARCH} ${TARGET} ${UBOOTDIR}/${TARGET}-mtd0-${UBOOT_VER}.img.xz ${UBOOT_OLD_VER})
 
 (cd ${UBOOTDIR}; rm -f *.md5; md5sum uboot-image-${UBOOT_VER}-${UBOOT_PL}.deb > uboot-image-${UBOOT_VER}-${UBOOT_PL}.deb.md5)

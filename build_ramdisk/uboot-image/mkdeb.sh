@@ -25,11 +25,11 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-if [ "$#" -ne "4" ] ; then
+if [ "$#" -ne "5" ] ; then
 	echo
-	echo "usage: $0 [VERSION] [ARCH] [TARGET] [obsa7-mtd0-1.2.13.img.xz]"
+	echo "usage: $0 [VERSION] [ARCH] [TARGET] [obsa7-mtd0-1.2.13.img.xz] [OLD VERSION]"
 	echo
-	echo "ex) $0 1.2.13-0 armel obsa7 /path/obsa7-mtd0-1.2.13.img.xz"
+	echo "ex) $0 1.2.13-0 armel obsa7 /path/obsa7-mtd0-1.2.13.img.xz \"1\.2\.[4689]|1\.2\.1[2]\""
 	echo
 	exit 1
 fi
@@ -38,9 +38,10 @@ VERSION=$1
 ARCH=$2
 TARGET=$3
 UBOOT=$4
-UBOOTDIR=$(dirname $UBOOT)
+OLD_VERSION=$5
 
 pkgdir=uboot-image-$VERSION
+UBOOTDIR=$(dirname $UBOOT)
 
 rm -rf $pkgdir
 mkdir -p $pkgdir
@@ -53,6 +54,7 @@ mv -f /tmp/control.new $pkgdir/DEBIAN/control
 
 NEW_VERSION=$(echo $VERSION | sed "s/-.*//g")
 sed -e "s|@NEW_VERSION@|$NEW_VERSION|" \
+    -e "s|@OLD_VERSION@|$OLD_VERSION|" \
     < $pkgdir/etc/init.d/uboot-image > /tmp/uboot-image.new
 mv -f /tmp/uboot-image.new $pkgdir/etc/init.d/uboot-image
 chmod 755 $pkgdir/etc/init.d/uboot-image
