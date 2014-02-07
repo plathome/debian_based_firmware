@@ -38,8 +38,6 @@ fi
 
 cpunum=$(grep '^processor' /proc/cpuinfo  | wc -l)
 
-MAKE_OPTION="ARCH=${KERN_ARCH} CROSS_COMPILE=${CROSS_COMPILE}"
-
 if [ "$TARGET" == "obs600" ]; then
 	if [ ! -h ${LINUX_SRC}/include/asm ]; then
 		cd ${LINUX_SRC}/include

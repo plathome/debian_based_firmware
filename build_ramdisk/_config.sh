@@ -76,6 +76,8 @@ powerpc)
 ;;
 esac
 
+MAKE_OPTION="ARCH=${KERN_ARCH} CROSS_COMPILE=${CROSS_COMPILE}"
+
 if [ "$(uname -m)" == "x86_64" ] || [ "$(uname -m)" == "i686" ]; then
         CROSS=true
 fi
