@@ -100,8 +100,8 @@ start)
 		exit 0
 		;;
 	*)
-		echo "Unknown u-boot version, updating aborted."
-		exit 1
+		# Update U-Boot for an incorrect version.
+		write_uboot 
 		;;
 	esac
 	;;
