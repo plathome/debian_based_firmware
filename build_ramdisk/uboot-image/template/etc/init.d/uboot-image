@@ -49,46 +49,51 @@ fi
 
 UBOOT_VERSION=$(grep -a "version: " /dev/mtd0 | cut -b 20- | sed "s/ .*//g")
 
+write_uboot ()
+{
+if [ -e /etc/init.d/easyblockssync ]; then
+	echo "Writing u-boot file ($NEW_VERSION) ..."
+	syslog_raw info "Writing u-boot file ($NEW_VERSION) ..."
+fi
+
+# enable to write MTD device
+echo 0xc00 > $SYSFS_MTD0_FLG
+echo 0xc00 > $SYSFS_MTD1_FLG
+
+# banner
+echo "Update u-boot to $NEW_VERSION (previous version: $UBOOT_VERSION)"
+
+# erase u-boot area
+echo -n "erase u-boot..."
+flash_erase -q /dev/mtd0 0 0
+echo "done."
+
+# erase u-boot environment area
+echo -n "erase u-boot environment..."
+flash_erase -q /dev/mtd1 0 0
+echo "done."
+
+# write files
+echo -n "update u-boot..."
+xzcat $FILE_MTD0 | nandwrite -o -n -q /dev/mtd0 -
+echo "done."
+echo -n "update u-boot env..."
+xzcat $FILE_MTD1 | nandwrite -o -n -q /dev/mtd1 -
+echo "done."
+
+# disable to write MTD device
+echo 0x800 > $SYSFS_MTD0_FLG
+echo 0x800 > $SYSFS_MTD1_FLG
+
+echo ""
+echo "Please reboot the OpenBlocks."
+}
+
 case "$1" in
 start)
 	case $UBOOT_VERSION in
 	@OLD_VERSION@)
-		if [ -e /etc/init.d/easyblockssync ]; then
-			echo "Writing u-boot file ($NEW_VERSION) ..."
-			syslog_raw info "Writing u-boot file ($NEW_VERSION) ..."
-		fi
-
-		# enable to write MTD device
-		echo 0xc00 > $SYSFS_MTD0_FLG
-		echo 0xc00 > $SYSFS_MTD1_FLG
-
-		# banner
-		echo "Update u-boot to $NEW_VERSION (previous version: $UBOOT_VERSION)"
-
-		# erase u-boot area
-		echo -n "erase u-boot..."
-		flash_erase -q /dev/mtd0 0 0
-		echo "done."
-
-		# erase u-boot environment area
-		echo -n "erase u-boot environment..."
-		flash_erase -q /dev/mtd1 0 0
-		echo "done."
-
-		# write files
-		echo -n "update u-boot..."
-		xzcat $FILE_MTD0 | nandwrite -o -n -q /dev/mtd0 -
-		echo "done."
-		echo -n "update u-boot env..."
-		xzcat $FILE_MTD1 | nandwrite -o -n -q /dev/mtd1 -
-		echo "done."
-
-		# disable to write MTD device
-		echo 0x800 > $SYSFS_MTD0_FLG
-		echo 0x800 > $SYSFS_MTD1_FLG
-
-		echo ""
-		echo "Please reboot the OpenBlocks."
+		write_uboot 
 		;;
 	$NEW_VERSION)
 		echo "U-Boot already updated."
