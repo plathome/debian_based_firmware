@@ -103,8 +103,8 @@ ftp://ftp.plathome.co.jp/pub/OBSAX3/squeeze/3.0.6-14/source/linux-3.0.6-14.tar.g
 TARGET=obsa6, DIST=squeeze, KERNEL=2.6.31, PATCHLEVEL=8の場合
 ftp://ftp.plathome.co.jp/pub/OBSA6/squeeze/2.6.31-8/source/linux-2.6.31-obs-20130131+obsa6_defconfig.tar.gz
 
-TARGET=obs600, DIST=squeeze, KERNEL=2.6.32, PATCHLEVEL=0beta0の場合
-ftp://ftp.plathome.co.jp/pub/OBS600/debian/files/wheezy/2.6.32-0beta0/linux-2.6.32-20130819-obs600.tar.gz
+TARGET=obs600, DIST=wheezy, KERNEL=3.10.25, PATCHLEVEL=0の場合
+ftp://ftp.plathome.co.jp/pub/OBS600/debian/files/wheezy/3.10.25-0/linux-3.10.25-obs600.tar.gz
 
 3.4.2. 展開
 
@@ -131,7 +131,7 @@ TARGET=obsa7, obsa6の場合
 debian-7.1.0-armel-DVD-1.iso
 
 TARGET=obs600の場合
-debian-7.2.0-powerpc-DVD-1.iso
+debian-7.4.0-powerpc-DVD-1.iso
 
 これらのファイルは 
 ftp://ftp.plathome.co.jp/pub/cdimages/debian/
