@@ -31,3 +31,6 @@ RW_TMPFS_SIZE="384m"
 CORE_STOP_TEMP=105
 CORE_RESTART_TEMP=75
 
+# Set noatime option, when using SSD.
+NOATIME=false
+
