@@ -48,14 +48,6 @@ NAME="openblocks-setup"
 
 [ -f /etc/default/openblocks ] && . /etc/default/openblocks
 
-if [ "$1" == "start"  ] ; then
-	tar -xpzf /dev/${MTD_CONF_DEV} -C /tmp \
-		etc/default/openblocks 2> /dev/null
-	[ -f /tmp/etc/default/openblocks ] && . /tmp/etc/default/openblocks
-	rm -rf /tmp/etc
-fi
-
-
 RW_DIR="${RW_DIR:=/.rw}"
 RW_CF_LABEL="${RW_CF_LABEL:=DEBIAN}"
 CONFIG_LABEL="${CONFIG_LABEL:=DEB_CONFIG}"
@@ -301,12 +293,27 @@ start)
 			fdisk_and_mke2fs $rwdev
 		fi
 
-		#fsck -C -a $rwdev 2> /dev/null
 		mount -t $rwdev_fs $rwdev ${RW_DIR}
-		if [ "$rwdev_fs" == "ext4" ] ; then
-			mount -oremount,discard ${RW_DIR}
-		fi
 
+	fi
+
+	[ -f ${RW_DIR}/etc/default/openblocks ] && \
+		. ${RW_DIR}/etc/default/openblocks
+
+	if [ -z "$rwdev" ] ; then
+		mount -o remount,size=${RW_TMPFS_SIZE} ${RW_DIR}
+	else
+		remount_opt=
+		if [ "$rwdev_fs" == "ext4" ] ; then
+			remount_opt="$remount_opt discard"
+		fi
+		if [ "$NOATIME" == "true" ] ; then
+			remount_opt="$remount_opt noatime"
+		fi
+		_remount_opt="$(echo $remount_opt|sed -e 's# #,#')"
+
+		[ -n "$_remount_opt" ] && \
+			mount -oremount,$_remount_opt ${RW_DIR}
 	fi
 
 	# extract CONFIG_FILE and execute CONFIG_SCRIPT
