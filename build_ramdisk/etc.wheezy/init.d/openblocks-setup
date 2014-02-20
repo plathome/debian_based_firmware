@@ -317,14 +317,14 @@ start)
 	fi
 
 	# if using DEBIAN storage, /tmp directory mount under storage.
-	#if [ -n "$rwdev" ] ; then
-	#	UNIONFS_DIRS="$UNIONFS_DIRS tmp"
-	#fi
+	if [ -n "$rwdev" ] ; then
+		UNIONFS_DIRS="$UNIONFS_DIRS tmp"
+	fi
 
 	# mount filesystems
 	for dir in ${UNIONFS_DIRS} ; do
 		mawk '{print $2}' < /etc/fstab | grep -q "^/$dir" && continue
-		[ "$union_fs" == "aufs" ] && xino_opt="xino=/tmp/.aufs.xino.$dir,"
+		[ "$union_fs" == "aufs" ] && xino_opt="xino=/.aufs.xino.$dir,"
 		mkdir -p ${RW_DIR}/$dir
 		mount -n -t ${union_fs} \
 			-o ${union_opt}${xino_opt}dirs=${RW_DIR}/$dir=rw:/$dir=ro ${union_fs} /$dir
