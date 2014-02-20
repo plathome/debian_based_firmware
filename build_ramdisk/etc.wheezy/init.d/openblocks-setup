@@ -323,9 +323,9 @@ start)
 	fi
 
 	# if using DEBIAN storage, /tmp directory mount under storage.
-	if [ -n "$rwdev" ] ; then
-		UNIONFS_DIRS="$UNIONFS_DIRS tmp"
-	fi
+	#if [ -n "$rwdev" ] ; then
+	#	UNIONFS_DIRS="$UNIONFS_DIRS tmp"
+	#fi
 
 	# mount filesystems
 	for dir in ${UNIONFS_DIRS} ; do
