@@ -28,11 +28,11 @@
 . `dirname $0`/config.sh
 
 rm -f ${DISTDIR}/*.deb
-cp ${EXTRADEBDIR}/*${ARCH}.deb ${DISTDIR}/
-cp ${EXTRADEBDIR}/*all.deb ${DISTDIR}/
+cp ${EXTRADEBDIR}/*${ARCH}.deb ${DISTDIR}/ 2> /dev/null
+cp ${EXTRADEBDIR}/*all.deb ${DISTDIR}/ 2> /dev/null
 
-debs=$(cd ${DISTDIR}/; ls -1 *${ARCH}.deb)
-debs+=" $(cd ${DISTDIR}/; ls -1 *all.deb)"
+debs=$(cd ${DISTDIR}/; ls -1 *${ARCH}.deb 2> /dev/null)
+debs+=" $(cd ${DISTDIR}/; ls -1 *all.deb 2> /dev/null)"
 
 chroot ${DISTDIR} dpkg -i $debs
 
