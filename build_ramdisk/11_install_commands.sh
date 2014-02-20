@@ -43,7 +43,7 @@ fi
 LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
 
 if [ "$KERNEL" == "3.13" -o "$KERNEL" == "3.10.25" ] ; then
-CFLAGS="-Wall -I/usr/${ARCH}-linux-gnu${ABI}/include -L/usr/${ARCH}-linux-gnu${ABI}/lib -DDEBIAN ${MODEL}"
+CFLAGS="-Wall -I/usr/${KERN_ARCH}-linux-gnu${ABI}/include -L/usr/${KERN_ARCH}-linux-gnu${ABI}/lib -DDEBIAN ${MODEL}"
 else
 CFLAGS="-Wall -I$LINUX_INC -DDEBIAN ${MODEL}"
 fi
