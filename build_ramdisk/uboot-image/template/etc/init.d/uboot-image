@@ -22,19 +22,23 @@ if [ -e /etc/init.d/easyblockssync ]; then
 	if initsw_pushed; then
 		exit 0
 	fi
+else
+	[ -f /etc/default/openblocks ] && . /etc/default/openblocks
 fi
 
 set -e
 
-FILE_MTD0="/etc/mtd0.img.xz"
+FILE_MTD0="/etc/mtd0.data"
 if [ -c /dev/mtd6 ]; then
-	FILE_MTD1="/etc/mtd1_java.img.xz"
+	FILE_MTD1="/etc/mtd1_java.data"
 else
-	FILE_MTD1="/etc/mtd1.img.xz"
+	FILE_MTD1="/etc/mtd1.data"
 fi
+FILE_MTD2="/etc/mtd2.data"
 SYSFS_MTDDIR=/sys/devices/virtual/mtd
 SYSFS_MTD0_FLG=$SYSFS_MTDDIR/mtd0/flags
 SYSFS_MTD1_FLG=$SYSFS_MTDDIR/mtd1/flags
+SYSFS_MTD2_FLG=$SYSFS_MTDDIR/mtd2/flags
 UBOOT_VERSION="0"
 NEW_VERSION="@NEW_VERSION@"
 
@@ -42,12 +46,82 @@ if [ ! -f $FILE_MTD0 ]; then
 	echo "error: $FILE_MTD0 not found."
 	exit 1
 fi
-if [ ! -f $FILE_MTD1 ]; then
-	echo "error: $FILE_MTD1 not found."
+if [ "$MODEL" == "obsa7" ]; then
+	if [ ! -f $FILE_MTD1 ]; then
+		echo "error: $FILE_MTD1 not found."
+		exit 1
+	fi
+fi
+if [ ! -f $FILE_MTD2 ]; then
+	echo "error: $FILE_MTD2 not found."
 	exit 1
 fi
 
 UBOOT_VERSION=$(grep -a "version: " /dev/mtd0 | cut -b 20- | sed "s/ .*//g")
+
+enable_write ()
+{
+echo 0xc00 > $SYSFS_MTD0_FLG
+echo 0xc00 > $SYSFS_MTD1_FLG
+echo 0xc00 > $SYSFS_MTD2_FLG
+}
+
+disable_write ()
+{
+echo 0x800 > $SYSFS_MTD0_FLG
+echo 0x800 > $SYSFS_MTD1_FLG
+echo 0x800 > $SYSFS_MTD2_FLG
+}
+
+erase_area ()
+{
+case $MODEL in
+obsa7|obsa6)
+	echo -n "erase u-boot..."
+	flash_erase -q /dev/mtd0 0 0
+	echo "done."
+	echo -n "erase u-boot environment..."
+	flash_erase -q /dev/mtd1 0 0
+	echo "done."
+	echo -n "erase test program..."
+	flash_erase -q /dev/mtd2 0 0
+	echo "done."
+;;
+esac
+}
+
+write_data ()
+{
+case $MODEL in
+obsax3)
+	echo -n "update u-boot..."
+	flashcp $FILE_MTD0 /dev/mtd0
+	echo "done."
+	echo -n "update test program..."
+	flashcp $FILE_MTD2 /dev/mtd2
+	echo "done."
+;;
+obsa7)
+	echo -n "update u-boot..."
+	xzcat $FILE_MTD0 | nandwrite -o -n -q /dev/mtd0 -
+	echo "done."
+	echo -n "update u-boot env..."
+	xzcat $FILE_MTD1 | nandwrite -o -n -q /dev/mtd1 -
+	echo "done."
+	echo -n "update test program..."
+	nandwrite -map -q /dev/mtd2 $FILE_MTD2
+	echo "done."
+;;
+obsa6)
+	echo -n "update u-boot..."
+	nandwrite -map -q /dev/mtd0 $FILE_MTD0 
+	echo "done."
+	echo -n "update test program..."
+	nandwrite -map -q /dev/mtd2 $FILE_MTD2
+	echo "done."
+;;
+esac
+}
 
 write_uboot ()
 {
@@ -56,34 +130,20 @@ if [ -e /etc/init.d/easyblockssync ]; then
 	syslog_raw info "Writing u-boot file ($NEW_VERSION) ..."
 fi
 
-# enable to write MTD device
-echo 0xc00 > $SYSFS_MTD0_FLG
-echo 0xc00 > $SYSFS_MTD1_FLG
+# enable the MTD devices to write
+enable_write
 
 # banner
 echo "Update u-boot to $NEW_VERSION (previous version: $UBOOT_VERSION)"
 
-# erase u-boot area
-echo -n "erase u-boot..."
-flash_erase -q /dev/mtd0 0 0
-echo "done."
+# erase area
+erase_area
 
-# erase u-boot environment area
-echo -n "erase u-boot environment..."
-flash_erase -q /dev/mtd1 0 0
-echo "done."
+# write data
+write_data
 
-# write files
-echo -n "update u-boot..."
-xzcat $FILE_MTD0 | nandwrite -o -n -q /dev/mtd0 -
-echo "done."
-echo -n "update u-boot env..."
-xzcat $FILE_MTD1 | nandwrite -o -n -q /dev/mtd1 -
-echo "done."
-
-# disable to write MTD device
-echo 0x800 > $SYSFS_MTD0_FLG
-echo 0x800 > $SYSFS_MTD1_FLG
+# disable the MTD devices to write
+disable_write
 
 echo ""
 echo "Please reboot the OpenBlocks."

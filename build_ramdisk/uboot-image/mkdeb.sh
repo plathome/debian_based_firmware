@@ -59,9 +59,17 @@ sed -e "s|@NEW_VERSION@|$NEW_VERSION|" \
 mv -f /tmp/uboot-image.new $pkgdir/etc/init.d/uboot-image
 chmod 755 $pkgdir/etc/init.d/uboot-image
 
-cp -f $UBOOTDIR/${TARGET}-mtd0-${NEW_VERSION}.img.xz $pkgdir/etc/mtd0.img.xz
-cp -f $UBOOTDIR/${TARGET}-mtd1-${NEW_VERSION}.img.xz $pkgdir/etc/mtd1.img.xz
-cp -f $UBOOTDIR/${TARGET}-mtd1-${NEW_VERSION}-java.img.xz $pkgdir/etc/mtd1_java.img.xz
+case ${TARGET} in
+obsax3|obsa6)
+	cp -f $UBOOTDIR/u-boot.${TARGET}.bin $pkgdir/etc/mtd0.data
+;;
+obsa7)
+	cp -f $UBOOTDIR/obsa7-mtd0-${NEW_VERSION}.img.xz $pkgdir/etc/mtd0.data
+	cp -f $UBOOTDIR/obsa7-mtd1-${NEW_VERSION}.img.xz $pkgdir/etc/mtd1.data
+	cp -f $UBOOTDIR/obsa7-mtd1-${NEW_VERSION}-java.img.xz $pkgdir/etc/mtd1_java.data
+;;
+esac
+cp -f $UBOOTDIR/tp.${TARGET}.bin $pkgdir/etc/mtd2.data
 
 rm -rf ${pkgdir}.deb
 

@@ -13,11 +13,12 @@ configure)
 	if [ -e /etc/init.d/easyblockssync ]; then
 		/usr/sbin/update-rc.d uboot-image defaults
 		/etc/init.d/uboot-image start
-	elif [ -f /etc/mtd0.img.xz ]; then
+	elif [ -f /etc/mtd0.data ]; then
 		if /etc/init.d/uboot-image start; then
-			rm -f /etc/mtd0.img.xz
-			rm -f /etc/mtd1.img.xz
-			rm -f /etc/mtd1_java.img.xz
+			rm -f /etc/mtd0.data
+			rm -f /etc/mtd1.data
+			rm -f /etc/mtd1_java.data
+			rm -f /etc/mtd2.data
 		else
 			exit 1
 		fi
