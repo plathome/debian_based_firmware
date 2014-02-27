@@ -5,3 +5,4 @@ Version: __VERSION__
 Package: kernel-image
 Architecture: __ARCH__
 Description: Linux kernel image for OpenBlocks
+Depends: uboot-image
