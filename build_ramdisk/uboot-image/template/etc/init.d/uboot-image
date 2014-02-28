@@ -77,6 +77,7 @@ erase_area ()
 {
 case $MODEL in
 obsa7|obsa6)
+	enable_write
 	echo -n "erase u-boot..."
 	flash_erase -q /dev/mtd0 0 0
 	echo "done."
@@ -86,6 +87,7 @@ obsa7|obsa6)
 	echo -n "erase test program..."
 	flash_erase -q /dev/mtd2 0 0
 	echo "done."
+	disable_write
 ;;
 esac
 }
@@ -94,14 +96,17 @@ write_data ()
 {
 case $MODEL in
 obsax3)
+	enable_write
 	echo -n "update u-boot..."
 	flashcp $FILE_MTD0 /dev/mtd0
 	echo "done."
 	echo -n "update test program..."
 	flashcp $FILE_MTD2 /dev/mtd2
 	echo "done."
+	disable_write
 ;;
 obsa7)
+	enable_write
 	echo -n "update u-boot..."
 	xzcat $FILE_MTD0 | nandwrite -o -n -q /dev/mtd0 -
 	echo "done."
@@ -111,14 +116,17 @@ obsa7)
 	echo -n "update test program..."
 	nandwrite -map -q /dev/mtd2 $FILE_MTD2
 	echo "done."
+	disable_write
 ;;
 obsa6)
+	enable_write
 	echo -n "update u-boot..."
 	nandwrite -map -q /dev/mtd0 $FILE_MTD0 
 	echo "done."
 	echo -n "update test program..."
 	nandwrite -map -q /dev/mtd2 $FILE_MTD2
 	echo "done."
+	disable_write
 ;;
 esac
 }
@@ -130,9 +138,6 @@ if [ -e /etc/init.d/easyblockssync ]; then
 	syslog_raw info "Writing u-boot file ($NEW_VERSION) ..."
 fi
 
-# enable the MTD devices to write
-enable_write
-
 # banner
 echo "Update u-boot to $NEW_VERSION (previous version: $UBOOT_VERSION)"
 
@@ -141,9 +146,6 @@ erase_area
 
 # write data
 write_data
-
-# disable the MTD devices to write
-disable_write
 
 echo ""
 echo "Please reboot the OpenBlocks."

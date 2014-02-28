@@ -25,25 +25,40 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-. `dirname $0`/config.sh
+if [ "$#" -ne "4" ] ; then
+	echo
+	echo "usage: $0 [VERSION] [ARCH] [TARGET] [OLD VERSION]"
+	echo
+	echo "ex) $0 1.2.13-0 armel obsa7 \"1\.2\.[4689]|1\.2\.1[2]\""
+	echo
+	exit 1
+fi
 
-# dummy package: uboot-image
-(cd ${PWD}/uboot-image; rm -f dummy-uboot-image-0.0.0-0.deb)
-(cd ${PWD}/uboot-image; ./mkdummy.sh ${UBOOT_VER}-${UBOOT_PL} ${ARCH} ${TARGET} ${UBOOT_OLD_VER})
+VERSION=$1
+ARCH=$2
+TARGET=$3
+OLD_VERSION=$4
 
-cp -f ${PWD}/uboot-image/dummy-uboot-image-0.0.0-0.deb ${DISTDIR}/
-chroot ${DISTDIR} dpkg -r kernel-image
-chroot ${DISTDIR} dpkg -r uboot-image
-chroot ${DISTDIR} dpkg -i /dummy-uboot-image-0.0.0-0.deb
-rm -f ${DISTDIR}/dummy-uboot-image-0.0.0-0.deb
-rm -f ${PWD}/uboot-image/dummy-uboot-image-0.0.0-0.deb
+pkgdir=dummy-uboot-image-0.0.0-0
 
-# dummy package: kernel-image
-(cd ${PWD}/kernel-image; rm -f dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb)
-(cd ${PWD}/kernel-image; ./mkdummy.sh ${KERNEL}-${PATCHLEVEL} ${ARCH})
+rm -rf $pkgdir
+mkdir -p $pkgdir
+(cd template; tar -cf - .) | tar -xvf - -C $pkgdir/
 
-cp -f ${PWD}/kernel-image/dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb ${DISTDIR}/
-chroot ${DISTDIR} dpkg -r kernel-image
-chroot ${DISTDIR} dpkg -i /dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb
-rm -f ${DISTDIR}/dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb
-rm -f ${PWD}/kernel-image/dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb
+sed -e "s|@VERSION@|0.0.0-0|" \
+    -e "s|@ARCH@|$ARCH|" \
+    < $pkgdir/DEBIAN/control > /tmp/control.new
+mv -f /tmp/control.new $pkgdir/DEBIAN/control
+
+NEW_VERSION=$(echo $VERSION | sed "s/-.*//g")
+sed -e "s|@NEW_VERSION@|$NEW_VERSION|" \
+    -e "s|@OLD_VERSION@|$OLD_VERSION|" \
+    < $pkgdir/etc/init.d/uboot-image > /tmp/uboot-image.new
+mv -f /tmp/uboot-image.new $pkgdir/etc/init.d/uboot-image
+chmod 755 $pkgdir/etc/init.d/uboot-image
+
+rm -rf ${pkgdir}.deb
+
+dpkg-deb --build $pkgdir
+
+rm -rf $pkgdir

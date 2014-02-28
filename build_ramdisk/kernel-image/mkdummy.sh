@@ -48,7 +48,6 @@ mkdir -p $pkgdir/etc
 echo $VERSION > $pkgdir/etc/openblocks-release
 sed -e "s|__VERSION__|$VERSION|" \
     -e "s|__ARCH__|$ARCH|" \
-    -e "/^Depends:/d" \
 	< $pkgdir/DEBIAN/control > /tmp/control.new
 mv -f /tmp/control.new $pkgdir/DEBIAN/control
 
