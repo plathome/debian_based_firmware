@@ -50,7 +50,7 @@ wheezy)
 	obsa6)
 		ISOFILE=debian-7.1.0-armel-DVD-1.iso
 		RAMDISK_SIZE=144
-		PATCHLEVEL=2
+		PATCHLEVEL=3
 		ARCH=armel
 		LZMA_LEVEL=9
 		UBOOT_VER=1.2.6
