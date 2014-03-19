@@ -51,10 +51,10 @@ Debian 7/amd64です。ホストを用意して、そのOSをインストール�
 
 このソフトウェアはGitリポジトリから取得できます。
 
-作成ホストにgit-coreパッケージをインストールします。
+作成ホストにgitパッケージをインストールします。
 
   # apt-get update
-  # apt-get install git-core
+  # apt-get install git
 
 Gitリポジトリを取得します。
 
@@ -88,14 +88,14 @@ PATCHLEVELからカーネルソースのFTPサイトに置いてある場所が�
 
 以下は場所の例です。
 
-TARGET=obsax3, DIST=wheezy, KERNEL=3.2.40, PATCHLEVEL=3の場合
-ftp://ftp.plathome.co.jp/pub/OBSAX3/wheezy/3.2.40-3/linux-3.2.40-20131002.tar.gz
+TARGET=obsax3, DIST=wheezy, KERNEL=3.2.40, PATCHLEVEL=4の場合
+ftp://ftp.plathome.co.jp/pub/OBSAX3/wheezy/3.2.40-4/linux-3.2.40-20140220.tar.gz
 
-TARGET=obsa7, DIST=wheezy, KERNEL=3.2.40, PATCHLEVEL=3の場合
-ftp://ftp.plathome.co.jp/pub/OBSA7/wheezy/3.2.40-3/linux-3.2.40-20131002.tar.gz
+TARGET=obsa7, DIST=wheezy, KERNEL=3.2.40, PATCHLEVEL=4の場合
+ftp://ftp.plathome.co.jp/pub/OBSA7/wheezy/3.2.40-4/linux-3.2.40-20140220.tar.gz
 
-TARGET=obsa6, DIST=wheezy, KERNEL=3.2.40, PATCHLEVEL=2の場合
-ftp://ftp.plathome.co.jp/pub/OBSA6/wheezy/3.2.40-2/linux-3.2.40-20131002.tar.gz
+TARGET=obsa6, DIST=wheezy, KERNEL=3.2.40, PATCHLEVEL=3の場合
+ftp://ftp.plathome.co.jp/pub/OBSA6/wheezy/3.2.40-3/linux-3.2.40-20140220.tar.gz
 
 TARGET=obsax3, DIST=squeeze, KERNEL=3.0.6, PATCHLEVEL=14の場合
 ftp://ftp.plathome.co.jp/pub/OBSAX3/squeeze/3.0.6-14/source/linux-3.0.6-14.tar.gz
