@@ -68,7 +68,7 @@ wheezy)
 		COMPRESS=gzip
 		COMPRESS_EXT=gz
 		UBOOT_VER=1.2.13
-		UBOOT_PL=1
+		UBOOT_PL=2
 		UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
 	;;
 	obs600)
