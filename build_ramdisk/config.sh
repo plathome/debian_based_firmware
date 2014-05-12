@@ -44,7 +44,7 @@ wheezy)
 		PATCHLEVEL=4
 		ARCH=armhf
 		UBOOT_VER=2.0.7
-		UBOOT_PL=0
+		UBOOT_PL=1
 		UBOOT_OLD_VER="1\\\.0\\\.0\|1\\\.1\\\.[1235]\|2\\\.0\\\.[34]"
 	;;
 	obsa6)
