@@ -54,7 +54,7 @@ wheezy)
 		ARCH=armel
 		LZMA_LEVEL=9
 		UBOOT_VER=1.2.6
-		UBOOT_PL=0
+		UBOOT_PL=1
 		UBOOT_OLD_VER="1\\\.0\\\.2\|1\\\.1\\\.0\|1\\\.2\\\.[34]"
 	;;
 	obsa7)
