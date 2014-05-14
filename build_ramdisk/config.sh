@@ -36,12 +36,12 @@ export TARGET DIST
 
 case ${DIST} in
 wheezy)
-	KERNEL=3.2.40
+	KERNEL=3.2.54
 	case ${TARGET} in
 	obsax3)
 		ISOFILE=debian-7.1.0-armhf-DVD-1.iso
 		RAMDISK_SIZE=160
-		PATCHLEVEL=4
+		PATCHLEVEL=0
 		ARCH=armhf
 		UBOOT_VER=2.0.7
 		UBOOT_PL=1
