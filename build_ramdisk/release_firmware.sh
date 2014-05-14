@@ -92,7 +92,8 @@ mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \
 fi
 
 if [ "${TARGET}" == "obsax3" -o "${TARGET}" == "obsa6" ]; then
-	TMP=${RELEASEDIR}/tmp
+	ARCHIVE=kernel+modules-${KERNEL}-${PATCHLEVEL}
+	TMP=${RELEASEDIR}/${ARCHIVE}
 	rm -fr ${TMP}
 	mkdir ${TMP}
 	cp -f ${LINUX_SRC}/System.map ${TMP}/System.map
@@ -106,8 +107,8 @@ if [ "${TARGET}" == "obsax3" -o "${TARGET}" == "obsa6" ]; then
 	(cd ${MOUNTDIR}; tar cvpf - lib/firmware lib/modules) | (cd ${TMP}; tar xpvf -)
 	umount ${MOUNTDIR}
 	find ${TMP}/lib/modules -name "*.ko" | xargs gzip -9f
-	(cd ${TMP}; tar cvpf ${RELEASEDIR}/kernel+modules-${KERNEL}-${PATCHLEVEL}.tar .)
-	xz -9f ${RELEASEDIR}/kernel+modules-${KERNEL}-${PATCHLEVEL}.tar
+	(cd ${RELEASEDIR}; tar cvpf ${RELEASEDIR}/${ARCHIVE}.tar ${ARCHIVE})
+	xz -9f ${RELEASEDIR}/${ARCHIVE}.tar
 	rm -fr ${TMP}
 fi
 
