@@ -91,8 +91,6 @@ mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \
 (cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb.sh ${VERSION} ${ARCH} ${RELEASEDIR}/uImage.initrd.${TARGET})
 fi
 
-(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
-
 if [ "${TARGET}" == "obsax3" -o "${TARGET}" == "obsa6" ]; then
 	TMP=${RELEASEDIR}/tmp
 	rm -fr ${TMP}
@@ -112,3 +110,5 @@ if [ "${TARGET}" == "obsax3" -o "${TARGET}" == "obsa6" ]; then
 	xz -9f ${RELEASEDIR}/kernel+modules-${KERNEL}-${PATCHLEVEL}.tar
 	rm -fr ${TMP}
 fi
+
+(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
