@@ -92,3 +92,23 @@ mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}${PATCH_LEVEL}" \
 fi
 
 (cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
+
+if [ "${TARGET}" == "obsax3" -o "${TARGET}" == "obsa6" ]; then
+	TMP=${RELEASEDIR}/tmp
+	rm -fr ${TMP}
+	mkdir ${TMP}
+	cp -f ${LINUX_SRC}/System.map ${TMP}/System.map
+	cp -f ${LINUX_SRC}/System.map ${TMP}/System.map.$(echo ${KERNEL}|tr -d .)
+	if [ "$KERNEL" == "3.13" ]; then
+		cp -f ${RELEASEDIR}/zImage.dtb ${TMP}
+	else
+		cp -f ${RELEASEDIR}/zImage ${TMP}
+	fi
+	mount -o loop,ro ${_RAMDISK_IMG} ${MOUNTDIR}
+	(cd ${MOUNTDIR}; tar cvpf - lib/firmware lib/modules) | (cd ${TMP}; tar xpvf -)
+	umount ${MOUNTDIR}
+	find ${TMP}/lib/modules -name "*.ko" | xargs gzip -9f
+	(cd ${TMP}; tar cvpf ${RELEASEDIR}/kernel+modules-${KERNEL}-${PATCHLEVEL}.tar .)
+	xz -9f ${RELEASEDIR}/kernel+modules-${KERNEL}-${PATCHLEVEL}.tar
+	rm -fr ${TMP}
+fi
