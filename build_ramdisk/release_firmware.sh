@@ -91,7 +91,7 @@ mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \
 (cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb.sh ${VERSION} ${ARCH} ${RELEASEDIR}/uImage.initrd.${TARGET})
 fi
 
-if [ "${TARGET}" == "obsax3" -o "${TARGET}" == "obsa6" ]; then
+if [ "${TARGET}" != "obs600" ]; then
 	ARCHIVE=kernel+modules-${KERNEL}-${PATCHLEVEL}
 	TMP=${RELEASEDIR}/${ARCHIVE}
 	rm -fr ${TMP}
