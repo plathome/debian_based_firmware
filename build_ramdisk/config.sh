@@ -39,9 +39,9 @@ wheezy)
 	KERNEL=3.2.54
 	case ${TARGET} in
 	obsax3)
-		ISOFILE=debian-7.1.0-armhf-DVD-1.iso
+		ISOFILE=debian-7.5.0-armhf-DVD-1.iso
 		RAMDISK_SIZE=160
-		PATCHLEVEL=1
+		PATCHLEVEL=2
 		ARCH=armhf
 		UBOOT_VER=2.0.7
 		UBOOT_PL=1
