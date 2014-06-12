@@ -92,7 +92,7 @@ mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \
 fi
 
 if [ "${TARGET}" != "obs600" ]; then
-	ARCHIVE=kernel+modules-${KERNEL}-${PATCHLEVEL}
+	ARCHIVE=kernel+modules-${TARGET}-${KERNEL}-${PATCHLEVEL}
 	TMP=${RELEASEDIR}/${ARCHIVE}
 	rm -fr ${TMP}
 	mkdir ${TMP}
