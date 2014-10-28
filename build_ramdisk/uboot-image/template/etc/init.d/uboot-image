@@ -98,14 +98,19 @@ write_data ()
 {
 case $MODEL in
 obsax3)
-	enable_write
-	echo -n "update u-boot..."
-	flashcp $FILE_MTD0 /dev/mtd0
-	echo "done."
-	echo -n "update test program..."
-	flashcp $FILE_MTD2 /dev/mtd2
-	echo "done."
-	disable_write
+	CPU_REVISION=$(dmesg | grep 'Soc: MV78260' | sed -e 's/^.*MV78260 \(.*\) LE$/\1/g')
+	if [ "${CPU_REVISION}" = "A0" ]; then
+		echo "CPU revison: A0: Do not update u-boot."
+	else
+		enable_write
+		echo -n "update u-boot..."
+		flashcp $FILE_MTD0 /dev/mtd0
+		echo "done."
+		echo -n "update test program..."
+		flashcp $FILE_MTD2 /dev/mtd2
+		echo "done."
+		disable_write
+	fi
 ;;
 obsa7)
 	enable_write

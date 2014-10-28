@@ -43,9 +43,9 @@ wheezy)
 		RAMDISK_SIZE=160
 		PATCHLEVEL=2
 		ARCH=armhf
-		UBOOT_VER=2.0.7
-		UBOOT_PL=1
-		UBOOT_OLD_VER="1\\\.0\\\.0\|1\\\.1\\\.[1235]\|2\\\.0\\\.[34]"
+		UBOOT_VER=3.0.0
+		UBOOT_PL=0
+		UBOOT_OLD_VER="1\\\.0\\\.0\|1\\\.1\\\.[1235]\|2\\\.0\\\.[347]"
 	;;
 	obsa6)
 		ISOFILE=debian-7.1.0-armel-DVD-1.iso
