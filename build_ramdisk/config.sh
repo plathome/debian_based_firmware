@@ -60,9 +60,9 @@ wheezy)
 	obsa7)
 #		KERNEL=3.13
 #		DTBFILE=kirkwood-openblocks_a7.dtb
-		ISOFILE=debian-7.1.0-armel-DVD-1.iso
+		ISOFILE=debian-7.7.0-armel-DVD-1.iso
 		RAMDISK_SIZE=144
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		ARCH=armel
 		LZMA_LEVEL=9
 		COMPRESS=gzip
