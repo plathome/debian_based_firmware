@@ -125,10 +125,10 @@ DIST=wheezyの場合、DebianのDVDイメージをDebianのミラーサイトか
 以下はファイル名の例です。
 
 TARGET=obsax3の場合
-debian-7.1.0-armhf-DVD-1.iso
+debian-7.7.0-armhf-DVD-1.iso
 
 TARGET=obsa7, obsa6の場合
-debian-7.1.0-armel-DVD-1.iso
+debian-7.7.0-armel-DVD-1.iso
 
 TARGET=obs600の場合
 debian-7.4.0-powerpc-DVD-1.iso
