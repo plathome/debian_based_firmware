@@ -48,9 +48,9 @@ wheezy)
 		UBOOT_OLD_VER="1\\\.0\\\.0\|1\\\.1\\\.[1235]\|2\\\.0\\\.[347]"
 	;;
 	obsa6)
-		ISOFILE=debian-7.1.0-armel-DVD-1.iso
+		ISOFILE=debian-7.7.0-armel-DVD-1.iso
 		RAMDISK_SIZE=144
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		ARCH=armel
 		LZMA_LEVEL=9
 		UBOOT_VER=1.2.6
