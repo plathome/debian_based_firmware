@@ -63,11 +63,27 @@ extern int errno;
 #define SEGLED_DEV_Y	"/sys/class/leds/yellow_led/brightness"
 #define SEGLED_DEV_R	"/sys/class/leds/red_led/brightness"
 #endif
+#elif defined(CONFIG_LINUX_4_0)
+#if defined(CONFIG_OBSA7)
+#define SEGLED_DEV_G	"/sys/devices/platform/gpio-leds/leds/obsa7:green:stat/brightness"
+#define SEGLED_DEV_Y	"/sys/devices/platform/gpio-leds/leds/obsa7:yellow:stat/brightness"
+#define SEGLED_DEV_R	"/sys/devices/platform/gpio-leds/leds/obsa7:red:stat/brightness"
+#elif defined(CONFIG_OBSA6)
+#define SEGLED_DEV_G	"/sys/devices/platform/gpio-leds/leds/obsa6:green:stat/brightness"
+#define SEGLED_DEV_Y	"/sys/devices/platform/gpio-leds/leds/obsa6:yellow:stat/brightness"
+#define SEGLED_DEV_R	"/sys/devices/platform/gpio-leds/leds/obsa6:red:stat/brightness"
+#else
+#define SEGLED_DEV_G	"/sys/devices/platform/soc/soc:internal-regs/soc:internal-regs:leds/leds/green_led/brightness"
+#define SEGLED_DEV_Y	"/sys/devices/platform/soc/soc:internal-regs/soc:internal-regs:leds/leds/yellow_led/brightness"
+#define SEGLED_DEV_R	"/sys/devices/platform/soc/soc:internal-regs/soc:internal-regs:leds/leds/red_led/brightness"
+#endif
 #endif
 
 #ifdef CONFIG_OBSAX3
 #ifdef CONFIG_LINUX_3_11_X
 #define TEMP_INPUT		"/sys/devices/virtual/thermal/thermal_zone0/hwmon0/temp1_input"
+#elif defined(CONFIG_LINUX_4_0)
+#define TEMP_INPUT		"/sys/devices/virtual/hwmon/hwmon0/temp1_input"
 #else
 #define TEMP_INPUT		"/sys/devices/platform/axp-temp.0/temp1_input"
 #endif
@@ -94,6 +110,7 @@ void die(int i){exit(0);}
 
 static int led_speed = LED_0_33;
 static int spdctl= 1;
+static int pmctl= 1;
 static int prevuse[2];
 
 /* some variables used in getopt (3) */
@@ -103,15 +120,81 @@ extern int optopt;
 extern int opterr;
 extern int optreset;
 
+#if defined(CONFIG_LINUX_4_0)
+/*
+	Change Powermanagement mode
+*/
+void chg_pm(int mode)
+{
+#define CPU0_SNOOZE	"/sys/devices/system/cpu/cpu0/cpuidle/state2/disable"
+#define CPU1_SNOOZE	"/sys/devices/system/cpu/cpu1/cpuidle/state2/disable"
+#define CPU0_IDLE	"/sys/devices/system/cpu/cpu0/cpuidle/state1/disable"
+#define CPU1_IDLE	"/sys/devices/system/cpu/cpu1/cpuidle/state1/disable"
+#define WFI 1
+#define SNOOZE 0
+	int fd;
+	char val[2];
+
+	if(mode){
+		val[0] = '1';
+		val[1] = 0x0;
+	}
+	else{
+		val[0] = '0';
+		val[1] = 0x0;
+	}
+		
+	if((fd = open(CPU0_SNOOZE, O_RDWR)) == -1)
+		return;
+	if(write(fd, val, 1) != 1){
+		close(fd);
+		return;
+	}
+	close(fd);
+	if((fd = open(CPU1_SNOOZE, O_RDWR)) == -1)
+		return;
+	if(write(fd, val, 1) != 1){
+		close(fd);
+		return;
+	}
+	close(fd);
+	if((fd = open(CPU0_IDLE, O_RDWR)) == -1)
+		return;
+	if(write(fd, val, 1) != 1){
+		close(fd);
+		return;
+	}
+	close(fd);
+	if((fd = open(CPU1_IDLE, O_RDWR)) == -1)
+		return;
+	if(write(fd, val, 1) != 1){
+		close(fd);
+		return;
+	}
+	close(fd);
+}
+#endif
+
 /*
 	Read /proc/stat and get CPU used time
 */
 int get_usetime(int* use){
+	struct cpu_adv{
+		int user;
+		int nice;
+		int sys;
+		int idle;
+		int io;
+		int irq;
+		int s_irq;
+		int steal;
+		int guest;
+		int g_nice;	
+	};
+
+	struct cpu_adv cpu;
 	FILE *fp;
 	char str[128];
-	char *strend;
-	char *sta, *end;
-	char buf[32];
 
 	if((fp = fopen("/proc/stat", "r")) == NULL){
 		return 0;
@@ -122,95 +205,12 @@ int get_usetime(int* use){
 	}
 	fclose(fp);
 
-	/* get end of string */
-	strend = str + strlen(str);
-
-	/*********************************************
-		      arg1 arg2 arg3 arg4 arg5
-		str = cpu  xxxx xxxx xxxx xxxx xxxx ...
-	**********************************************/
-	sta = str;
-	/* search top */
-	while(*sta != ' ' && *sta != '\t'){
-		sta++;
-		if(sta >= strend)
-			return 0;
-	}
-
-	/* search arg2 start */
-	while(*sta == ' ' || *sta == '\t'){
-		sta++;
-		if(sta >= strend)
-			return 0;
-	}
-	/* search arg2 end */
-	end = sta;
-	while(*end != ' ' && *end != '\t'){
-		end++;
-		if(sta >= strend)
-			return 0;
-	}
-	/* get arg2 */
-	strncpy(buf, sta, end-sta);
-	buf[end-sta] = 0x0;
-	use[0] = atoi(buf);
-
-	sta = end;
-	/* search arg3 start */
-	while(*sta == ' ' || *sta == '\t'){
-		sta++;
-		if(sta >= strend)
-			return 0;
-	}
-	/* search arg3 end */
-	end = sta;
-	while(*end != ' ' && *end != '\t'){
-		end++;
-		if(sta >= strend)
-			return 0;
-	}
-	/* get arg3 */
-	strncpy(buf, sta, end-sta);
-	buf[end-sta] = 0x0;
-	use[0] += atoi(buf);
-
-	sta = end;
-	/* search arg4 start */
-	while(*sta == ' ' || *sta == '\t'){
-		sta++;
-		if(sta >= strend)
-			return 0;
-	}
-	/* search arg4 end */
-	end = sta;
-	while(*end != ' ' && *end != '\t'){
-		end++;
-		if(sta >= strend)
-			return 0;
-	}
-	/* get arg4 */
-	strncpy(buf, sta, end-sta);
-	buf[end-sta] = 0x0;
-	use[0] += atoi(buf);
-
-	sta = end;
-	/* search arg5 start */
-	while(*sta == ' ' || *sta == '\t'){
-		sta++;
-		if(sta >= strend)
-			return 0;
-	}
-	/* search arg5 end */
-	end = sta;
-	while(*end != ' ' && *end != '\t'){
-		end++;
-		if(sta >= strend)
-			return 0;
-	}
-	/* get arg5 */
-	strncpy(buf, sta, end-sta);
-	buf[end-sta] = 0x0;
-	use[1] = use[0] + atoi(buf);
+	sscanf(str, "cpu %d %d %d %d %d %d %d %d %d %d",
+		&cpu.user, &cpu.nice, &cpu.sys, &cpu.idle, &cpu.io, &cpu.irq,
+		&cpu.s_irq, &cpu.steal, &cpu.guest, &cpu.g_nice);
+	use[0] = cpu.user + cpu.nice + cpu.sys + cpu.io + cpu.irq + cpu.s_irq
+				+ cpu.steal, cpu.guest, cpu.g_nice;
+	use[1] = use[0] + cpu.idle - cpu.io;
 
 	return 1;
 }
@@ -219,8 +219,8 @@ int get_usetime(int* use){
 	Calc LED Sleep Time
 */
 void calc_ledspeed(void){
-	int tempuse[2];
 	int total;
+	int tempuse[2];
 
 	if(!get_usetime(tempuse)){
 		led_speed = LED_0_33;
@@ -230,17 +230,25 @@ void calc_ledspeed(void){
 	/* calc used */
 	total = tempuse[0] - prevuse[0];
 	if(total)
-		total = total / (tempuse[1]-prevuse[1]) * 100;
+		total = (float)total / (float)(tempuse[1]-prevuse[1]) * 100;
 
 	if(total < 34){
 		if(led_speed != LED_0_33){
 			led_speed = LED_0_33;
+#if defined(CONFIG_LINUX_4_0)
+			if(pmctl)
+				chg_pm(SNOOZE);
+#endif
 			LED_DEBUG("change led speed 500ms(total=%f)\n", total);
 		}
 	}
 	else if(total >= 34 && total < 67){
 		if(led_speed != LED_34_66){
 			led_speed = LED_34_66;
+#if defined(CONFIG_LINUX_4_0)
+			if(pmctl)
+				chg_pm(WFI);
+#endif
 			LED_DEBUG("change led speed 250ms(total=%f)\n", total);
 		}
 	}
@@ -290,7 +298,7 @@ void ctrl_cpu(int temp)
 		closelog();
 #endif
 	}
-#ifdef CONFIG_LINUX_3_2_X
+#if defined(CONFIG_LINUX_3_2_X) || defined(CONFIG_LINUX_4_0)
 	else if(temp < PM_UP_CPU && prev >= PM_UP_CPU){
 		strcpy(val, "1");
 #if 0
@@ -327,7 +335,7 @@ dancer()
 #endif
 
 	for (;;) {
-#ifdef CONFIG_LINUX_3_11_X
+#if defined(CONFIG_LINUX_3_11_X) || defined(CONFIG_LINUX_4_0)
 		if ((fd = open(SEGLED_DEV_G, O_RDWR)) < 0) {
 			perror("open");
 			exit(-1);
@@ -355,7 +363,7 @@ dancer()
 		close(fd);
 #endif
 		usleep(led_speed);
-#ifdef CONFIG_LINUX_3_11_X
+#if defined(CONFIG_LINUX_3_11_X) || defined(CONFIG_LINUX_4_0)
 		if ((fd = open(SEGLED_DEV_Y, O_RDWR)) < 0) {
 			perror("open");
 			exit(-1);
@@ -383,7 +391,7 @@ dancer()
 		close(fd);
 #endif
 		usleep(led_speed);
-#ifdef CONFIG_LINUX_3_11_X
+#if defined(CONFIG_LINUX_3_11_X) || defined(CONFIG_LINUX_4_0)
 		if ((fd = open(SEGLED_DEV_R, O_RDWR)) < 0) {
 			perror("open");
 			exit(-1);
@@ -411,7 +419,7 @@ dancer()
 		close(fd);
 #endif
 		usleep(led_speed);
-#ifdef CONFIG_LINUX_3_11_X
+#if defined(CONFIG_LINUX_3_11_X) || defined(CONFIG_LINUX_4_0)
 		if ((fd = open(SEGLED_DEV_Y, O_RDWR)) < 0) {
 			perror("open");
 			exit(-1);
@@ -458,7 +466,7 @@ dancer()
 void usage(void)
 {
 #ifdef CONFIG_OBSAX3
-#ifdef CONFIG_LINUX_3_2_X
+#if defined(CONFIG_LINUX_3_2_X) || defined(CONFIG_LINUX_4_0)
 	fprintf(stderr, "runled [-ds] [-l downtemp] [-m uptemp]\n");
 #else
 	fprintf(stderr, "runled [-ds] [-l downtemp]\n");
@@ -472,11 +480,12 @@ void usage(void)
 #ifdef CONFIG_OBSAX3
 	fprintf(stderr, "\t-d : control cpu core\n");
 	fprintf(stderr, "\t-l : cpu core DOWN temperature\n");
-#ifdef CONFIG_LINUX_3_2_X
+#if defined(CONFIG_LINUX_3_2_X) || defined(CONFIG_LINUX_4_0)
 	fprintf(stderr, "\t-m : cpu core UP temperature\n");
 #endif
 #endif
 	fprintf(stderr, "\t-s : cancel LED speed control\n");
+	fprintf(stderr, "\t-p : cancel Powermanagement control\n");
 }
 
 int
@@ -492,15 +501,8 @@ main(int argc, char *argv[])
 	}
 
 #ifdef CONFIG_OBSAX3
-	if(argc == 1){
-		usage();
-		return (0);
-	}
-#endif
-
-#ifdef CONFIG_OBSAX3
-#ifdef CONFIG_LINUX_3_2_X
-	while ((i = getopt(argc, argv, "l:m:ds")) != -1) {
+#if defined(CONFIG_LINUX_3_2_X) || defined(CONFIG_LINUX_4_0)
+	while ((i = getopt(argc, argv, "l:m:dsp")) != -1) {
 #else
 	while ((i = getopt(argc, argv, "l:ds")) != -1) {
 #endif
@@ -515,12 +517,15 @@ main(int argc, char *argv[])
 		case 'l':	// CPU down temp
 			PM_DOWN_CPU = atoi(optarg) * 1000;
 			break;
-#ifdef CONFIG_LINUX_3_2_X
+#if defined(CONFIG_LINUX_3_2_X) || defined(CONFIG_LINUX_4_0)
 		case 'm':	// CPU up temp
 			PM_UP_CPU = atoi(optarg) * 1000;
 			break;
 #endif
 #endif
+		case 'p':	// cancel Powermanagement control
+			spdctl = 0;
+			break;
 		case 's':	// cancel LED speed control
 			spdctl = 0;
 			break;
@@ -531,7 +536,7 @@ main(int argc, char *argv[])
 	}
 
 #ifdef CONFIG_OBSAX3
-#ifdef CONFIG_LINUX_3_2_X
+#if defined(CONFIG_LINUX_3_2_X) || defined(CONFIG_LINUX_4_0)
 	if(PM_DOWN_CPU > PM_TEMP_MAX || PM_UP_CPU < PM_TEMP_MIN || PM_DOWN_CPU <= PM_UP_CPU){
 #else
 	if(PM_DOWN_CPU > PM_TEMP_MAX){

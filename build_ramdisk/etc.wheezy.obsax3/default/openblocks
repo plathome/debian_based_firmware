@@ -30,6 +30,7 @@ RW_TMPFS_SIZE="384m"
 # Set cpu core stop and restart temperature.
 CORE_STOP_TEMP=105
 CORE_RESTART_TEMP=75
+POWER_MNG_CTRL=1
 
 # Set noatime option, when using SSD.
 NOATIME=false

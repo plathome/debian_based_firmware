@@ -55,6 +55,9 @@ if [ "$MODEL" = "obsax3" ] && [ -n "${CORE_STOP_TEMP:=105}" ]; then
 	if [ -n "${CORE_RESTART_TEMP}" ]; then
 		DAEMON_ARGS="${DAEMON_ARGS} -m ${CORE_RESTART_TEMP}"
 	fi
+	if [ "$POWER_MNG_CTRL" = "0" ]; then
+		DAEMON_ARGS+="-p"
+	fi
 else
 	DAEMON_ARGS=""
 fi

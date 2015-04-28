@@ -44,7 +44,7 @@
 #if defined(CONFIG_OBSA6)
 #include <mtd/mtd-abi.h>
 #endif
-#if defined(CONFIG_OBSA6)
+#if defined(CONFIG_OBSA6) || defined(CONFIG_LINUX_3_11_X) || defined(CONFIG_LINUX_4_0)
 #include <zlib.h>
 #else
 #include <linux/zlib.h>
@@ -253,7 +253,7 @@ main(int argc, char *argv[])
 	FILE *fp;
 	int i, ret;
 	char boot_dev[256];
-	char buf[32];
+	char buf[64];
 	char *p;
 
 	if (getuid()) {
@@ -277,13 +277,13 @@ main(int argc, char *argv[])
 	ret = NORMAL_END;
 #ifdef DEBIAN
 #if defined(CONFIG_OBSAX3)
-	while ((i = getopt(argc, argv, "c:f:p:s:S:j:dDxXJrtT")) != -1) {
+	while ((i = getopt(argc, argv, "p:c:f:s:S:j:dDxXJr")) != -1) {
 #else
 	while ((i = getopt(argc, argv, "c:f:s:S:j:dDxXJr")) != -1) {
 #endif
 #else
 #if defined(CONFIG_OBSAX3)
-	while ((i = getopt(argc, argv, "c:f:p:s:S:E:L:j:xXdDhRrJtT")) != -1) {
+	while ((i = getopt(argc, argv, "p:c:f:s:S:E:L:j:xXdDhRrJ")) != -1) {
 #else
 	while ((i = getopt(argc, argv, "c:f:s:S:E:L:j:xXdDhRrJ")) != -1) {
 #endif
@@ -2062,9 +2062,17 @@ char * set_tarpath(void)
 int mtd_protect(int mtd_num, int on)
 {
 	int fd;
-	char buf[64], val[] = {0,0,0,0,0,0};
+#if defined(CONFIG_LINUX_4_0)
+	char buf[256], val[8];
+#else
+	char buf[256], val[] = {0,0,0,0,0,0};
+#endif
 
+#if defined(CONFIG_LINUX_4_0) && defined(CONFIG_OBSAX3)
+	sprintf(buf, "/sys/devices/platform/soc/d0010400.devbus-bootcs/f0000000.nor/mtd/mtd%d/flags", mtd_num);
+#else
 	sprintf(buf, "/sys/devices/virtual/mtd/mtd%d/flags", mtd_num);
+#endif
 	if((fd = open(buf, O_RDWR)) == -1){
 		fprintf(stderr, "ERROR%d: mtd%d open error\n", __LINE__, mtd_num);
 		return -1;
@@ -2076,7 +2084,7 @@ int mtd_protect(int mtd_num, int on)
 	else
 		strcpy(val, READWRITE);
 
-	if(write(fd, val, sizeof(val)) != sizeof(val)){
+	if(write(fd, val, strlen(val)) != strlen(val)){
 		fprintf(stderr, "ERROR%d: mtd%d write error\n", __LINE__, mtd_num);
 		close(fd);
 		return -1;
@@ -2220,7 +2228,11 @@ int umount_mtddev(void)
 
 #if defined(CONFIG_OBSAX3)
 #include <time.h>
+#if defined(CONFIG_LINUX_4_0) && defined(CONFIG_OBSAX3)
+#define MTDSYSDIR	"/sys/devices/platform/soc/d0010400.devbus-bootcs/f0000000.nor/mtd/%s/"
+#else
 #define MTDSYSDIR	"/sys/devices/virtual/mtd/%s/"
+#endif
 #define MTDDIR		"/dev/%s"
 #define MTDFLAGS	MTDSYSDIR"flags"
 struct core_msg{

@@ -42,11 +42,16 @@ fi
 
 LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
 
-if [ "$KERNEL" == "3.13" -o "$KERNEL" == "3.10.25" ] ; then
-CFLAGS="-Wall -I/usr/${KERN_ARCH}-linux-gnu${ABI}/include -L/usr/${KERN_ARCH}-linux-gnu${ABI}/lib -DDEBIAN ${MODEL}"
-else
-CFLAGS="-Wall -I$LINUX_INC -DDEBIAN ${MODEL}"
-fi
+
+case $KERNEL in
+3.13|3.10.*|4.*)
+	CFLAGS="-Wall -I/usr/arm-linux-gnueabi/include \
+		-L/usr/${KERN_ARCH}-linux-gnu${ABI}/lib -DDEBIAN ${MODEL}"
+;;
+*)
+	CFLAGS="-Wall -I$LINUX_INC -DDEBIAN ${MODEL}"
+;;
+esac
 
 if [ "$TARGET" == "obs600" ]; then
 	CFLAGS+=" -DHAVE_PUSHSW_OBS600_H"
@@ -54,13 +59,19 @@ else
 	CFLAGS+=" -DHAVE_PUSHSW_OBSAXX_H"
 fi
 
-if [ "$TARGET" == "obsax3" -a "$DIST" == "wheezy" ] ; then
-	CFLAGS+=" -DCONFIG_LINUX_3_2_X"
-fi
-
-if [ "$KERNEL" == "3.13" ] ; then
+case $KERNEL in
+3.2.*)
+	if [ "$TARGET" == "obsax3" ]; then
+		CFLAGS+=" -DCONFIG_LINUX_3_2_X"
+	fi
+;;
+3.13)
 	CFLAGS+=" -DCONFIG_LINUX_3_11_X"
-fi
+;;
+4.*)
+	CFLAGS+=" -DCONFIG_LINUX_4_0"
+;;
+esac
 
 mkdir -p ${BUILDDIR}
 

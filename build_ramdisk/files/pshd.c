@@ -47,6 +47,7 @@
 #include "obspushsw.h"
 #include <linux/version.h>
 #include <time.h>
+#include <sys/time.h>
 
 #define PID_FILE "/var/run/pshd.pid"
 
@@ -62,13 +63,10 @@ void die(int i);
 #define MIN_SEC		1
 #define MAX_SEC		3600
 
-#if defined(HAVE_PUSHSW_OBSAXX_H)
-#define INTERVAL	500 * 1000	// 500ms(5 times a second)
-#else
 #define INTERVAL	200 * 1000	// 200ms(5 times a second)
-#endif
 #define SEGLED_PID	"/var/run/segled.pid"
 #define SEGLED_DEV	"/dev/segled"
+
 #ifdef CONFIG_LINUX_3_11_X
 #define PUSHSW_DEV	"/dev/input/event0"
 #if defined(CONFIG_OBSA7)
@@ -84,32 +82,37 @@ void die(int i);
 #define SEGLED_DEV_Y	"/sys/class/leds/yellow_led/brightness"
 #define SEGLED_DEV_R	"/sys/class/leds/red_led/brightness"
 #endif
+#elif defined(CONFIG_LINUX_4_0)
+#define PUSHSW_DEV		"/dev/input/event0"
+#if defined(CONFIG_OBSA7)
+#define SEGLED_DEV_G	"/sys/devices/platform/gpio-leds/leds/obsa7:green:stat/brightness"
+#define SEGLED_DEV_Y	"/sys/devices/platform/gpio-leds/leds/obsa7:yellow:stat/brightness"
+#define SEGLED_DEV_R	"/sys/devices/platform/gpio-leds/leds/obsa7:red:stat/brightness"
+#elif defined(CONFIG_OBSA6)
+#define SEGLED_DEV_G	"/sys/devices/platform/gpio-leds/leds/obsa6:green:stat/brightness"
+#define SEGLED_DEV_Y	"/sys/devices/platform/gpio-leds/leds/obsa6:yellow:stat/brightness"
+#define SEGLED_DEV_R	"/sys/devices/platform/gpio-leds/leds/obsa6:red:stat/brightness"
+#else
+#define SEGLED_DEV_G	"/sys/devices/platform/soc/soc:internal-regs/soc:internal-regs:leds/leds/green_led/brightness"
+#define SEGLED_DEV_Y	"/sys/devices/platform/soc/soc:internal-regs/soc:internal-regs:leds/leds/yellow_led/brightness"
+#define SEGLED_DEV_R	"/sys/devices/platform/soc/soc:internal-regs/soc:internal-regs:leds/leds/red_led/brightness"
+#endif
 #else
 #define PUSHSW_DEV	"/dev/pushsw"
 #endif
 
-static int flag		= 1;		// exit() flag
-#if defined(HAVE_PUSHSW_OBSAXX_H)
-static int reboot	= 1 * 2;	// reboot time(default = 1 sec)
-static int halt		= 5 * 2;	// shutdown time(default = 5 sec)
-#else
-static int reboot	= 1 * 5;	// reboot time(default = 1 sec)
+static int forever	= 1;		// exit() flag
+static int reboot	= 2 * 5;	// reboot time(default = 2 sec)
 static int halt		= 5 * 5;	// shutdown time(default = 5 sec)
-#endif
-static int wait		= 0;		// wait time
 
 /* some variables used in getopt (3) */
 extern char *optarg;
 
 void usage(void)
 {
-	fprintf(stderr, "pshd [-r sec] [-h sec] [-t sec]\n");
+	fprintf(stderr, "pshd [-r sec] [-h sec]\n");
 	fprintf(stderr, "-r sec\tsecond to reboot\n");
 	fprintf(stderr, "-h sec\tsecond to shutdown\n");
-	fprintf(stderr, "-t sec\twait time before execute\n");
-	fprintf(stderr, "default:\t-r 1\n");
-	fprintf(stderr, "\t\t-h 5\n");
-	fprintf(stderr, "\t\t-t 0(=now)\n");
 	fprintf(stderr, "%d <= sec <= %d & reboot < halt\n", MIN_SEC, MAX_SEC);
 	fprintf(stderr, "\n");
 	fprintf(stderr, "* Orange LED (Upper) turns on when time up for reboot\n");
@@ -119,7 +122,7 @@ void usage(void)
 
 static inline void flash_led(int fd, char* num)
 {
-#ifdef CONFIG_LINUX_3_11_X
+#if defined(CONFIG_LINUX_3_11_X) || defined(CONFIG_LINUX_4_0)
 	int fh;
 	switch(num[0]){	
 	case '1':
@@ -190,7 +193,7 @@ static inline void flash_led(int fd, char* num)
 #endif
 }
 
-#ifdef CONFIG_LINUX_3_11_X
+#if defined(CONFIG_LINUX_3_11_X) || defined(CONFIG_LINUX_4_0)
 static int get_push_event(int fd)
 {
 	const unsigned char pushsw_ev[] = {	/* pushsw event id */
@@ -231,28 +234,36 @@ void watch_pushsw(void)
 	struct timespec req, rem;
 
 	if ((fd = open(PUSHSW_DEV, O_RDONLY | O_NONBLOCK)) < 0) {
-#ifdef DEBUG
-		printf("%d: %s\n", __LINE__, strerror(errno));
-#endif
 		exit(-1);
 	}
 
-	memset(&req, 0x0, sizeof(req));
-	memset(&rem, 0x0, sizeof(rem));
-	req.tv_sec = 0;
-	req.tv_nsec = INTERVAL * 1000;
+	while(forever){
+		memset(&rem, 0x0, sizeof(rem));
+		req.tv_sec = 0;
+		req.tv_nsec = INTERVAL * 1000;
 
-	while(flag){
-#ifdef CONFIG_LINUX_3_11_X
+#if defined(CONFIG_LINUX_3_11_X) || defined(CONFIG_LINUX_4_0)
 		rv = get_push_event(fd);
 #else
 		rv = ioctl(fd, PSWIOC_GETSTATUS, NULL);
 #endif
-		if (rv < 0) {
-			printf("%d: %s\n", __LINE__, strerror(errno));
-			exit(-1);
+		if(rv == 0 && count){		/* INIT switch release */
+			if(count >= reboot && count < halt){
+				PSW_DEBUG("reboot ON\n");
+				execl("/sbin/shutdown", "shutdown", "-r", "now", NULL);
+			}
+			else if(count >= halt){
+				PSW_DEBUG("halt ON\n");
+				execl("/sbin/shutdown", "shutdown", "-h", "now", NULL);
+			}
+
+			if(count){
+				if(ledfd > 0)
+					close(ledfd);
+			}
+			count=0;
 		}
-		else if(rv){	/* INIT switch pushed */
+		else if(rv > 0){		/* INIT switch pushed */
 			count++;
 			if(count >= reboot){
 				/* kill runled daemon */
@@ -263,24 +274,13 @@ void watch_pushsw(void)
 					}
 					fclose(fp);
 				}
-#ifdef DEBUG
-				else{
-					printf("%d: %s\n", __LINE__, strerror(errno));
-					fprintf(stderr, "pshd can't control LED\n");
-				}
-#endif
-#ifndef CONFIG_LINUX_3_11_X
-				if ((ledfd = open(SEGLED_DEV, O_RDWR)) < 0){
-#ifdef DEBUG
-					printf("%d: %s\n", __LINE__, strerror(errno));
-					fprintf(stderr, "pshd can't control LED\n");
-#endif
-				}
+#if !defined(CONFIG_LINUX_3_11_X) && !defined(CONFIG_LINUX_4_0)
+				if((ledfd = open(SEGLED_DEV, O_RDWR)) == -1)
+					ledfd = 0;
 #else
 				ledfd = 100;	/* dummy fd */
 #endif
 			}
-			//count++;
 			if(count >= reboot && count < halt){
 				if(ledfd > 0)
 #if defined(HAVE_PUSHSW_OBS600_H)
@@ -288,7 +288,6 @@ void watch_pushsw(void)
 #elif defined(HAVE_PUSHSW_OBSAXX_H)
 					flash_led(ledfd, "4");
 #endif
-
 				if(count >= ((halt - reboot) / 2)){
 					if(ledfd > 0)
 						flash_led(ledfd, "2");
@@ -303,25 +302,9 @@ void watch_pushsw(void)
 #endif
 			}
 		}
-		else{		/* INIT switch release */
-			if(wait)
-				sprintf(buf, "%d", wait);
-			else
-				strcpy(buf, "now");
-			if(count >= reboot && count < halt){
-				PSW_DEBUG("reboot ON\n");
-				execl("/sbin/shutdown", "shutdown", "-r", buf, NULL);
-			}
-			else if(count >= halt){
-				PSW_DEBUG("halt ON\n");
-				execl("/sbin/shutdown", "shutdown", "-h", buf, NULL);
-			}
-
-			if(count){
-				if(ledfd > 0)
-					close(ledfd);
-			}
-			count=0;
+		else if(rv == -1){
+			printf("%d: %s\n", __LINE__, strerror(errno));
+			exit(-1);
 		}
 		while(nanosleep(&req, &rem) == -1)
 			req.tv_nsec = rem.tv_nsec;
@@ -343,28 +326,12 @@ int main(int argc, char *argv[])
 	while ((i = getopt(argc, argv, "r:h:t")) != -1) {
 		switch (i) {
 		case 'r':
-#if defined(HAVE_PUSHSW_OBSAXX_H)
-			reboot = atoi(optarg) < MAX_SEC ? atoi(optarg) * 2 : MAX_SEC * 2;
-#else
 			reboot = atoi(optarg) < MAX_SEC ? atoi(optarg) * 5 : MAX_SEC * 5;
-#endif
 			if(!reboot) reboot++;	// 0 is no use
 			break;
 		case 'h':
-#if defined(HAVE_PUSHSW_OBSAXX_H)
-			halt = atoi(optarg) < MAX_SEC ? atoi(optarg) * 2 : MAX_SEC * 2;
-#else
 			halt = atoi(optarg) < MAX_SEC ? atoi(optarg) * 5 : MAX_SEC * 5;
-#endif
 			if(!halt) halt++;	// 0 is no use
-			break;
-		case 't':
-#if defined(HAVE_PUSHSW_OBSAXX_H)
-			wait = atoi(optarg) < MAX_SEC ? atoi(optarg) * 2 : MAX_SEC * 2;
-#else
-			wait = atoi(optarg) < MAX_SEC ? atoi(optarg) * 5 : MAX_SEC * 5;
-#endif
-			if(!wait) wait++;	// 0 is no use
 			break;
 		default:
 			usage();
@@ -377,11 +344,7 @@ int main(int argc, char *argv[])
 		return(1);
 	}
 
-#if defined(HAVE_PUSHSW_OBSAXX_H)
-	if ((halt - reboot) < (2 * 2)) {
-#else
 	if ((halt - reboot) < (2 * 5)) {
-#endif
 		// for Green LED
 		fprintf(stderr, "Please add differences more than two seconds to reboot and halt.\n");
 		return(1);
@@ -403,7 +366,6 @@ int main(int argc, char *argv[])
 		close(fd);
 		return 0;
 	} else {
-//#ifndef DEBUG
 #if 1
 		/* daemon */
 		close(STDIN_FILENO);
@@ -455,6 +417,6 @@ int main(int argc, char *argv[])
 void donothing(int i) {
 }
 void die(int i) {
-	flag = 0;
+	forever = 0;
 }
 
