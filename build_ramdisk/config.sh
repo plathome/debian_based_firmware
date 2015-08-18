@@ -40,9 +40,9 @@ wheezy)
 	case ${TARGET} in
 	obsax3)
 		DTBFILE=armada-xp-openblocks-ax3-4.dtb
-		ISOFILE=debian-7.8.0-armhf-DVD-1.iso
+		ISOFILE=debian-7.7.0-armhf-DVD-1.iso
 		RAMDISK_SIZE=160
-		PATCHLEVEL=4
+		PATCHLEVEL=3
 		ARCH=armhf
 		UBOOT_VER=3.0.0
 		UBOOT_PL=0
@@ -50,9 +50,9 @@ wheezy)
 	;;
 	obsa6)
 		DTBFILE=kirkwood-openblocks_a6.dtb
-		ISOFILE=debian-7.8.0-armel-DVD-1.iso
+		ISOFILE=debian-7.7.0-armel-DVD-1.iso
 		RAMDISK_SIZE=144
-		PATCHLEVEL=2
+		PATCHLEVEL=1
 		ARCH=armel
 		LZMA_LEVEL=9
 		UBOOT_VER=1.2.6
@@ -61,9 +61,9 @@ wheezy)
 	;;
 	obsa7)
 		DTBFILE=kirkwood-openblocks_a7.dtb
-		ISOFILE=debian-7.8.0-armel-DVD-1.iso
+		ISOFILE=debian-7.7.0-armel-DVD-1.iso
 		RAMDISK_SIZE=144
-		PATCHLEVEL=2
+		PATCHLEVEL=1
 		ARCH=armel
 		LZMA_LEVEL=9
 		COMPRESS=gzip
@@ -73,8 +73,9 @@ wheezy)
 		UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
 	;;
 	obs600)
+		KERNEL=3.10.25
 		DTBFILE=obs600.dtb
-		ISOFILE=debian-7.8.0-powerpc-DVD-1.iso
+		ISOFILE=debian-7.4.0-powerpc-DVD-1.iso
 		RAMDISK_SIZE=160
 		PATCHLEVEL=0
 		ARCH=powerpc
