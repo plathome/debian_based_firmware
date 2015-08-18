@@ -36,13 +36,13 @@ export TARGET DIST
 
 case ${DIST} in
 wheezy)
-	KERNEL=4.0
+	KERNEL=3.2.54
 	case ${TARGET} in
 	obsax3)
 		DTBFILE=armada-xp-openblocks-ax3-4.dtb
 		ISOFILE=debian-7.8.0-armhf-DVD-1.iso
 		RAMDISK_SIZE=160
-		PATCHLEVEL=0
+		PATCHLEVEL=4
 		ARCH=armhf
 		UBOOT_VER=3.0.0
 		UBOOT_PL=0
@@ -52,7 +52,7 @@ wheezy)
 		DTBFILE=kirkwood-openblocks_a6.dtb
 		ISOFILE=debian-7.8.0-armel-DVD-1.iso
 		RAMDISK_SIZE=144
-		PATCHLEVEL=0
+		PATCHLEVEL=2
 		ARCH=armel
 		LZMA_LEVEL=9
 		UBOOT_VER=1.2.6
@@ -63,7 +63,7 @@ wheezy)
 		DTBFILE=kirkwood-openblocks_a7.dtb
 		ISOFILE=debian-7.8.0-armel-DVD-1.iso
 		RAMDISK_SIZE=144
-		PATCHLEVEL=0
+		PATCHLEVEL=2
 		ARCH=armel
 		LZMA_LEVEL=9
 		COMPRESS=gzip
@@ -81,6 +81,22 @@ wheezy)
 		LZMA_LEVEL=9
 		COMPRESS=gzip
 		COMPRESS_EXT=gz
+	;;
+	*) exit 1 ;;
+	esac
+;;
+jessie)
+	KERNEL=4.0.5
+	case ${TARGET} in
+	obsax3)
+		DTBFILE=armada-xp-openblocks-ax3-4.dtb
+		ISOFILE=debian-8.1.0-armhf-DVD-1.iso
+		RAMDISK_SIZE=160
+		PATCHLEVEL=beta0
+		ARCH=armhf
+		UBOOT_VER=3.0.0
+		UBOOT_PL=0
+		UBOOT_OLD_VER="1\\\.0\\\.0\|1\\\.1\\\.[1235]\|2\\\.0\\\.[347]"
 	;;
 	*) exit 1 ;;
 	esac

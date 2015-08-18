@@ -55,6 +55,12 @@ if [ -f "${LINUX_SRC}/../linux-${KERNEL}.dot.config" ]; then
 fi
 
 make -j$((${cpunum}+1)) ${MAKE_OPTION} ${MAKE_IMAGE} modules
-if [ -n "$DTBFILE" ]; then
-	make ${MAKE_OPTION} $DTBFILE
-fi
+case $KERNEL in
+3.13|4.*)
+	if [ -n "$DTBFILE" ]; then
+		make ${MAKE_OPTION} $DTBFILE
+	fi
+	;;
+*)
+	;;
+esac
