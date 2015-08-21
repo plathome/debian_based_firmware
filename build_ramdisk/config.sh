@@ -63,7 +63,7 @@ wheezy)
 		DTBFILE=kirkwood-openblocks_a7.dtb
 		ISOFILE=debian-7.7.0-armel-DVD-1.iso
 		RAMDISK_SIZE=144
-		PATCHLEVEL=1
+		PATCHLEVEL=2
 		ARCH=armel
 		LZMA_LEVEL=9
 		COMPRESS=gzip
