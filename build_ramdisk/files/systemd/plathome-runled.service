@@ -1,0 +1,13 @@
+[Unit]
+Description=runled daemon for OpenBlocks IoT
+After=nitz
+
+[Service]
+Type=forking
+PIDFile=/run/segled.pid
+ExecStartPre=/usr/sbin/init-runled.sh
+ExecStart=/usr/sbin/runled -d -l 105 -m 85
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
