@@ -1735,12 +1735,15 @@ flash_extract_java(int target)
 #endif
 
 		/* not reached here */
-		return ret;
+		goto error;
 	} else {
 		wait(&st);
 		if(st){
 #ifdef DEBUG
 			fprintf(stderr, "child returns %d\n", st);
+#endif
+#if defined(CONFIG_OBSA6)
+			umount_mtddev();
 #endif
 			return -1;
 		}

@@ -54,7 +54,8 @@ if [ -f "${LINUX_SRC}/../linux-${KERNEL}.dot.config" ]; then
 	make ${MAKE_OPTION} oldconfig
 fi
 
-make -j$((${cpunum}+1)) ${MAKE_OPTION} ${MAKE_IMAGE} modules
+#make -j$((${cpunum}+1)) ${MAKE_OPTION} ${MAKE_IMAGE} modules
+make ${MAKE_OPTION} ${MAKE_IMAGE} modules
 case $KERNEL in
 3.13|4.*)
 	if [ -n "$DTBFILE" ]; then

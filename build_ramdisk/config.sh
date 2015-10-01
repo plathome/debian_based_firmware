@@ -50,7 +50,7 @@ wheezy)
 	;;
 	obsa6)
 		DTBFILE=kirkwood-openblocks_a6.dtb
-		ISOFILE=debian-7.7.0-armel-DVD-1.iso
+		ISOFILE=debian-7.8.0-armel-DVD-1.iso
 		RAMDISK_SIZE=144
 		PATCHLEVEL=2
 		ARCH=armel
@@ -61,9 +61,9 @@ wheezy)
 	;;
 	obsa7)
 		DTBFILE=kirkwood-openblocks_a7.dtb
-		ISOFILE=debian-7.7.0-armel-DVD-1.iso
+		ISOFILE=debian-7.8.0-armel-DVD-1.iso
 		RAMDISK_SIZE=144
-		PATCHLEVEL=2
+		PATCHLEVEL=0
 		ARCH=armel
 		LZMA_LEVEL=9
 		COMPRESS=gzip
@@ -87,17 +87,33 @@ wheezy)
 	esac
 ;;
 jessie)
-	KERNEL=4.0.5
+	KERNEL=4.1.8
 	case ${TARGET} in
 	obsax3)
 		DTBFILE=armada-xp-openblocks-ax3-4.dtb
-		ISOFILE=debian-8.1.0-armhf-DVD-1.iso
-		RAMDISK_SIZE=160
-		PATCHLEVEL=beta0
+		ISOFILE=debian-8.2.0-armhf-DVD-1.iso
+		RAMDISK_SIZE=170
+		PATCHLEVEL=0
 		ARCH=armhf
+		LZMA_LEVEL=9
+		COMPRESS=lzma
+		COMPRESS_EXT=lzma
 		UBOOT_VER=3.0.0
 		UBOOT_PL=0
 		UBOOT_OLD_VER="1\\\.0\\\.0\|1\\\.1\\\.[1235]\|2\\\.0\\\.[347]"
+	;;
+	obsa7)
+		DTBFILE=kirkwood-openblocks_a7.dtb
+		ISOFILE=debian-8.2.0-armel-DVD-1.iso
+		RAMDISK_SIZE=170
+		PATCHLEVEL=0
+		ARCH=armel
+		LZMA_LEVEL=1
+		COMPRESS=lzma
+		COMPRESS_EXT=lzma
+		UBOOT_VER=1.2.13
+		UBOOT_PL=2
+		UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
 	;;
 	*) exit 1 ;;
 	esac

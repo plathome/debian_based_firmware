@@ -29,10 +29,18 @@
 
 [ "${ARCH}" == "powerpc" ] && exit
 
-chroot ${DISTDIR} /usr/bin/aptitude hold initscripts
+#chroot ${DISTDIR} /usr/bin/aptitude hold initscripts
 
 cat > ${DISTDIR}/tmp/hold.$$ <<_HOLD
 echo initscripts hold | dpkg --set-selections
 _HOLD
 chroot ${DISTDIR} /bin/bash /tmp/hold.$$
 rm -f ${DISTDIR}/tmp/hold.$$
+
+if [ ${DIST} == "jessie" ]; then
+	cat > ${DISTDIR}/tmp/hold.$$ <<_HOLD2
+	echo ifupdown hold | dpkg --set-selections
+_HOLD2
+	chroot ${DISTDIR} /bin/bash /tmp/hold.$$
+	rm -f ${DISTDIR}/tmp/hold.$$
+fi

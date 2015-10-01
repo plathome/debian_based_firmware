@@ -73,6 +73,10 @@ case $KERNEL in
 ;;
 esac
 
+if [ "$TARGET" == "obsax3" -a "$DIST" == "jessie" ]; then
+	CFLAGS+=" -march=armv7-a -mhard-float -mfloat-abi=softfp -mfpu=vfpv3-d16"
+fi
+
 mkdir -p ${BUILDDIR}
 
 echo "FLASHCFG"

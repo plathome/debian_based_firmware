@@ -36,15 +36,17 @@
 
 (cd ${DISTDIR}/etc; (cd ${ETCDIR_ADD};find . -type f) | xargs chown root:root ${DISTDIR}/etc)
 
+chroot ${DISTDIR} /sbin/insserv -r bootlogs
+
 for sh in openblocks-setup pshd runled ;do
 	chmod 755 ${DISTDIR}/etc/init.d/$sh
-	chroot ${DISTDIR} /usr/sbin/update-rc.d -f $sh remove
+	chroot ${DISTDIR} /sbin/insserv -r $sh
 	case $sh in
 	openblocks-setup)
-		chroot ${DISTDIR} /usr/sbin/update-rc.d $sh start 1 S . stop 1 0 6 .
+		chroot ${DISTDIR} /sbin/insserv $sh
 		;;
 	*)
-		chroot ${DISTDIR} /usr/sbin/update-rc.d $sh defaults
+		chroot ${DISTDIR} /sbin/insserv $sh
 		;;
 	esac
 done
@@ -60,4 +62,10 @@ if [ -f ${DISTDIR}/etc/modules ]; then
 	else
 		echo "ipv6" >> ${DISTDIR}/etc/modules
 	fi
+fi
+
+if [ ${DIST} == "jessie" ]; then
+	sed -e "s|^PermitRootLogin without-password|PermitRootLogin yes|" \
+		< ${DITDIR}/etc/ssh/sshd_config > /tmp/sshd_config.new
+	mv -f /tmp/sshd_config.new ${DISTDIR}/etc/ssh/sshd_config
 fi

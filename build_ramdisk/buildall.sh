@@ -28,12 +28,12 @@
 #debug=echo
 . `dirname $0`/config.sh
 
-DIST_LIST="(squeeze|wheezy)"
+DIST_LIST="(squeeze|wheezy|jessie)"
 TARGET_LIST="(obsax3|obsa6|obsa7|obs600)"
 
 function _usage(){
 	echo
-	echo "usage: $(basename $0) -M [obsax3|obsa6|obsa7|obs600] -D [squeeze|wheezy]"
+	echo "usage: $(basename $0) -M [obsax3|obsa6|obsa7|obs600] -D [squeeze|wheezy|jessie]"
 	echo
 	exit 1
 }

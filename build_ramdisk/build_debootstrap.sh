@@ -58,9 +58,12 @@ mkdir -p ${DISTDIR}
 if [ "$TARGET" == "obs600" ]; then
 EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano,udev,libudev0"
 INCLUDE="openssh-server,lzma,strace,perl"
+elif [ "$DIST" == "jessie" ]; then
+EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,nano"
+INCLUDE="openssh-server,dbus,lzma"
 else
 EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano"
-INCLUDE="udev,openssh-server,lzma,strace,parted,dmsetup,libdevmapper1.02.1,liblzo2-2,libparted0debian1"
+INCLUDE="openssh-server"
 fi
 
 $debug debootstrap ${FOREIGN} ${NOGPG} --arch=${ARCH} \
