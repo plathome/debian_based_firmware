@@ -37,26 +37,32 @@ elif [ "$TARGET" == "obsa7" ] ; then
 elif [ "$TARGET" == "obsa6" ] ; then
 	MODEL="-DCONFIG_OBSA6"
 else
+	MODEL="-DCONFIG_OBS600"
 	FLASHCFG="flashcfg_obs600.c"
 fi
 
 LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
 
 
-case $KERNEL in
-3.13|3.10.*|4.*)
-	CFLAGS="-Wall -I/usr/arm-linux-gnueabi/include \
-		-L/usr/${KERN_ARCH}-linux-gnu${ABI}/lib -DDEBIAN ${MODEL}"
-;;
-*)
-	CFLAGS="-Wall -I$LINUX_INC -DDEBIAN ${MODEL}"
-;;
-esac
-
 if [ "$TARGET" == "obs600" ]; then
-	CFLAGS+=" -DHAVE_PUSHSW_OBS600_H"
+	if [ "$DIST" == "jessie" ]; then
+		CFLAGS+=" ${MODEL} -DDEBIAN"
+	else
+		CFLAGS+=" -DHAVE_PUSHSW_OBS600_H"
+	fi
 else
 	CFLAGS+=" -DHAVE_PUSHSW_OBSAXX_H"
+
+	case $KERNEL in
+	3.13|3.10.*|4.*)
+		CFLAGS="-Wall -I/usr/arm-linux-gnueabi/include \
+			-L/usr/${KERN_ARCH}-linux-gnu${ABI}/lib -DDEBIAN ${MODEL}"
+	;;
+	*)
+		CFLAGS="-Wall -I$LINUX_INC -DDEBIAN ${MODEL}"
+	;;
+	esac
+
 fi
 
 case $KERNEL in

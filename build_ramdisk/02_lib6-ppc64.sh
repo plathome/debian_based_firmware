@@ -31,4 +31,6 @@
 
 [ "${ARCH}" == "powerpc" -a "${DIST}" == "wheezy" ] && exit
 
+[ "${ARCH}" == "powerpc" -a "${DIST}" == "jessie" ] && exit
+
 chroot ${DISTDIR} /usr/bin/aptitude purge -y libc6-ppc64

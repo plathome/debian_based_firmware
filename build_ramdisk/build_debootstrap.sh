@@ -56,8 +56,13 @@ rm -rf   ${DISTDIR}
 mkdir -p ${DISTDIR}
 
 if [ "$TARGET" == "obs600" ]; then
-EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano,udev,libudev0"
-INCLUDE="openssh-server,lzma,strace,perl"
+	if [ "$TARGET" == "jessie" ]; then
+		EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano"
+		INCLUDE="openssh-server,lzma,mtd-utils,liblzo2-2"
+	else
+		EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano,udev,libudev0"
+		INCLUDE="openssh-server,lzma,strace,perl"
+	fi
 elif [ "$DIST" == "jessie" ]; then
 EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,nano"
 INCLUDE="openssh-server,dbus,lzma"

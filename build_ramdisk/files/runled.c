@@ -1,3 +1,4 @@
+//#define DEBUG
 /*	$ssdlinux: runled.c,v 1.17 2014/01/07 07:19:06 yamagata Exp $	*/
 /*
  * Copyright (c) 2008-2015 Plat'Home CO., LTD.
@@ -120,7 +121,7 @@ extern int optopt;
 extern int opterr;
 extern int optreset;
 
-#if defined(CONFIG_LINUX_4_0)
+#if defined(CONFIG_LINUX_4_0) && !defined(CONFIG_OBS600)
 /*
 	Change Powermanagement mode
 */
@@ -235,7 +236,7 @@ void calc_ledspeed(void){
 	if(total < 34){
 		if(led_speed != LED_0_33){
 			led_speed = LED_0_33;
-#if defined(CONFIG_LINUX_4_0)
+#if defined(CONFIG_LINUX_4_0) && defined(CONFIG_OBSAX3)
 			if(pmctl)
 				chg_pm(SNOOZE);
 #endif
@@ -245,7 +246,7 @@ void calc_ledspeed(void){
 	else if(total >= 34 && total < 67){
 		if(led_speed != LED_34_66){
 			led_speed = LED_34_66;
-#if defined(CONFIG_LINUX_4_0)
+#if defined(CONFIG_LINUX_4_0) && defined(CONFIG_OBSAX3)
 			if(pmctl)
 				chg_pm(WFI);
 #endif
@@ -335,112 +336,112 @@ dancer()
 #endif
 
 	for (;;) {
-#if defined(CONFIG_LINUX_3_11_X) || defined(CONFIG_LINUX_4_0)
+#if (defined(CONFIG_LINUX_3_11_X) || defined(CONFIG_LINUX_4_0)) && !defined(CONFIG_OBS600)
 		if ((fd = open(SEGLED_DEV_G, O_RDWR)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		write(fd, "0", 1);
 		close(fd);
 		if ((fd = open(SEGLED_DEV_Y, O_RDWR)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		write(fd, "0", 1);
 		close(fd);
 		if ((fd = open(SEGLED_DEV_R, O_RDWR)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		write(fd, "1", 1);
 		close(fd);
 #else
 		if ((fd = open("/dev/segled", O_RDWR)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		write(fd, "1", 1);
 		close(fd);
 #endif
 		usleep(led_speed);
-#if defined(CONFIG_LINUX_3_11_X) || defined(CONFIG_LINUX_4_0)
+#if (defined(CONFIG_LINUX_3_11_X) || defined(CONFIG_LINUX_4_0)) && !defined(CONFIG_OBS600)
 		if ((fd = open(SEGLED_DEV_Y, O_RDWR)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		write(fd, "0", 1);
 		close(fd);
 		if ((fd = open(SEGLED_DEV_R, O_RDWR)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		write(fd, "0", 1);
 		close(fd);
 		if ((fd = open(SEGLED_DEV_G, O_RDWR)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		write(fd, "1", 1);
 		close(fd);
 #else
 		if ((fd = open("/dev/segled", O_RDWR)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		write(fd, "2", 1);
 		close(fd);
 #endif
 		usleep(led_speed);
-#if defined(CONFIG_LINUX_3_11_X) || defined(CONFIG_LINUX_4_0)
+#if (defined(CONFIG_LINUX_3_11_X) || defined(CONFIG_LINUX_4_0)) && !defined(CONFIG_OBS600)
 		if ((fd = open(SEGLED_DEV_R, O_RDWR)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		write(fd, "0", 1);
 		close(fd);
 		if ((fd = open(SEGLED_DEV_G, O_RDWR)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		write(fd, "0", 1);
 		close(fd);
 		if ((fd = open(SEGLED_DEV_Y, O_RDWR)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		write(fd, "1", 1);
 		close(fd);
 #else
 		if ((fd = open("/dev/segled", O_RDWR)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		write(fd, "4", 1);
 		close(fd);
 #endif
 		usleep(led_speed);
-#if defined(CONFIG_LINUX_3_11_X) || defined(CONFIG_LINUX_4_0)
+#if (defined(CONFIG_LINUX_3_11_X) || defined(CONFIG_LINUX_4_0)) && !defined(CONFIG_OBS600)
 		if ((fd = open(SEGLED_DEV_Y, O_RDWR)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		write(fd, "0", 1);
 		close(fd);
 		if ((fd = open(SEGLED_DEV_R, O_RDWR)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		write(fd, "0", 1);
 		close(fd);
 		if ((fd = open(SEGLED_DEV_G, O_RDWR)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		write(fd, "1", 1);
 		close(fd);
 #else
 		if ((fd = open("/dev/segled", O_RDWR)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		write(fd, "2", 1);
@@ -550,12 +551,12 @@ main(int argc, char *argv[])
 		/* parent */
 		char tmp[100];
 		if ((fd = open(PID_FILE, O_CREAT|O_WRONLY|O_TRUNC)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		sprintf(tmp, "%d\n", pid);
 		if (write(fd, tmp, strlen(tmp)) != strlen(tmp)) {
-			perror("write");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			close(fd);
 			exit(-2);
 		}
@@ -563,9 +564,11 @@ main(int argc, char *argv[])
 		return 0;
 	} else {
 		/* daemon */
+#if !defined(DEBUG)
 		close(STDIN_FILENO);
 		close(STDOUT_FILENO);
 		close(STDERR_FILENO);
+#endif
 		if(setsid() == -1)
 			exit(4);
 

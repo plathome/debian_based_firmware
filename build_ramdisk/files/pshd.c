@@ -1,3 +1,4 @@
+//#define DEBUG
 /*	$ssdlinux: obs600_pshd.c,v 1.12 2014/01/07 07:19:59 yamagata Exp $	*/
 /*
  * Copyright (c) 2009-2015 Plat'Home CO., LTD.
@@ -82,7 +83,7 @@ void die(int i);
 #define SEGLED_DEV_Y	"/sys/class/leds/yellow_led/brightness"
 #define SEGLED_DEV_R	"/sys/class/leds/red_led/brightness"
 #endif
-#elif defined(CONFIG_LINUX_4_0)
+#elif defined(CONFIG_LINUX_4_0) && !defined(CONFIG_OBS600)
 #define PUSHSW_DEV		"/dev/input/event0"
 #if defined(CONFIG_OBSA7)
 #define SEGLED_DEV_G	"/sys/devices/platform/gpio-leds/leds/obsa7:green:stat/brightness"
@@ -122,24 +123,24 @@ void usage(void)
 
 static inline void flash_led(int fd, char* num)
 {
-#if defined(CONFIG_LINUX_3_11_X) || defined(CONFIG_LINUX_4_0)
+#if (defined(CONFIG_LINUX_3_11_X) || defined(CONFIG_LINUX_4_0)) && !defined(CONFIG_OBS600)
 	int fh;
 	switch(num[0]){	
 	case '1':
 		if ((fh = open(SEGLED_DEV_G, O_RDWR)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		write(fh, "0", 1);
 		close(fh);
 		if ((fh = open(SEGLED_DEV_Y, O_RDWR)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		write(fh, "0", 1);
 		close(fh);
 		if ((fh = open(SEGLED_DEV_R, O_RDWR)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		write(fh, "1", 1);
@@ -147,19 +148,19 @@ static inline void flash_led(int fd, char* num)
 		break;
 	case '2':
 		if ((fh = open(SEGLED_DEV_Y, O_RDWR)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		write(fh, "0", 1);
 		close(fh);
 		if ((fh = open(SEGLED_DEV_R, O_RDWR)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		write(fh, "0", 1);
 		close(fh);
 		if ((fh = open(SEGLED_DEV_G, O_RDWR)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		write(fh, "1", 1);
@@ -167,19 +168,19 @@ static inline void flash_led(int fd, char* num)
 		break;
 	case '4':
 		if ((fh = open(SEGLED_DEV_R, O_RDWR)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		write(fh, "0", 1);
 		close(fh);
 		if ((fh = open(SEGLED_DEV_G, O_RDWR)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		write(fh, "0", 1);
 		close(fh);
 		if ((fh = open(SEGLED_DEV_Y, O_RDWR)) < 0) {
-			perror("open");
+			printf("%d: %s\n", __LINE__, strerror(errno));
 			exit(-1);
 		}
 		write(fh, "1", 1);
@@ -193,7 +194,7 @@ static inline void flash_led(int fd, char* num)
 #endif
 }
 
-#if defined(CONFIG_LINUX_3_11_X) || defined(CONFIG_LINUX_4_0)
+#if (defined(CONFIG_LINUX_3_11_X) || defined(CONFIG_LINUX_4_0)) && !defined(CONFIG_OBS600)
 static int get_push_event(int fd)
 {
 	const unsigned char pushsw_ev[] = {	/* pushsw event id */
@@ -242,7 +243,7 @@ void watch_pushsw(void)
 		req.tv_sec = 0;
 		req.tv_nsec = INTERVAL * 1000;
 
-#if defined(CONFIG_LINUX_3_11_X) || defined(CONFIG_LINUX_4_0)
+#if (defined(CONFIG_LINUX_3_11_X) || defined(CONFIG_LINUX_4_0)) && !defined(CONFIG_OBS600)
 		rv = get_push_event(fd);
 #else
 		rv = ioctl(fd, PSWIOC_GETSTATUS, NULL);
@@ -274,18 +275,18 @@ void watch_pushsw(void)
 					}
 					fclose(fp);
 				}
-#if !defined(CONFIG_LINUX_3_11_X) && !defined(CONFIG_LINUX_4_0)
+#if (defined(CONFIG_LINUX_3_11_X) || defined(CONFIG_LINUX_4_0)) && !defined(CONFIG_OBS600)
+				ledfd = 100;	/* dummy fd */
+#else
 				if((ledfd = open(SEGLED_DEV, O_RDWR)) == -1)
 					ledfd = 0;
-#else
-				ledfd = 100;	/* dummy fd */
 #endif
 			}
 			if(count >= reboot && count < halt){
 				if(ledfd > 0)
-#if defined(HAVE_PUSHSW_OBS600_H)
+#if defined(HAVE_PUSHSW_OBS600_H) || defined(CONFIG_OBS600)
 					flash_led(ledfd, "1");
-#elif defined(HAVE_PUSHSW_OBSAXX_H)
+#else
 					flash_led(ledfd, "4");
 #endif
 				if(count >= ((halt - reboot) / 2)){
@@ -295,9 +296,9 @@ void watch_pushsw(void)
 			}
 			else if(count >= halt){
 				if(ledfd > 0)
-#if defined(HAVE_PUSHSW_OBS600_H)
+#if defined(HAVE_PUSHSW_OBS600_H) || defined(CONFIG_OBS600)
 					flash_led(ledfd, "4");
-#elif defined(HAVE_PUSHSW_OBSAXX_H)
+#else
 					flash_led(ledfd, "1");
 #endif
 			}
@@ -366,7 +367,7 @@ int main(int argc, char *argv[])
 		close(fd);
 		return 0;
 	} else {
-#if 1
+#if !defined(DEBUG)
 		/* daemon */
 		close(STDIN_FILENO);
 		close(STDOUT_FILENO);

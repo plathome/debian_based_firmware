@@ -115,6 +115,21 @@ jessie)
 		UBOOT_PL=2
 		UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
 	;;
+	obs600)
+		KERNEL=4.1.8
+		DEFCONFIG=40x/obs600_defconfig
+		DTBFILE=obs600.dtb
+#		ISOFILE=debian-8.2.0-powerpc-DVD-1.iso
+		RAMDISK_SIZE=210
+		PATCHLEVEL=0
+		ARCH=powerpc
+		LZMA_LEVEL=1
+		COMPRESS=lzma
+		COMPRESS_EXT=lzma
+		UBOOT_VER=1.2.13
+		UBOOT_PL=2
+		UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
+	;;
 	*) exit 1 ;;
 	esac
 ;;

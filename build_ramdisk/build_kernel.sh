@@ -47,7 +47,11 @@ if [ "$TARGET" == "obs600" ]; then
 fi
 
 cd ${LINUX_SRC}
-make ${MAKE_OPTION} ${TARGET}_defconfig
+if [ ${DEFCONFIG} ]; then
+	make ${MAKE_OPTION} ${DEFCONFIG}
+else
+	make ${MAKE_OPTION} ${TARGET}_defconfig
+fi
 
 if [ -f "${LINUX_SRC}/../linux-${KERNEL}.dot.config" ]; then
 	cp -f ${LINUX_SRC}/../linux-${KERNEL}.dot.config .config
