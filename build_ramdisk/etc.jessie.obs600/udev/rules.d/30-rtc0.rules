@@ -1,0 +1,1 @@
+KERNEL=="rtc", SYMLINK="rtc0"

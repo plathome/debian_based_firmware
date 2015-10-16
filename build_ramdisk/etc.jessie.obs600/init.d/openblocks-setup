@@ -1,0 +1,390 @@
+#!/bin/bash
+### BEGIN INIT INFO
+# Provides:          openblocks-setup
+# Required-Start:    mountkernfs udev
+# Required-Stop:     umountfs
+# Default-Start:     S
+# Default-Stop:      0 6
+# Short-Description: Config storage area for OpenBlocks 600
+# Description:
+### END INIT INFO
+#
+# Copyright (c) 2013-2015 Plat'Home CO., LTD.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY PLAT'HOME CO., LTD. AND CONTRIBUTORS ``AS IS''
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED.  IN NO EVENT SHALL PLAT'HOME CO., LTD. AND CONTRIBUTORS
+# BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+#
+
+DESC="filesystem layout configuration"
+NAME="openblocks-setup"
+
+# Load the VERBOSE setting and other rcS variables
+. /lib/init/vars.sh
+
+# Define LSB log_* functions.
+# Depend on lsb-base (>= 3.0-6) to ensure that this file is present.
+. /lib/lsb/init-functions
+
+#set -x
+
+[ -f /etc/default/openblocks ] && . /etc/default/openblocks
+
+RW_DIR="${RW_DIR:=/.rw}"
+RW_CF_LABEL="${RW_CF_LABEL:=DEBIAN}"
+CONFIG_LABEL="${CONFIG_LABEL:=DEB_CONFIG}"
+CONFIG_DEV_MTPT="${CONFIG_DEV_MTPT:=/mnt}"
+CONFIG_FILE=userland.tgz
+CONFIG_SCRIPT=init.sh
+CONFIG_POSTSCRIPT=post-init.sh
+MTREE_LIST="${MTREE_LIST:=/etc/mtree.list}"
+MTREE_DIRS="${MTREE_DIRS:=/var/log /var/run}"
+
+if [ "$MODEL" == "obsa6" -o "$MODEL" == "obsa7" ] ; then
+	extract_func=extract_mtd_a6
+else	# obsax3
+	extract_func=extract_mtd
+fi
+
+protect_mtd(){
+	local mtd=
+	for mtd in $MTD_FIRM_DEV $MTD_CONF_DEV $MTD_USER_DEV $MTD_OPT_DEV;do
+		[ -f /sys/devices/virtual/mtd/${mtd}/flags ] && \
+		echo "0x800" > /sys/devices/virtual/mtd/${mtd}/flags
+	done
+}
+
+extract_mtd_a6(){
+	local mtd=$1
+	local type=gzip
+	case $mtd in
+	${MTD_CONF_DEV}) cmdarg="-x"; desc="/etc config" ;;
+	${MTD_USER_DEV}) cmdarg="-X"; desc="userland" ;;
+	${MTD_OPT_DEV}) cmdarg="-J"; desc="optional" ;;
+	*) return 1;;
+	esac
+	echo -n "Extract $desc files from FlashROM($mtd)... "
+	if flashcfg-debian $cmdarg > /dev/null 2>&1 ; then
+		echo "done."
+	else
+		echo "fail(or empty)."
+	fi
+}
+
+extract_mtd(){
+	local mtd=$1
+	local type=gzip
+	local ODIR=${RW_DIR}
+	case $mtd in
+	${MTD_CONF_DEV}) desc="/etc config" ;;
+	${MTD_USER_DEV}) desc="userland" ;;
+	${MTD_OPT_DEV}) desc="optional"; type=lzma; ODIR=/ ;;
+	*) return 1;;
+	esac
+	echo -n "Extract $desc files from FlashROM($mtd)... "
+	# dont' use "tar -xpzf ...". because get bad return code.
+	if (dd if=/dev/$mtd|$type -d|tar -xpf - -C ${ODIR})  > /dev/null 2>&1; then
+		echo "done."
+	else
+		echo "fail(or empty)."
+	fi
+	return 0
+}
+
+if_exists_execute_config_postscript(){
+	if [ -f "${CONFIG_DEV_MTPT}/${CONFIG_POSTSCRIPT}" ] ; then
+		bash ${CONFIG_DEV_MTPT}/${CONFIG_POSTSCRIPT}
+	fi
+	return 0
+}
+
+if_exists_execute_config_script(){
+	if [ -f "${CONFIG_DEV_MTPT}/${CONFIG_SCRIPT}" ] ; then
+		bash ${CONFIG_DEV_MTPT}/${CONFIG_SCRIPT}
+	fi
+	return 0
+}
+
+if_exists_extract_config_file(){
+	if [ -f "${CONFIG_DEV_MTPT}/${CONFIG_FILE}" ] ; then
+		echo -n "Extract config files from LABEL=$CONFIG_LABEL device... "
+		if tar -xpzf ${CONFIG_DEV_MTPT}/${CONFIG_FILE} -C ${RW_DIR};then
+			echo "done."
+		else
+			echo "fail(or empty)."
+		fi
+	fi
+	return 0
+}
+
+fdisk_and_mke2fs(){
+	dev=$1
+	sfdisk ${dev%[0-9]} <<-_FDISK
+,,83,-
+	_FDISK
+	mkfs -t ext3 -j -b 4096 -L ${RW_CF_LABEL} $dev
+	return 0
+}
+
+mkdir_mtree_list() {
+	if [ -s ${MTREE_LIST} ]; then
+		cat ${MTREE_LIST} | while read line;do
+			owner=`echo $line|cut -d':' -f1`
+			group=`echo $line|cut -d':' -f2`
+			dir=`echo $line|cut -d':' -f3`
+			mkdir -p ${dir}
+			chown ${owner}:${group} ${dir}
+		done
+	fi
+}
+
+
+# merge from /var/lib/dpkg/info/openssh-server.postinst
+# get_config_option, host_keys_required, create_key, create_keys
+sshd_get_config_option() {
+	option="$1"
+
+	[ -f /etc/ssh/sshd_config ] || return
+
+	# TODO: actually only one '=' allowed after option
+	perl -lne 's/\s+/ /g; print if s/^\s*'"$option"'[[:space:]=]+//i' \
+	   /etc/ssh/sshd_config
+}
+
+sshd_host_keys_required() {
+	hostkeys="$(sshd_get_config_option HostKey)"
+	if [ "$hostkeys" ]; then
+		echo "$hostkeys"
+	else
+		# No HostKey directives at all, so the server picks some
+		# defaults depending on the setting of Protocol.
+		protocol="$(sshd_get_config_option Protocol)"
+		[ "$protocol" ] || protocol=1,2
+		if echo "$protocol" | grep 1 >/dev/null; then
+			echo /etc/ssh/ssh_host_key
+		fi
+		if echo "$protocol" | grep 2 >/dev/null; then
+			echo /etc/ssh/ssh_host_rsa_key
+			echo /etc/ssh/ssh_host_dsa_key
+			echo /etc/ssh/ssh_host_ecdsa_key
+		fi
+	fi
+}
+
+sshd_create_key() {
+	msg="$1"
+	shift
+	hostkeys="$1"
+	shift
+	file="$1"
+	shift
+
+	if echo "$hostkeys" | grep -x "$file" >/dev/null && \
+	   [ ! -f "$file" ] ; then
+		echo -n $msg
+		ssh-keygen -q -f "$file" -N '' "$@"
+		echo
+		if type restorecon >/dev/null 2>&1; then
+			restorecon "$file.pub"
+		fi
+	fi
+}
+
+
+sshd_create_keys() {
+	hostkeys="$(sshd_host_keys_required)"
+
+	sshd_create_key "Creating SSH1 key; this may take some time ..." \
+		"$hostkeys" /etc/ssh/ssh_host_key -t rsa1
+
+	sshd_create_key "Creating SSH2 RSA key; this may take some time ..." \
+		"$hostkeys" /etc/ssh/ssh_host_rsa_key -t rsa
+	sshd_create_key "Creating SSH2 DSA key; this may take some time ..." \
+		"$hostkeys" /etc/ssh/ssh_host_dsa_key -t dsa
+	sshd_create_key "Creating SSH2 ECDSA key; this may take some time ..." \
+		"$hostkeys" /etc/ssh/ssh_host_ecdsa_key -t ecdsa
+}
+
+
+case "$1" in
+start)
+	mount -oremount,rw /
+	protect_mtd
+
+	depmod -a
+
+	if [ "$MODEL" == "obs600" ]; then
+		hwclock --rtc=/dev/rtc0 --hctosys
+	fi
+
+	FLG_INIT=false
+	FLG_FORCE_CONFIG=false
+
+	rwdev_fs=ext3
+	union_fs=unionfs
+
+	# check init sw
+	grep -q 'noflashcfg=1' /proc/cmdline && FLG_INIT=true
+
+	# check cf with LABEL=${CONFIG_LABEL}
+	confdev=`findfs LABEL=${CONFIG_LABEL} 2> /dev/null`
+	if [ -n "$confdev" ] ; then
+		mount -o ro $confdev $CONFIG_DEV_MTPT
+		[ -f "/mnt/FORCE" ] && FLG_FORCE_CONFIG=true	
+	fi
+
+	# check cf with LABEL=${RW_CF_LABEL}
+	rwdev=`findfs LABEL=${RW_CF_LABEL} 2> /dev/null`
+
+	# check aufs support
+	if grep -q aufs /proc/filesystems ; then
+		union_fs=aufs
+	fi
+
+
+	mkdir -p ${RW_DIR}
+
+	# for easyblocks check
+	if [ -n "$rwdev" ] ; then
+		fsck -C -a $rwdev 2> /dev/null
+		k1="Filesystem features"
+		k2="(extent|flex_bg|huge_file|uninit_bg|dir_nlink|extra_isize)"
+		if dumpe2fs -h $rwdev | grep "$k1" | grep -q -E "$k2" ; then
+			rwdev_fs=ext4
+		fi
+		mount -o ro -t $rwdev_fs $rwdev ${RW_DIR}
+		[ -e "${RW_DIR}/etc/easyblocks" ] && FLG_INIT=false
+		umount ${RW_DIR}
+	fi
+
+
+	if [ -z "$rwdev" ] || [ "${FLG_INIT}" == "true" ]; then
+		mount -t tmpfs -o size=${RW_TMPFS_SIZE} tmpfs ${RW_DIR}
+
+		if [ "${FLG_INIT}" == "true" ] ; then
+			echo "Running by default configuration..."
+		elif [ "${FLG_FORCE_CONFIG}" == "true" ] ; then
+			echo "Don't extract files in FlashROM..."
+		else
+			$extract_func ${MTD_USER_DEV}
+			$extract_func ${MTD_CONF_DEV}
+		fi
+
+	else
+		if [ "${FLG_FORCE_CONFIG}" == "true" ];then
+			fdisk_and_mke2fs $rwdev
+		fi
+
+		mount -t $rwdev_fs $rwdev ${RW_DIR}
+
+	fi
+
+	[ -f ${RW_DIR}/etc/default/openblocks ] && \
+		. ${RW_DIR}/etc/default/openblocks
+
+	if [ -z "$rwdev" ] ; then
+		mount -o remount,size=${RW_TMPFS_SIZE} ${RW_DIR}
+	else
+		remount_opt=
+		if [ "$rwdev_fs" == "ext4" ] ; then
+			remount_opt="$remount_opt discard"
+		fi
+		if [ "$NOATIME" == "true" ] ; then
+			remount_opt="$remount_opt noatime"
+		fi
+		_remount_opt="$(echo $remount_opt|sed -e 's# #,#')"
+
+		[ -n "$_remount_opt" ] && \
+			mount -oremount,$_remount_opt ${RW_DIR}
+	fi
+
+	# extract CONFIG_FILE and execute CONFIG_SCRIPT
+	if [ -n "$confdev" ] ; then
+		if_exists_extract_config_file
+		if_exists_execute_config_script
+	fi
+
+	# if using DEBIAN storage, /tmp directory mount under storage.
+	#if [ -n "$rwdev" ] ; then
+	#	UNIONFS_DIRS="$UNIONFS_DIRS tmp"
+	#fi
+
+	# mount filesystems
+	for dir in ${UNIONFS_DIRS} ; do
+		mawk '$1 !~ /^#/ {print $2}' < /etc/fstab | grep -q "^/$dir" && continue
+		[ "$union_fs" == "aufs" ] && xino_opt="xino=/.aufs.xino.$dir,"
+		mkdir -p ${RW_DIR}/$dir
+		mount -n -t ${union_fs} \
+			-o ${xino_opt}dirs=${RW_DIR}/$dir=rw:/$dir=ro ${union_fs} /$dir
+	done
+
+	# extract Oracle Java
+	# /usr/lib/jre directory and /etc/profile.d/java.(sh|csh) file.
+	if [ ! -x /usr/lib/jre/bin/java ] ; then
+		[ -n "${MTD_OPT_DEV}" ] && $extract_func ${MTD_OPT_DEV}
+	fi
+
+	# for Measures to rename network interface
+	rm -f /etc/udev/rules.d/70-persistent-net.rules
+
+	rm -rf /etc/network/run
+	ln -sf /run/network /etc/network/run
+
+	# create ssh keys for openssh-server
+	if [ -x /usr/sbin/sshd ] ; then
+		sshd_create_keys
+	fi
+
+	# create mount directory for fstab
+	mawk '/\/[a-zA-Z0-9]+/ {print $2}' /etc/fstab | xargs mkdir -p
+
+	# make directory tree
+	mkdir_mtree_list
+
+	# exectute postscript and unmount DEB_CONFIG storage.
+	if [ -n "$confdev" ] ; then
+		if_exists_execute_config_postscript
+		umount $confdev
+	fi
+
+	# reload inittab 
+	kill -1 1
+
+	# correct for debian7
+	ln -sf /proc/mounts /etc/mtab
+
+	# correct host name
+	/etc/init.d/hostname.sh start
+
+;;
+stop)
+	if [ -f /sys/devices/system/cpu/cpu1/online ]; then
+		echo
+		echo 0 > /sys/devices/system/cpu/cpu1/online
+		echo
+	fi
+;;
+esac
+
+set +x
+
+exit 0
+
