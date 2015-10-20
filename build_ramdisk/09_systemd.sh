@@ -27,6 +27,8 @@
 
 . `dirname $0`/config.sh
 
+[ "${TARGET}" == "obs600" ] && exit
+
 if [ ${DIST} == "jessie" ]; then
 
 SYSTEMDDIR=${DISTDIR}/lib/systemd/system
