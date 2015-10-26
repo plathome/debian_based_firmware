@@ -1,11 +1,9 @@
 [Unit]
 Description=pshd daemon for OpenBlocks IoT
-After=nitz
 
 [Service]
 Type=forking
 PIDFile=/run/pshd.pid
-ExecStartPre=/usr/sbin/init-pshd.sh
 ExecStart=/usr/sbin/pshd
 Restart=on-failure
 

@@ -1,9 +1,0 @@
-[Unit]
-Description=get NITZ for OBS IoT
-
-[Service]
-Type=simple
-ExecStart=/usr/sbin/init-modem.sh start
-
-[Install]
-WantedBy=multi-user.target

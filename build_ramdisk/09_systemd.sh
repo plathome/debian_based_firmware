@@ -33,10 +33,6 @@ if [ ${DIST} == "jessie" ]; then
 
 SYSTEMDDIR=${DISTDIR}/lib/systemd/system
 
-#	sed -e "s|lib\/bluetooth|sbin|" \
-#		< ${SYSTEMDDIR}/bluetooth.service > /tmp/bluetooth.service.new
-#	mv -f /tmp/bluetooth.service.new ${SYSTEMDDIR}/bluetooth.service
-
 	ret=`grep -q openblocks-setup ${DISTDIR}/etc/init.d/networking` 
 	if [ $? == 1 ]; then
 		sed -e "s|urandom|urandom openblocks-setup|" \
@@ -49,22 +45,6 @@ SYSTEMDDIR=${DISTDIR}/lib/systemd/system
 #		< ${SYSTEMDDIR}/hwclock-save.service > /tmp/hwclock-save.service.new
 #	mv -f /tmp/hwclock-save.service.new ${SYSTEMDDIR}/hwclock-save.service
 
-	# ttyMFD2
-#	(cd ${DISTDIR}/etc/systemd/system/getty.target.wants; \
-#		ln -sf /lib/systemd/system/serial-getty@.service serial-getty@ttyMFD2.service)
-
-
-	# bluetooth-rfkill-event
-#	cp -a ${FILESDIR}/systemd/bluetooth-rfkill-event.service ${SYSTEMDDIR}
-#	(cd ${DISTDIR}/etc/systemd/system/multi-user.target.wants; \
-#		ln -sf /lib/systemd/system/bluetooth-rfkill-event.service .)
-
-	# crashlog
-#	mkdir -p ${DISTDIR}/etc/systemd/system/basic.target.wants
-#	cp -a ${FILESDIR}/systemd/crashlog.service ${SYSTEMDDIR}
-#	(cd ${DISTDIR}/etc/systemd/system/basic.target.wants; \
-#		ln -sf /lib/systemd/system/carshlog.service .)
-
 	# runled
 	cp -a ${FILESDIR}/systemd/plathome-runled.service ${SYSTEMDDIR}
 	(cd ${DISTDIR}/etc/systemd/system/multi-user.target.wants; \
@@ -74,15 +54,4 @@ SYSTEMDDIR=${DISTDIR}/lib/systemd/system
 	cp -a ${FILESDIR}/systemd/plathome-pshd.service ${SYSTEMDDIR}
 	(cd ${DISTDIR}/etc/systemd/system/multi-user.target.wants; \
 		ln -sf /lib/systemd/system/plathome-pshd.service pshd.service)
-
-	# nitz
-#	cp -a ${FILESDIR}/systemd/plathome-nitz.service ${SYSTEMDDIR}
-#	(cd ${DISTDIR}/etc/systemd/system/multi-user.target.wants; \
-#		ln -sf /lib/systemd/system/plathome-nitz.service nitz.service)
-
-#	for sh in runled pshd modem ;do
-	for sh in runled pshd ;do
-		cp -a ${FILESDIR}/init-$sh.sh ${DISTDIR}/usr/sbin
-		chmod 755 ${DISTDIR}/usr/sbin/init-$sh.sh
-	done
 fi
