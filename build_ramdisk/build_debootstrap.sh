@@ -58,7 +58,7 @@ mkdir -p ${DISTDIR}
 if [ "$TARGET" == "obs600" ]; then
 	if [ "$TARGET" == "jessie" ]; then
 		EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano"
-		INCLUDE="openssh-server,lzma,mtd-utils,liblzo2-2"
+		INCLUDE="openssh-server,lzma,mtd-utils,liblzo2-2,sysvinit,sysvinit-utils"
 	else
 		EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano,udev,libudev0"
 		INCLUDE="openssh-server,lzma,strace,perl"

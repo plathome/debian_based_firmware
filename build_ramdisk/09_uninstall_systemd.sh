@@ -27,31 +27,20 @@
 
 . `dirname $0`/config.sh
 
-[ "${TARGET}" == "obs600" ] && exit
-
 if [ ${DIST} == "jessie" ]; then
-
-SYSTEMDDIR=${DISTDIR}/lib/systemd/system
-
-	ret=`grep -q openblocks-setup ${DISTDIR}/etc/init.d/networking` 
-	if [ $? == 1 ]; then
-		sed -e "s|urandom|urandom openblocks-setup|" \
-			< ${DISTDIR}/etc/init.d/networking > /tmp/networking.new
-		mv -f /tmp/networking.new ${DISTDIR}/etc/init.d/networking
-		chmod 555 ${DISTDIR}/etc/init.d/networking
+	chroot ${DISTDIR} /usr/bin/apt-get remove --purge --auto-remove -y systemd
+	echo -e 'Package: systemd\nPin: origin ""\nPin-Priority: -1' \
+							> ${DISTDIR}/etc/apt/preferences.d/systemd
+	echo -e '\n\nPackage: *systemd*\nPin: origin ""\nPin-Priority: -1' \
+							>> ${DISTDIR}/etc/apt/preferences.d/systemd
+	if [ ${TARGET} == "obsax3" ]; then
+		echo -e '\nPackage: systemd:armhf\nPin: origin ""\nPin-Priority: -1' \
+								>> ${DISTDIR}/etc/apt/preferences.d/systemd
+	elif [ ${TARGET} == "obsa7" ]; then
+		echo -e '\nPackage: systemd:armel\nPin: origin ""\nPin-Priority: -1' \
+								>> ${DISTDIR}/etc/apt/preferences.d/systemd
+	else
+		echo -e '\nPackage: systemd:powerpc\nPin: origin ""\nPin-Priority: -1' \
+								>> ${DISTDIR}/etc/apt/preferences.d/systemd
 	fi
-
-#	sed -e "s|hwclock -D --systohc|hwclock --systohc|" \
-#		< ${SYSTEMDDIR}/hwclock-save.service > /tmp/hwclock-save.service.new
-#	mv -f /tmp/hwclock-save.service.new ${SYSTEMDDIR}/hwclock-save.service
-
-	# runled
-	cp -a ${FILESDIR}/systemd/plathome-runled.service ${SYSTEMDDIR}
-	(cd ${DISTDIR}/etc/systemd/system/multi-user.target.wants; \
-		ln -sf /lib/systemd/system/plathome-runled.service runled.service)
-
-	# pshd
-	cp -a ${FILESDIR}/systemd/plathome-pshd.service ${SYSTEMDDIR}
-	(cd ${DISTDIR}/etc/systemd/system/multi-user.target.wants; \
-		ln -sf /lib/systemd/system/plathome-pshd.service pshd.service)
 fi
