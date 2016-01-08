@@ -94,8 +94,11 @@ $CC -o ${BUILDDIR}/runled ${FILESDIR}/runled.c $CFLAGS
 echo "PSHD"
 $CC -o ${BUILDDIR}/pshd ${FILESDIR}/pshd.c $CFLAGS
 
+echo "WD-KEEPALIVE"
+$CC -o ${BUILDDIR}/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
+
 echo;echo;echo
-(cd ${BUILDDIR}; ls -l flashcfg-debian runled pshd)
+(cd ${BUILDDIR}; ls -l flashcfg-debian runled pshd wd-keepalive)
 
 cp ${FILESDIR}/flashcfg.sh ${DISTDIR}/usr/sbin/flashcfg
 chmod 555 ${DISTDIR}/usr/sbin/flashcfg
@@ -105,7 +108,7 @@ if [ "$TARGET" == "obsa6" -o "$TARGET" == "obsax3" ]; then
 	chmod 555 ${DISTDIR}/usr/sbin/usbreset
 fi
 
-for cmd in flashcfg-debian runled pshd; do
+for cmd in flashcfg-debian runled pshd wd-keepalive; do
 	(cd ${BUILDDIR}; install -c -o root -g root -m 555 $cmd ${DISTDIR}/usr/sbin/$cmd)
 	$STRIP ${DISTDIR}/usr/sbin/$cmd
 done

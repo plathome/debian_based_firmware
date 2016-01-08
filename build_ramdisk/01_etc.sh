@@ -41,14 +41,7 @@ chroot ${DISTDIR} /sbin/insserv -r bootlogs
 for sh in openblocks-setup pshd runled ;do
 	chmod 755 ${DISTDIR}/etc/init.d/$sh
 	chroot ${DISTDIR} /sbin/insserv -r $sh
-	case $sh in
-	openblocks-setup)
-		chroot ${DISTDIR} /sbin/insserv $sh
-		;;
-	*)
-		chroot ${DISTDIR} /sbin/insserv $sh
-		;;
-	esac
+	chroot ${DISTDIR} /sbin/insserv -v $sh
 done
 
 touch ${DISTDIR}/etc/init.d/.legacy-bootordering
