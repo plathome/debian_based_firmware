@@ -40,7 +40,7 @@ wheezy)
 	case ${TARGET} in
 	obsax3)
 		DTBFILE=armada-xp-openblocks-ax3-4.dtb
-		ISOFILE=debian-7.8.0-armhf-DVD-1.iso
+		ISOFILE=debian-7.7.0-armhf-DVD-1.iso
 		RAMDISK_SIZE=160
 		PATCHLEVEL=5
 		ARCH=armhf
@@ -50,7 +50,7 @@ wheezy)
 	;;
 	obsa6)
 		DTBFILE=kirkwood-openblocks_a6.dtb
-		ISOFILE=debian-7.8.0-armel-DVD-1.iso
+		ISOFILE=debian-7.7.0-armel-DVD-1.iso
 		RAMDISK_SIZE=144
 		PATCHLEVEL=2
 		ARCH=armel
@@ -61,7 +61,7 @@ wheezy)
 	;;
 	obsa7)
 		DTBFILE=kirkwood-openblocks_a7.dtb
-		ISOFILE=debian-7.8.0-armel-DVD-1.iso
+		ISOFILE=debian-7.7.0-armel-DVD-1.iso
 		RAMDISK_SIZE=144
 		PATCHLEVEL=0
 		ARCH=armel
