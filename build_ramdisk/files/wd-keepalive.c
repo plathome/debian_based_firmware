@@ -1,5 +1,5 @@
 //#define DEBUG
-/*  $ssdlinux: wd-keepalive.c,v 0.01 2014/01/07 07:19:59 yamagata Exp $ */
+/*  $ssdlinux: wd_keepalive.c,v 0.01 2014/01/07 07:19:59 yamagata Exp $ */
 /*
  * Copyright (c) 2009-2014 Plat'Home CO., LTD.
  * All rights reserved.
@@ -42,7 +42,7 @@
 #include <errno.h>
 
 #define WD_FILE		"/dev/watchdog"
-#define PID_FILE	"/var/run/watchdog.pid"
+#define PID_FILE	"/var/run/wd-keepalive.pid"
 #define INTERVAL	30
 
 static int forever;
@@ -58,6 +58,7 @@ int main(void)
 	int pid;
 	int fd, fd2;
 	int ret;
+	int opt=WDIOS_ENABLECARD;
 	struct timespec req, rem;
 
 	if((pid = fork())){
@@ -84,8 +85,13 @@ int main(void)
 
 		signal(SIGTERM, die);
 		if((fd = open(WD_FILE, O_WRONLY)) == -1){
-			exit(-1);
+			exit(1);
 		}
+		if(ioctl(fd, WDIOC_SETOPTIONS, &opt) == -1){
+			close(fd);
+			exit(2);
+		}
+
 		forever=1;
 		while(forever){
 			if(ioctl(fd, WDIOC_KEEPALIVE, 0) == -1){
@@ -100,26 +106,28 @@ int main(void)
 					break;
 				}
 				else if(ret != EINTR){
-					openlog("watchdog", LOG_CONS|LOG_PID, LOG_USER);
-					syslog(LOG_NOTICE, "%d: nanosleep() errno=%d\n",
-															__LINE__, errno);
+					openlog("wd-keepalive", LOG_CONS|LOG_PID, LOG_USER);
+					syslog(LOG_NOTICE, "%d: nanosleep() errno=%d\n", __LINE__, errno);
 					closelog();
 					forever=0;
 					break;
 				}
 				else{	/* ret == EINTR */
-					openlog("watchdog", LOG_CONS|LOG_PID, LOG_USER);
-					syslog(LOG_NOTICE, "%d: nanosleep() receive EINTR",
-															__LINE__);
+					openlog("wd-keepalive", LOG_CONS|LOG_PID, LOG_USER);
+					syslog(LOG_NOTICE, "%d: nanosleep() receive EINTR", __LINE__);
 					closelog();
 					req.tv_sec = rem.tv_sec;
 					req.tv_nsec = rem.tv_nsec;
 				}
 			}
 		}
-		write(fd, "V", 1);
+		opt = WDIOS_DISABLECARD;
+		if(ioctl(fd, WDIOC_SETOPTIONS, &opt) == -1){
+			close(fd);
+			exit(4);
+		}
 		close(fd);
-		openlog("watchdog", LOG_CONS|LOG_PID, LOG_USER);
+		openlog("wd-keepalive", LOG_CONS|LOG_PID, LOG_USER);
 		syslog(LOG_ERR, "%d: loop exit\n", __LINE__);
 		closelog();
 	}

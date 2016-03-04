@@ -1,0 +1,6 @@
+ACTION=="add", KERNEL=="eth*", KERNELS=="0000:02:00.0", DRIVERS=="?*", ATTR{type}=="1", NAME="eth0", OPTIONS="last_rule"
+ACTION=="add", KERNEL=="eth*", KERNELS=="0000:03:00.0", DRIVERS=="?*", ATTR{type}=="1", NAME="eth1", OPTIONS="last_rule"
+ACTION=="add", KERNEL=="eth*", KERNELS=="0000:00:14.0", DRIVERS=="?*", ATTR{type}=="1", NAME="eth2", OPTIONS="last_rule"
+ACTION=="add", KERNEL=="eth*", KERNELS=="0000:00:14.1", DRIVERS=="?*", ATTR{type}=="1", NAME="eth3", OPTIONS="last_rule"
+ACTION=="add", KERNEL=="eth*", KERNELS=="0000:00:14.2", DRIVERS=="?*", ATTR{type}=="1", NAME="eth4", OPTIONS="last_rule"
+ACTION=="add", KERNEL=="eth*", KERNELS=="0000:00:14.3", DRIVERS=="?*", ATTR{type}=="1", NAME="eth5", OPTIONS="last_rule"

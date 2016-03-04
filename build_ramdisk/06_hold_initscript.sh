@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2016 Plat'Home CO., LTD.
+# Copyright (c) 2013, 2014 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,9 +27,9 @@
 
 . `dirname $0`/config.sh
 
-[ "${ARCH}" == "powerpc" ] && exit
-
-#chroot ${DISTDIR} /usr/bin/aptitude hold initscripts
+if [ ${DIST} == "wheezy" ]; then
+	chroot ${DISTDIR} /usr/bin/aptitude hold initscripts
+fi
 
 cat > ${DISTDIR}/tmp/hold.$$ <<_HOLD
 echo initscripts hold | dpkg --set-selections

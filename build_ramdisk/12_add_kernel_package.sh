@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2016 Plat'Home CO., LTD.
+# Copyright (c) 2013-2015 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,19 +28,24 @@
 . `dirname $0`/config.sh
 
 # dummy package: uboot-image
-(cd ${PWD}/uboot-image; rm -f dummy-uboot-image-0.0.0-0.deb)
-(cd ${PWD}/uboot-image; ./mkdummy.sh ${UBOOT_VER}-${UBOOT_PL} ${ARCH} ${TARGET} ${UBOOT_OLD_VER})
-
-cp -f ${PWD}/uboot-image/dummy-uboot-image-0.0.0-0.deb ${DISTDIR}/
-chroot ${DISTDIR} dpkg -r kernel-image
-chroot ${DISTDIR} dpkg -r uboot-image
-chroot ${DISTDIR} dpkg -i /dummy-uboot-image-0.0.0-0.deb
-rm -f ${DISTDIR}/dummy-uboot-image-0.0.0-0.deb
-rm -f ${PWD}/uboot-image/dummy-uboot-image-0.0.0-0.deb
+case $TARGET in
+obsa*)
+	(cd ${PWD}/uboot-image; rm -f dummy-uboot-image-0.0.0-0.deb)
+	(cd ${PWD}/uboot-image; ./mkdummy.sh ${UBOOT_VER}-${UBOOT_PL} ${ARCH} ${TARGET} ${UBOOT_OLD_VER})
+	cp -f ${PWD}/uboot-image/dummy-uboot-image-0.0.0-0.deb ${DISTDIR}/
+	chroot ${DISTDIR} dpkg -r kernel-image
+	chroot ${DISTDIR} dpkg -r uboot-image
+	chroot ${DISTDIR} dpkg -i /dummy-uboot-image-0.0.0-0.deb
+	rm -f ${DISTDIR}/dummy-uboot-image-0.0.0-0.deb
+	rm -f ${PWD}/uboot-image/dummy-uboot-image-0.0.0-0.deb
+	;;
+*)
+	;;
+esac
 
 # dummy package: kernel-image
 (cd ${PWD}/kernel-image; rm -f dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb)
-(cd ${PWD}/kernel-image; ./mkdummy.sh ${KERNEL}-${PATCHLEVEL} ${ARCH})
+(cd ${PWD}/kernel-image; ./mkdummy.sh ${KERNEL}-${PATCHLEVEL} ${ARCH} ${TARGET})
 
 cp -f ${PWD}/kernel-image/dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb ${DISTDIR}/
 chroot ${DISTDIR} dpkg -r kernel-image

@@ -48,7 +48,15 @@ mkdir -p $pkgdir
 echo $VERSION > $pkgdir/etc/openblocks-release
 sed -e "s|__VERSION__|$VERSION|" \
     -e "s|__ARCH__|$ARCH|" \
+    -e "s|__PACKAGE__|kernel-image|" \
 	< $pkgdir/DEBIAN/control > /tmp/control.new
+case $MODEL in
+obsa*)
+	echo "Depends: uboot-image" >> /tmp/control.new
+	;;
+*)
+	;;
+esac
 mv -f /tmp/control.new $pkgdir/DEBIAN/control
 
 cp -vf $FIRM $pkgdir/etc/uImage.initrd

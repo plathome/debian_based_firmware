@@ -1,0 +1,10 @@
+deb http://cdn.debian.or.jp/debian/ wheezy main
+deb-src http://cdn.debian.or.jp/debian/ wheezy main
+
+deb http://cdn.debian.or.jp/debian/ wheezy-updates main
+deb-src http://cdn.debian.or.jp/debian/ wheezy-updates main
+
+#deb http://cdn.debian.or.jp/debian/ wheezy-backports main
+#deb-src http://cdn.debian.or.jp/debian/ wheezy-backports main
+
+#deb http://ftp.plathome.co.jp/pub/BPV4/debian/wheezy ./

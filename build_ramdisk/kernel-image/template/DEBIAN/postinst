@@ -11,11 +11,31 @@ case "$1" in
 configure)
 	[ -f /.chroot ] && exit 0
 	if [ -e /etc/init.d/easyblockssync ] ; then
-		/usr/sbin/update-rc.d kernel-image defaults
+		/sbin/insserv -d kernel-image
 		/etc/init.d/kernel-image start
 	elif [ -f /etc/uImage.initrd ] ; then
 		if /usr/sbin/flashcfg -y -f /etc/uImage.initrd; then
 			rm -f /etc/uImage.initrd
+		else
+			exit 1
+		fi
+	elif [ -e /etc/bzImage ] ; then
+		if /bin/bash /etc/flashcfg.sh -y -f /etc; then
+			rm -f /etc/bzImage
+			rm -f /etc/ramdisk*.img.gz
+			rm -f /etc/flashcfg.sh
+			rm -f /etc/MD5.*
+			if [ -d /etc/grub.cfg ]; then
+				rm -rf /etc/grub.cfg
+			fi
+			if [ -e /etc/update_ubootenv.sh ];then
+				ln -sf /etc/fw_printenv /etc/fw_setenv
+				PATH=/etc:$PATH /bin/sh /etc/update_ubootenv.sh -a
+				rm -f /etc/update_ubootenv.sh
+				rm -f /etc/fw_setenv
+				rm -f /etc/fw_printenv
+				rm -f /etc/fw_env.config
+			fi
 		else
 			exit 1
 		fi

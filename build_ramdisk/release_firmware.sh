@@ -27,109 +27,11 @@
 
 . `dirname $0`/config.sh
 
-if [ "$CROSS" == "true" ]; then
-	KERN_COMPILE_OPTS="ARCH=$KERN_ARCH CROSS_COMPILE=${CROSS_COMPILE=}"
-	if [ "${KERNEL}" == "2.6.31" ] ||
-	   [ "${TARGET}" == "obs600" -a "${DIST}" == "wheezy" ]
-	then
-		KERN_COMPILE_OPTS+=" NOGZIP=1"
-	fi
-fi
-
-_RAMDISK_IMG=${DISTDIR}/../${RAMDISK_IMG}
-
-mount -o loop ${_RAMDISK_IMG} ${MOUNTDIR}
-
-rm -rf ${MOUNTDIR}/lib/modules/${KERNEL}
-rm -rf ${MOUNTDIR}/lib/firmware
-
-VERSION=$(cat ${MOUNTDIR}/etc/openblocks-release)
-
-(cd ${LINUX_SRC}; make INSTALL_MOD_PATH=${MOUNTDIR} ${KERN_COMPILE_OPTS} modules_install)
-cp -f ${LINUX_SRC}/System.map ${MOUNTDIR}/boot/
-rm -f ${MOUNTDIR}/lib/modules/${KERNEL}/source ${MOUNTDIR}/lib/modules/${KERNEL}/build
-if [ "${KERNEL}" == "2.6.31" -o "${TARGET}" == "obs600" ]; then
-	rm -f ${MOUNTDIR}/lib/modules/${KERNEL}/modules.builtin.bin
-fi
-#if [ $TARGET == "obsax3" ]; then
-#	cp -a ${PWD}/wifi/wheezy/ath10k $MOUNTDIR/lib/firmware
-#fi
-
-umount ${MOUNTDIR}
-
-if [ ! -d ${RELEASEDIR} ]; then
-	mkdir -p ${RELEASEDIR}
-fi
-
-cp -f ${LINUX_SRC}/System.map ${RELEASEDIR}
-
-if [ "$TARGET" == "obs600" ]; then
-	cp -f ${LINUX_SRC}/vmlinux.bin.gz ${RELEASEDIR}
-else
-	case $KERNEL in
-	3.13|4.*)
-		cat ${LINUX_SRC}/arch/${KERN_ARCH}/boot/zImage \
-			${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/${DTBFILE} \
-			> ${RELEASEDIR}/zImage.dtb
+case $TARGET in
+obsa*|obs600)
+	TARGET=$TARGET ./obsa_release_firmware.sh || exit 1
 	;;
-	*)
-		cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/zImage ${RELEASEDIR}
+*)
+	TARGET=$TARGET ./obsiot_release_firmware.sh || exit 1
 	;;
-	esac
-fi
-
-${COMPRESS} -${LZMA_LEVEL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/${RAMDISK_IMG}.${COMPRESS_EXT}
-
-if [ "$TARGET" == "obs600" ]; then
-mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \
-	-A ppc -O linux -T multi -C gzip \
-	-d ${RELEASEDIR}/vmlinux.bin.gz:${RELEASEDIR}/${RAMDISK_IMG}.${COMPRESS_EXT}:${LINUX_SRC}/arch/${KERN_ARCH}/boot/${TARGET}.dtb \
-	${RELEASEDIR}/uImage.initrd.${TARGET}
-(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb.sh ${VERSION} ${ARCH} ${RELEASEDIR}/uImage.initrd.${TARGET})
-else
-	case $KERNEL in
-	3.13|4.*)
-		mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \
-			-A arm -O linux -T multi -C none -a 0x8000 -e 0x8000 \
-			-d ${RELEASEDIR}/zImage.dtb:${RELEASEDIR}/${RAMDISK_IMG}.${COMPRESS_EXT} \
-			${RELEASEDIR}/uImage.initrd.${TARGET}
-		(cd ${WRKDIR}/build_ramdisk/kernel-image; \
-			./mkdeb.sh ${VERSION} ${ARCH} ${RELEASEDIR}/uImage.initrd.${TARGET})
-	;;
-	*)
-		mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \
-			-A arm -O linux -T multi -C none -a 0x8000 -e 0x8000 \
-			-d ${RELEASEDIR}/zImage:${RELEASEDIR}/${RAMDISK_IMG}.${COMPRESS_EXT} \
-			${RELEASEDIR}/uImage.initrd.${TARGET}
-		(cd ${WRKDIR}/build_ramdisk/kernel-image; \
-			./mkdeb.sh ${VERSION} ${ARCH} ${RELEASEDIR}/uImage.initrd.${TARGET})
-	;;
-	esac
-
-fi
-
-if [ "${TARGET}" != "obs600" ]; then
-	ARCHIVE=kernel+modules-${KERNEL}-${PATCHLEVEL}
-	TMP=${RELEASEDIR}/${ARCHIVE}
-	rm -fr ${TMP}
-	mkdir ${TMP}
-	cp -f ${LINUX_SRC}/System.map ${TMP}/System.map
-	cp -f ${LINUX_SRC}/System.map ${TMP}/System.map.$(echo ${KERNEL}|tr -d .)
-	case $KERNEL in
-	3.13|4.*)
-		cp -f ${RELEASEDIR}/zImage.dtb ${TMP}
-		;;
-	*)
-		cp -f ${RELEASEDIR}/zImage ${TMP}
-		;;
-	esac
-	mount -o loop,ro ${_RAMDISK_IMG} ${MOUNTDIR}
-	(cd ${MOUNTDIR}; tar cvpf - lib/firmware lib/modules) | (cd ${TMP}; tar xpvf -)
-	umount ${MOUNTDIR}
-	find ${TMP}/lib/modules -name "*.ko" | xargs gzip -9f
-	(cd ${RELEASEDIR}; tar cvpf ${RELEASEDIR}/${ARCHIVE}.tar ${ARCHIVE})
-	xz -9f ${RELEASEDIR}/${ARCHIVE}.tar
-	rm -fr ${TMP}
-fi
-
-(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
+esac

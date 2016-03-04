@@ -27,8 +27,5 @@
 
 . `dirname $0`/config.sh
 
-if [ "${DIST}" == "wheezy" -o "$TARGET" == "obsa7" ] ; then
-	chroot ${DISTDIR} /usr/sbin/update-rc.d -f checkroot.sh remove
-	chroot ${DISTDIR} /usr/sbin/update-rc.d -f umountroot remove
-fi
-
+chroot ${DISTDIR} /sbin/insserv -rfv checkroot.sh
+chroot ${DISTDIR} /sbin/insserv -rfv umountroot

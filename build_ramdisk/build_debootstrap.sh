@@ -43,7 +43,11 @@ if [ -n "$ISOFILE" ] ;then
 	NOGPG="--no-check-gpg"
 	_REPO=/media/${DIST}-${ARCH}
 	REPO=file://${_REPO}/debian
-	$debug umount ${_REPO} 2> /dev/null
+	if [ "$VERBOSE" == "yes" ]; then
+		$debug umount ${_REPO}
+	else
+		$debug umount ${_REPO} 2> /dev/null
+	fi
 	$debug mkdir -p ${_REPO}
 	$debug mount -o loop ${ISOFILEDIR}/${ISOFILE} ${_REPO}
 fi
@@ -56,19 +60,33 @@ rm -rf   ${DISTDIR}
 mkdir -p ${DISTDIR}
 
 if [ "$TARGET" == "obs600" ]; then
-	if [ "$TARGET" == "jessie" ]; then
+	if [ "$DIST" == "jessie" ]; then
 		EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano"
-		INCLUDE="openssh-server,lzma,mtd-utils,liblzo2-2,sysvinit,sysvinit-utils"
+		INCLUDE="openssh-server,liblzo2-2,sysvinit,sysvinit-utils"
 	else
-		EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano,udev,libudev0"
+		EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano"
 		INCLUDE="openssh-server,lzma,strace,perl"
 	fi
+elif [ "$TARGET" == "obsbx1" ]; then
+	if [ "$DIST" == "wheezy" ]; then
+		INCLUDE="openssh-server,strace,acpi-support-base"
+		INCLUDE="$INCLUDE,wpasupplicant,python-gobject,ppp,wireless-tools,libnl1,ethtool,busybox,bluez,iw"
+		EXCLUDE="nano"
+	else
+		INCLUDE="openssh-server,strace,acpi-support-base"
+		INCLUDE="$INCLUDE,wpasupplicant,ppp,wireless-tools,ethtool,busybox,bluez,iw,sysvinit,sysvinit-utils"
+		EXCLUDE="nano"
+	fi
 elif [ "$DIST" == "jessie" ]; then
-EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,nano"
-INCLUDE="openssh-server,dbus,lzma"
+	EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,nano"
+	INCLUDE="openssh-server,lzma"
 else
-EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano"
-INCLUDE="openssh-server"
+	EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano"
+	INCLUDE="openssh-server"
+fi
+
+if [ "$ENA_AUDIO" == "true" ]; then
+	INCLUDE="$INCLUDE,alsa-utils"
 fi
 
 $debug debootstrap ${FOREIGN} ${NOGPG} --arch=${ARCH} \
@@ -85,23 +103,16 @@ if [ "$CROSS" == "true" ]; then
 	chroot ${DISTDIR} dpkg --configure -a
 fi
 
-if [ "$TARGET" == "obs600" -a "$DIST" == "wheezy" ]; then
-	PKGURL="http://ftp.jp.debian.org/debian/pool/main/u/udev"
-	DESTDIR="/var/cache/apt/archives"
-	LIBUDEV="libudev0_164-3_powerpc.deb"
-	UDEV="udev_164-3_powerpc.deb"
-	wget -q -O ${DISTDIR}/${DESTDIR}/${LIBUDEV} ${PKGURL}/${LIBUDEV}
-	wget -q -O ${DISTDIR}/${DESTDIR}/${UDEV} ${PKGURL}/${UDEV}
-	chroot ${DISTDIR} dpkg -i ${DESTDIR}/${LIBUDEV}
-	chroot ${DISTDIR} dpkg -i ${DESTDIR}/${UDEV}
-fi
-
 $debug rm -f  ${DISTDIR}/etc/udev/rules.d/70-persistent-net.rules
 
 $debug rm -rf ${DISTDIR}/dev/.udev
 
 $debug mkdir -p ${DISTDIR}/usr/src/firmware
 
-if [ -n "$ISOFILE" ] ;then
-	$debug umount ${_REPO} 2> /dev/null
+if [ -n "$ISOFILE" ]; then
+	if [ "$VERBOSE" == "yes" ]; then
+		$debug umount ${_REPO}
+	else
+		$debug umount ${_REPO} 2> /dev/null
+	fi
 fi

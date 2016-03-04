@@ -1,7 +1,7 @@
 //#define DEBUG
 /*	$ssdlinux: runled.c,v 1.17 2014/01/07 07:19:06 yamagata Exp $	*/
 /*
- * Copyright (c) 2008-2016 Plat'Home CO., LTD.
+ * Copyright (c) 2008-2015 Plat'Home CO., LTD.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -111,7 +111,9 @@ void die(int i){exit(0);}
 
 static int led_speed = LED_0_33;
 static int spdctl= 1;
+#if defined(CONFIG_LINUX_4_0) && defined(CONFIG_OBSAX3)
 static int pmctl= 1;
+#endif
 static int prevuse[2];
 
 /* some variables used in getopt (3) */
@@ -210,7 +212,7 @@ int get_usetime(int* use){
 		&cpu.user, &cpu.nice, &cpu.sys, &cpu.idle, &cpu.io, &cpu.irq,
 		&cpu.s_irq, &cpu.steal, &cpu.guest, &cpu.g_nice);
 	use[0] = cpu.user + cpu.nice + cpu.sys + cpu.io + cpu.irq + cpu.s_irq
-				+ cpu.steal, cpu.guest, cpu.g_nice;
+				+ cpu.steal + cpu.guest + cpu.g_nice;
 	use[1] = use[0] + cpu.idle - cpu.io;
 
 	return 1;

@@ -25,6 +25,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
+[ -f /etc/os-release ] && . /etc/os-release
 [ -f /etc/default/openblocks ] && . /etc/default/openblocks
 
 RW_DIR="${RW_DIR:=/.rw}"
@@ -64,11 +65,47 @@ MTD_USER_SIZE_MB=$((${MTD_USER_SIZE}/1024))
 
 trap "_all_protect_mtd; _umount_wrkdir" EXIT TERM QUIT
 
+# only openblocks bx1
+function _get_md5() {
+	MD5_RET=""
+
+	if [ $1 == "kernel" ]; then
+		obj="bzImage"
+	elif [ $1 == "ramdisk" ]; then
+		obj="ramdisk-wheezy.${MODEL}.img.gz"
+	fi
+
+	if [ -f "${FIRM_FILE}/MD5.${MODEL}" ]; then
+		IFS=$'\n'
+		file=(`cat ${FIRM_FILE}/MD5.${MODEL}`)
+		IFS=$' '
+		for line in "${file[@]}"; do
+			arry=(`echo $line`)
+			if [ ${arry[1]} == "$obj" ]; then
+				MD5_RET=${arry[0]}
+				break
+			fi
+		done
+		if [ "$MD5_RET" == "" ]; then
+			echo "$LINENO: MD5 file is broken, write firmware failed."
+			exit 1
+		fi
+	else
+		IFS=$' '
+		MD5_RET=(`md5sum ${FIRM_FILE}/$obj`)
+	fi
+}
+
 function _all_protect_mtd() {
+	case $MODEL in
+	obsa*)
 	for mtd in $MTD_FIRM_DEV $MTD_CONF_DEV $MTD_USER_DEV $MTD_OPT_DEV;do
 		[ -f /sys/devices/virtual/mtd/${mtd}/flags ] && \
 		echo $MTD_RO > /sys/devices/virtual/mtd/${mtd}/flags
 	done
+	;;
+	*);;
+	esac
 }
 
 function _protect_mtd() {
@@ -86,24 +123,46 @@ function _protect_mtd() {
 }
 
 function _umount_wrkdir() {
+	case $MODEL in
+	obsa*)
 	if mount -n 2> /dev/null | grep -q "${WORK_DIR}" ; then
 		umount ${WORK_DIR}
 	fi
 	rm -rf ${WORK_DIR}
+	;;
+	*);;
+	esac
 }
 
 function _usage() {
 	echo
 	echo "Archiving userland files to FlashROM and some configuration."
 	echo
-	#echo "usage: $(basename $0) [-c type] [-f file] [-u list] [-bBeEsSly]"
+case $MODEL in
+obsa*)
 	echo "usage: $(basename $0) [-f file] [-u list] [-bBeEpsSTly]"
+	;;
+obsbx1|bpv*)
+	echo "usage: $(basename $0) [-f directory] [-u list] [-bBeEpsSTly]"
+	;;
+*)
+	;;
+esac
 	echo
 	echo "    -b      Save config to BACKUP(LABEL=DEB_CONFIG) storage."
 	echo "    -B      Save userland and config to BACKUP(LABEL=DEB_CONFIG) storage."
 	echo "    -u list Save files from list to BACKUP(LABEL=DEB_CONFIG) storage."
 	#echo "    -c type Change boot setting [initrd|cf|sda[1-8]]."
+case $MODEL in
+obsa*)
 	echo "    -f file Save firmware file to FlashROM."
+	;;
+obsbx1|bpv*)
+	echo "    -f directory Save firmware directory to FlashROM."
+	;;
+*)
+	;;
+esac
 	echo "    -s      Save config to FlashROM (${MTD_CONF_DEV})."
 	echo "    -S      Save userland and config to FlashROM (${MTD_USER_DEV})."
 	echo "            '-s' will run concurrently."
@@ -114,7 +173,11 @@ function _usage() {
 #	echo "    -t      Test read and write in coredump save area."
 #	echo "    -T      Read messages in coredump save area."
 if [ "$MODEL" == "obsax3" ] ; then
+if [ "$VERSION_ID" == "8" ] ; then
+	echo "    -p [pm] Print or set power management level. [now|dis|wfi|idle|snooze]"
+else
 	echo "    -p [pm] Print or set power management level. [now|wfi|idle|snooze]"
+fi
 fi
 	echo "    -h      This messages."
 	echo
@@ -206,6 +269,7 @@ function _del_all_flashrom() {
 
 function _backup_files() {
 	if mount LABEL=DEB_CONFIG /mnt 2> /dev/null ; then
+		_save_mtree_list
 		dir=${RW_DIR}
 		if [ "${FLG_ALLBKUP}" == "true" ] ; then
 			echo -n "Archiving userland files... "
@@ -259,19 +323,46 @@ function _yesno() {
 	fi
 }
 
+# check mode, ramdisk or storage
+function _check_mode() {
+	cat /proc/mounts | grep -q "\/\.rw tmpfs"
+	return $?
+}
+
 
 
 RUN=help
 
-if [ "$MODEL" == "obsax3" -o "$MODEL" == "obs600" ] ; then
-	GETOPTS_ARG="c:f:p:u:bBeEsSlhxXyZ"
-else
-	GETOPTS_ARG="c:f:u:x::X::bBeEsSlhyZ"
-fi
+case $MODEL in
+obsax3|obs600)
+ 	GETOPTS_ARG="c:f:p:u:bBeEsSlhxXyZ"
+	;;
+obsmv4)
+	GETOPTS_ARG="f:u:bBlhy"
+	;;
+bpv4*|bpv8)
+	GETOPTS_ARG="f:u:bBeEsSlhy"
+	;;
+obsbx1)
+	GETOPTS_ARG="f:u:bBeEsSlhyoc"
+	;;
+*)
+ 	GETOPTS_ARG="c:f:u:x::X::bBeEsSlhyZ"
+	;;
+esac
 
 while getopts $GETOPTS_ARG OPT;do
 	case $OPT in
-	c) RUN=rootcfg; ROOT_TARGET=$OPTARG ;;
+	c)
+		case $MODEL in
+		obsbx1|bpv*)
+			RUN=rootcfg; ROOT_TARGET=$2
+			;;
+		*)
+			RUN=rootcfg; ROOT_TARGET=$OPTARG
+			;;
+		esac
+		;;
 	f) RUN=firmware; FIRM_FILE=$OPTARG; MTD_DEV=/dev/${MTD_CONF_DEV} ;;
 	b) RUN=backup ;;
 	B) RUN=backup; FLG_ALLBKUP=true ;;
@@ -281,24 +372,47 @@ while getopts $GETOPTS_ARG OPT;do
 	Z) RUN=save_default ;;
 	p) RUN=pm; pm_level=$OPTARG ;;
 	s)
-		RUN=save
-		ROM_SIZE=${MTD_CONF_SIZE}
-		MTD_DEV=/dev/${MTD_CONF_DEV}
-		COMMAND=_save_config
-		FLASHCFG_ARG="-s"
-	;;
+		if ! _check_mode; then
+			echo "Storage mode does not save."
+			exit 1
+		fi
+		case $MODEL in
+		bpv4*|bpv8|obsbx1)
+			RUN=save_direct_etc
+			;;
+		*)
+			RUN=save
+			ROM_SIZE=${MTD_CONF_SIZE}
+			MTD_DEV=/dev/${MTD_CONF_DEV}
+			COMMAND=_save_config
+			FLASHCFG_ARG="-s"
+			;;
+		esac
+		;;
 	S)
-		RUN=save
-		FLG_ALLSAVE=true 
-		ROM_SIZE=${MTD_USER_SIZE}
-		MTD_DEV=/dev/${MTD_USER_DEV}
-		COMMAND=_save_userland
-		FLASHCFG_ARG="-S"
-	;;
+		if ! _check_mode; then
+			echo "Storage mode does not save."
+			exit 1
+		fi
+		case $MODEL in
+		bpv4*|bpv8|obsbx1)
+			RUN=save_direct_user
+			;;
+		*)
+			RUN=save
+			FLG_ALLSAVE=true 
+			ROM_SIZE=${MTD_USER_SIZE}
+			MTD_DEV=/dev/${MTD_USER_DEV}
+			COMMAND=_save_userland
+			FLASHCFG_ARG="-S"
+			;;
+		esac
+		;;
 	t) RUN=coredump; CMDARG=t ;;
 	T) RUN=coredump; CMDARG=T ;;
 	x|X) RUN=extract ;;
 	l) RUN=show ;;
+	o) RUN=chgos; osname=$2 ;;
 	y) FLG_YES=true;;
 	h|*) _usage ;;
 	esac
@@ -319,6 +433,48 @@ show)
 	fi
 	echo " Use /etc config(-s) : ${USED_CONF} KBytes (MAX: ${MTD_CONF_SIZE_MB} MBytes)"
 	echo
+;;
+save_direct_etc)
+	_yesno "Overwrites the current data."
+	mkdir -p ${WORK_DIR}
+	mount ${SAVE_DIR} ${WORK_DIR}
+	_save_mtree_list
+	echo -n "Archiving /etc config files... "
+	if (cd ${RW_DIR};tar -X /etc/exclude.list -cpzf ${WORK_DIR}/etc.tgz etc/); then
+		SAVE_FILE_SIZE=$(ls -s ${WORK_DIR}/etc.tgz | mawk '{print $1}')
+		echo "done (Approximately $((SAVE_FILE_SIZE/1024)) MBytes)"
+		USED_CONF=${SAVE_FILE_SIZE}
+		_save_size_rec
+	else
+		echo "fail"
+	fi
+	umount ${WORK_DIR}
+	rm -rf ${WORK_DIR}
+;;
+save_direct_user)
+	_yesno "Overwrites the current data."
+	mkdir -p ${WORK_DIR}
+	mount ${SAVE_DIR} ${WORK_DIR}
+	_save_mtree_list
+	echo -n "Archiving userland files... "
+	if (cd ${RW_DIR};tar -X /etc/exclude.list --exclude etc --exclude tmp -cpzf ${WORK_DIR}/userland.tgz .); then
+		SAVE_FILE_SIZE=$(ls -s ${WORK_DIR}/userland.tgz | mawk '{print $1}')
+		echo "done (Approximately $((SAVE_FILE_SIZE/1024)) MBytes)"
+		USED_USER=${SAVE_FILE_SIZE}
+		_save_size_rec
+	else
+		echo "fail"
+	fi
+	if (cd ${RW_DIR};tar -X /etc/exclude.list -cpzf ${WORK_DIR}/etc.tgz etc/); then
+		SAVE_FILE_SIZE=$(ls -s ${WORK_DIR}/etc.tgz | mawk '{print $1}')
+		echo "done (Approximately $((SAVE_FILE_SIZE/1024)) MBytes)"
+		USED_CONF=${SAVE_FILE_SIZE}
+		_save_size_rec
+	else
+		echo "fail"
+	fi
+	umount ${WORK_DIR}
+	rm -rf ${WORK_DIR}
 ;;
 save)
 	_yesno "FlashROM overwrites the current data."
@@ -348,27 +504,167 @@ save)
 	fi
 ;;
 delete)
-	if [ "$FLG_ALLDEL" == "true" ] ; then
-		_yesno "Erase FlashROM (all userarea)."
-		_del_all_flashrom
-	else
-		_yesno "Erase FlashROM (header only)."
-		_del_flashrom
-	fi
-	_save_size_clear
-;;
+	case $MODEL in
+	bpv4*|bpv8|obsbx1)
+		_yesno "Erase userarea)."
+
+		mkdir -p ${WORK_DIR}
+		mount ${SAVE_DIR} ${WORK_DIR}
+		rm -rf ${WORK_DIR}/etc.tgz
+		rm -rf ${WORK_DIR}/userland.tgz
+		umount ${WORK_DIR}
+		;;
+	*)
+		if [ "$FLG_ALLDEL" == "true" ] ; then
+			_yesno "Erase FlashROM (all userarea)."
+			_del_all_flashrom
+		else
+			_yesno "Erase FlashROM (header only)."
+			_del_flashrom
+		fi
+		_save_size_clear
+		;;
+	esac
+	;;
 backup)
 	_backup_files
 ;;
 firmware)
-	_yesno "Save firmware file to FlashROM."
-	flashcfg-debian -f $FIRM_FILE
+	case $MODEL in
+	bpv4*|bpv8)
+		mkdir -p ${WORK_DIR}
+		mount ${FIRM_DIR} ${WORK_DIR}
+		cp -f ${FIRM_FILE}/bzImage ${WORK_DIR}/boot
+		cp -f ${FIRM_FILE}/ramdisk-bpv.img.gz ${WORK_DIR}/boot
+		if [ -f ${FIRM_FILE}/grub.cfg ]; then
+			cp -f ${FIRM_FILE}/grub.cfg ${WORK_DIR}/boot/grub
+		fi
+		if [ -f ${FIRM_FILE}/openblocks-release ]; then
+			cp -f ${FIRM_FILE}/openblocks-release ${WORK_DIR}
+		fi
+		umount ${WORK_DIR}
+		rm -rf ${WORK_DIR}
+	;;
+	obsbx1)
+		RAMDISK="ramdisk-wheezy.obsbx1.img.gz"
+		mkdir -p ${WORK_DIR}
+		mount ${FIRM_DIR} ${WORK_DIR}
+		rm -f ${WORK_DIR}/openblocks-release
+		rm -f ${WORK_DIR}/bzImage
+		rm -f ${WORK_DIR}/${RAMDISK}
+
+		# ramdisk
+		_get_md5 ramdisk
+		val=(`md5sum ${FIRM_FILE}/${RAMDISK}`)
+		if [ "$MD5_RET" != $val ]; then
+			echo "$LINENO: ${RAMDISK} is broken, write firmware failed."
+			if [ "$DEBUG" == "yes" ]; then
+				echo "${FIRM_FILE}/${RAMDISK}: MD5.${MODEL}=$MD5_RET, source=$val"
+			fi
+			exit 1
+		fi
+		for i in {1..5}; do
+			cp -f ${FIRM_FILE}/${RAMDISK} ${WORK_DIR}
+			if [ $? != 0 ]; then
+				echo "$LINENO: cp command error, goto retry"
+			fi
+			IFS=$' '
+			val=(`md5sum ${WORK_DIR}/${RAMDISK}`)
+			if [ "$MD5_RET" == $val ]; then
+				break;
+			fi
+			if [ "$DEBUG" == "yes" ]; then
+				echo "${WORK_DIR}/${RAMDISK}: MD5.${MODEL}=$MD5_RET, dest=$val"
+			fi
+		done
+		if [ $i == 6 ]; then
+			echo "$LINENO: retry over, write firmware failed."
+			exit 1
+		fi
+
+		# kernel
+		_get_md5 kernel
+		val=(`md5sum ${FIRM_FILE}/bzImage`)
+		if [ "$MD5_RET" != $val ]; then
+			echo "$LINENO: bzImage is broken, write firmware failed."
+			if [ "$DEBUG" == "yes" ]; then
+				echo "MD5.${MODEL}=$MD5_RET, source=$val"
+			fi
+			exit 1
+		fi
+		for i in {1..5}; do
+			cp -f ${FIRM_FILE}/bzImage ${WORK_DIR}
+			if [ $? != 0 ]; then
+				echo "$LINENO: cp command error, goto retry"
+			fi
+			IFS=$' '
+			val=(`md5sum ${WORK_DIR}/bzImage`)
+			if [ "$MD5_RET" == $val ]; then
+				break;
+			fi
+			if [ "$DEBUG" == "yes" ]; then
+				echo "MD5.${MODEL}=$MD5_RET, dest=$val"
+			fi
+		done
+		if [ $i == 6 ]; then
+			echo "$LINENO: retry over, write firmware failed."
+			exit 1
+		fi
+
+		if [ -f ${FIRM_FILE}/openblocks-release ]; then
+			cp -f ${FIRM_FILE}/openblocks-release ${WORK_DIR}
+		fi
+		umount ${WORK_DIR}
+		rm -rf ${WORK_DIR}
+		;;
+	*)
+		_yesno "Save firmware file to FlashROM."
+		flashcfg-debian -f $FIRM_FILE
+		;;
+	esac
 ;;
 rootcfg)
-	case $ROOT_TARGET in
-	initrd|cf|ext|sda*) flashcfg-debian -c $ROOT_TARGET ;;
-	*) echo;echo "ERROR: unsupportted device"; echo; exit 1;;
-	esac
+	if [ $MODEL == "obsbx1" ]; then
+		case $ROOT_TARGET in
+		initrd|emmc|mmcblk1p*|sda*)
+			if [ -x /usr/sbin/fw_printenv -a -x /usr/sbin/fw_setenv ]; then
+				val=`/usr/sbin/fw_printenv rootfs` 
+				if [[ "$val" == *$ROOT_TARGET ]]; then
+					echo "Already rootfs $ROOT_TARGET"
+				else
+					case $ROOT_TARGET in
+					initrd)
+					fw_setenv rootfs root=/dev/ram
+					;;
+					emmc)
+					fw_setenv rootfs root=/dev/mmcblk0p10
+					;;
+					*)
+					fw_setenv rootfs root=/dev/$ROOT_TARGET
+					;;
+					esac
+					echo "Change rootfs $ROOT_TARGET"
+				fi
+			else
+				echo "This firmware is not supported this option."
+			fi
+		;;
+		*)
+			if [ ! $ROOT_TARGET ]; then
+				/usr/sbin/fw_printenv rootfs | cut -d "=" -f 3
+			else
+				echo;echo "ERROR: unsupportted device"
+				echo;
+				exit 1
+			fi
+		;;
+		esac
+	else
+		case $ROOT_TARGET in
+		initrd|cf|ext|sda*) flashcfg-debian -c $ROOT_TARGET ;;
+		*) echo;echo "ERROR: unsupportted device"; echo; exit 1;;
+		esac
+	fi
 ;;
 rootshow)
 	flashcfg-debian -b
@@ -393,6 +689,42 @@ save_default)
 	rm -f /tmp/.openblocks.tgz
 	echo "0x800" > /sys/devices/virtual/mtd/${target}/flags
 ;;
+chgos)
+	if [ -x /usr/sbin/fw_printenv -a -x /usr/sbin/fw_setenv ]; then
+		val=`/usr/sbin/fw_printenv stdcmd` 
+		if [ ! $osname ]; then
+			if [[ $val == *bootYocto ]]; then
+				echo "Boot Yocto"
+			elif [[ $val == *bootDebian ]]; then
+				echo "Boot Debian"
+			else
+				echo "u-boot env is old. abort!"
+			fi
+		elif [ "$osname" == "debian" ]; then
+			if [[ $val == *bootYocto ]]; then
+				fw_setenv stdcmd run bootDebian
+				echo "Change boot Debian"
+			elif [[ $val == *bootDebian ]]; then
+				echo "Already boot Debian"
+			else
+				echo "u-boot env is old. abort!"
+			fi
+		elif [ "$osname" == "yocto" ]; then
+			if [[ $val == *bootDebian ]]; then
+				fw_setenv stdcmd run bootYocto
+				echo "Change boot Yocto"
+			elif [[ $val == *bootYocto ]]; then
+				echo "Already boot Yocto"
+			else
+				echo "u-boot env is old. abort!"
+			fi
+		else
+			echo "'-o' option args is debian or yocto !!"
+		fi
+	else
+		echo "This firmware is not supported this option."
+	fi
+	;;
 *)
 	_usage
 ;;

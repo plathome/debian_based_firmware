@@ -43,16 +43,52 @@ ISOFILEDIR=${WRKDIR}/isofiles
 EXTRADEBDIR=${WRKDIR}/extradebs/${DIST}
 
 ETCDIR=${PWD}/etc.${DIST}
-ETCDIR_ADD=${PWD}/etc.${DIST}.${TARGET}
+case $TARGET in
+bpv4*)
+	ETCDIR_ADD=${PWD}/etc.${DIST}.bpv4
+	LINUX_SRC=${WRKDIR}/source/bpv4/linux-${KERNEL}
+	RAMDISK_IMG=ramdisk-wheezy.${TARGET}.img
+;;
+*)
+	ETCDIR_ADD=${PWD}/etc.${DIST}.${TARGET}
+	LINUX_SRC=${WRKDIR}/source/${TARGET}/linux-${KERNEL}
+	RAMDISK_IMG=ramdisk-${DIST}.${TARGET}.img
+;;
+esac
 
-RAMDISK_IMG=ramdisk-${DIST}.${TARGET}.img
-
-LINUX_SRC=${WRKDIR}/source/${TARGET}/linux-${KERNEL}
+DEFCONFIGDIR=${PWD}/defconfigs
 
 UBOOTDIR=${WRKDIR}/uboot-image/${TARGET}
 
 case $ARCH in
-armel|armhf)
+amd64)
+	CROSS_COMPILE=
+	CC=gcc
+	STRIP=strip
+	KERN_ARCH=x86_64
+	MAKE_IMAGE=bzImage
+	QEMU_BIN=qemu-x86_64-static
+	ABI=""
+;;
+i386)
+	CROSS_COMPILE=
+	CC=gcc
+	STRIP=strip
+	KERN_ARCH=x86
+	MAKE_IMAGE=bzImage
+	QEMU_BIN=qemu-i386-static
+	ABI=""
+;;
+armhf)
+	CROSS_COMPILE=arm-linux-gnueabihf-
+	CC=${CROSS_COMPILE}gcc
+	STRIP=${CROSS_COMPILE}strip
+	KERN_ARCH=arm
+	MAKE_IMAGE=zImage
+	QEMU_BIN=qemu-arm-static
+	ABI=eabi
+;;
+armel)
 	CROSS_COMPILE=arm-linux-gnueabi-
 	CC=${CROSS_COMPILE}gcc
 	STRIP=${CROSS_COMPILE}strip

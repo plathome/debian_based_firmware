@@ -27,90 +27,11 @@
 
 . `dirname $0`/config.sh
 
-BUILDDIR=/tmp/obstools.$$
-
-FLASHCFG="flashcfg.c"
-if [ "$TARGET" == "obsax3" ] ; then
-	MODEL="-DCONFIG_OBSAX3"
-elif [ "$TARGET" == "obsa7" ] ; then
-	MODEL="-DCONFIG_OBSA6 -DCONFIG_OBSA7"
-elif [ "$TARGET" == "obsa6" ] ; then
-	MODEL="-DCONFIG_OBSA6"
-else
-	MODEL="-DCONFIG_OBS600"
-	FLASHCFG="flashcfg_obs600.c"
-fi
-
-LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
-
-
-if [ "$TARGET" == "obs600" ]; then
-	if [ "$DIST" == "jessie" ]; then
-		CFLAGS+=" ${MODEL} -DDEBIAN"
-	else
-		CFLAGS+=" -DHAVE_PUSHSW_OBS600_H"
-	fi
-else
-	CFLAGS+=" -DHAVE_PUSHSW_OBSAXX_H"
-
-	case $KERNEL in
-	3.13|3.10.*|4.*)
-		CFLAGS="-Wall -I/usr/arm-linux-gnueabi/include \
-			-L/usr/${KERN_ARCH}-linux-gnu${ABI}/lib -DDEBIAN ${MODEL}"
+case $TARGET in
+obsa*|obs600)
+	TARGET=$TARGET ./obsa_install_commands.sh || exit 1
 	;;
-	*)
-		CFLAGS="-Wall -I$LINUX_INC -DDEBIAN ${MODEL}"
+*)
+	TARGET=$TARGET ./obsiot_install_commands.sh || exit 1
 	;;
-	esac
-
-fi
-
-case $KERNEL in
-3.2.*)
-	if [ "$TARGET" == "obsax3" ]; then
-		CFLAGS+=" -DCONFIG_LINUX_3_2_X"
-	fi
-;;
-3.13)
-	CFLAGS+=" -DCONFIG_LINUX_3_11_X"
-;;
-4.*)
-	CFLAGS+=" -DCONFIG_LINUX_4_0"
-;;
 esac
-
-if [ "$TARGET" == "obsax3" -a "$DIST" == "jessie" ]; then
-	CFLAGS+=" -march=armv7-a -mhard-float -mfloat-abi=softfp -mfpu=vfpv3-d16"
-fi
-
-mkdir -p ${BUILDDIR}
-
-echo "FLASHCFG"
-$CC -lz -o ${BUILDDIR}/flashcfg-debian ${FILESDIR}/${FLASHCFG} -DFLASHCFG_S -DEXTRACT_LZMA $CFLAGS
-
-echo "RUNLED"
-$CC -o ${BUILDDIR}/runled ${FILESDIR}/runled.c $CFLAGS
-
-echo "PSHD"
-$CC -o ${BUILDDIR}/pshd ${FILESDIR}/pshd.c $CFLAGS
-
-echo "WD-KEEPALIVE"
-$CC -o ${BUILDDIR}/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
-
-echo;echo;echo
-(cd ${BUILDDIR}; ls -l flashcfg-debian runled pshd wd-keepalive)
-
-cp ${FILESDIR}/flashcfg.sh ${DISTDIR}/usr/sbin/flashcfg
-chmod 555 ${DISTDIR}/usr/sbin/flashcfg
-
-if [ "$TARGET" == "obsa6" -o "$TARGET" == "obsax3" ]; then
-	cp ${FILESDIR}/usbreset.sh ${DISTDIR}/usr/sbin/usbreset
-	chmod 555 ${DISTDIR}/usr/sbin/usbreset
-fi
-
-for cmd in flashcfg-debian runled pshd wd-keepalive; do
-	(cd ${BUILDDIR}; install -c -o root -g root -m 555 $cmd ${DISTDIR}/usr/sbin/$cmd)
-	$STRIP ${DISTDIR}/usr/sbin/$cmd
-done
-
-rm -rf ${BUILDDIR}

@@ -1,0 +1,21 @@
+# OpenBlocks with Debian GNU/Linux
+#
+# required by
+# * /etc/init.d/openblocks-setup
+# * /usr/sbin/flashcfg
+
+# BEGIN: don't edit
+MODEL="bpv4"
+
+FIRM_DIR="/dev/sda1"
+SAVE_DIR="/dev/sda2"
+
+# Set union filesysytem target directories.
+# The first item is "etc" always.
+UNIONFS_DIRS="etc bin home lib sbin usr var root opt srv media tmp"
+
+# Set tmpfs size for ramdisk mode. Recommend over to 384m.
+RW_TMPFS_SIZE="1024m"
+
+# Set noatime option, when using SSD.
+NOATIME=false

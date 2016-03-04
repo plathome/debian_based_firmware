@@ -46,6 +46,7 @@ if [ "$TARGET" == "obs600" ]; then
 	fi
 fi
 
+
 cd ${LINUX_SRC}
 if [ ${DEFCONFIG} ]; then
 	make ${MAKE_OPTION} ${DEFCONFIG}
@@ -58,14 +59,7 @@ if [ -f "${LINUX_SRC}/../linux-${KERNEL}.dot.config" ]; then
 	make ${MAKE_OPTION} oldconfig
 fi
 
-#make -j$((${cpunum}+1)) ${MAKE_OPTION} ${MAKE_IMAGE} modules
-make ${MAKE_OPTION} ${MAKE_IMAGE} modules
-case $KERNEL in
-3.13|4.*)
-	if [ -n "$DTBFILE" ]; then
-		make ${MAKE_OPTION} $DTBFILE
-	fi
-	;;
-*)
-	;;
-esac
+make -j$((${cpunum}+1)) ${MAKE_OPTION} ${MAKE_IMAGE} modules
+if [ -n "$DTBFILE" ]; then
+	make ${MAKE_OPTION} $DTBFILE
+fi

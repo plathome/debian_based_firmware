@@ -9,7 +9,7 @@
 # Description:
 ### END INIT INFO
 #
-# Copyright (c) 2013-2016 Plat'Home CO., LTD.
+# Copyright (c) 2013-2015 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -140,7 +140,7 @@ fdisk_and_mke2fs(){
 	sfdisk ${dev%[0-9]} <<-_FDISK
 ,,83,-
 	_FDISK
-	mkfs -t ext3 -j -b 4096 -L ${RW_CF_LABEL} $dev
+	mkfs.ext4 -L ${RW_CF_LABEL} $dev
 	return 0
 }
 
@@ -240,6 +240,15 @@ start)
 
 	rwdev_fs=ext3
 	union_fs=unionfs
+
+	# execute watchdog timer daemon before DEB_CONFIG
+	case "$MODEL" in
+	obsbx1)
+		/etc/init.d/wd-keepalive start
+		;;
+	*)
+		;;
+	esac
 
 	# check init sw
 	grep -q 'noflashcfg=1' /proc/cmdline && FLG_INIT=true

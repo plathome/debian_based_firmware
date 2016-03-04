@@ -30,3 +30,6 @@ RW_TMPFS_SIZE="256m"
 # Set noatime option, when using SSD.
 NOATIME=false
 
+# Set hardware watchdog timer
+TIMEOUT=21		# TIMEOUT	= 1 - 21
+KEEPALIVE=10		# KEEPALIVE	= 1 - 21

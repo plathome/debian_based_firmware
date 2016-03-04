@@ -25,105 +25,30 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-. `dirname $0`/config.sh
+dpkg --add-architecture i386
+dpkg --add-architecture armhf
+dpkg --add-architecture armel
+dpkg --add-architecture powerpc
 
-# Install packages of Debian.
+apt-key list | grep -q "Emdebian Toolchain Archive"
+if [ $? == 1 ]; then
+	wget -q -O - http://emdebian.org/tools/debian/emdebian-toolchain-archive.key | apt-key add -
+fi
 
-packages="build-essential uboot-mkimage libncurses5-dev debootstrap vim qemu-user-static emdebian-archive-keyring bc"
-
-host_debian_version=`cat /etc/debian_version`
-
-case $host_debian_version in
-	6.*) packages+=" xz-lzma" ;;
-esac
-
-apt-get update 
-apt-get install $packages
-
-# Install packages of Emdebian.
-
-case $host_debian_version in
-	6.*)
-		code_name=squeeze
-		if [ "$TARGET" == "obs600" ];then
-			gcc_version=4.3
-		else
-			gcc_version=4.4
-		fi
-	;;
-	7.*)
-		code_name=wheezy
-		gcc_version=4.7
-	;;
-	*) exit 1 ;;
-esac
-
-packages="gcc-${gcc_version}-${KERN_ARCH}-linux-gnu${ABI}"
-
-case $KERN_ARCH in
-arm)
-	XARCH=${KERN_ARCH}el
-	;;
-powerpc)
-	XARCH=${KERN_ARCH}
-	;;
-esac
-	
-case $host_debian_version in
-	7.*)
-		xbinutils_version=2.22-7.1
-		xgcc_version=4.7.2-4
-	;;
-	6.*)
-		xbinutils_version=2.20.1-16
-		xgcc_version=4.4.5-8
-	;;
-esac
-pkg4gomp1="libc6-${XARCH}-cross libgcc1-${XARCH}-cross"
-packages+=" libc-dev-bin-${XARCH}-cross libc6-dev-${XARCH}-cross linux-libc-dev-${XARCH}-cross zlib1g-${XARCH}-cross zlib1g-dev-${XARCH}-cross"
-
-case $(uname -m) in
-	x86_64) deb_arch=amd64 ;;
-	i686) deb_arch=i386 ;;
-	*) exit 1 ;;
-esac
+packages="build-essential u-boot-tools libncurses5-dev debootstrap qemu-user-static bc gcc-multilib lzma"
 
 cat <<_EOF >/etc/apt/sources.list.d/emdebian.list 
-deb http://www.emdebian.org/debian ${code_name} main
+deb http://www.emdebian.org/tools/debian jessie main
 _EOF
 
 apt-get update 
+apt-get -y install $packages
 
-fetch_install ()
-{
-# fetch_install: fetch and install an package
-# args: $1=URL of package; $2=name of package
+packages="libnl-3-dev:i386 libssl-dev:i386 libusb-dev:i386 zlib1g-dev:armel zlib1g-dev:armhf zlib1g-dev:powerpc libnl-genl-3-dev:i386 libglib2.0-dev:i386 libbluetooth-dev:i386"
+#packages+="libusb-dev:armel libusb-dev:armhf libusb-dev:powerpc "
 
-name=$(echo $2 | sed 's/_[0-9].*$//')
-status=$(dpkg --get-selections $name | cut -f 2- | sed 's/\t*//')
-if [ "$status" != "install" ]; then
-	if [ ! -d ${TMPDIR} ]; then
-		mkdir -p ${TMPDIR}
-	fi
-	wget -O ${TMPDIR}/$2 $1/$2
-	dpkg -i ${TMPDIR}/$2
-	rm -f ${TMPDIR}/$2
-fi
-}
+apt-get -y install $packages
 
-fetch_install http://www.emdebian.org/debian/pool/main/b/binutils/ binutils-${KERN_ARCH}-linux-gnu${ABI}_${xbinutils_version}_${deb_arch}.deb
-fetch_install http://www.emdebian.org/debian/pool/main/g/gcc-${gcc_version}/ gcc-${gcc_version}-${KERN_ARCH}-linux-gnu${ABI}-base_${xgcc_version}_${deb_arch}.deb
-fetch_install http://www.emdebian.org/debian/pool/main/g/gcc-${gcc_version}/ cpp-${gcc_version}-${KERN_ARCH}-linux-gnu${ABI}_${xgcc_version}_${deb_arch}.deb
-apt-get install $pkg4gomp1
-fetch_install http://www.emdebian.org/debian/pool/main/g/gcc-${gcc_version}/ libgomp1-${XARCH}-cross_${xgcc_version}_all.deb
-apt-get install $packages
+packages="crossbuild-essential-armel crossbuild-essential-armhf crossbuild-essential-powerpc"
 
-update-alternatives --install /usr/bin/${KERN_ARCH}-linux-gnu${ABI}-gcc ${KERN_ARCH}-linux-gnu${ABI}-gcc /usr/bin/${KERN_ARCH}-linux-gnu${ABI}-gcc-${gcc_version} 255
-update-alternatives --install /usr/bin/${KERN_ARCH}-linux-gnu${ABI}-cpp ${KERN_ARCH}-linux-gnu${ABI}-cpp /usr/bin/${KERN_ARCH}-linux-gnu${ABI}-cpp-${gcc_version} 255
-
-update-alternatives --set editor /usr/bin/vim.basic
-
-if [ "$TARGET" == "obs600" ]; then
-	dpkg -P qemu-user-static
-	fetch_install http://ftp.jp.debian.org/debian/pool/main/q/qemu qemu-user-static_1.7.0+dfsg-3_${deb_arch}.deb
-fi
+apt-get -y install $packages

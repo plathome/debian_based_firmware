@@ -1,8 +1,8 @@
 #! /bin/sh
 ### BEGIN INIT INFO
 # Provides:          runled
-# Required-Start:    
-# Required-Stop:     
+# Required-Start:    $local_fs $syslog $remote_fs
+# Required-Stop:     $local_fs $syslog $remote_fs
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: runled daemon for OpenBlockS 600
@@ -58,6 +58,8 @@ if [ "$MODEL" = "obsax3" ] && [ -n "${CORE_STOP_TEMP:=105}" ]; then
 	if [ "$POWER_MNG_CTRL" = "0" ]; then
 		DAEMON_ARGS+="-p"
 	fi
+elif [ "$MODEL" = "obsbx1" ]; then
+	echo "300\n5000\n2" > /tmp/.runled
 else
 	DAEMON_ARGS=""
 fi

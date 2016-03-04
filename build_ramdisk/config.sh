@@ -26,137 +26,161 @@
 
 DIST=${DIST:=wheezy}
 
-TARGET=${TARGET:=obsax3}
+TARGET=${TARGET:=bpv4}
 
-COMPRESS=${COMPRESS:=lzma}
+COMP=${COMP:=lzma}
 
-COMPRESS_EXT=${COMPRESS_EXT:=lzma}
+COMPEXT=${COMPEXT:=lzma}
 
 export TARGET DIST
 
+ENA_BX1PM=false
+
+KERNEL=3.12.35
+ISOFILE=debian-7.8.0-amd64-DVD-1.iso
+ARCH=amd64
+COMPLVL=9
+COMP=gzip
+COMPEXT=gz
+DEFCONFIG=${TARGET}_defconfig
+ENA_VIRT=false
+ENA_AUDIO=false
+
 case ${DIST} in
 wheezy)
-	KERNEL=3.2.54
 	case ${TARGET} in
+	bpv4)
+		PATCHLEVEL=1
+		RAMDISK_SIZE=800
+		ENA_VIRT=true
+	;;
+	bpv4-h)
+		PATCHLEVEL=1
+		RAMDISK_SIZE=200
+		DEFCONFIG=bpv4_defconfig
+	;;
+	bpv8)
+		PATCHLEVEL=1
+		RAMDISK_SIZE=800
+	;;
+	obsbx1)
+		KERNEL=3.10.17
+		ARCH=i386
+		ISOFILE=debian-7.8.0-i386-DVD-1.iso
+		PATCHLEVEL=15
+		RAMDISK_SIZE=200
+		ENA_AUDIO=false
+#		ENA_BX1PM=true
+	;;
 	obsax3)
-		DTBFILE=armada-xp-openblocks-ax3-4.dtb
-		ISOFILE=debian-7.7.0-armhf-DVD-1.iso
+		KERNEL=3.2.54
+		ISOFILE=debian-7.8.0-armhf-DVD-1.iso
 		RAMDISK_SIZE=160
 		PATCHLEVEL=5
 		ARCH=armhf
+		COMPLVL=3
+		COMP=lzma
+		COMP_EXT=lzma
 		UBOOT_VER=3.0.0
 		UBOOT_PL=0
 		UBOOT_OLD_VER="1\\\.0\\\.0\|1\\\.1\\\.[1235]\|2\\\.0\\\.[347]"
 	;;
 	obsa6)
-		DTBFILE=kirkwood-openblocks_a6.dtb
-		ISOFILE=debian-7.7.0-armel-DVD-1.iso
+		KERNEL=3.2.54
+		ISOFILE=debian-7.8.0-armel-DVD-1.iso
 		RAMDISK_SIZE=144
-		PATCHLEVEL=2
+		PATCHLEVEL=3
 		ARCH=armel
 		LZMA_LEVEL=9
+		COMP=lzma
+		COMP_EXT=lzma
 		UBOOT_VER=1.2.6
 		UBOOT_PL=1
 		UBOOT_OLD_VER="1\\\.0\\\.2\|1\\\.1\\\.0\|1\\\.2\\\.[34]"
 	;;
 	obsa7)
-		DTBFILE=kirkwood-openblocks_a7.dtb
-		ISOFILE=debian-7.7.0-armel-DVD-1.iso
+		KERNEL=3.2.54
+		ISOFILE=debian-7.8.0-armel-DVD-1.iso
 		RAMDISK_SIZE=144
-		PATCHLEVEL=0
+		PATCHLEVEL=3
 		ARCH=armel
 		LZMA_LEVEL=9
-		COMPRESS=gzip
-		COMPRESS_EXT=gz
+		COMP=gzip
+		COMP_EXT=gz
 		UBOOT_VER=1.2.13
 		UBOOT_PL=2
 		UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
 	;;
 	obs600)
 		KERNEL=3.10.25
+        DEFCONFIG=obs600_defconfig
 		DTBFILE=obs600.dtb
-		ISOFILE=debian-7.4.0-powerpc-DVD-1.iso
+		ISOFILE=debian-7.8.0-powerpc-DVD-1.iso
 		RAMDISK_SIZE=160
 		PATCHLEVEL=0
 		ARCH=powerpc
 		LZMA_LEVEL=9
-		COMPRESS=gzip
-		COMPRESS_EXT=gz
+		COMP=gzip
+		COMP_EXT=gz
 	;;
 	*) exit 1 ;;
 	esac
 ;;
 jessie)
-	KERNEL=4.1.8
+	KERNEL=4.1.18
 	case ${TARGET} in
-	obsax3)
-		DTBFILE=armada-xp-openblocks-ax3-4.dtb
-		ISOFILE=debian-8.2.0-armhf-DVD-1.iso
-		RAMDISK_SIZE=170
-		PATCHLEVEL=0
-		ARCH=armhf
-		LZMA_LEVEL=9
-		COMPRESS=lzma
-		COMPRESS_EXT=lzma
-		UBOOT_VER=3.0.0
-		UBOOT_PL=0
-		UBOOT_OLD_VER="1\\\.0\\\.0\|1\\\.1\\\.[1235]\|2\\\.0\\\.[347]"
+	obsmv4)
+		ISOFILE=debian-8.3.0-amd64-DVD-1.iso
+		PATCHLEVEL=1
+		RAMDISK_SIZE=1024
+		DEFCONFIG=bpv4_defconfig
 	;;
-	obsa7)
-		DTBFILE=kirkwood-openblocks_a7.dtb
-		ISOFILE=debian-8.2.0-armel-DVD-1.iso
-		RAMDISK_SIZE=170
-		PATCHLEVEL=0
-		ARCH=armel
-		LZMA_LEVEL=1
-		COMPRESS=lzma
-		COMPRESS_EXT=lzma
-		UBOOT_VER=1.2.13
-		UBOOT_PL=2
-		UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
+	obsbx1)
+		KERNEL=3.10.17
+		ARCH=i386
+		ISOFILE=debian-8.3.0-i386-DVD-1.iso
+		PATCHLEVEL=beta1
+		RAMDISK_SIZE=250
 	;;
-	obs600)
-		KERNEL=4.1.8
-		DEFCONFIG=40x/obs600_defconfig
-		DTBFILE=obs600.dtb
-#		ISOFILE=debian-8.2.0-powerpc-DVD-1.iso
-		RAMDISK_SIZE=210
-		PATCHLEVEL=0
-		ARCH=powerpc
-		LZMA_LEVEL=1
-		COMPRESS=lzma
-		COMPRESS_EXT=lzma
-		UBOOT_VER=1.2.13
-		UBOOT_PL=2
-		UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
-	;;
-	*) exit 1 ;;
-	esac
-;;
-squeeze)
-#	ISOFILE=debian-6.0.5-armel-DVD-1.iso
-	ARCH=armel
-	case ${TARGET} in
-	obsax3)
-		RAMDISK_SIZE=128
-		KERNEL=3.0.6
-		# 2013/06/17
-		PATCHLEVEL=14
-	;;
-	obsa6)
-		RAMDISK_SIZE=128
-		KERNEL=2.6.31
-		# 2013/01/31
-		PATCHLEVEL=8
-		LZMA_LEVEL=9
-	;;
-	obsa7)
-		RAMDISK_SIZE=144
-		KERNEL=3.2.40
-		PATCHLEVEL=0beta0
-		LZMA_LEVEL=9
-		COMPRESS=gzip
-		COMPRESS_EXT=gz
+    obsax3)
+        DTBFILE=armada-xp-openblocks-ax3-4.dtb
+        ISOFILE=debian-8.3.0-armhf-DVD-1.iso
+        RAMDISK_SIZE=170
+        PATCHLEVEL=0
+        ARCH=armhf
+        LZMA_LEVEL=9
+        COMP=lzma
+        COMP_EXT=lzma
+        UBOOT_VER=3.0.0
+        UBOOT_PL=0
+        UBOOT_OLD_VER="1\\\.0\\\.0\|1\\\.1\\\.[1235]\|2\\\.0\\\.[347]"
+    ;;
+    obsa7)
+        DTBFILE=kirkwood-openblocks_a7.dtb
+        ISOFILE=debian-8.3.0-armel-DVD-1.iso
+        RAMDISK_SIZE=170
+        PATCHLEVEL=0
+        ARCH=armel
+        LZMA_LEVEL=1
+        COMP=lzma
+        COMP_EXT=lzma
+        UBOOT_VER=1.2.13
+        UBOOT_PL=2
+        UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
+    ;;
+    obs600)
+        DEFCONFIG=40x/obs600_defconfig
+        DTBFILE=obs600.dtb
+        ISOFILE=debian-8.3.0-powerpc-DVD-1.iso
+        RAMDISK_SIZE=210
+        PATCHLEVEL=0
+        ARCH=powerpc
+        LZMA_LEVEL=9
+        COMP=gzip
+        COMP_EXT=gz
+        UBOOT_VER=1.2.13
+        UBOOT_PL=2
+        UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
 	;;
 	*) exit 1 ;;
 	esac

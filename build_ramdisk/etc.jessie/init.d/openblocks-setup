@@ -9,7 +9,7 @@
 # Description:
 ### END INIT INFO
 #
-# Copyright (c) 2013-2016 Plat'Home CO., LTD.
+# Copyright (c) 2013-2015 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -140,7 +140,7 @@ fdisk_and_mke2fs(){
 	sfdisk ${dev%[0-9]} <<-_FDISK
 ,,83,-
 	_FDISK
-	mkfs -t ext3 -j -b 4096 -L ${RW_CF_LABEL} $dev
+	mkfs.ext4 -L ${RW_CF_LABEL} $dev
 	return 0
 }
 
@@ -185,6 +185,7 @@ sshd_host_keys_required() {
 			echo /etc/ssh/ssh_host_rsa_key
 			echo /etc/ssh/ssh_host_dsa_key
 			echo /etc/ssh/ssh_host_ecdsa_key
+			echo /etc/ssh/ssh_host_ed25519_key
 		fi
 	fi
 }
@@ -221,6 +222,8 @@ sshd_create_keys() {
 		"$hostkeys" /etc/ssh/ssh_host_dsa_key -t dsa
 	sshd_create_key "Creating SSH2 ECDSA key; this may take some time ..." \
 		"$hostkeys" /etc/ssh/ssh_host_ecdsa_key -t ecdsa
+	sshd_create_key "Creating SSH2 Ed25519 key; this may take some time ..." \
+		"$hostkeys" /etc/ssh/ssh_host_ed25519_key -t ed25519
 }
 
 

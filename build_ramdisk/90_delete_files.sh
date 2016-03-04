@@ -38,7 +38,7 @@ if [ -f "${DISTDIR}/usr/share/doc/base-files/README" ] ; then
 	mkdir usr/share/doc
 	(cd ${DISTDIR}/usr/share/doc.orig; \
 	find . -maxdepth 2 -type f  -name copyright | xargs tar cf - ) | \
-	(cd ${DISTDIR}/usr/share/doc; tar xvf -)
+	(cd ${DISTDIR}/usr/share/doc; tar xf -)
 	rm -rf ${DISTDIR}/usr/share/doc.orig
 fi
 

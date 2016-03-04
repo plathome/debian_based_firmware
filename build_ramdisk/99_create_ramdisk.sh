@@ -43,7 +43,27 @@ echo y | mke2fs ${_RAMDISK_IMG}
 mkdir -p ${MOUNTDIR}
 mount -o loop ${_RAMDISK_IMG} ${MOUNTDIR}
 
-(cd ${DISTDIR};tar --numeric-owner --exclude=${QEMU_BIN} -cpf - . | tar -xvf - -C ${MOUNTDIR})
+(cd ${DISTDIR};tar --numeric-owner --exclude=${QEMU_BIN} -cpf - . | tar -xf - -C ${MOUNTDIR})
+
+if [ "$ENA_VIRT" == "true" -a -f ${EXTRADEBDIR}/virtimg-${DIST}.tar.xz ]; then
+	tar -xJf ${EXTRADEBDIR}/virtimg-${DIST}.tar.xz -C ${MOUNTDIR}
+fi
+
+#if [ "$TARGET" == "obsbx1" -a -f ${EXTRADEBDIR}/obsbx1_python.tar.xz ]; then
+#	tar -xJf ${EXTRADEBDIR}/obsbx1_python.tar.xz -C ${MOUNTDIR}
+#fi
+
+case "$TARGET" in
+bpv*)
+	for f in "available" "available-old" "status" "status-old"; do
+		sed -e "s|kernel-image-bpv.|kernel-image-$TARGET|" \
+			< $MOUNTDIR/var/lib/dpkg/$f > /tmp/$f
+		mv -f /tmp/$f $MOUNTDIR/var/lib/dpkg/$f
+	done
+	;;
+*)
+	;;
+esac
 
 umount ${MOUNTDIR}
 

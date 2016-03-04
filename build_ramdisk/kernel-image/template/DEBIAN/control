@@ -2,7 +2,6 @@ Section: base
 Priority: important
 Maintainer: Plat'Home CO.,LTD. <support@plathome.co.jp>
 Version: __VERSION__
-Package: kernel-image
+Package: __PACKAGE__
 Architecture: __ARCH__
 Description: Linux kernel image for OpenBlocks
-Depends: uboot-image

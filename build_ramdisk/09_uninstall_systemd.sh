@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013, 2014 Plat'Home CO., LTD.
+# Copyright (c) 2013-2016 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,20 +27,10 @@
 
 . `dirname $0`/config.sh
 
-if [ ${DIST} == "jessie" ]; then
-	chroot ${DISTDIR} /usr/bin/apt-get remove --purge --auto-remove -y systemd
-	echo -e 'Package: systemd\nPin: origin ""\nPin-Priority: -1' \
-							> ${DISTDIR}/etc/apt/preferences.d/systemd
-	echo -e '\n\nPackage: *systemd*\nPin: origin ""\nPin-Priority: -1' \
-							>> ${DISTDIR}/etc/apt/preferences.d/systemd
-	if [ ${TARGET} == "obsax3" ]; then
-		echo -e '\nPackage: systemd:armhf\nPin: origin ""\nPin-Priority: -1' \
-								>> ${DISTDIR}/etc/apt/preferences.d/systemd
-	elif [ ${TARGET} == "obsa7" ]; then
-		echo -e '\nPackage: systemd:armel\nPin: origin ""\nPin-Priority: -1' \
-								>> ${DISTDIR}/etc/apt/preferences.d/systemd
-	else
-		echo -e '\nPackage: systemd:powerpc\nPin: origin ""\nPin-Priority: -1' \
-								>> ${DISTDIR}/etc/apt/preferences.d/systemd
-	fi
-fi
+[ "${DIST}" != "jessie" ] && exit
+
+echo ${DISTDIR}
+chroot ${DISTDIR} /usr/bin/apt-get remove --purge --auto-remove -y systemd
+echo -e 'Package: systemd\nPin: origin ""\nPin-Priority: -1' > ${DISTDIR}/etc/apt/preferences.d/systemd
+echo -e '\n\nPackage: *systemd*\nPin: origin ""\nPin-Priority: -1' >> ${DISTDIR}/etc/apt/preferences.d/systemd
+echo -e '\nPackage: systemd:i386\nPin: origin ""\nPin-Priority: -1' >> ${DISTDIR}/etc/apt/preferences.d/systemd
