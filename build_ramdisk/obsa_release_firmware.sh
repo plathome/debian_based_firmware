@@ -85,7 +85,14 @@ mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \
 	-A ppc -O linux -T multi -C gzip \
 	-d ${RELEASEDIR}/vmlinux.bin.gz:${RELEASEDIR}/${RAMDISK_IMG}.${COMP_EXT}:${LINUX_SRC}/arch/${KERN_ARCH}/boot/${TARGET}.dtb \
 	${RELEASEDIR}/uImage.initrd.${TARGET}
-(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb.sh ${VERSION} ${ARCH} ${RELEASEDIR}/uImage.initrd.${TARGET})
+	case $KERNEL in
+	3.13|4.*)
+		(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb.sh ${VERSION} ${ARCH} "-${TARGET}" ${RELEASEDIR}/uImage.initrd.${TARGET})
+	;;
+	*)
+		(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb.sh ${VERSION} ${ARCH} ${RELEASEDIR}/uImage.initrd.${TARGET})
+	;;
+	esac
 else
 	case $KERNEL in
 	3.13|4.*)
@@ -94,7 +101,7 @@ else
 			-d ${RELEASEDIR}/zImage.dtb:${RELEASEDIR}/${RAMDISK_IMG}.${COMP_EXT} \
 			${RELEASEDIR}/uImage.initrd.${TARGET}
 		(cd ${WRKDIR}/build_ramdisk/kernel-image; \
-			./mkdeb.sh ${VERSION} ${ARCH} ${RELEASEDIR}/uImage.initrd.${TARGET})
+			./mkdeb.sh ${VERSION} ${ARCH} "-${TARGET}" ${RELEASEDIR}/uImage.initrd.${TARGET})
 	;;
 	*)
 		mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \

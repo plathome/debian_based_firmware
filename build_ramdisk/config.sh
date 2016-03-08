@@ -127,7 +127,7 @@ wheezy)
 	esac
 ;;
 jessie)
-	KERNEL=4.1.18
+	KERNEL=4.1.19
 	case ${TARGET} in
 	obsmv4)
 		ISOFILE=debian-8.3.0-amd64-DVD-1.iso
@@ -145,7 +145,7 @@ jessie)
     obsax3)
         DTBFILE=armada-xp-openblocks-ax3-4.dtb
         ISOFILE=debian-8.3.0-armhf-DVD-1.iso
-        RAMDISK_SIZE=170
+        RAMDISK_SIZE=180
         PATCHLEVEL=0
         ARCH=armhf
         LZMA_LEVEL=9
@@ -158,15 +158,28 @@ jessie)
     obsa7)
         DTBFILE=kirkwood-openblocks_a7.dtb
         ISOFILE=debian-8.3.0-armel-DVD-1.iso
-        RAMDISK_SIZE=170
+        RAMDISK_SIZE=180
         PATCHLEVEL=0
         ARCH=armel
-        LZMA_LEVEL=1
-        COMP=lzma
-        COMP_EXT=lzma
+        LZMA_LEVEL=9
+        COMP=gzip
+        COMP_EXT=gz
         UBOOT_VER=1.2.13
         UBOOT_PL=2
         UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
+    ;;
+    obsa6)
+        DTBFILE=kirkwood-openblocks_a6.dtb
+        ISOFILE=debian-8.3.0-armel-DVD-1.iso
+        RAMDISK_SIZE=180
+        PATCHLEVEL=0
+        ARCH=armel
+        LZMA_LEVEL=9
+        COMP=lzma
+        COMP_EXT=lzma
+		UBOOT_VER=1.2.6
+		UBOOT_PL=1
+		UBOOT_OLD_VER="1\\\.0\\\.2\|1\\\.1\\\.0\|1\\\.2\\\.[34]"
     ;;
     obs600)
         DEFCONFIG=40x/obs600_defconfig

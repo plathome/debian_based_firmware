@@ -39,6 +39,14 @@ ARCH=$2
 MODEL=$3
 
 pkgdir=dummy-kernel-image-${VERSION}
+case $MODEL in
+obsa*)
+	pkgstr="kernel-image"
+	;;
+*)
+	pkgstr="kernel-image-$MODEL"
+	;;
+esac
 
 rm -rf  $pkgdir
 mkdir -p $pkgdir
@@ -48,7 +56,7 @@ mkdir -p $pkgdir/etc
 echo $VERSION > $pkgdir/etc/openblocks-release
 sed -e "s|__VERSION__|$VERSION|" \
     -e "s|__ARCH__|$ARCH|" \
-    -e "s|__PACKAGE__|kernel-image-$MODEL|" \
+    -e "s|__PACKAGE__|$pkgstr|" \
 	< $pkgdir/DEBIAN/control > /tmp/control.new
 case $MODEL in
 obsa*)

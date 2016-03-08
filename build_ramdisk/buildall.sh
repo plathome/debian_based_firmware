@@ -61,6 +61,12 @@ if ! (echo $_TARGET | grep -Eq "$TARGET_LIST") ; then
 	_usage
 fi
 
+if [ "$_TARGET" == "obsa6" -a "$_DIST" == "jessie" ]; then
+	echo
+	echo "obsa6 on jessie is not supported."
+	exit 1
+fi
+
 SCRIPTS="build_debootstrap.sh build_kernel.sh build_ramdisk.sh release_firmware.sh"
 
 for sh in $SCRIPTS; do

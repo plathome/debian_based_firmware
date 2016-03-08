@@ -239,7 +239,7 @@ int set_reset_u200(char *gpio_pin)
 		close(fd);
 		return -1;
 	}
-	sleep(1);
+	sleep(3);
 	if(write(fd, "1", 1) == -1){
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		close(fd);

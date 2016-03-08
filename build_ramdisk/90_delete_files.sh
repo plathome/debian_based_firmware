@@ -31,7 +31,7 @@ cd ${DISTDIR}
 
 find usr/share/locale/ -maxdepth 1 | grep -Ev "(locale/|locale|ja)$" | xargs rm -rf
 
-rm -rf var/lib/apt/lists/{ftp,security}* var/cache/apt/*.bin var/cache/apt/archives/*.deb root/.bash_history
+rm -rf var/lib/apt/lists/{ftp,security,cdn}* var/cache/apt/*.bin var/cache/apt/archives/*.deb root/.bash_history
 
 if [ -f "${DISTDIR}/usr/share/doc/base-files/README" ] ; then
 	mv usr/share/doc usr/share/doc.orig

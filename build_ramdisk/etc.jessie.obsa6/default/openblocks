@@ -5,7 +5,7 @@
 # * /usr/sbin/flashcfg
 
 # BEGIN: don't edit
-MODEL="obsax3"
+MODEL="obsa6"
 
 MTREE_LIST="/etc/mtree.list"
 MTREE_DIRS="/var/log /var/run"
@@ -15,7 +15,7 @@ MTD_CONF_DEV=mtd3
 MTD_USER_DEV=mtd5
 MTD_OPT_DEV=mtd6
 
-USBREST_GPIO_PORTS="16 17"
+USBREST_GPIO_PORTS=""
 
 # END: dont't edit
 
@@ -25,12 +25,7 @@ USBREST_GPIO_PORTS="16 17"
 UNIONFS_DIRS="etc bin home lib sbin usr var root opt srv media"
 
 # Set tmpfs size for ramdisk mode. Recommend over to 384m.
-RW_TMPFS_SIZE="384m"
-
-# Set cpu core stop and restart temperature.
-CORE_STOP_TEMP=105
-CORE_RESTART_TEMP=75
-POWER_MNG_CTRL=1
+RW_TMPFS_SIZE="128M"
 
 # Set noatime option, when using SSD.
 NOATIME=false
