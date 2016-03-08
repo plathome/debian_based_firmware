@@ -74,7 +74,7 @@ wheezy)
 	;;
 	obsax3)
 		KERNEL=3.2.54
-		ISOFILE=debian-7.8.0-armhf-DVD-1.iso
+		ISOFILE=debian-7.7.0-armhf-DVD-1.iso
 		RAMDISK_SIZE=160
 		PATCHLEVEL=5
 		ARCH=armhf
@@ -87,7 +87,7 @@ wheezy)
 	;;
 	obsa6)
 		KERNEL=3.2.54
-		ISOFILE=debian-7.8.0-armel-DVD-1.iso
+		ISOFILE=debian-7.7.0-armel-DVD-1.iso
 		RAMDISK_SIZE=144
 		PATCHLEVEL=3
 		ARCH=armel
@@ -100,7 +100,7 @@ wheezy)
 	;;
 	obsa7)
 		KERNEL=3.2.54
-		ISOFILE=debian-7.8.0-armel-DVD-1.iso
+		ISOFILE=debian-7.7.0-armel-DVD-1.iso
 		RAMDISK_SIZE=144
 		PATCHLEVEL=3
 		ARCH=armel
