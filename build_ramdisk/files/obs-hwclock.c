@@ -190,7 +190,8 @@ int do_systohc(char *str)
 	c[5] = (unsigned char)strtol(time, &endp, 10);
 	/* second */
 	time[0] = str[11]; time[1] = str[12]; time[2] = 0;
-	c[6] = (unsigned char)strtol(time, &endp, 10);
+	/* +1 = correct second */
+	c[6] = (unsigned char)strtol(time, &endp, 10) + 1;
 	memcpy(d, c, sizeof(d));
 
 	for(i=0; i<7; i++){
