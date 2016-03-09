@@ -6,36 +6,36 @@ Copyright (c) 2013-2016 Plat'Home CO., LTD.
 
 1. はじめに
 
-このソフトウェアを使えばOpenBlocks(AX3, A7, A6, 600)のファームウェア
-を作成することができます。内容は、シェルスクリプトとファームウェアに
-含めるファイルです。
+このソフトウェアを使えばOpenBlocksのファームウェアを作成することができます。
+内容は、シェルスクリプトとファームウェアに含めるファイルです。
 
 2. 対応ファームウェア
 
-OpenBlocksのファームウェアは、機種(AX3, A7, A6, 600)とOS(Debian
-GNU/Linux)によって異なります。対応しているファームウェアは下の表をご
-覧ください。
+OpenBlocksのファームウェアは、機種(Aシリーズ, IoTシリーズ, 600)と
+OS(DebianGNU/Linux)によって異なります。対応しているファームウェアは
+下の表をご覧ください。
 
-機種 | Debian | 作成ホスト | TARGET | DIST    | ARCH
-=====|========|============|========|=========|========
-AX3  | 7      | 7/amd64    | obsax3 | wheezy  | armhf
------+--------+------------+--------+---------|--------
-AX3  | 6      | 6/amd64    | obsax3 | squeeze | armel
------+--------+------------+--------+---------|--------
-A7   | 7      | 7/amd64    | obsa7  | wheezy  | armel
------+--------+------------+--------+---------|--------
-A6   | 7      | 7/amd64    | obsa6  | wheezy  | armel
------+--------+------------+--------+---------|--------
-A6   | 6      | 6/amd64    | obsa6  | squeeze | armel
------+--------+------------+--------+---------|--------
-600  | 7      | 7/amd64    | obs600 | wheezy  | powerpc
+機種 | Debian | TARGET | DIST    | ARCH
+=====|========|========|=========|========
+AX3  | 7      | obsax3 | wheezy  | armhf
+-----+--------+--------+---------+---------
+A7   | 7      | obsa7  | wheezy  | armel
+-----+--------+--------+---------+---------
+A6   | 7      | obsa6  | wheezy  | armel
+-----+--------+--------+---------+---------
+600  | 7      | obs600 | wheezy  | powerpc
+-----+--------+--------+---------+---------
+BX?  | 7      | obsbx1 | wheezy  | i386
+-----+--------+--------+---------+---------
+EX1  | 7      | obsbx1 | wheezy  | i386
 
-ファームウェアを作成するホストのOSはDebian GNU/Linuxです。そのバージ
-ョンとアーキテクチャは、ファームウェアの対象となる機種とOSによって異
-ります。表の作成ホストに「バージョン/アーキテクチャ」を記述しました。
+
+ファームウェアを作成するホストのOSはDebian GNU/Linux 8 (jessie)です。
 
 項目TARGETとDISTは、ファームウェアを作成するときに実行するシェルスク
 リプトに指定する文字列です。後節で参照します。
+
+BX?は、BX0，BX1，BX3を表します。
 
 3. 準備
 
@@ -43,7 +43,7 @@ A6   | 6      | 6/amd64    | obsa6  | squeeze | armel
 
 前節の表で、ファームウェアを作成するホストのOSを確認してください。例
 えば、機種がOpenBlocks AX3でOSがDebian 7の場合、作成ホストのOSは
-Debian 7/amd64です。ホストを用意して、そのOSをインストールします。ホ
+Debian 8/amd64です。ホストを用意して、そのOSをインストールします。ホ
 ストは物理マシンと仮想マシンのどちらでもよろしいです。インターネット
 に接続できるよう、ネッワークの設定をしてください。
 
@@ -65,18 +65,10 @@ Gitリポジトリを取得します。
 
 3.3. クロス開発環境
 
-ファームウェアの作成に必要なパッケージをインストールします。機種に応
-じて以下のコマンドを実行してください。
-
-3.3.1. AX3, A7, A6
+ファームウェアの作成に必要なパッケージをインストールします。
 
   # cd build_ramdisk
   # ./build_crossenv.sh
-
-3.3.2. 600
-
-  # cd build_ramdisk
-  # TARGET=obs600 ./build_crossenv.sh
 
 3.4. カーネルソース
 
@@ -97,12 +89,6 @@ ftp://ftp.plathome.co.jp/pub/OBSA7/wheezy/3.2.40-4/linux-3.2.40-20140220.tar.gz
 TARGET=obsa6, DIST=wheezy, KERNEL=3.2.40, PATCHLEVEL=3の場合
 ftp://ftp.plathome.co.jp/pub/OBSA6/wheezy/3.2.40-3/linux-3.2.40-20140220.tar.gz
 
-TARGET=obsax3, DIST=squeeze, KERNEL=3.0.6, PATCHLEVEL=14の場合
-ftp://ftp.plathome.co.jp/pub/OBSAX3/squeeze/3.0.6-14/source/linux-3.0.6-14.tar.gz
-
-TARGET=obsa6, DIST=squeeze, KERNEL=2.6.31, PATCHLEVEL=8の場合
-ftp://ftp.plathome.co.jp/pub/OBSA6/squeeze/2.6.31-8/source/linux-2.6.31-obs-20130131+obsa6_defconfig.tar.gz
-
 TARGET=obs600, DIST=wheezy, KERNEL=3.10.25, PATCHLEVEL=0の場合
 ftp://ftp.plathome.co.jp/pub/OBS600/debian/files/wheezy/3.10.25-0/linux-3.10.25-obs600.tar.gz
 
@@ -116,8 +102,7 @@ source/TARGET/linux-KERNELが作成されます。TARGETとKERNELは、ご自身
 3.5. DVDイメージ
 
 DIST=wheezyの場合、DebianのDVDイメージをDebianのミラーサイトからダウ
-ンロードしてディレクトリisofilesにコピーします。DIST=squeezeの場合は
-不要です。
+ンロードしてディレクトリisofilesにコピーします。
 
 ファイルbuild_ramdisk/config.shのcase文中のISOFILEからDVDイメージのフ
 ァイル名が分ります。
@@ -132,6 +117,9 @@ debian-7.7.0-armel-DVD-1.iso
 
 TARGET=obs600の場合
 debian-7.4.0-powerpc-DVD-1.iso
+
+TARGET=obsbx1の場合
+debian-7.8.0-i386-DVD-1.iso
 
 これらのファイルは 
 ftp://ftp.plathome.co.jp/pub/cdimages/debian/
@@ -279,106 +267,21 @@ DIST=wheezy, TARGET=obsax3の場合、
 
 6. ファームウェアの更新
 
-ファームウェアuImage.initrd.TARGETをOpenBlocksにネットワーク経由もし
-くはUSBメモリでコピーしてください。TARGETは、ご自身の文字列に置き換え
-てください。
+ファームウェアパッケージkernel-image-KERNEL-PATCHLEVEL-TARGET.debをOpenBlocksに
+ネットワーク経由もしくはUSBメモリでコピーしてください。KERNEL，PATCHLEVELと
+TARGETは、ご自身の文字列に置き換えてください。
 
 次のコマンド
 
-  # flashcfg -f uImage.initrd.TARGET
+  # dpkg -i kernel-image-KERNEL-PATCHLEVEL-TARGET.deb
 
-を実行し、再起動すれば、ファームウェアの更新は終了です。
+を実行してください。
 
-7. TFTPサーバを使った起動
+ramdiskモードの場合はflashcfgコマンドを実行することをお勧めします。
+ファームウェアのバージョンとDebianパッケージのリポジトリ内のバージョンが
+合わなくなる場合があります。（合わなくても動作に影響はありません。）
 
-ファームウェアをカスタマイズする過程においては、前節のやり方でファー
-ムウェアを更新するよりも、TFTPサーバを使ってOpenBlocksを起動した方が
-便利です。
+  # flashcfg -S
 
-起動できないファームウェアに更新してしまったとしても、ここで説明する
-方法で復旧できます。
+再起動すれば、ファームウェアの更新は終了です。
 
-7.1. TFTPサーバの構築
-
-7.1.1. インストール
-
-ファームウェアを作成するホストで、以下のコマンド
-
-  # apt-get update
-  # apt-get install tftpd
-  # /etc/init.d/openbsd-inetd restart
-
-を実行して、TFTPサーバをインストールします。
-
-7.1.2. ファームウェアの準備
-
-ディレクトリ/srv/tftpを作成し、ファームウェアuImage.initrd.TARGETを
-コピーします。TARGETは、ご自身の文字列に置き換えてください。
-
-ファイル名は、固定なので、変更しないでください。600だけは
-uImage.initrdにします。
-
-7.2. OpenBlocksの起動
-
-7.2.1. 準備
-
-OpenBlocksの電源を切っておきます。ETHER-0ポートに、TFTPサーバと通信
-できるネットワークからのイーサネットケーブルを接続します。
-
-シリアルコンソールを接続してから、電源を入れ、U-Bootのプロンプトが出
-るまで、適当なキー(例えば、スペースキー)を押し続けます。DIPスイッチ
-の1をONにすれば、電源を入れた後、U-Bootのプロンプトを出して止まるよ
-うになります。
-
-以下では、U-Bootのプロンプトを「>」で示します。
-
-7.2.2. ネットワーク設定
-
-DHCPサーバを利用する場合は、次のコマンド
-
-  > dhcp
-
-を実行します。固定IPアドレスの場合は、以下のように設定します。
-
-  > setenv ipaddr 192.168.254.254
-  > setenv netmask 255.255.255.0
-  > setenv gatewayip 192.168.254.1
-
-TFTPサーバのIPアドレスを設定します。
-
-  > setenv tftpserver 192.168.254.3
-
-設定の確認は
-
-  > printenv
-
-設定の保存は
-
-  > saveenv
-
-設定の消去は
-
-  > resetenv (600以外)
-  > clr_env  (600のみ)
-  > reset
-
-を実行します。
-
-7.2.3. FlashROMに保存しないで起動
-
-ファームウェアをFlashROMに保存しないで起動する場合、次のコマンド
-
-  > run os_load_boot
-
-を実行します。
-
-次回再起動時にはFlashROMに保存されているファームウェアで起動します。
-
-7.2.4. FlashROMに保存してから起動
-
-ファームウェアをFlashROMに保存してから起動する場合、次のコマンド
-
-  > run os_load_prog
-  > reset
-
-を実行します。
