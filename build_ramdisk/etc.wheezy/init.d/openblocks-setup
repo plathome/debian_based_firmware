@@ -383,6 +383,13 @@ start)
 	# correct host name
 	/etc/init.d/hostname.sh start
 
+	# S35390A INIT2 flag clear
+	obs-hwclock --check
+	if [ $? == 0 ]; then
+		obs-hwclock --clearint2
+		date -s "`obs-hwclock --hctosys`"
+		obs-hwclock --status
+	fi
 ;;
 stop)
 	if [ -f /sys/devices/system/cpu/cpu1/online ]; then
