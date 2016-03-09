@@ -45,15 +45,6 @@ VERSION=${KERNEL}-${PATCHLEVEL}
 (cd ${LINUX_SRC}; make INSTALL_MOD_PATH=${MOUNTDIR} ${KERN_COMPILE_OPTS} modules_install)
 cp -f ${LINUX_SRC}/System.map ${MOUNTDIR}/boot/
 if [ "$TARGET" == "obsbx1" ]; then
-#	if [ ${KERNEL} == "3.10.17" ]; then
-		echo "BCM4334X"
-		if [ -d ${FILESDIR}/driver_bcm43x ]; then
-			(cd ${FILESDIR}/driver_bcm43x; \
-				KERNEL_SRC=${LINUX_SRC} make; \
-				KERNEL_SRC=${LINUX_SRC} INSTDIR=${MOUNTDIR} make modules_install)
-		fi
-#.	fi
-
 	echo "8812AU"
 	if [ ${KERNEL} == "3.10.17" ]; then
 		LOCAL_VER="-poky-edison"
