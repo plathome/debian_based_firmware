@@ -142,58 +142,58 @@ jessie)
 		PATCHLEVEL=beta1
 		RAMDISK_SIZE=250
 	;;
-    obsax3)
-        DTBFILE=armada-xp-openblocks-ax3-4.dtb
-        ISOFILE=debian-8.3.0-armhf-DVD-1.iso
-        RAMDISK_SIZE=180
-        PATCHLEVEL=0
-        ARCH=armhf
-        LZMA_LEVEL=9
-        COMP=lzma
-        COMP_EXT=lzma
-        UBOOT_VER=3.0.0
-        UBOOT_PL=0
-        UBOOT_OLD_VER="1\\\.0\\\.0\|1\\\.1\\\.[1235]\|2\\\.0\\\.[347]"
-    ;;
-    obsa7)
-        DTBFILE=kirkwood-openblocks_a7.dtb
-        ISOFILE=debian-8.3.0-armel-DVD-1.iso
-        RAMDISK_SIZE=180
-        PATCHLEVEL=0
-        ARCH=armel
-        LZMA_LEVEL=9
-        COMP=gzip
-        COMP_EXT=gz
-        UBOOT_VER=1.2.13
-        UBOOT_PL=2
-        UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
-    ;;
-    obsa6)
-        DTBFILE=kirkwood-openblocks_a6.dtb
-        ISOFILE=debian-8.3.0-armel-DVD-1.iso
-        RAMDISK_SIZE=180
-        PATCHLEVEL=0
-        ARCH=armel
-        LZMA_LEVEL=9
-        COMP=lzma
-        COMP_EXT=lzma
+	obsax3)
+		DTBFILE=armada-xp-openblocks-ax3-4.dtb
+		ISOFILE=debian-8.3.0-armhf-DVD-1.iso
+		RAMDISK_SIZE=180
+		PATCHLEVEL=0
+		ARCH=armhf
+		LZMA_LEVEL=9
+		COMP=lzma
+		COMP_EXT=lzma
+		UBOOT_VER=3.0.0
+		UBOOT_PL=0
+		UBOOT_OLD_VER="1\\\.0\\\.0\|1\\\.1\\\.[1235]\|2\\\.0\\\.[347]"
+	;;
+	obsa7)
+		DTBFILE=kirkwood-openblocks_a7.dtb
+		ISOFILE=debian-8.3.0-armel-DVD-1.iso
+		RAMDISK_SIZE=180
+		PATCHLEVEL=0
+		ARCH=armel
+		LZMA_LEVEL=9
+		COMP=gzip
+		COMP_EXT=gz
+		UBOOT_VER=1.2.13
+		UBOOT_PL=2
+		UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
+	;;
+	obsa6)
+		DTBFILE=kirkwood-openblocks_a6.dtb
+		ISOFILE=debian-8.3.0-armel-DVD-1.iso
+		RAMDISK_SIZE=180
+		PATCHLEVEL=0
+		ARCH=armel
+		LZMA_LEVEL=9
+		COMP=lzma
+		COMP_EXT=lzma
 		UBOOT_VER=1.2.6
 		UBOOT_PL=1
 		UBOOT_OLD_VER="1\\\.0\\\.2\|1\\\.1\\\.0\|1\\\.2\\\.[34]"
-    ;;
-    obs600)
-        DEFCONFIG=40x/obs600_defconfig
-        DTBFILE=obs600.dtb
-        ISOFILE=debian-8.3.0-powerpc-DVD-1.iso
-        RAMDISK_SIZE=210
-        PATCHLEVEL=0
-        ARCH=powerpc
-        LZMA_LEVEL=9
-        COMP=gzip
-        COMP_EXT=gz
-        UBOOT_VER=1.2.13
-        UBOOT_PL=2
-        UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
+	;;
+	obs600)
+		DEFCONFIG=40x/obs600_defconfig
+		DTBFILE=obs600.dtb
+		ISOFILE=debian-8.3.0-powerpc-DVD-1.iso
+		RAMDISK_SIZE=210
+		PATCHLEVEL=0
+		ARCH=powerpc
+		LZMA_LEVEL=9
+		COMP=gzip
+		COMP_EXT=gz
+		UBOOT_VER=1.2.13
+		UBOOT_PL=2
+		UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
 	;;
 	*) exit 1 ;;
 	esac
