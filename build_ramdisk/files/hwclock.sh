@@ -56,7 +56,7 @@ do_obs_hwclock()
 	"")
 		obs-hwclock --hctosys
 	;;
-	--alarm1|--alarm2|--clearint1|--clearint2|--init|--status)
+	--alarm*|--clear*|--init|--status|--check)
 		obs-hwclock $@
 	;;
 	--systohc|--rtc*)
@@ -74,23 +74,21 @@ do_obs_hwclock()
 	esac
 }
 
-MODEL=`obsiot-modem.sh`
-
-case $MODEL in
-none)
-	obs-hwclock --check
-	if [ $? == 0 ]; then	# BX0
-		do_obs_hwclock $@
-		if [ $? != 0 ]; then
-			usage
-		fi
-	else					# EX1 w/o modem
-		/usr/local/bin/hwclock $@	
+obs-hwclock --check
+if [ $? == 0 ]; then	# BX0 or EX1 rev2
+	do_obs_hwclock $@
+	if [ $? != 0 ]; then
+		usage
 	fi
-;;
-*)
-	/usr/local/bin/hwclock $@
-;;
-esac
+else
+	case $@ in
+	--alarm*|--clear*|--init|--status|--check)
+		/usr/local/bin/hwclock --help
+	;;
+	*)
+		/usr/local/bin/hwclock $@	
+	;;
+	esac
+fi
 
 exit $?
