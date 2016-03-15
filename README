@@ -11,7 +11,7 @@ Copyright (c) 2013-2016 Plat'Home CO., LTD.
 
 2. 対応ファームウェア
 
-OpenBlocksのファームウェアは、機種(Aシリーズ, IoTシリーズ, 600)と
+OpenBlocksのファームウェアは、機種(Aファミリ, IoTファミリ, 600)と
 OS(DebianGNU/Linux)によって異なります。対応しているファームウェアは
 下の表をご覧ください。
 
@@ -30,7 +30,7 @@ BX?  | 7      | obsbx1 | wheezy  | i386
 EX1  | 7      | obsbx1 | wheezy  | i386
 
 
-ファームウェアを作成するホストのOSはDebian GNU/Linux 8 (jessie)です。
+ファームウェアを作成するホストのOSはDebian GNU/Linux 8/amd64です。
 
 項目TARGETとDISTは、ファームウェアを作成するときに実行するシェルスク
 リプトに指定する文字列です。後節で参照します。
@@ -41,11 +41,9 @@ BX?は、BX0，BX1，BX3を表します。
 
 3.1. 作成ホスト
 
-前節の表で、ファームウェアを作成するホストのOSを確認してください。例
-えば、機種がOpenBlocks AX3でOSがDebian 7の場合、作成ホストのOSは
-Debian 8/amd64です。ホストを用意して、そのOSをインストールします。ホ
-ストは物理マシンと仮想マシンのどちらでもよろしいです。インターネット
-に接続できるよう、ネッワークの設定をしてください。
+作成ホストのOSはDebian 8/amd64です。ホストを用意して、そのOSをインス
+トールします。ホ トは物理マシンと仮想マシンのどちらでもよろしいです。
+インターネット に接続できるよう、ネッワークの設定をしてください。
 
 3.2. Gitリポジトリの取得
 
@@ -96,8 +94,8 @@ ftp://ftp.plathome.co.jp/pub/OBS600/debian/files/wheezy/3.10.25-0/linux-3.10.25-
 
 ディレクトリsourceには、TARGETをその名前としたディレクトリがあるので、
 そこにカーネルソースを展開してください。その結果、ディレクトリ
-source/TARGET/linux-KERNELが作成されます。TARGETとKERNELは、ご自身の
-文字列に置き換えてください。
+source/TARGET/linux-KERNEL(およびlinux-KERNEL.orig)が作成されます。
+TARGETとKERNELは、ご自身の文字列に置き換えてください。
 
 3.5. DVDイメージ
 
@@ -123,7 +121,7 @@ debian-7.8.0-i386-DVD-1.iso
 
 これらのファイルは 
 ftp://ftp.plathome.co.jp/pub/cdimages/debian/
-から取得できます。
+からも取得できます。
 
 4. 作成
 
@@ -284,4 +282,3 @@ ramdiskモードの場合はflashcfgコマンドを実行することをお勧�
   # flashcfg -S
 
 再起動すれば、ファームウェアの更新は終了です。
-
