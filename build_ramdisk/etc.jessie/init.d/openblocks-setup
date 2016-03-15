@@ -5,7 +5,7 @@
 # Required-Stop:     umountfs
 # Default-Start:     S
 # Default-Stop:      0 6
-# Short-Description: Config storage area for OpenBlocks A series
+# Short-Description: Config storage area for OpenBlocks
 # Description:
 ### END INIT INFO
 #
@@ -244,6 +244,15 @@ start)
 	rwdev_fs=ext3
 	union_fs=unionfs
 
+	# execute watchdog timer daemon before DEB_CONFIG
+	case "$MODEL" in
+	obsbx1)
+		/etc/init.d/wd-keepalive start
+		;;
+	*)
+		;;
+	esac
+
 	# check init sw
 	grep -q 'noflashcfg=1' /proc/cmdline && FLG_INIT=true
 
@@ -378,11 +387,13 @@ start)
 	/etc/init.d/hostname.sh start
 
 	# S35390A INIT2 flag clear
-	obs-hwclock --check
-	if [ $? == 0 ]; then
-		obs-hwclock --clearint2
-		date -s "`obs-hwclock --hctosys`"
-		obs-hwclock --status
+	if [ "$MODEL" == "obsbx1" ]; then
+		obs-hwclock --check
+		if [ $? == 0 ]; then
+			obs-hwclock --clearint2
+			date -s "`obs-hwclock --hctosys`"
+			obs-hwclock --status
+		fi
 	fi
 ;;
 stop)

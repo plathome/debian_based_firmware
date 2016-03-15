@@ -384,11 +384,13 @@ start)
 	/etc/init.d/hostname.sh start
 
 	# S35390A INIT2 flag clear
-	obs-hwclock --check
-	if [ $? == 0 ]; then
-		obs-hwclock --clearint2
-		date -s "`obs-hwclock --hctosys`"
-		obs-hwclock --status
+	if [ "$MODEL" == "obsbx1" ]; then
+		obs-hwclock --check
+		if [ $? == 0 ]; then
+			obs-hwclock --clearint2
+			date -s "`obs-hwclock --hctosys`"
+			obs-hwclock --status
+		fi
 	fi
 ;;
 stop)
