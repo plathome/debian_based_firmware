@@ -388,11 +388,11 @@ start)
 
 	# S35390A INIT2 flag clear
 	if [ "$MODEL" == "obsbx1" ]; then
-		obs-hwclock --check
+		hwclock --check
 		if [ $? == 0 ]; then
-			obs-hwclock --clearint2
-			date -s "`obs-hwclock --hctosys`"
-			obs-hwclock --status
+			hwclock --clearint2
+			date -s "`hwclock --hctosys`"
+			hwclock --status
 		fi
 	fi
 ;;

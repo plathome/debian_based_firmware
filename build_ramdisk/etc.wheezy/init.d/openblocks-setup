@@ -109,6 +109,28 @@ extract_mtd(){
 	return 0
 }
 
+restore_func(){
+WORK_DIR=/tmp/_tmpfs.$$
+
+	mkdir -p ${WORK_DIR}
+	mount ${SAVE_DIR} ${WORK_DIR} -r
+	echo -n "Extract userland files... "
+	if (tar xpzmf ${WORK_DIR}/userland.tgz -C ${RW_DIR} > /dev/null 2>&1); then
+		echo "done."
+	else
+		echo "fail(or empty)."
+	fi
+	echo -n "Extract /etc files... "
+	if (tar xpzmf ${WORK_DIR}/etc.tgz -C ${RW_DIR} > /dev/null 2>&1); then
+		echo "done."
+	else
+		echo "fail(or empty)."
+	fi
+	umount ${WORK_DIR}
+	rm -rf ${WORK_DIR}
+	return 0
+}
+
 if_exists_execute_config_postscript(){
 	if [ -f "${CONFIG_DEV_MTPT}/${CONFIG_POSTSCRIPT}" ] ; then
 		bash ${CONFIG_DEV_MTPT}/${CONFIG_POSTSCRIPT}
@@ -293,8 +315,15 @@ start)
 		elif [ "${FLG_FORCE_CONFIG}" == "true" ] ; then
 			echo "Don't extract files in FlashROM..."
 		else
-			$extract_func ${MTD_USER_DEV}
-			$extract_func ${MTD_CONF_DEV}
+			case $MODEL in
+			obsa*|obs600)
+				$extract_func ${MTD_USER_DEV}
+				$extract_func ${MTD_CONF_DEV}
+			;;
+			obsbx1)
+				restore_func
+			;;
+			esac
 		fi
 
 	else
@@ -387,17 +416,19 @@ start)
 	if [ "$MODEL" == "obsbx1" ]; then
 		obs-hwclock --check
 		if [ $? == 0 ]; then
-			obs-hwclock --clearint2
-			date -s "`obs-hwclock --hctosys`"
-			obs-hwclock --status
+			/usr/local/sbin/hwclock --clearint2
+			date -s "`/usr/local/sbin/hwclock --hctosys`"
+			/usr/local/sbin/hwclock --status
 		fi
 	fi
 ;;
 stop)
-	if [ -f /sys/devices/system/cpu/cpu1/online ]; then
-		echo
-		echo 0 > /sys/devices/system/cpu/cpu1/online
-		echo
+	if [ "$MODEL" == "obsax3" ]; then
+		if [ -f /sys/devices/system/cpu/cpu1/online ]; then
+			echo
+			echo 0 > /sys/devices/system/cpu/cpu1/online
+			echo
+		fi
 	fi
 ;;
 esac
