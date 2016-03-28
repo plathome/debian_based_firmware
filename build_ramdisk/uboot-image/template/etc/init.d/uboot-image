@@ -37,7 +37,14 @@ else
 	FILE_MTD1="/etc/mtd1.data"
 fi
 FILE_MTD2="/etc/mtd2.data"
-SYSFS_MTDDIR=/sys/devices/virtual/mtd
+case $MODEL in
+obsax3)
+	SYSFS_MTDDIR=/sys/devices/platform/soc/d0010400.devbus-bootcs/f0000000.nor/mtd
+;;
+obsa7|obsa6)
+	SYSFS_MTDDIR=/sys/devices/virtual/mtd
+;;
+esac
 SYSFS_MTD0_FLG=$SYSFS_MTDDIR/mtd0/flags
 SYSFS_MTD1_FLG=$SYSFS_MTDDIR/mtd1/flags
 SYSFS_MTD2_FLG=$SYSFS_MTDDIR/mtd2/flags
