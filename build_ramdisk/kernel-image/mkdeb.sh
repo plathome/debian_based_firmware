@@ -25,11 +25,11 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-if [ "$#" -ne "3"  -a "$#" -ne "4" ] ; then
+if [ "$#" -ne "4" ] ; then
 	echo
 	echo "usage: $0 [VERSION] [ARCH] [MODEL] [uImage.initrd]"
 	echo
-	echo "ex) $0 1.0.0-0 armel obsax3 uImage.initrd.obsax3"
+	echo "ex) $0 1.0.0-0 armhf obsax3 uImage.initrd.obsax3"
 	echo
 	exit 1
 fi
@@ -40,7 +40,7 @@ MODEL=$3
 FIRM=$4
 FIRM_DIR=$(dirname $FIRM)
 
-pkgdir=kernel-image-${VERSION}${MODEL}
+pkgdir=kernel-image-${VERSION}-${MODEL}
 
 rm -rf  $pkgdir
 mkdir -p $pkgdir
