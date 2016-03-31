@@ -152,7 +152,7 @@ jessie)
 		COMP=lzma
 		COMP_EXT=lzma
 		UBOOT_VER=3.0.1
-		UBOOT_PL=1
+		UBOOT_PL=2
 		UBOOT_OLD_VER="1\\\.0\\\.0\|1\\\.1\\\.[1235]\|2\\\.0\\\.[347]\|3\\\.0\\\.0"
 	;;
 	obsa7)
