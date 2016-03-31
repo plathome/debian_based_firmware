@@ -27,12 +27,18 @@
 
 . `dirname $0`/config.sh
 
-case $TARGET in
-obsa*|obs600)
-	TARGET=$TARGET ./obsa_release_firmware.sh || exit 1
-	;;
-*)
-	TARGET=$TARGET ./obsiot_release_firmware.sh || exit 1
-	DIST=$DIST TARGET=$TARGET ./obsiot_firmware_image.sh || exit 1
-	;;
-esac
+
+[ "${DIST}" != "jessie" ] && exit
+[ "${TARGET}" != "obsbx1" ] && exit
+
+IMGNAME=${RELEASEDIR}/kernel-${DIST}-${KERNEL}-${PATCHLEVEL}.img
+
+dd if=/dev/zero of=${IMGNAME} seek=102400 count=0 bs=1K
+mkfs.vfat ${IMGNAME}
+mount ${IMGNAME} ${MOUNTDIR} -o loop
+cp ${RELEASEDIR}/bzImage ${MOUNTDIR}
+cp ${RELEASEDIR}/${RAMDISK_IMG}.gz ${MOUNTDIR}/initrd.gz
+echo "${KERNEL}-${PATCHLEVEL}" > ${MOUNTDIR}/openblocks-release
+sync
+umount ${MOUNTDIR}
+gzip -f ${IMGNAME}

@@ -78,7 +78,7 @@ else
 	esac
 fi
 
-${COMP} -${LZMA_LEVEL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/${RAMDISK_IMG}.${COMP_EXT}
+${COMP} -${COMP_LVL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/${RAMDISK_IMG}.${COMP_EXT}
 
 if [ "$TARGET" == "obs600" ]; then
 mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \
@@ -90,7 +90,7 @@ mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \
 		(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb.sh ${VERSION} ${ARCH} "-${TARGET}" ${RELEASEDIR}/uImage.initrd.${TARGET})
 	;;
 	*)
-		(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb.sh ${VERSION} ${ARCH} ${RELEASEDIR}/uImage.initrd.${TARGET})
+		(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb.sh ${VERSION} ${ARCH} "-${TARGET}" ${RELEASEDIR}/uImage.initrd.${TARGET})
 	;;
 	esac
 else
@@ -109,7 +109,7 @@ else
 			-d ${RELEASEDIR}/zImage:${RELEASEDIR}/${RAMDISK_IMG}.${COMP_EXT} \
 			${RELEASEDIR}/uImage.initrd.${TARGET}
 		(cd ${WRKDIR}/build_ramdisk/kernel-image; \
-			./mkdeb.sh ${VERSION} ${ARCH} ${RELEASEDIR}/uImage.initrd.${TARGET})
+			./mkdeb.sh ${VERSION} ${ARCH} "-${TARGET}" ${RELEASEDIR}/uImage.initrd.${TARGET})
 	;;
 	esac
 
@@ -131,7 +131,13 @@ if [ "${TARGET}" != "obs600" ]; then
 		;;
 	esac
 	mount -o loop,ro ${_RAMDISK_IMG} ${MOUNTDIR}
-	(cd ${MOUNTDIR}; tar cpf - lib/firmware lib/modules) | (cd ${TMP}; tar xpf -)
+	if [ -d ${MOUNTDIR}/lib/firmware ]; then
+		FIRMWARE="lib/firmware"
+	fi
+	if [ -d ${MOUNTDIR}/lib/modules ]; then
+		MODULES="lib/modules"
+	fi
+	(cd ${MOUNTDIR}; tar cpf - $FIRMWARE $MODULES) | (cd ${TMP}; tar xpf -)
 	umount ${MOUNTDIR}
 	find ${TMP}/lib/modules -name "*.ko" | xargs gzip -9f
 	(cd ${RELEASEDIR}; tar cpf ${RELEASEDIR}/${ARCHIVE}.tar ${ARCHIVE})

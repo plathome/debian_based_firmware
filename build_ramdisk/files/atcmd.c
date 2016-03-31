@@ -65,27 +65,37 @@
 #define AT_AT "at\r\n"
 #define AT_POFF "at^smso\r\n"
 #define AT_POFF_U200 "at+cpwroff\r\n"
+#define AT_POFF_UM04 "at*dpwroff\r\n"
 #define AT_PRST_U200 "at+cfun=15\r\n"
 #define AT_PRST_K "at$40=0\r\n"
+#define AT_PRST_UM04 "at*dhwrst\r\n"
 #define AT_SMONI "at^smoni\r\n"
 #define AT_SIND "at^sind?\r\n"
 #define AT_CCLK "at+cclk?\r\n"
 #define AT_CCLK_K "at$31?\r\n"
 #define AT_CCID "at+ccid\r\n"
 #define AT_CCID_K "at$19?\r\n"
+#define AT_CCID_U "at*kiccid\r\n"
 #define AT_CSQ "at+csq\r\n"
 #define AT_CSQ_K "at$30=0\r\n"
+#define AT_CSQ_U "at*dlante\r\n"
 #define AT_CTZU "at+ctzu=%s\r\n"
 #define AT_CTZU2 "at+ctzu?\r\n"
 #define AT_ATI "ati\r\n"
-#define AT_ATI_K "at+gmm\r\n"
 #define AT_CGSN "at+cgsn\r\n"
 #define AT_CGSN_K "at$10?\r\n"
+#define AT_GMI "at+gmi\r\n"
+#define AT_GMM "at+gmm\r\n"
+#define AT_GMR "at+gmr\r\n"
 
 #define EHS6 "EHS6\n"
 #define U200E "U200E\n"
 #define U200 "U200\n"
 #define KYM11 "KYM11\n"
+#define UM04 "UM04\n"
+
+#define EXIST 0
+#define NOEXIST -1
 
 static struct termios old;
 static char MODEM[32];
@@ -114,6 +124,25 @@ void usage(char *fname)
 	printf("option:\n");
 	printf("\t-d modemdevice (default is /dev/ttyACM0)\n");
 	printf("\n");
+}
+
+int chk_device()
+{
+	return 0;
+}
+
+int wait_device(int mode)
+{
+#define RETRY 30
+	int i;
+
+	for(i=0; i<RETRY; i++){
+		if(access(MODEM, F_OK) == mode){
+			return 0;
+		}
+		sleep(1);
+	}
+	return -1;
 }
 
 int set_power(char *val)
@@ -198,7 +227,6 @@ int set_power_kym11(int val)
 		return -1;
 	}
 	close(fd);
-	sleep(20);
 
 	return 0;
 }
@@ -634,7 +662,29 @@ int get_quality_k(char *buf)
 #undef HEAD
 }
 
-int get_ccid(char *buf)
+int get_quality_u(char *buf)
+{
+	char *p1;
+
+	/* check error */
+	if(strstr(buf, "ERROR")){
+		return -1;
+	}
+	if(strstr(buf, "SEARCH")){
+		return -1;
+	}
+	/* get start point */
+	if((p1 = strchr(buf, ':')) == NULL){
+		return -1;
+	}
+	p1 += 2;
+	p1[1] = 0x0;
+	printf("%s\n", p1);
+
+	return 0;
+}
+
+int get_ccid(char *buf, int offset)
 {
 #define CCIDLEN 19
 	char *p1;
@@ -647,7 +697,7 @@ int get_ccid(char *buf)
 	if((p1 = strchr(buf, ':')) == NULL){
 		return -1;
 	}
-	p1 += 2;
+	p1 += offset;
 	p1[CCIDLEN] = 0x0;
 	printf("%s\n", p1);
 	return 0;
@@ -703,17 +753,31 @@ int get_ati(char *buf)
 			}
 		}
 	}
-	else if((p1 = strstr(buf, "KYM1")) != NULL){
-		if((p2 = strchr(p1, '\n')) == NULL){
-			return -1;
-		}
-		*p2 = 0x0;
-		printf("%s\n", p1);
-		return 0;
-	}
 	printf("%s\n", buf);
 
 	return -1;
+}
+
+int get_ati_u(char *buf, char* match)
+{
+	char *p1, *p2;
+
+	/* check error */
+	if(strstr(buf, "ERROR")){
+		return -1;
+	}
+
+	if((p1 = strstr(buf, match)) == NULL){
+		return -1;
+	}
+	p1 += strlen(match);
+	if((p2 = strchr(p1, '\n')) == NULL){
+		return -1;
+	}
+	*p2 = 0x0;
+	printf("%s ", p1);
+
+	return 0;
 }
 
 int get_ctzu(char *buf)
@@ -790,7 +854,6 @@ int main(int ac, char *av[])
 	FILE *fp;
 	int fd=0;
 	int i=1, j=0;
-	int pon_flag=0;
 	char buf[BUFSZ];
 	char cmd[16];
 	int ret=0;
@@ -818,62 +881,133 @@ int main(int ac, char *av[])
 
 	while(i < ac){
 		if(strncmp(CMD_PON, av[i], sizeof(CMD_PON)) == 0){
-			if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0){
-				set_power("1");
-				sleep(20);
+			if(access(MODEM, F_OK) != 0){
+				if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0){
+					set_power("1");
+				}
+				else if(strncmp(U200, MNAME, sizeof(U200)) == 0){
+					set_power_u200(1, POWERSW);
+				}
+				else if(strncmp(U200E, MNAME, sizeof(U200E)) == 0){
+					set_power_u200(1, POWERSW_U200);
+				}
+				else if(strncmp(KYM11, MNAME, sizeof(KYM11)) == 0){
+					set_power_kym11(1);
+				}
+				else if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
+					set_power_u200(1, POWERSW_U200);
+				}
+
+				if(wait_device(EXIST)){
+					printf("%d: Can not Power ON!\n", __LINE__);
+					return -1;
+				}
+				if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
+					sleep(11);
+				}
+				else if(strncmp(U200E, MNAME, sizeof(U200E)) == 0){
+					sleep(8);
+				}
+				else if(strncmp(KYM11, MNAME, sizeof(KYM11)) == 0){
+					sleep(6);
+				}
 			}
-			else if(strncmp(U200, MNAME, sizeof(U200)) == 0){
-				set_power_u200(1, POWERSW);
-				sleep(15);
-			}
-			else if(strncmp(U200E, MNAME, sizeof(U200E)) == 0){
-				set_power_u200(1, POWERSW_U200);
-				sleep(15);
-			}
-			else if(strncmp(KYM11, MNAME, sizeof(KYM11)) == 0){
-				set_power_kym11(1);
-			}
-			pon_flag=1;
 		}
 		else if(strncmp(CMD_POFF, av[i], sizeof(CMD_POFF)) == 0){
-			if(fd == 0 && init_modem(&fd)){
-				end_modem(&fd);
-				return -1;
-			}
-			if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0){
-				set_power("0");
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_POFF, buf, 1);
-			}
-			else if(strncmp(U200, MNAME, sizeof(U200)) == 0
-					 || strncmp(U200E, MNAME, sizeof(U200E)) == 0){
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_POFF_U200, buf, 1);
-			}
-			else if(strncmp(KYM11, MNAME, sizeof(KYM11)) == 0){
+			if(strncmp(KYM11, MNAME, sizeof(KYM11)) == 0){
 				set_power_kym11(0);
 			}
+			else{
+				if(access(MODEM, F_OK) != 0){
+					printf("%d: MODEM is not exist\n", __LINE__);
+					return -1;
+				}
+				if(fd == 0 && init_modem(&fd)){
+					end_modem(&fd);
+					return -1;
+				}
+				if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0){
+					set_power("0");
+					send_atcmd(fd, AT_AT, buf, 0);
+					send_atcmd(fd, AT_POFF, buf, 1);
+				}
+#if 0
+				else if(strncmp(U200, MNAME, sizeof(U200)) == 0
+						 || strncmp(U200E, MNAME, sizeof(U200E)) == 0){
+					send_atcmd(fd, AT_AT, buf, 0);
+					send_atcmd(fd, AT_POFF_U200, buf, 1);
+				}
+#else
+				else if(strncmp(U200, MNAME, sizeof(U200)) == 0){
+					set_power_u200(0, POWERSW);
+				}
+				else if(strncmp(U200E, MNAME, sizeof(U200E)) == 0){
+					set_power_u200(0, POWERSW_U200);
+				}
+#endif
+				else if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
+					send_atcmd(fd, AT_AT, buf, 0);
+					send_atcmd(fd, AT_POFF_UM04, buf, 1);
+				}
+			}
+			if(wait_device(NOEXIST)){
+//				printf("%d: Can not Power OFF!\n", __LINE__);
+				return -1;
+			}
+			sleep(1);
 		}
 		else if(strncmp(CMD_HRST, av[i], sizeof(CMD_HRST)) == 0){
 			end_modem(&fd);
 			if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0){
-				set_reset(RESETSW);
-				sleep(20);
+				if(access(MODEM, F_OK) == 0){
+					set_reset(RESETSW);
+				}
+				else{
+					printf("%d: Can not Reset at the power off.\n", __LINE__);
+					return -1;
+				}
 			}
 			else if(strncmp(U200, MNAME, sizeof(U200)) == 0){
 				set_reset(RESETSW);
-				sleep(10);
 			}
 			else if(strncmp(U200E, MNAME, sizeof(U200E)) == 0){
 				set_reset_u200(RESETSW_U200);
-				sleep(10);
 			}
 			else if(strncmp(KYM11, MNAME, sizeof(KYM11)) == 0){
-				end_modem(&fd);
-				set_reset_kym11(RESETSW_U200);
-				sleep(10);
+				if(access(MODEM, F_OK) == 0){
+					end_modem(&fd);
+					set_reset_kym11(RESETSW_U200);
+				}
+				else{
+					printf("%d: Can not Reset at the power off.\n", __LINE__);
+					return -1;
+				}
+			}
+			else if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
+				if(access(MODEM, F_OK) == 0){
+					set_reset_u200(RESETSW_U200);
+				}
+				else{
+					printf("%d: Can not Reset at the power off.\n", __LINE__);
+					return -1;
+				}
+			}
+			if(wait_device(NOEXIST)){
+				printf("%d: Can not Hard Reset!\n", __LINE__);
+				return -1;
+			}
+			if(wait_device(EXIST)){
+				printf("%d: Can not Hard Reset!\n", __LINE__);
+				return -1;
+			}
+			if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
+				sleep(11);
+			}
+			else if(strncmp(U200E, MNAME, sizeof(U200E)) == 0){
+				sleep(8);
+			}
+			else if(strncmp(KYM11, MNAME, sizeof(KYM11)) == 0){
+				sleep(6);
 			}
 		}
 		else if(strncmp(CMD_PRST, av[i], sizeof(CMD_PRST)) == 0){
@@ -883,47 +1017,67 @@ int main(int ac, char *av[])
 			}
 			if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0){
 				set_power("1");
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_AT, buf, 1);
+				send_atcmd(fd, AT_AT, buf, 0);
 				send_atcmd(fd, AT_POFF, buf, 1);
 				end_modem(&fd);
-				sleep(25);
 			}
 			else if(strncmp(U200, MNAME, sizeof(U200)) == 0
 					|| strncmp(U200E, MNAME, sizeof(U200E)) == 0){
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_AT, buf, 1);
+				send_atcmd(fd, AT_AT, buf, 0);
 				send_atcmd(fd, AT_PRST_U200, buf, 1);
 				end_modem(&fd);
-				sleep(10);
 			}
 			else if(strncmp(KYM11, MNAME, sizeof(KYM11)) == 0){
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_AT, buf, 1);
+				send_atcmd(fd, AT_AT, buf, 0);
 				send_atcmd(fd, AT_PRST_K, buf, 1);
 				end_modem(&fd);
-				sleep(25);
+			}
+			else if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
+				send_atcmd(fd, AT_AT, buf, 0);
+				send_atcmd(fd, AT_PRST_UM04, buf, 1);
+				end_modem(&fd);
+			}
+			if(access(MODEM, F_OK) == 0){
+				if(wait_device(NOEXIST)){
+					printf("%d: Can not Soft Reset!\n", __LINE__);
+					return -1;
+				}
+			}
+			if(wait_device(EXIST)){
+				printf("%d: Can not Soft Reset!\n", __LINE__);
+				return -1;
+			}
+			if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
+				sleep(11);
+			}
+			else if(strncmp(U200E, MNAME, sizeof(U200E)) == 0){
+				sleep(8);
+			}
+			else if(strncmp(KYM11, MNAME, sizeof(KYM11)) == 0){
+				sleep(6);
 			}
 		}
 		else if(strncmp(CMD_SMONI, av[i], sizeof(CMD_SMONI)) == 0){
-			if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0){
-				if(fd == 0 && init_modem(&fd)){
-					end_modem(&fd);
-					return -1;
+			if(access(MODEM, F_OK) == 0){
+				if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0){
+					if(fd == 0 && init_modem(&fd)){
+						end_modem(&fd);
+						return -1;
+					}
+					send_atcmd(fd, AT_SMONI, buf, 1);
+					if(get_dbm(buf)){
+						return -1;
+					}
 				}
-				if(pon_flag)
-					sleep(20);
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_SMONI, buf, 3);
-				if(get_dbm(buf)){
-//					printf("%d: unknown response\n", __LINE__);
-					return -1;
+				else{
+					printf("%d: This MODEM is not support.\n", __LINE__);
+					ret = -1;
+					break;
 				}
 			}
 			else{
-				printf("%d: This MODEM is not support.\n", __LINE__);
 				ret = -1;
+				printf("%d: MODEM is not found.\n", __LINE__);
 				break;
 			}
 		}
@@ -932,25 +1086,25 @@ int main(int ac, char *av[])
 				end_modem(&fd);
 				return -1;
 			}
-			if(pon_flag)
-				sleep(18);
 			if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0
 						|| strncmp(U200E, MNAME, sizeof(U200E)) == 0
 						|| strncmp(U200, MNAME, sizeof(U200)) == 0){
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_CSQ, buf, 3);
+				send_atcmd(fd, AT_CSQ, buf, 1);
 				if(get_quality(buf)){
-//					printf("%d: unknown response\n", __LINE__);
 					return -1;
 				}
 			}
 			else if(strncmp(KYM11, MNAME, sizeof(KYM11)) == 0){
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_CSQ_K, buf, 3);
+				send_atcmd(fd, AT_AT, buf, 0);
+				send_atcmd(fd, AT_CSQ_K, buf, 1);
 				if(get_quality_k(buf)){
-//					printf("%d: unknown response\n", __LINE__);
+					return -1;
+				}
+			}
+			else if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
+				send_atcmd(fd, AT_AT, buf, 0);
+				send_atcmd(fd, AT_CSQ_U, buf, 1);
+				if(get_quality_u(buf)){
 					return -1;
 				}
 			}
@@ -963,20 +1117,22 @@ int main(int ac, char *av[])
 			if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0
 						|| strncmp(U200E, MNAME, sizeof(U200E)) == 0
 						|| strncmp(U200, MNAME, sizeof(U200)) == 0){
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_CCID, buf, 3);
-				if(get_ccid(buf)){
-//					printf("%d: unknown response\n", __LINE__);
+				send_atcmd(fd, AT_CCID, buf, 1);
+				if(get_ccid(buf, 2)){
 					return -1;
 				}
 			}
 			else if(strncmp(KYM11, MNAME, sizeof(KYM11)) == 0){
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_CCID_K, buf, 3);
+				send_atcmd(fd, AT_AT, buf, 0);
+				send_atcmd(fd, AT_CCID_K, buf, 1);
 				if(get_ccid_k(buf)){
-//					printf("%d: unknown response\n", __LINE__);
+					return -1;
+				}
+			}
+			else if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
+				send_atcmd(fd, AT_AT, buf, 0);
+				send_atcmd(fd, AT_CCID_U, buf, 1);
+				if(get_ccid(buf, 3)){
 					return -1;
 				}
 			}
@@ -989,24 +1145,49 @@ int main(int ac, char *av[])
 			if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0
 						|| strncmp(U200E, MNAME, sizeof(U200E)) == 0
 						|| strncmp(U200, MNAME, sizeof(U200)) == 0){
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_ATI, buf, 3);
+				send_atcmd(fd, AT_ATI, buf, 1);
 				if(get_ati(buf)){
-//					printf("%d: unknown response\n", __LINE__);
 					ret = -1;
 					break;
 				}
 			}
 			else if(strncmp(KYM11, MNAME, sizeof(KYM11)) == 0){
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_ATI_K, buf, 3);
-				if(get_ati(buf)){
-//					printf("%d: unknown response\n", __LINE__);
+				send_atcmd(fd, AT_AT, buf, 0);
+				send_atcmd(fd, AT_GMI, buf, 0);
+				if(get_ati_u(buf, ": ")){
 					ret = -1;
 					break;
 				}
+				send_atcmd(fd, AT_GMM, buf, 0);
+				if(get_ati_u(buf, ": ")){
+					ret = -1;
+					break;
+				}
+				send_atcmd(fd, AT_GMR, buf, 0);
+				if(get_ati_u(buf, ": ")){
+					ret = -1;
+					break;
+				}
+				puts("");
+			}
+			else if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
+				send_atcmd(fd, AT_AT, buf, 0);
+				send_atcmd(fd, AT_GMI, buf, 1);
+				if(get_ati_u(buf, "\n\n\n")){
+					ret = -1;
+					break;
+				}
+				send_atcmd(fd, AT_GMM, buf, 1);
+				if(get_ati_u(buf, "\n\n\n")){
+					ret = -1;
+					break;
+				}
+				send_atcmd(fd, AT_GMR, buf, 1);
+				if(get_ati_u(buf, "\n\n\n")){
+					ret = -1;
+					break;
+				}
+				puts("");
 			}
 		}
 		else if(strncmp(CMD_CTZU, av[i], sizeof(CMD_CTZU)) == 0){
@@ -1014,14 +1195,11 @@ int main(int ac, char *av[])
 				end_modem(&fd);
 				return -1;
 			}
-			if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0
-						|| strncmp(U200E, MNAME, sizeof(U200E)) == 0
+			if(strncmp(U200E, MNAME, sizeof(U200E)) == 0
 						|| strncmp(U200, MNAME, sizeof(U200)) == 0){
-				send_atcmd(fd, AT_AT, buf, 1);
 				if(av[i+1] == NULL || (av[i+1] != NULL && av[i+1][0] != '0' && av[i+1][0] != '1')){
-					send_atcmd(fd, AT_CTZU2, buf, 3);
+					send_atcmd(fd, AT_CTZU2, buf, 1);
 					if(get_ctzu(buf)){
-//						printf("%d: unknown response\n", __LINE__);
 						ret = -1;
 						break;
 					}
@@ -1032,7 +1210,6 @@ int main(int ac, char *av[])
 					sprintf(cmd, AT_CTZU, av[i]);
 					send_atcmd(fd, cmd, buf, 1);
 					if(get_ctzu(buf)){
-//						printf("%d: unknown response\n", __LINE__);
 						ret = -1;
 						break;
 					}
@@ -1050,12 +1227,8 @@ int main(int ac, char *av[])
 					end_modem(&fd);
 					return -1;
 				}
-				if(pon_flag)
-					sleep(18);
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_AT, buf, 1);
-				for(j=0; j<6; j++){
-					send_atcmd(fd, AT_SIND, buf, 3);
+				for(j=0; j<60; j++){
+					send_atcmd(fd, AT_SIND, buf, 1);
 					if(!get_time(buf)){
 						break;
 					}
@@ -1076,15 +1249,11 @@ int main(int ac, char *av[])
 				end_modem(&fd);
 				return -1;
 			}
-			if(pon_flag)
-				sleep(10);
-			if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0
-						|| strncmp(U200E, MNAME, sizeof(U200E)) == 0
-						|| strncmp(U200, MNAME, sizeof(U200)) == 0){
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_AT, buf, 1);
+			if(strncmp(U200E, MNAME, sizeof(U200E)) == 0
+						|| strncmp(U200, MNAME, sizeof(U200)) == 0
+						|| strncmp(UM04, MNAME, sizeof(UM04)) == 0){
 				for(j=0; j<6; j++){
-					send_atcmd(fd, AT_CCLK, buf, 3);
+					send_atcmd(fd, AT_CCLK, buf, 1);
 					if(!get_cclk(buf)){
 						break;
 					}
@@ -1095,12 +1264,17 @@ int main(int ac, char *av[])
 				}
 			}
 			else if(strncmp(KYM11, MNAME, sizeof(KYM11)) == 0){
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_CCLK_K, buf, 3);
+				send_atcmd(fd, AT_AT, buf, 0);
+				send_atcmd(fd, AT_CCLK_K, buf, 1);
 				if(!get_cclk_k(buf)){
 					ret = -1;
 					break;
 				}
+			}
+			else{
+				printf("%d: This MODEM is not support.\n", __LINE__);
+				ret = -1;
+				break;
 			}
 		}
 		else if(strncmp(CMD_CGSN, av[i], sizeof(CMD_CGSN)) == 0){
@@ -1110,22 +1284,18 @@ int main(int ac, char *av[])
 			}
 			if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0
 						|| strncmp(U200E, MNAME, sizeof(U200E)) == 0
-						|| strncmp(U200, MNAME, sizeof(U200)) == 0){
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_CGSN, buf, 3);
+						|| strncmp(U200, MNAME, sizeof(U200)) == 0
+						|| strncmp(UM04, MNAME, sizeof(UM04)) == 0){
+				send_atcmd(fd, AT_CGSN, buf, 1);
 				if(get_cgsn(buf)){
-//					printf("%d: unknown response\n", __LINE__);
 					ret = -1;
 					break;
 				}
 			}
 			else if(strncmp(KYM11, MNAME, sizeof(KYM11)) == 0){
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_AT, buf, 1);
-				send_atcmd(fd, AT_CGSN_K, buf, 3);
+				send_atcmd(fd, AT_AT, buf, 0);
+				send_atcmd(fd, AT_CGSN_K, buf, 1);
 				if(get_cgsn_k(buf)){
-//					printf("%d: unknown response\n", __LINE__);
 					ret = -1;
 					break;
 				}

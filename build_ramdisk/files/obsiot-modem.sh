@@ -29,10 +29,10 @@ case "$id2$id1$id0" in
 	echo "none"
 	exit 0
 	;;
-#010)			# EX1 L200
-#	echo "L200"
-#	exit 2
-#	;;
+010)			# EX1 UM04-KO
+	echo "UM04"
+	exit 2
+	;;
 100)			# EX1 KYM11/12
 	echo "KYM11"
 	exit 4

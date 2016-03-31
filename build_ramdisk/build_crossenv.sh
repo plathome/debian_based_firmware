@@ -35,7 +35,7 @@ if [ $? == 1 ]; then
 	wget -q -O - http://emdebian.org/tools/debian/emdebian-toolchain-archive.key | apt-key add -
 fi
 
-packages="build-essential u-boot-tools libncurses5-dev debootstrap qemu-user-static bc gcc-multilib lzma"
+packages="build-essential u-boot-tools libncurses5-dev debootstrap qemu-user-static bc gcc-multilib lzma dosfstools"
 
 cat <<_EOF >/etc/apt/sources.list.d/emdebian.list 
 deb http://www.emdebian.org/tools/debian jessie main

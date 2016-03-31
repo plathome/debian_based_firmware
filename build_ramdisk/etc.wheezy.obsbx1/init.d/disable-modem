@@ -54,12 +54,28 @@ SCRIPTNAME=/etc/init.d/$NAME
 
 VERBOSE=yes
 
+RESET_BX="/sys/class/gpio/gpio15/value"
+RESET_EX="/sys/class/gpio/gpio202/value"
+
 case "$1" in
   start)
 	;;
   stop)
-		if [ -e /dev/ttyACM3 -a -x /usr/sbin/atcmd ]; then
-			/usr/sbin/atcmd POFF
+		if [ -e /dev/ttyACM0 ]; then
+			case `/usr/sbin/obsiot-modem.sh` in
+			EHS6|U200)
+				echo 1 > $RESET_BX
+				sleep 2
+				echo 0 > $RESET_BX
+			;;
+			U200E|KYM11|UM04)
+				echo 0 > $RESET_EX
+				sleep 3
+				echo 1 > $RESET_EX
+			;;
+			*)
+			;;
+			esac
 		fi
 	;;
   *)

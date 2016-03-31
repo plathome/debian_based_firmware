@@ -95,6 +95,7 @@ set_time_u200(){
 
 	echo -n "nitz: check SIM card : "
 	# check SIM card
+	sleep 2
 	val=`$ATCMD CCID`
 	if [ $? == 255 ]; then
 		echo "fail"
@@ -127,21 +128,17 @@ case "$1" in
   start)
 	MODEM=`/usr/sbin/obsiot-modem.sh`
 	case $MODEM in
-	U200E)
+	U200E|UM04)
 		echo 200 > $GPIOPATH/export	# 3G modem power
-		echo out > $GPIOPATH/gpio200/direction
-		echo 1 > $GPIOPATH/gpio200/value
+		echo high > $GPIOPATH/gpio200/direction
 		echo 202 > $GPIOPATH/export	# 3G reset
-		echo out > $GPIOPATH/gpio202/direction
-		echo 1 > $GPIOPATH/gpio202/value
+		echo high > $GPIOPATH/gpio202/direction
 		;;
 	KYM11)
 		echo 202 > $GPIOPATH/export	# 3G reset
-		echo out > $GPIOPATH/gpio202/direction
-		echo 1 > $GPIOPATH/gpio202/value
+		echo high > $GPIOPATH/gpio202/direction
 		echo 200 > $GPIOPATH/export	# 3G modem power
-		echo out > $GPIOPATH/gpio200/direction
-		echo 0 > $GPIOPATH/gpio200/value
+		echo low > $GPIOPATH/gpio200/direction
 		if [ ! -e /dev/ttyACM0 ]; then
 			echo 1 > $GPIOPATH/gpio200/value
 			sleep 2
@@ -151,19 +148,15 @@ case "$1" in
 		;;
 	EHS6)
 		echo 165 > $GPIOPATH/export	# 3G modem power
-		echo out > $GPIOPATH/gpio165/direction
-		echo 0 > $GPIOPATH/gpio165/value
+		echo low > $GPIOPATH/gpio165/direction
 		echo 15 > $GPIOPATH/export	# 3G reset
-		echo out > $GPIOPATH/gpio15/direction
-		echo 0 > $GPIOPATH/gpio15/value
+		echo low > $GPIOPATH/gpio15/direction
 		;;
 	U200)
 		echo 165 > $GPIOPATH/export	# 3G modem power
-		echo out > $GPIOPATH/gpio165/direction
-		echo 1 > $GPIOPATH/gpio165/value
+		echo high > $GPIOPATH/gpio165/direction
 		echo 15 > $GPIOPATH/export	# 3G reset
-		echo out > $GPIOPATH/gpio15/direction
-		echo 0 > $GPIOPATH/gpio15/value
+		echo low > $GPIOPATH/gpio15/direction
 		;;
 	*)
 		;;

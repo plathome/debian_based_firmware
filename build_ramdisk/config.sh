@@ -39,7 +39,7 @@ ENA_BX1PM=false
 KERNEL=3.12.35
 ISOFILE=debian-7.8.0-amd64-DVD-1.iso
 ARCH=amd64
-COMPLVL=9
+COMP_LVL=3
 COMP=gzip
 COMPEXT=gz
 DEFCONFIG=${TARGET}_defconfig
@@ -67,7 +67,7 @@ wheezy)
 		KERNEL=3.10.17
 		ARCH=i386
 		ISOFILE=debian-7.8.0-i386-DVD-1.iso
-		PATCHLEVEL=15
+		PATCHLEVEL=16
 		RAMDISK_SIZE=200
 		ENA_AUDIO=false
 #		ENA_BX1PM=true
@@ -78,7 +78,7 @@ wheezy)
 		RAMDISK_SIZE=160
 		PATCHLEVEL=5
 		ARCH=armhf
-		COMPLVL=3
+		COMP_LVL=3
 		COMP=lzma
 		COMP_EXT=lzma
 		UBOOT_VER=3.0.0
@@ -91,7 +91,7 @@ wheezy)
 		RAMDISK_SIZE=144
 		PATCHLEVEL=3
 		ARCH=armel
-		LZMA_LEVEL=9
+		COMP_LVL=9
 		COMP=lzma
 		COMP_EXT=lzma
 		UBOOT_VER=1.2.6
@@ -104,7 +104,7 @@ wheezy)
 		RAMDISK_SIZE=144
 		PATCHLEVEL=3
 		ARCH=armel
-		LZMA_LEVEL=9
+		COMP_LVL=9
 		COMP=gzip
 		COMP_EXT=gz
 		UBOOT_VER=1.2.13
@@ -119,7 +119,7 @@ wheezy)
 		RAMDISK_SIZE=160
 		PATCHLEVEL=0
 		ARCH=powerpc
-		LZMA_LEVEL=9
+		COMP_LVL=9
 		COMP=gzip
 		COMP_EXT=gz
 	;;
@@ -139,7 +139,7 @@ jessie)
 		KERNEL=3.10.17
 		ARCH=i386
 		ISOFILE=debian-8.3.0-i386-DVD-1.iso
-		PATCHLEVEL=beta1
+		PATCHLEVEL=0
 		RAMDISK_SIZE=250
 	;;
 	obsax3)
@@ -148,7 +148,7 @@ jessie)
 		RAMDISK_SIZE=180
 		PATCHLEVEL=0
 		ARCH=armhf
-		LZMA_LEVEL=9
+		COMP_LVL=9
 		COMP=lzma
 		COMP_EXT=lzma
 		UBOOT_VER=3.0.1
@@ -161,7 +161,7 @@ jessie)
 		RAMDISK_SIZE=180
 		PATCHLEVEL=0
 		ARCH=armel
-		LZMA_LEVEL=9
+		COMP_LVL=9
 		COMP=gzip
 		COMP_EXT=gz
 		UBOOT_VER=1.2.13
@@ -174,7 +174,7 @@ jessie)
 		RAMDISK_SIZE=180
 		PATCHLEVEL=0
 		ARCH=armel
-		LZMA_LEVEL=9
+		COMP_LVL=9
 		COMP=lzma
 		COMP_EXT=lzma
 		UBOOT_VER=1.2.6
@@ -188,7 +188,7 @@ jessie)
 		RAMDISK_SIZE=210
 		PATCHLEVEL=0
 		ARCH=powerpc
-		LZMA_LEVEL=9
+		COMP_LVL=9
 		COMP=gzip
 		COMP_EXT=gz
 		UBOOT_VER=1.2.13
