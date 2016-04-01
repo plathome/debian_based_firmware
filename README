@@ -17,6 +17,8 @@ OS(DebianGNU/Linux)によって異なります。対応しているファーム�
 
 機種 | Debian | TARGET | DIST    | ARCH
 =====|========|========|=========|========
+AX3  | 8      | obsax3 | jessie  | armhf
+-----+--------+--------+---------+---------
 AX3  | 7      | obsax3 | wheezy  | armhf
 -----+--------+--------+---------+---------
 A7   | 7      | obsa7  | wheezy  | armel
@@ -25,17 +27,12 @@ A6   | 7      | obsa6  | wheezy  | armel
 -----+--------+--------+---------+---------
 600  | 7      | obs600 | wheezy  | powerpc
 -----+--------+--------+---------+---------
-BX?  | 7      | obsbx1 | wheezy  | i386
------+--------+--------+---------+---------
-EX1  | 7      | obsbx1 | wheezy  | i386
-
+EX1<br>BX3<br>BX1<br>BX0  | 7      | obsbx1 | wheezy  | i386
 
 ファームウェアを作成するホストのOSはDebian GNU/Linux 8/amd64です。
 
 項目TARGETとDISTは、ファームウェアを作成するときに実行するシェルスク
 リプトに指定する文字列です。後節で参照します。
-
-BX?は、BX0，BX1，BX3を表します。
 
 3. 準備
 
@@ -79,16 +76,19 @@ PATCHLEVELからカーネルソースのFTPサイトに置いてある場所が�
 以下は場所の例です。
 
 TARGET=obsax3, DIST=wheezy, KERNEL=3.2.40, PATCHLEVEL=4の場合
-ftp://ftp.plathome.co.jp/pub/OBSAX3/wheezy/3.2.40-4/linux-3.2.40-20140220.tar.gz
+http://ftp.plathome.co.jp/pub/OBSAX3/wheezy/3.2.40-4/linux-3.2.40-20140220.tar.gz
 
 TARGET=obsa7, DIST=wheezy, KERNEL=3.2.40, PATCHLEVEL=4の場合
-ftp://ftp.plathome.co.jp/pub/OBSA7/wheezy/3.2.40-4/linux-3.2.40-20140220.tar.gz
+http://ftp.plathome.co.jp/pub/OBSA7/wheezy/3.2.40-4/linux-3.2.40-20140220.tar.gz
 
 TARGET=obsa6, DIST=wheezy, KERNEL=3.2.40, PATCHLEVEL=3の場合
-ftp://ftp.plathome.co.jp/pub/OBSA6/wheezy/3.2.40-3/linux-3.2.40-20140220.tar.gz
+http://ftp.plathome.co.jp/pub/OBSA6/wheezy/3.2.40-3/linux-3.2.40-20140220.tar.gz
 
 TARGET=obs600, DIST=wheezy, KERNEL=3.10.25, PATCHLEVEL=0の場合
-ftp://ftp.plathome.co.jp/pub/OBS600/debian/files/wheezy/3.10.25-0/linux-3.10.25-obs600.tar.gz
+http://ftp.plathome.co.jp/pub/OBS600/debian/files/wheezy/3.10.25-0/linux-3.10.25-obs600.tar.gz
+
+TARGET=obsbx1, DIST=wheezy, KERNEL=3.10.17, PATCHLEVEL=15の場合
+http://ftp.plathome.co.jp/pub/BX1/wheezy/3.10.17-15/linux-3.10.17-20160309.tar.xz
 
 3.4.2. 展開
 
@@ -120,7 +120,7 @@ TARGET=obsbx1の場合
 debian-7.8.0-i386-DVD-1.iso
 
 これらのファイルは 
-ftp://ftp.plathome.co.jp/pub/cdimages/debian/
+http://ftp.plathome.co.jp/pub/cdimages/debian/
 からも取得できます。
 
 4. 作成
@@ -275,7 +275,7 @@ TARGETは、ご自身の文字列に置き換えてください。
 
 を実行してください。
 
-ramdiskモードの場合はflashcfgコマンドを実行することをお勧めします。
+RAMディスクモードの場合はflashcfgコマンドを実行することをお勧めします。
 ファームウェアのバージョンとDebianパッケージのリポジトリ内のバージョンが
 合わなくなる場合があります。（合わなくても動作に影響はありません。）
 
