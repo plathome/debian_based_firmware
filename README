@@ -15,14 +15,23 @@ OpenBlocksのファームウェアは、機種(Aファミリ, IoTファミリ, 6
 OS(DebianGNU/Linux)によって異なります。対応しているファームウェアは
 下の表をご覧ください。
 
-|機種|Debian|TARGET|DIST|ARCH|
-||||||
-|AX3|8|obsax3|jessie|armhf|
-|AX3|7|obsax3|wheezy|armhf|
-|A7|7|obsa7|wheezy|armel|
-|A6|7|obsa6|wheezy|armel|
-|600|7|obs600| wheezy  | powerpc|
-|EX1<br>BX3<br>BX1<br>BX0|7|obsbx1|wheezy|i386|
+機種 | Debian | TARGET | DIST   | ARCH
+=====|========|========|========|========
+AX3  | 8      | obsax3 | jessie | armhf
+-----+--------+--------+--------+--------
+AX3  | 7      | obsax3 | wheezy | armhf
+-----+--------+--------+--------+--------
+A7   | 7      | obsa7  | wheezy | armel
+-----+--------+--------+--------+--------
+A6   | 7      | obsa6  | wheezy | armel
+-----+--------+--------+--------+--------
+600  | 7      | obs600 | wheezy | powerpc
+-----+--------+--------+--------+--------
+BXn  | 7      | obsbx1 | wheezy | i386
+-----+--------+--------+--------+--------
+EX1  | 7      | obsbx1 | wheezy | i386
+
+BXn: BX0, BX1, BX3
 
 ファームウェアを作成するホストのOSはDebian GNU/Linux 8/amd64です。
 
