@@ -21,6 +21,8 @@ AX3  | 8      | obsax3 | jessie | armhf
 -----+--------+--------+--------+--------
 AX3  | 7      | obsax3 | wheezy | armhf
 -----+--------+--------+--------+--------
+A7   | 8      | obsa7  | jessie | armel
+-----+--------+--------+--------+--------
 A7   | 7      | obsa7  | wheezy | armel
 -----+--------+--------+--------+--------
 A6   | 7      | obsa6  | wheezy | armel
@@ -269,9 +271,9 @@ DIST=wheezy, TARGET=obsax3の場合、
 
 6. ファームウェアの更新
 
-ファームウェアパッケージkernel-image-KERNEL-PATCHLEVEL-TARGET.debをOpenBlocksに
-ネットワーク経由もしくはUSBメモリでコピーしてください。KERNEL，PATCHLEVELと
-TARGETは、ご自身の文字列に置き換えてください。
+ファームウェアパッケージkernel-image-KERNEL-PATCHLEVEL-TARGET.debを
+OpenBlocksにネットワーク経由もしくはUSBメモリでコピーしてください。
+KERNEL，PATCHLEVELとTARGETは、ご自身の文字列に置き換えてください。
 
 次のコマンド
 
@@ -280,8 +282,8 @@ TARGETは、ご自身の文字列に置き換えてください。
 を実行してください。
 
 RAMディスクモードの場合はflashcfgコマンドを実行することをお勧めします。
-ファームウェアのバージョンとDebianパッケージのリポジトリ内のバージョンが
-合わなくなる場合があります。（合わなくても動作に影響はありません。）
+ファームウェアのバージョンとパッケージに関する情報内のバージョンが合
+わなくなる場合があります。（合わなくても動作に影響はありません。）
 
   # flashcfg -S
 
