@@ -10,7 +10,7 @@ Copyright (c) 2013-2016 Plat'Home CO., LTD.
 
 # 2. 対応ファームウェア
 
-OpenBlocksのファームウェアは、機種(Aファミリ, IoTファミリ, 600)とOS(DebianGNU/Linux)によって異なります。対応しているファームウェアは下の表をご覧ください。
+OpenBlocksのファームウェアは、機種(Aファミリ, IoTファミリ, 600)とOS(Debian GNU/Linux)によって異なります。対応しているファームウェアは下の表をご覧ください。
 
 機種|Debian|TARGET|DIST|ARCH
 ---|---|---|---|---
