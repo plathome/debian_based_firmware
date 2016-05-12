@@ -70,11 +70,11 @@ if [ "$TARGET" == "obs600" ]; then
 elif [ "$TARGET" == "obsbx1" ]; then
 	if [ "$DIST" == "wheezy" ]; then
 		INCLUDE="openssh-server,strace,acpi-support-base"
-		INCLUDE="$INCLUDE,wpasupplicant,python-gobject,ppp,wireless-tools,libnl1,ethtool,busybox,bluez,iw"
+		INCLUDE="$INCLUDE,wpasupplicant,python-gobject,ppp,wireless-tools,libnl1,ethtool,busybox,bluez,iw,libasound2"
 		EXCLUDE="nano"
 	else
 		INCLUDE="openssh-server,strace,acpi-support-base"
-		INCLUDE="$INCLUDE,wpasupplicant,ppp,wireless-tools,ethtool,busybox,bluez,iw,sysvinit,sysvinit-utils"
+		INCLUDE="$INCLUDE,wpasupplicant,ppp,wireless-tools,ethtool,busybox,bluez,iw,sysvinit,sysvinit-utils,dosfstools,libasound2"
 		EXCLUDE="nano"
 	fi
 elif [ "$DIST" == "jessie" ]; then

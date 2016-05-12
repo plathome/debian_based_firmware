@@ -34,6 +34,10 @@
 #include <linux/i2c-dev.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
+#include <limits.h>
+#include <time.h>
+#include <sys/time.h>
+#include <locale.h>
 #include <errno.h>
 
 # define CORRECT_VALUE	0x9a
@@ -163,35 +167,81 @@ int chk_init(void)
 	return 0;
 }
 
-int do_systohc(char *str)
+char* do_rawtime(void)
 {
+	static char buf[32];
+
+	struct tm rtc, *tm;
+	time_t sec;
 	int fd;
 	int i;
-	unsigned char c[7], d[7];
-	char time[3], *endp;
+	unsigned char c[7];
 
-	/* year */
-	time[0] = str[0]; time[1] = str[1]; time[2] = 0;
-	c[0] = (unsigned char)strtol(time, &endp, 10);
-	/* month */
-	time[0] = str[2]; time[1] = str[3]; time[2] = 0;
-	c[1] = (unsigned char)strtol(time, &endp, 10);
-	/* day */
-	time[0] = str[4]; time[1] = str[5]; time[2] = 0;
-	c[2] = (unsigned char)strtol(time, &endp, 10);
-	/* weekday */
-	time[0] = str[6]; time[1] = 0;
-	c[3] = (unsigned char)strtol(time, &endp, 10);
-	/* hour */
-	time[0] = str[7]; time[1] = str[8]; time[2] = 0;
-	c[4] = (unsigned char)strtol(time, &endp, 10);
-	/* minute */
-	time[0] = str[9]; time[1] = str[10]; time[2] = 0;
-	c[5] = (unsigned char)strtol(time, &endp, 10);
-	/* second */
-	time[0] = str[11]; time[1] = str[12]; time[2] = 0;
-	/* +1 = correct second */
-	c[6] = (unsigned char)strtol(time, &endp, 10) + 1;
+	if((fd = open(I2C_DEV, O_RDWR)) == -1){
+		printf("%d: %s\n", __LINE__, strerror(errno));
+		return NULL;
+	}
+
+	if(ioctl(fd, I2C_SLAVE, DATE) == -1){
+		printf("%d: %s\n", __LINE__, strerror(errno));
+		return NULL;
+	}
+	if(read(fd, c, 7) == -1){
+		printf("%d: %s\n", __LINE__, strerror(errno));
+		return NULL;
+	}
+	close(fd);
+
+	for(i=0; i<7; i++){
+		if(i==4)
+			c[i] &= 0xfc;
+		c[i] = reverse_8bit(c[i]);
+		c[i] = (c[i] & 0x0f) + ((c[i]>>4) & 0x0f) * 10;
+	}
+	rtc.tm_year = c[0] + 100;
+	rtc.tm_mon = c[1] - 1;
+	rtc.tm_mday = c[2];
+	rtc.tm_wday = c[3];
+	rtc.tm_hour = c[4];
+	rtc.tm_min = c[5];
+	rtc.tm_sec = c[6];
+
+	if((sec = mktime(&rtc)) == -1){
+		printf("%d: %s\n", __LINE__, strerror(errno));
+		return NULL;
+	}
+	tm = localtime(&sec);
+	sprintf(buf, "%04d/%02d/%02d %02d:%02d:%02d\n",
+		tm->tm_year+1900, tm->tm_mon + 1, tm->tm_mday, tm->tm_hour,
+		tm->tm_min, tm->tm_sec);
+
+	return buf;
+}
+
+
+int do_systohc(char *str)
+{
+	struct tm *tm;
+	time_t sec;
+	unsigned char c[7], d[7];
+	int i;
+	int fd;
+
+	sec = strtol(str, NULL, 10);
+	if(!sec || sec == LONG_MAX || sec == LONG_MIN){
+		printf("%d: %s(%s)\n", __LINE__, strerror(errno), str);
+		return -1;
+	}
+
+	sec += timezone;
+	tm = gmtime(&sec);
+	c[0] = (tm->tm_year - 100);
+	c[1] = tm->tm_mon + 1;
+	c[2] = tm->tm_mday;
+	c[3] = tm->tm_wday;
+	c[4] = tm->tm_hour;
+	c[5] = tm->tm_min;
+	c[6] = tm->tm_sec + 1;
 	memcpy(d, c, sizeof(d));
 
 	for(i=0; i<7; i++){
@@ -236,6 +286,8 @@ int do_systohc(char *str)
 
 int do_hctosys(void)
 {
+	struct tm rtc, *tm;
+	time_t sec;
 	int fd;
 	int i;
 	unsigned char c[7];
@@ -261,10 +313,23 @@ int do_hctosys(void)
 		c[i] = reverse_8bit(c[i]);
 		c[i] = (c[i] & 0x0f) + ((c[i]>>4) & 0x0f) * 10;
 	}
+	rtc.tm_year = c[0] + 100;
+	rtc.tm_mon = c[1] - 1;
+	rtc.tm_mday = c[2];
+	rtc.tm_wday = c[3];
+	rtc.tm_hour = c[4];
+	rtc.tm_min = c[5];
+	rtc.tm_sec = c[6];
 
-	printf("20%02d/%02d/%02d %02d:%02d:%02d\n",
-								c[0], c[1], c[2], c[4], c[5], c[6]);
-//	printf("%02d%02d%02d%02d20%02d.%02d\n", c[1], c[2], c[4], c[5], c[0], c[6]);
+	if((sec = mktime(&rtc)) == -1){
+		printf("%d: %s\n", __LINE__, strerror(errno));
+	}
+	sec -= timezone;
+	tm = localtime(&sec);
+	printf("%04d/%02d/%02d %02d:%02d:%02d\n",
+		tm->tm_year+1900, tm->tm_mon + 1, tm->tm_mday, tm->tm_hour,
+		tm->tm_min, tm->tm_sec);
+
 	return 0;
 }
 
@@ -470,6 +535,7 @@ int do_status(void)
 	printf("status1 = %x\n", c[0]);
 	printf("status2 = %x\n", c[1]);
 	printf("correct = %x\n", c[2]);
+	printf("raw time = %s\n", do_rawtime());
 
 	return 0;
 }

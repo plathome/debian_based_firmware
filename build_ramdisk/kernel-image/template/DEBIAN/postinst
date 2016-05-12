@@ -22,7 +22,7 @@ configure)
 	elif [ -e /etc/bzImage ] ; then
 		if /bin/bash /etc/flashcfg.sh -y -f /etc; then
 			rm -f /etc/bzImage
-			rm -f /etc/ramdisk*.img.gz
+			rm -f /etc/ramdisk*.img.gz /etc/initrd.gz
 			rm -f /etc/flashcfg.sh
 			rm -f /etc/MD5.*
 			if [ -d /etc/grub.cfg ]; then

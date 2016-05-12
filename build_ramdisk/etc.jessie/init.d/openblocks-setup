@@ -109,6 +109,28 @@ extract_mtd(){
 	return 0
 }
 
+restore_func(){
+WORK_DIR=/tmp/_tmpfs.$$
+
+	mkdir -p ${WORK_DIR}
+	mount ${SAVE_DIR} ${WORK_DIR} -r
+	echo -n "Extract userland files... "
+	if (tar xpzmf ${WORK_DIR}/userland.tgz -C ${RW_DIR} > /dev/null 2>&1); then
+		echo "done."
+	else
+		echo "fail(or empty)."
+	fi
+	echo -n "Extract /etc files... "
+	if (tar xpzmf ${WORK_DIR}/etc.tgz -C ${RW_DIR} > /dev/null 2>&1); then
+		echo "done."
+	else
+		echo "fail(or empty)."
+	fi
+	umount ${WORK_DIR}
+	rm -rf ${WORK_DIR}
+	return 0
+}
+
 if_exists_execute_config_postscript(){
 	if [ -f "${CONFIG_DEV_MTPT}/${CONFIG_POSTSCRIPT}" ] ; then
 		bash ${CONFIG_DEV_MTPT}/${CONFIG_POSTSCRIPT}
@@ -296,8 +318,15 @@ start)
 		elif [ "${FLG_FORCE_CONFIG}" == "true" ] ; then
 			echo "Don't extract files in FlashROM..."
 		else
-			$extract_func ${MTD_USER_DEV}
-			$extract_func ${MTD_CONF_DEV}
+			case $MODEL in
+			obsa*|obs600)
+				$extract_func ${MTD_USER_DEV}
+				$extract_func ${MTD_CONF_DEV}
+			;;
+			obsbx1)
+				restore_func
+			;;
+			esac
 		fi
 
 	else
@@ -342,11 +371,15 @@ start)
 	# mount filesystems
 	for dir in ${UNIONFS_DIRS} ; do
 		mawk '$1 !~ /^#/ {print $2}' < /etc/fstab | grep -q "^/$dir" && continue
-		[ "$union_fs" == "aufs" ] && xino_opt="xino=/.aufs.xino.$dir,"
+		[ "$union_fs" == "aufs" ] && xino_opt="xino=/.aufs.xino.$dir,trunc_xino,"
 		mkdir -p ${RW_DIR}/$dir
 		mount -n -t ${union_fs} \
 			-o ${xino_opt}dirs=${RW_DIR}/$dir=rw:/$dir=ro ${union_fs} /$dir
 	done
+
+	# reboot udev
+	/etc/init.d/udev/ stop
+	/etc/init.d/udev/ start
 
 	# extract Oracle Java
 	# /usr/lib/jre directory and /etc/profile.d/java.(sh|csh) file.
@@ -388,19 +421,21 @@ start)
 
 	# S35390A INIT2 flag clear
 	if [ "$MODEL" == "obsbx1" ]; then
-		hwclock --check
+		obs-hwclock --check
 		if [ $? == 0 ]; then
-			hwclock --clearint2
-			date -s "`hwclock --hctosys`"
-			hwclock --status
+			/usr/local/sbin/hwclock --clearint2
+			date -s "`/usr/local/sbin/hwclock --hctosys`"
+			/usr/local/sbin/hwclock --status
 		fi
 	fi
 ;;
 stop)
-	if [ -f /sys/devices/system/cpu/cpu1/online ]; then
-		echo
-		echo 0 > /sys/devices/system/cpu/cpu1/online
-		echo
+	if [ "$MODEL" == "obsax3" ]; then
+		if [ -f /sys/devices/system/cpu/cpu1/online ]; then
+			echo
+			echo 0 > /sys/devices/system/cpu/cpu1/online
+			echo
+		fi
 	fi
 ;;
 esac

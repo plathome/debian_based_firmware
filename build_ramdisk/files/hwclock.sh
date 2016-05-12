@@ -60,7 +60,7 @@ do_obs_hwclock()
 		obs-hwclock $@
 	;;
 	--systohc|--rtc*)
-		obs-hwclock --systohc `date +'%y%m%d%w%H%M%S'`
+		obs-hwclock --systohc `date +'%s'`
 	;;
 	--hctosys)
 		date -s "`obs-hwclock --hctosys`"

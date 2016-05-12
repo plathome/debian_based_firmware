@@ -33,6 +33,5 @@ obsa*|obs600)
 	;;
 *)
 	TARGET=$TARGET ./obsiot_release_firmware.sh || exit 1
-	DIST=$DIST TARGET=$TARGET ./obsiot_firmware_image.sh || exit 1
 	;;
 esac

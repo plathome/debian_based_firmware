@@ -35,6 +35,7 @@
 #include <fcntl.h>
 #include <string.h>
 #include <termios.h>
+#include <time.h>
 #include <unistd.h>
 #include <errno.h>
 
@@ -126,21 +127,30 @@ void usage(char *fname)
 	printf("\n");
 }
 
-int chk_device()
-{
-	return 0;
-}
-
 int wait_device(int mode)
 {
-#define RETRY 30
+#define RETRY 200		// 20 sec
+	struct timespec req, rem;
+	struct stat sta;
 	int i;
 
 	for(i=0; i<RETRY; i++){
-		if(access(MODEM, F_OK) == mode){
+		if(stat(MODEM, &sta) == mode){
 			return 0;
 		}
-		sleep(1);
+		req.tv_sec = 0;
+		req.tv_nsec = 1 * 1000 * 1000 * 100;	// 100 ms
+		while(1){
+			if(nanosleep(&req, &rem) == -1){
+				if(errno == EINTR){
+					req.tv_nsec = rem.tv_nsec;
+					continue;
+				}
+				printf("%d: %s\n", __LINE__, strerror(errno));
+				return -1;
+			}
+			break;
+		}
 	}
 	return -1;
 }
@@ -280,6 +290,7 @@ int set_reset_u200(char *gpio_pin)
 int set_reset_kym11(char *gpio_reset)
 {
 	int fd;
+	struct timespec req, rem;
 
 	if((fd = open(gpio_reset, O_RDWR)) == -1){
 		printf("%d: %s\n", __LINE__, strerror(errno));
@@ -290,7 +301,21 @@ int set_reset_kym11(char *gpio_reset)
 		close(fd);
 		return -1;
 	}
-	sleep(1);
+
+	req.tv_sec = 0;
+	req.tv_nsec = 5 * 1000 * 1000 * 10;	// 50 ms
+	while(1){
+		if(nanosleep(&req, &rem) == -1){
+			if(errno == EINTR){
+				req.tv_nsec = rem.tv_nsec;
+				continue;
+			}
+			printf("%d: %s\n", __LINE__, strerror(errno));
+			return -1;
+		}
+		break;
+	}
+
 	if(write(fd, "1", 1) == -1){
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		close(fd);
@@ -358,6 +383,7 @@ int send_atcmd(int fd, char *cmd, char *buf, int wait)
 	int ret;
 	fd_set fds;
 	struct timeval tv;
+	struct timespec req, rem;
 
 	if(write(fd, cmd, strlen(cmd)) == -1){
 		printf("%d: %s\n", __LINE__, strerror(errno));
@@ -375,7 +401,18 @@ int send_atcmd(int fd, char *cmd, char *buf, int wait)
 		return -1;
 	}
 	else if(ret){
-		sleep(wait);
+		req.tv_sec = 0;
+		req.tv_nsec = wait * 1000 * 1000;
+		while(1){
+			if(nanosleep(&req, &rem) ==  -1){
+				if(errno == EINTR){
+					req.tv_nsec = rem.tv_nsec;
+					continue;
+				}
+				printf("%d: %s\n", __LINE__, strerror(errno));
+			}
+			break;
+		}
 		if((ret = read(fd, buf, BUFSZ)) == -1){
 			printf("%d: %s\n", __LINE__, strerror(errno));
 			return -1;
@@ -404,9 +441,7 @@ int get_dbm(char *buf)
 	char *p1, *p2;
 	char val[BUFSZ];
 
-#ifdef _DEBUG_
 //printf("buf=%s\n", buf);
-#endif
 	/* check error */
 	if(strstr(buf, "ERROR")){
 		return -1;
@@ -417,7 +452,9 @@ int get_dbm(char *buf)
 	/* get start point */
 	p1 = buf;
 	for(i=1; i<5; i++){
-		p1 = strchr(p1, ',');
+		if((p1 = strchr(p1, ',')) == NULL){
+			return -1;
+		}
 		p1++;
 	}
 	if(p1 == NULL){
@@ -431,9 +468,6 @@ int get_dbm(char *buf)
 	memcpy(val, p1, p2-p1);
 	val[p2-p1] = 0;
 	printf("%s\n", val);
-#if 0
-	put_led(val);
-#endif
 
 	return 0;
 }
@@ -902,14 +936,19 @@ int main(int ac, char *av[])
 					printf("%d: Can not Power ON!\n", __LINE__);
 					return -1;
 				}
+
 				if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
-					sleep(11);
+					sleep(12);
 				}
-				else if(strncmp(U200E, MNAME, sizeof(U200E)) == 0){
-					sleep(8);
+				else if(strncmp(U200E, MNAME, sizeof(U200E)) == 0
+					|| strncmp(U200, MNAME, sizeof(U200)) == 0){
+					sleep(13);
 				}
 				else if(strncmp(KYM11, MNAME, sizeof(KYM11)) == 0){
-					sleep(6);
+					sleep(12);
+				}
+				else if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0){
+					sleep(12);
 				}
 			}
 		}
@@ -928,28 +967,25 @@ int main(int ac, char *av[])
 				}
 				if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0){
 					set_power("0");
-					send_atcmd(fd, AT_AT, buf, 0);
-					send_atcmd(fd, AT_POFF, buf, 1);
+//					send_atcmd(fd, AT_AT, buf, 0);
+					send_atcmd(fd, AT_POFF, buf, 100);
 				}
-#if 0
-				else if(strncmp(U200, MNAME, sizeof(U200)) == 0
-						 || strncmp(U200E, MNAME, sizeof(U200E)) == 0){
-					send_atcmd(fd, AT_AT, buf, 0);
-					send_atcmd(fd, AT_POFF_U200, buf, 1);
-				}
-#else
 				else if(strncmp(U200, MNAME, sizeof(U200)) == 0){
-					set_power_u200(0, POWERSW);
+//					set_power_u200(0, POWERSW);
+					send_atcmd(fd, AT_AT, buf, 0);
+					send_atcmd(fd, AT_POFF_U200, buf, 100);
 				}
 				else if(strncmp(U200E, MNAME, sizeof(U200E)) == 0){
-					set_power_u200(0, POWERSW_U200);
+//					set_power_u200(0, POWERSW_U200);
+					send_atcmd(fd, AT_AT, buf, 0);
+					send_atcmd(fd, AT_POFF_U200, buf, 100);
 				}
-#endif
 				else if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
 					send_atcmd(fd, AT_AT, buf, 0);
-					send_atcmd(fd, AT_POFF_UM04, buf, 1);
+					send_atcmd(fd, AT_POFF_UM04, buf, 100);
 				}
 			}
+			end_modem(&fd);
 			if(wait_device(NOEXIST)){
 //				printf("%d: Can not Power OFF!\n", __LINE__);
 				return -1;
@@ -1000,13 +1036,18 @@ int main(int ac, char *av[])
 				printf("%d: Can not Hard Reset!\n", __LINE__);
 				return -1;
 			}
+
 			if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
 				sleep(11);
 			}
-			else if(strncmp(U200E, MNAME, sizeof(U200E)) == 0){
+			else if(strncmp(U200E, MNAME, sizeof(U200E)) == 0
+				||strncmp(U200, MNAME, sizeof(U200)) == 0){
 				sleep(8);
 			}
 			else if(strncmp(KYM11, MNAME, sizeof(KYM11)) == 0){
+				sleep(6);
+			}
+			else if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0){
 				sleep(6);
 			}
 		}
@@ -1017,26 +1058,23 @@ int main(int ac, char *av[])
 			}
 			if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0){
 				set_power("1");
-				send_atcmd(fd, AT_AT, buf, 0);
-				send_atcmd(fd, AT_POFF, buf, 1);
-				end_modem(&fd);
+//				send_atcmd(fd, AT_AT, buf, 0);
+				send_atcmd(fd, AT_POFF, buf, 100);
 			}
 			else if(strncmp(U200, MNAME, sizeof(U200)) == 0
 					|| strncmp(U200E, MNAME, sizeof(U200E)) == 0){
 				send_atcmd(fd, AT_AT, buf, 0);
-				send_atcmd(fd, AT_PRST_U200, buf, 1);
-				end_modem(&fd);
+				send_atcmd(fd, AT_PRST_U200, buf, 0);
 			}
 			else if(strncmp(KYM11, MNAME, sizeof(KYM11)) == 0){
 				send_atcmd(fd, AT_AT, buf, 0);
-				send_atcmd(fd, AT_PRST_K, buf, 1);
-				end_modem(&fd);
+				send_atcmd(fd, AT_PRST_K, buf, 100);
 			}
 			else if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
 				send_atcmd(fd, AT_AT, buf, 0);
-				send_atcmd(fd, AT_PRST_UM04, buf, 1);
-				end_modem(&fd);
+				send_atcmd(fd, AT_PRST_UM04, buf, 100);
 			}
+			end_modem(&fd);
 			if(access(MODEM, F_OK) == 0){
 				if(wait_device(NOEXIST)){
 					printf("%d: Can not Soft Reset!\n", __LINE__);
@@ -1050,11 +1088,15 @@ int main(int ac, char *av[])
 			if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
 				sleep(11);
 			}
-			else if(strncmp(U200E, MNAME, sizeof(U200E)) == 0){
+			else if(strncmp(U200E, MNAME, sizeof(U200E)) == 0
+				|| strncmp(U200E, MNAME, sizeof(U200E)) == 0){
 				sleep(8);
 			}
 			else if(strncmp(KYM11, MNAME, sizeof(KYM11)) == 0){
 				sleep(6);
+			}
+			else if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0){
+				sleep(11);
 			}
 		}
 		else if(strncmp(CMD_SMONI, av[i], sizeof(CMD_SMONI)) == 0){
@@ -1064,9 +1106,15 @@ int main(int ac, char *av[])
 						end_modem(&fd);
 						return -1;
 					}
-					send_atcmd(fd, AT_SMONI, buf, 1);
-					if(get_dbm(buf)){
-						return -1;
+					for(j=0; j<200; j++){
+						send_atcmd(fd, AT_SMONI, buf, 200);
+						if(!get_dbm(buf)){
+							break;
+						}
+					}
+					if(j==199){
+						ret = -1;
+						break;
 					}
 				}
 				else{
@@ -1086,24 +1134,31 @@ int main(int ac, char *av[])
 				end_modem(&fd);
 				return -1;
 			}
-			if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0
-						|| strncmp(U200E, MNAME, sizeof(U200E)) == 0
+			if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0){
+				send_atcmd(fd, AT_AT, buf, 100);
+				send_atcmd(fd, AT_CSQ, buf, 200);
+				if(get_quality(buf)){
+					break;
+				}
+			}
+			else if(strncmp(U200E, MNAME, sizeof(U200E)) == 0
 						|| strncmp(U200, MNAME, sizeof(U200)) == 0){
-				send_atcmd(fd, AT_CSQ, buf, 1);
+				send_atcmd(fd, AT_AT, buf, 0);
+				send_atcmd(fd, AT_CSQ, buf, 200);
 				if(get_quality(buf)){
 					return -1;
 				}
 			}
 			else if(strncmp(KYM11, MNAME, sizeof(KYM11)) == 0){
 				send_atcmd(fd, AT_AT, buf, 0);
-				send_atcmd(fd, AT_CSQ_K, buf, 1);
+				send_atcmd(fd, AT_CSQ_K, buf, 100);
 				if(get_quality_k(buf)){
 					return -1;
 				}
 			}
 			else if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
 				send_atcmd(fd, AT_AT, buf, 0);
-				send_atcmd(fd, AT_CSQ_U, buf, 1);
+				send_atcmd(fd, AT_CSQ_U, buf, 100);
 				if(get_quality_u(buf)){
 					return -1;
 				}
@@ -1117,21 +1172,22 @@ int main(int ac, char *av[])
 			if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0
 						|| strncmp(U200E, MNAME, sizeof(U200E)) == 0
 						|| strncmp(U200, MNAME, sizeof(U200)) == 0){
-				send_atcmd(fd, AT_CCID, buf, 1);
+				send_atcmd(fd, AT_AT, buf, 100);
+				send_atcmd(fd, AT_CCID, buf, 200);
 				if(get_ccid(buf, 2)){
 					return -1;
 				}
 			}
 			else if(strncmp(KYM11, MNAME, sizeof(KYM11)) == 0){
 				send_atcmd(fd, AT_AT, buf, 0);
-				send_atcmd(fd, AT_CCID_K, buf, 1);
+				send_atcmd(fd, AT_CCID_K, buf, 100);
 				if(get_ccid_k(buf)){
 					return -1;
 				}
 			}
 			else if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
 				send_atcmd(fd, AT_AT, buf, 0);
-				send_atcmd(fd, AT_CCID_U, buf, 1);
+				send_atcmd(fd, AT_CCID_U, buf, 100);
 				if(get_ccid(buf, 3)){
 					return -1;
 				}
@@ -1145,25 +1201,25 @@ int main(int ac, char *av[])
 			if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0
 						|| strncmp(U200E, MNAME, sizeof(U200E)) == 0
 						|| strncmp(U200, MNAME, sizeof(U200)) == 0){
-				send_atcmd(fd, AT_ATI, buf, 1);
+				send_atcmd(fd, AT_ATI, buf, 100);
 				if(get_ati(buf)){
 					ret = -1;
 					break;
 				}
 			}
 			else if(strncmp(KYM11, MNAME, sizeof(KYM11)) == 0){
-				send_atcmd(fd, AT_AT, buf, 0);
-				send_atcmd(fd, AT_GMI, buf, 0);
+//				send_atcmd(fd, AT_AT, buf, 0);
+				send_atcmd(fd, AT_GMI, buf, 100);
 				if(get_ati_u(buf, ": ")){
 					ret = -1;
 					break;
 				}
-				send_atcmd(fd, AT_GMM, buf, 0);
+				send_atcmd(fd, AT_GMM, buf, 100);
 				if(get_ati_u(buf, ": ")){
 					ret = -1;
 					break;
 				}
-				send_atcmd(fd, AT_GMR, buf, 0);
+				send_atcmd(fd, AT_GMR, buf, 100);
 				if(get_ati_u(buf, ": ")){
 					ret = -1;
 					break;
@@ -1171,18 +1227,17 @@ int main(int ac, char *av[])
 				puts("");
 			}
 			else if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
-				send_atcmd(fd, AT_AT, buf, 0);
-				send_atcmd(fd, AT_GMI, buf, 1);
+				send_atcmd(fd, AT_GMI, buf, 100);
 				if(get_ati_u(buf, "\n\n\n")){
 					ret = -1;
 					break;
 				}
-				send_atcmd(fd, AT_GMM, buf, 1);
+				send_atcmd(fd, AT_GMM, buf, 100);
 				if(get_ati_u(buf, "\n\n\n")){
 					ret = -1;
 					break;
 				}
-				send_atcmd(fd, AT_GMR, buf, 1);
+				send_atcmd(fd, AT_GMR, buf, 100);
 				if(get_ati_u(buf, "\n\n\n")){
 					ret = -1;
 					break;
@@ -1198,7 +1253,8 @@ int main(int ac, char *av[])
 			if(strncmp(U200E, MNAME, sizeof(U200E)) == 0
 						|| strncmp(U200, MNAME, sizeof(U200)) == 0){
 				if(av[i+1] == NULL || (av[i+1] != NULL && av[i+1][0] != '0' && av[i+1][0] != '1')){
-					send_atcmd(fd, AT_CTZU2, buf, 1);
+					send_atcmd(fd, AT_AT, buf, 0);
+					send_atcmd(fd, AT_CTZU2, buf, 100);
 					if(get_ctzu(buf)){
 						ret = -1;
 						break;
@@ -1208,7 +1264,8 @@ int main(int ac, char *av[])
 					// get CTZU parameter
 					i++;
 					sprintf(cmd, AT_CTZU, av[i]);
-					send_atcmd(fd, cmd, buf, 1);
+					send_atcmd(fd, AT_AT, buf, 0);
+					send_atcmd(fd, cmd, buf, 100);
 					if(get_ctzu(buf)){
 						ret = -1;
 						break;
@@ -1227,13 +1284,13 @@ int main(int ac, char *av[])
 					end_modem(&fd);
 					return -1;
 				}
-				for(j=0; j<60; j++){
-					send_atcmd(fd, AT_SIND, buf, 1);
+				for(j=0; j<200; j++){
+					send_atcmd(fd, AT_SIND, buf, 200);
 					if(!get_time(buf)){
 						break;
 					}
 				}
-				if(j==5){
+				if(j==199){
 					ret = -1;
 					break;
 				}
@@ -1253,7 +1310,8 @@ int main(int ac, char *av[])
 						|| strncmp(U200, MNAME, sizeof(U200)) == 0
 						|| strncmp(UM04, MNAME, sizeof(UM04)) == 0){
 				for(j=0; j<6; j++){
-					send_atcmd(fd, AT_CCLK, buf, 1);
+					send_atcmd(fd, AT_AT, buf, 0);
+					send_atcmd(fd, AT_CCLK, buf, 200);
 					if(!get_cclk(buf)){
 						break;
 					}
@@ -1265,7 +1323,7 @@ int main(int ac, char *av[])
 			}
 			else if(strncmp(KYM11, MNAME, sizeof(KYM11)) == 0){
 				send_atcmd(fd, AT_AT, buf, 0);
-				send_atcmd(fd, AT_CCLK_K, buf, 1);
+				send_atcmd(fd, AT_CCLK_K, buf, 100);
 				if(!get_cclk_k(buf)){
 					ret = -1;
 					break;
@@ -1286,7 +1344,8 @@ int main(int ac, char *av[])
 						|| strncmp(U200E, MNAME, sizeof(U200E)) == 0
 						|| strncmp(U200, MNAME, sizeof(U200)) == 0
 						|| strncmp(UM04, MNAME, sizeof(UM04)) == 0){
-				send_atcmd(fd, AT_CGSN, buf, 1);
+				send_atcmd(fd, AT_AT, buf, 100);
+				send_atcmd(fd, AT_CGSN, buf, 100);
 				if(get_cgsn(buf)){
 					ret = -1;
 					break;
@@ -1294,7 +1353,7 @@ int main(int ac, char *av[])
 			}
 			else if(strncmp(KYM11, MNAME, sizeof(KYM11)) == 0){
 				send_atcmd(fd, AT_AT, buf, 0);
-				send_atcmd(fd, AT_CGSN_K, buf, 1);
+				send_atcmd(fd, AT_CGSN_K, buf, 100);
 				if(get_cgsn_k(buf)){
 					ret = -1;
 					break;

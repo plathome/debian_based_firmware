@@ -7,7 +7,7 @@
 # BEGIN: don't edit
 MODEL="obsbx1"
 
-FIRM_DIR="/dev/mmcblk0p8"
+FIRM_DIR="/dev/mmcblk0p7"
 SAVE_DIR="/dev/mmcblk0p8"
 
 # Set union filesysytem target directories.

@@ -75,12 +75,7 @@ chroot ${DISTDIR} /sbin/insserv
 
 touch ${DISTDIR}/etc/init.d/.legacy-bootordering
 
-#if [ ${TARGET} == "obsbx1" ]; then
-#	printf "0.0 0 0.0\n0\nUTC\n" > ${DISTDIR}/etc/adjtime
-#	rm -f ${DITDIR}/etc/hostname
-#else
-	printf "0.0 0 0.0\n0\nLOCAL\n" > ${DISTDIR}/etc/adjtime
-#fi
+#printf "0.0 0 0.0\n0\nUTC\n" > ${DISTDIR}/etc/adjtime
 
 if [ -f ${DISTDIR}/etc/modules ]; then
 	if grep -q "^ipv6" ${DISTDIR}/etc/modules; then

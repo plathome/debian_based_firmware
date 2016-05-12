@@ -83,7 +83,7 @@ bpv4*|bpv8)
 	cp -f $INITRD $pkgdir/etc/
 	;;
 *)
-	cp -f $INITRD $pkgdir/etc/ramdisk-wheezy.${MODEL}.img.gz
+	cp -f $INITRD $pkgdir/etc/
 	if [ -d $UBOOTENVPATH ]; then
 		cp -f $UBOOTENVPATH/update_ubootenv.sh $pkgdir/etc/
 		cp -f $UBOOTENVPATH/fw_printenv $pkgdir/etc/

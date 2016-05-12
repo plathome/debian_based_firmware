@@ -105,7 +105,7 @@ int main(void)
 				if(!ret){	/* normal end */
 					break;
 				}
-				else if(ret != EINTR){
+				else if(errno != EINTR){
 					openlog("wd-keepalive", LOG_CONS|LOG_PID, LOG_USER);
 					syslog(LOG_NOTICE, "%d: nanosleep() errno=%d\n", __LINE__, errno);
 					closelog();

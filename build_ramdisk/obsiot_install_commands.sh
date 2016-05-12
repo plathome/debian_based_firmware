@@ -99,10 +99,14 @@ obsbx1)
 	_CFLAGS="$CFLAGS -I/usr/include/glib-2.0 -I/usr/lib/i386-linux-gnu/glib-2.0/include -lglib-2.0"
 	$CC -o ${BUILDDIR}/bluetooth_rfkill_event ${FILESDIR}/bluetooth_rfkill_event.c $_CFLAGS
 
-	echo;echo;echo
-	(cd ${BUILDDIR}; ls -l wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock bluetooth_rfkill_event brcm_patchram_plus)
+	echo "WAV-PLAY"
+	_CFLAGS="$CFLAGS -lasound"
+	$CC -o ${BUILDDIR}/wav-play ${FILESDIR}/wav-play.c $_CFLAGS
 
-	for cmd in wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock bluetooth_rfkill_event brcm_patchram_plus; do
+	echo;echo;echo
+	(cd ${BUILDDIR}; ls -l wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock bluetooth_rfkill_event brcm_patchram_plus wav-play)
+
+	for cmd in wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock bluetooth_rfkill_event brcm_patchram_plus wav-play; do
 		(cd ${BUILDDIR}; install -c -o root -g root -m 555 $cmd ${DISTDIR}/usr/sbin/$cmd)
 		$STRIP ${DISTDIR}/usr/sbin/$cmd
 	done

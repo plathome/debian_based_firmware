@@ -546,11 +546,15 @@ firmware)
 		rm -rf ${WORK_DIR}
 	;;
 	obsbx1)
-		RAMDISK="ramdisk-wheezy.obsbx1.img.gz"
 		mkdir -p ${WORK_DIR}
 		mount ${FIRM_DIR} ${WORK_DIR}
 		rm -f ${WORK_DIR}/openblocks-release
 		rm -f ${WORK_DIR}/bzImage
+		if [ -e "${FIRM_FILE}/initrd.gz" ]; then
+			RAMDISK="initrd.gz"
+		else
+			RAMDISK="ramdisk-wheezy.obsbx1.img.gz"
+		fi
 		rm -f ${WORK_DIR}/${RAMDISK}
 
 		# ramdisk
