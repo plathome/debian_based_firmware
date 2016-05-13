@@ -378,8 +378,8 @@ start)
 	done
 
 	# reboot udev
-	/etc/init.d/udev/ stop
-	/etc/init.d/udev/ start
+	/etc/init.d/udev stop
+	/etc/init.d/udev start
 
 	# extract Oracle Java
 	# /usr/lib/jre directory and /etc/profile.d/java.(sh|csh) file.
