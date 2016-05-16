@@ -44,7 +44,7 @@ _EOF
 apt-get update 
 apt-get -y install $packages
 
-packages="libnl-3-dev:i386 libssl-dev:i386 libusb-dev:i386 zlib1g-dev:armel zlib1g-dev:armhf zlib1g-dev:powerpc libnl-genl-3-dev:i386 libglib2.0-dev:i386 libbluetooth-dev:i386"
+packages="libnl-3-dev:i386 libssl-dev:i386 libusb-dev:i386 zlib1g-dev:armel zlib1g-dev:armhf zlib1g-dev:powerpc libnl-genl-3-dev:i386 libglib2.0-dev:i386 libbluetooth-dev:i386 libasound2-dev:i386"
 #packages+="libusb-dev:armel libusb-dev:armhf libusb-dev:powerpc "
 
 apt-get -y install $packages
