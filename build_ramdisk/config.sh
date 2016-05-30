@@ -130,7 +130,7 @@ jessie)
 	KERNEL=4.1.19
 	case ${TARGET} in
 	obsmv4)
-		ISOFILE=debian-8.3.0-amd64-DVD-1.iso
+		ISOFILE=debian-8.4.0-amd64-DVD-1.iso
 		PATCHLEVEL=1
 		RAMDISK_SIZE=1024
 		DEFCONFIG=bpv4_defconfig
@@ -168,33 +168,33 @@ jessie)
 		UBOOT_PL=2
 		UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
 	;;
-	obsa6)
-		DTBFILE=kirkwood-openblocks_a6.dtb
-		ISOFILE=debian-8.3.0-armel-DVD-1.iso
-		RAMDISK_SIZE=180
-		PATCHLEVEL=0
-		ARCH=armel
-		COMP_LVL=9
-		COMP=lzma
-		COMP_EXT=lzma
-		UBOOT_VER=1.2.6
-		UBOOT_PL=1
-		UBOOT_OLD_VER="1\\\.0\\\.2\|1\\\.1\\\.0\|1\\\.2\\\.[34]"
-	;;
-	obs600)
-		DEFCONFIG=40x/obs600_defconfig
-		DTBFILE=obs600.dtb
-		ISOFILE=debian-8.3.0-powerpc-DVD-1.iso
-		RAMDISK_SIZE=210
-		PATCHLEVEL=0
-		ARCH=powerpc
-		COMP_LVL=9
-		COMP=gzip
-		COMP_EXT=gz
-		UBOOT_VER=1.2.13
-		UBOOT_PL=2
-		UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
-	;;
+#	obsa6)
+#		DTBFILE=kirkwood-openblocks_a6.dtb
+#		ISOFILE=debian-8.3.0-armel-DVD-1.iso
+#		RAMDISK_SIZE=180
+#		PATCHLEVEL=0
+#		ARCH=armel
+#		COMP_LVL=9
+#		COMP=lzma
+#		COMP_EXT=lzma
+#		UBOOT_VER=1.2.6
+#		UBOOT_PL=1
+#		UBOOT_OLD_VER="1\\\.0\\\.2\|1\\\.1\\\.0\|1\\\.2\\\.[34]"
+#	;;
+#	obs600)
+#		DEFCONFIG=40x/obs600_defconfig
+#		DTBFILE=obs600.dtb
+#		ISOFILE=debian-8.3.0-powerpc-DVD-1.iso
+#		RAMDISK_SIZE=210
+#		PATCHLEVEL=0
+#		ARCH=powerpc
+#		COMP_LVL=9
+#		COMP=gzip
+#		COMP_EXT=gz
+#		UBOOT_VER=1.2.13
+#		UBOOT_PL=2
+#		UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
+#	;;
 	*) exit 1 ;;
 	esac
 ;;

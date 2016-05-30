@@ -80,6 +80,8 @@ if [ $? == 0 ]; then	# BX0 or EX1 rev2
 	if [ $? != 0 ]; then
 		usage
 	fi
+elif [ $? == 127 ]; then
+	hwclock $@
 else
 	case $@ in
 	--alarm*|--clear*|--init|--status|--check)

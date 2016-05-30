@@ -62,10 +62,16 @@ mkdir -p ${DISTDIR}
 if [ "$TARGET" == "obs600" ]; then
 	if [ "$DIST" == "jessie" ]; then
 		EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano"
-		INCLUDE="openssh-server,liblzo2-2,sysvinit,sysvinit-utils"
+		INCLUDE="openssh-server,liblzo2-2,sysvinit,sysvinit-utils,parted,strace"
 	else
 		EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano"
 		INCLUDE="openssh-server,lzma,strace,perl"
+	fi
+elif [ "$TARGET" == "obsvx1" ]; then
+	if [ "$DIST" == "jessie" ]; then
+		INCLUDE="openssh-server,strace,acpi-support-base"
+		INCLUDE="$INCLUDE,wpasupplicant,ppp,wireless-tools,ethtool,busybox,bluez,iw,sysvinit,sysvinit-utils,dosfstools,libasound2,parted,strace"
+		EXCLUDE="nano"
 	fi
 elif [ "$TARGET" == "obsbx1" ]; then
 	if [ "$DIST" == "wheezy" ]; then
@@ -74,15 +80,15 @@ elif [ "$TARGET" == "obsbx1" ]; then
 		EXCLUDE="nano"
 	else
 		INCLUDE="openssh-server,strace,acpi-support-base"
-		INCLUDE="$INCLUDE,wpasupplicant,ppp,wireless-tools,ethtool,busybox,bluez,iw,sysvinit,sysvinit-utils,dosfstools,libasound2"
+		INCLUDE="$INCLUDE,wpasupplicant,ppp,wireless-tools,ethtool,busybox,bluez,iw,sysvinit,sysvinit-utils,dosfstools,libasound2,parted,strace"
 		EXCLUDE="nano"
 	fi
 elif [ "$DIST" == "jessie" ]; then
 	EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,nano"
-	INCLUDE="openssh-server,lzma"
+	INCLUDE="openssh-server,lzma,parted,strace"
 else
 	EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano"
-	INCLUDE="openssh-server"
+	INCLUDE="openssh-server,strace"
 fi
 
 if [ "$ENA_AUDIO" == "true" ]; then

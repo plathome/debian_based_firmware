@@ -55,6 +55,11 @@ fi
 #	cp -a ${PWD}/wifi/wheezy/ath10k $MOUNTDIR/lib/firmware
 #fi
 
+#echo
+#echo "touch all files"
+#echo
+#find ${MOUNTDIR} | xargs touch -t `date +"%Y%m%d0000"`
+
 umount ${MOUNTDIR}
 
 if [ ! -d ${RELEASEDIR} ]; then
