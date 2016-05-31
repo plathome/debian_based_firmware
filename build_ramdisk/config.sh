@@ -157,7 +157,7 @@ jessie)
 	;;
 	obsa7)
 		DTBFILE=kirkwood-openblocks_a7.dtb
-		ISOFILE=debian-8.3.0-armel-DVD-1.iso
+		ISOFILE=debian-8.4.0-armel-DVD-1.iso
 		RAMDISK_SIZE=180
 		PATCHLEVEL=0
 		ARCH=armel
