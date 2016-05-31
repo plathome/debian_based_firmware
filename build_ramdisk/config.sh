@@ -127,7 +127,7 @@ wheezy)
 	esac
 ;;
 jessie)
-	KERNEL=4.1.19
+	KERNEL=4.1.25
 	case ${TARGET} in
 	obsmv4)
 		ISOFILE=debian-8.4.0-amd64-DVD-1.iso
@@ -144,9 +144,9 @@ jessie)
 	;;
 	obsax3)
 		DTBFILE=armada-xp-openblocks-ax3-4.dtb
-		ISOFILE=debian-8.3.0-armhf-DVD-1.iso
+		ISOFILE=debian-8.4.0-armhf-DVD-1.iso
 		RAMDISK_SIZE=180
-		PATCHLEVEL=2
+		PATCHLEVEL=0
 		ARCH=armhf
 		COMP_LVL=9
 		COMP=lzma
