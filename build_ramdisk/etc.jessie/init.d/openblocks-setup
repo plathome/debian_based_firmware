@@ -378,7 +378,7 @@ start)
 	done
 
 	# reboot udev
-	/etc/init.d/udev stop
+	/etc/init.d/udev stop > /dev/null 2>&1
 	/etc/init.d/udev start
 
 	# extract Oracle Java
