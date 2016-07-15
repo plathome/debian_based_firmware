@@ -82,6 +82,7 @@
 #define AT_CSQ_U "at*dlante\r\n"
 #define AT_CTZU "at+ctzu=%s\r\n"
 #define AT_CTZU2 "at+ctzu?\r\n"
+#define AT_COPS "at+cops=%s\r\n"
 #define AT_ATI "ati\r\n"
 #define AT_CGSN "at+cgsn\r\n"
 #define AT_CGSN_K "at$10?\r\n"
@@ -816,6 +817,7 @@ int get_ati_u(char *buf, char* match)
 
 int get_ctzu(char *buf)
 {
+#define HEAD "+CTZU: "
 	char *p1,*p2;
 	/* check error */
 	if(strstr(buf, "ERROR")){
@@ -824,15 +826,17 @@ int get_ctzu(char *buf)
 	if(!strstr(buf, "OK")){
 		return -1;
 	}
-	if((p1 = strstr(buf, "+CTZU")) == NULL){
+	if((p1 = strstr(buf, HEAD)) == NULL){
 		return 0;
 	}
 	if((p2 = strchr(p1, '\n')) == NULL){
 		return 0;
 	}
 	*p2 = 0x0;
-	printf("%s\n", p1);
-	return 0;
+	p1 += strlen(HEAD);
+//	printf("%s\n", p1);
+	return strtol(p1, NULL, 10);
+#undef HEAD
 }
 
 int get_cgsn(char *buf)
@@ -1255,10 +1259,11 @@ int main(int ac, char *av[])
 				if(av[i+1] == NULL || (av[i+1] != NULL && av[i+1][0] != '0' && av[i+1][0] != '1')){
 					send_atcmd(fd, AT_AT, buf, 0);
 					send_atcmd(fd, AT_CTZU2, buf, 100);
-					if(get_ctzu(buf)){
+					if((ret = get_ctzu(buf)) < 0){
 						ret = -1;
 						break;
 					}
+					printf("%d\n", ret);
 				}
 				else{
 					// get CTZU parameter
@@ -1266,10 +1271,11 @@ int main(int ac, char *av[])
 					sprintf(cmd, AT_CTZU, av[i]);
 					send_atcmd(fd, AT_AT, buf, 0);
 					send_atcmd(fd, cmd, buf, 100);
-					if(get_ctzu(buf)){
+					if((ret = get_ctzu(buf)) < 0){
 						ret = -1;
 						break;
 					}
+					printf("%d\n", ret);
 				}
 			}
 			else{
@@ -1307,8 +1313,40 @@ int main(int ac, char *av[])
 				return -1;
 			}
 			if(strncmp(U200E, MNAME, sizeof(U200E)) == 0
-						|| strncmp(U200, MNAME, sizeof(U200)) == 0
-						|| strncmp(UM04, MNAME, sizeof(UM04)) == 0){
+						|| strncmp(U200, MNAME, sizeof(U200)) == 0){
+				for(j=0; j<100; j++){
+					sprintf(cmd, AT_CTZU, "0");
+					send_atcmd(fd, cmd, buf, 100);
+					if(get_ctzu(buf) < 0){
+						ret = -1;
+						break;
+					}
+					sprintf(cmd, AT_CTZU, "1");
+					send_atcmd(fd, cmd, buf, 100);
+					if(get_ctzu(buf) < 0){
+						ret = -1;
+						break;
+					}
+					sprintf(cmd, AT_COPS, "2");
+					send_atcmd(fd, cmd, buf, 100);
+					sprintf(cmd, AT_COPS, "0");
+					send_atcmd(fd, cmd, buf, 100);
+
+					send_atcmd(fd, AT_AT, buf, 0);
+					send_atcmd(fd, AT_CCLK, buf, 200);
+printf("%d: buf=%s", __LINE__, buf);
+					if(strstr(buf, "70/01/01,09:"))
+						continue;
+					if(!get_cclk(buf)){
+						break;
+					}
+				}
+				if(j==99){
+					ret = -1;
+					break;
+				}
+			}
+			else if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
 				for(j=0; j<6; j++){
 					send_atcmd(fd, AT_AT, buf, 0);
 					send_atcmd(fd, AT_CCLK, buf, 200);

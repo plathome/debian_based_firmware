@@ -546,6 +546,27 @@ firmware)
 		rm -rf ${WORK_DIR}
 	;;
 	obsbx1)
+		# check MD5
+		_get_md5 ramdisk
+		val=(`md5sum ${FIRM_FILE}/${RAMDISK}`)
+		if [ "$MD5_RET" != $val ]; then
+			echo "$LINENO: ${RAMDISK} is broken, write firmware failed."
+			if [ "$DEBUG" == "yes" ]; then
+				echo "${FIRM_FILE}/${RAMDISK}: MD5.${MODEL}=$MD5_RET, source=$val"
+			fi
+			exit 1
+		fi
+		# check MD5
+		_get_md5 kernel
+		val=(`md5sum ${FIRM_FILE}/bzImage`)
+		if [ "$MD5_RET" != $val ]; then
+			echo "$LINENO: bzImage is broken, write firmware failed."
+			if [ "$DEBUG" == "yes" ]; then
+				echo "MD5.${MODEL}=$MD5_RET, source=$val"
+			fi
+			exit 1
+		fi
+
 		mkdir -p ${WORK_DIR}
 		mount ${FIRM_DIR} ${WORK_DIR}
 		rm -f ${WORK_DIR}/openblocks-release
@@ -558,15 +579,6 @@ firmware)
 		rm -f ${WORK_DIR}/${RAMDISK}
 
 		# ramdisk
-		_get_md5 ramdisk
-		val=(`md5sum ${FIRM_FILE}/${RAMDISK}`)
-		if [ "$MD5_RET" != $val ]; then
-			echo "$LINENO: ${RAMDISK} is broken, write firmware failed."
-			if [ "$DEBUG" == "yes" ]; then
-				echo "${FIRM_FILE}/${RAMDISK}: MD5.${MODEL}=$MD5_RET, source=$val"
-			fi
-			exit 1
-		fi
 		for i in {1..5}; do
 			cp -f ${FIRM_FILE}/${RAMDISK} ${WORK_DIR}
 			if [ $? != 0 ]; then
@@ -587,15 +599,6 @@ firmware)
 		fi
 
 		# kernel
-		_get_md5 kernel
-		val=(`md5sum ${FIRM_FILE}/bzImage`)
-		if [ "$MD5_RET" != $val ]; then
-			echo "$LINENO: bzImage is broken, write firmware failed."
-			if [ "$DEBUG" == "yes" ]; then
-				echo "MD5.${MODEL}=$MD5_RET, source=$val"
-			fi
-			exit 1
-		fi
 		for i in {1..5}; do
 			cp -f ${FIRM_FILE}/bzImage ${WORK_DIR}
 			if [ $? != 0 ]; then
@@ -619,7 +622,7 @@ firmware)
 			cp -f ${FIRM_FILE}/openblocks-release ${WORK_DIR}
 		fi
 		umount ${WORK_DIR}
-		rm -rf ${WORK_DIR}
+		rmdir ${WORK_DIR}
 		;;
 	*)
 		_yesno "Save firmware file to FlashROM."
