@@ -546,6 +546,11 @@ firmware)
 		rm -rf ${WORK_DIR}
 	;;
 	obsbx1)
+		if [ -e "${FIRM_FILE}/initrd.gz" ]; then
+			RAMDISK="initrd.gz"
+		else
+			RAMDISK="ramdisk-wheezy.obsbx1.img.gz"
+		fi
 		# check MD5
 		_get_md5 ramdisk
 		val=(`md5sum ${FIRM_FILE}/${RAMDISK}`)
@@ -571,11 +576,6 @@ firmware)
 		mount ${FIRM_DIR} ${WORK_DIR}
 		rm -f ${WORK_DIR}/openblocks-release
 		rm -f ${WORK_DIR}/bzImage
-		if [ -e "${FIRM_FILE}/initrd.gz" ]; then
-			RAMDISK="initrd.gz"
-		else
-			RAMDISK="ramdisk-wheezy.obsbx1.img.gz"
-		fi
 		rm -f ${WORK_DIR}/${RAMDISK}
 
 		# ramdisk
