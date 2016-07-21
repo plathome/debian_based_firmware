@@ -1334,7 +1334,7 @@ int main(int ac, char *av[])
 
 					send_atcmd(fd, AT_AT, buf, 0);
 					send_atcmd(fd, AT_CCLK, buf, 200);
-printf("%d: buf=%s", __LINE__, buf);
+//printf("%d: buf=%s", __LINE__, buf);
 					if(strstr(buf, "70/01/01,09:"))
 						continue;
 					if(!get_cclk(buf)){
