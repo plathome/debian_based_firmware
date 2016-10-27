@@ -60,6 +60,8 @@ if [ "$MODEL" = "obsax3" ] && [ -n "${CORE_STOP_TEMP:=105}" ]; then
 	fi
 elif [ "$MODEL" = "obsbx1" ]; then
 	echo "300\n5000\n2" > /tmp/.runled
+elif [ "$MODEL" = "obsvx1" ]; then
+	echo "300\n3000\n2\n0" > /tmp/.runled
 else
 	DAEMON_ARGS=""
 fi

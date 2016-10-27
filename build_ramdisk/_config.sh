@@ -35,8 +35,6 @@ TMPDIR=${WRKDIR}/tmp
 
 DISTDIR=${WRKDIR}/rootfs/${DIST}_${TARGET}
 
-RELEASEDIR=${WRKDIR}/release/${TARGET}/${DIST}/${KERNEL}-${PATCHLEVEL}
-
 FILESDIR=${PWD}/files
 
 ISOFILEDIR=${WRKDIR}/isofiles
@@ -45,11 +43,13 @@ EXTRADEBDIR=${WRKDIR}/extradebs/${DIST}
 ETCDIR=${PWD}/etc.${DIST}
 case $TARGET in
 bpv4*)
+	RELEASEDIR=${WRKDIR}/release/${TARGET}/${DIST}/${KERNEL}-${PATCHLEVEL}
 	ETCDIR_ADD=${PWD}/etc.${DIST}.bpv4
 	LINUX_SRC=${WRKDIR}/source/bpv4/linux-${KERNEL}
 	RAMDISK_IMG=ramdisk-wheezy.${TARGET}.img
 ;;
 *)
+	RELEASEDIR=${WRKDIR}/release/${TARGET}/${DIST}/${KERNEL}-${PATCHLEVEL}
 	ETCDIR_ADD=${PWD}/etc.${DIST}.${TARGET}
 	LINUX_SRC=${WRKDIR}/source/${TARGET}/linux-${KERNEL}
 	RAMDISK_IMG=ramdisk-${DIST}.${TARGET}.img

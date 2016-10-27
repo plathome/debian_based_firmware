@@ -42,7 +42,11 @@
 
 # define CORRECT_VALUE	0x9a
 
+#if defined(CONFIG_OBSVX1)
+#define	I2C_DEV	"/dev/i2c-5"
+#else
 #define	I2C_DEV	"/dev/i2c-1"
+#endif
 #define	STATUS1		0x30
 #define	STATUS2		0x31
 #define	DATE		0x32

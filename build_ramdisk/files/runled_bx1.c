@@ -41,9 +41,15 @@
 
 #define PID_FILE "/var/run/segled.pid"
 
+#if defined(CONFIG_OBSVX1)
+#define SEGLED_DEV_R	"/sys/class/gpio/gpio342/value"
+#define SEGLED_DEV_G	"/sys/class/gpio/gpio343/value"
+#define SEGLED_DEV_B	"/sys/class/gpio/gpio344/value"
+#else
 #define SEGLED_DEV_R	"/sys/class/gpio/gpio47/value"
 #define SEGLED_DEV_G	"/sys/class/gpio/gpio48/value"
 #define SEGLED_DEV_B	"/sys/class/gpio/gpio49/value"
+#endif
 
 /*	config file format			*/
 /*	line 1		light up (sec)	*/
@@ -60,9 +66,10 @@
 #define LED_WHITE	7
 #define SPEED_DEFAULT (10 * 1000)
 
-static int led_up = SPEED_DEFAULT;
-static int led_down = SPEED_DEFAULT;
-static int led_color = LED_BLACK;
+static int led_up         = SPEED_DEFAULT;
+static int led_down       = SPEED_DEFAULT;
+static int led_up_color   = LED_BLACK;
+static int led_down_color = LED_BLACK;
 static int forever = 1;
 
 #if 0
@@ -76,9 +83,10 @@ void read_config(void)
 	char str[256];
 
 	if((fp = fopen(CONFIG_FILE, "r")) == NULL){
-		led_color = LED_BLACK;
-		led_up = SPEED_DEFAULT;
-		led_down = SPEED_DEFAULT;
+		led_up_color   = LED_BLACK;
+		led_down_color = LED_BLACK;
+		led_up         = SPEED_DEFAULT;
+		led_down       = SPEED_DEFAULT;
 		return;
 	}
 
@@ -99,11 +107,27 @@ void read_config(void)
 	if(fgets(str, sizeof(str)-1, fp) == NULL){
 		goto ERROR;
 	}
-	led_color = (int)strtol(str, NULL, 10);
-	if(led_color < 0 || led_color > 7){
+	led_up_color = (int)strtol(str, NULL, 10);
+	if(led_up_color < 0 || led_up_color > 7){
 		goto ERROR;
 	}
-	if(led_color == LONG_MAX || led_color == LONG_MIN){
+	if(led_up_color == LONG_MAX || led_up_color == LONG_MIN){
+		goto ERROR;
+	}
+
+	if(fgets(str, sizeof(str)-1, fp) == NULL){
+		//goto ERROR;
+		// Upper Compatible
+
+		led_down_color = LED_BLACK ;
+		fclose(fp);
+		return;
+	}
+	led_down_color = (int)strtol(str, NULL, 10);
+	if(led_down_color < 0 || led_down_color > 7){
+		goto ERROR;
+	}
+	if(led_down_color == LONG_MAX || led_down_color == LONG_MIN){
 		goto ERROR;
 	}
 
@@ -111,7 +135,8 @@ void read_config(void)
 	return;
 
 ERROR:
-	led_color = LED_BLACK;
+	led_up_color = LED_BLACK;
+	led_down_color = LED_BLACK;
 	led_up = SPEED_DEFAULT;
 	led_down = SPEED_DEFAULT;
 	fclose(fp);
@@ -151,7 +176,7 @@ void dancer(void)
 	for (i=0;forever;i++){
 		read_config();
 		if(i % 2){
-			switch(led_color){
+			switch(led_up_color){
 			case LED_BLACK:
 				set_color("0", "0", "0");
 				break;
@@ -179,13 +204,41 @@ void dancer(void)
 			default:
 				break;
 			}
+
 			req.tv_sec = led_up / 1000;
 			req.tv_nsec = (led_up % 1000) * 1000 * 1000;
 			while(nanosleep(&req, &rem) == -1)
 				req.tv_nsec = rem.tv_nsec;
 		}
 		else{
-			set_color("0", "0", "0");
+			switch(led_down_color){
+			case LED_BLACK:
+				set_color("0", "0", "0");
+				break;
+			case LED_RED:
+				set_color("0", "0", "1");
+				break;
+			case LED_GREEN:
+				set_color("0", "1", "0");
+				break;
+			case LED_YELLOW:
+				set_color("0", "1", "1");
+				break;
+			case LED_BLUE:
+				set_color("1", "0", "0");
+				break;
+			case LED_PURPLE:
+				set_color("1", "0", "1");
+				break;
+			case LED_AQUA:
+				set_color("1", "1", "0");
+				break;
+			case LED_WHITE:
+				set_color("1", "1", "1");
+				break;
+			default:
+				break;
+			}
 			req.tv_sec = led_down / 1000;
 			req.tv_nsec = (led_down % 1000) * 1000 * 1000;
 			while(nanosleep(&req, &rem) == -1)

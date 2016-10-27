@@ -39,6 +39,7 @@
 #include <unistd.h>
 #include <errno.h>
 
+#define OBSVX1_MODEM "/usr/sbin/obsvx1-modem"
 #define DEFAULT_MODEM "/dev/ttyACM0"
 #define POWERSW "/sys/class/gpio/gpio165/value"
 #define RESETSW "/sys/class/gpio/gpio15/value"
@@ -175,6 +176,11 @@ int set_power(char *val)
 
 int set_power_u200(int val, char *gpio_pin)
 {
+#if defined(CONFIG_OBSVX1)
+	system("/usr/sbin/obsvx1-modem power high");
+	sleep(3);
+	system("/usr/sbin/obsvx1-modem power low");
+#else
 	int fd;
 
 	if(val == 1 && access(MODEM, F_OK) == 0){
@@ -203,12 +209,18 @@ int set_power_u200(int val, char *gpio_pin)
 		return -1;
 	}
 	close(fd);
+#endif
 
 	return 0;
 }
 
 int set_power_kym11(int val)
 {
+#if defined(CONFIG_OBSVX1)
+	system("/usr/sbin/obsvx1-modem power high");
+	sleep(3);
+	system("/usr/sbin/obsvx1-modem power low");
+#else
 	int fd;
 
 	if(val == 1 && access(MODEM, F_OK) == 0){
@@ -238,6 +250,7 @@ int set_power_kym11(int val)
 		return -1;
 	}
 	close(fd);
+#endif
 
 	return 0;
 }
@@ -267,6 +280,11 @@ int set_reset(char *gpio_reset)
 
 int set_reset_u200(char *gpio_pin)
 {
+#if defined(CONFIG_OBSVX1)
+	system("/usr/sbin/obsvx1-modem reset1 low");
+	sleep(3);
+	system("/usr/sbin/obsvx1-modem reset1 high");
+#else
 	int fd;
 
 	if((fd = open(gpio_pin, O_RDWR)) == -1){
@@ -285,11 +303,17 @@ int set_reset_u200(char *gpio_pin)
 		return -1;
 	}
 	close(fd);
+#endif
 	return 0;
 }
 
 int set_reset_kym11(char *gpio_reset)
 {
+#if defined(CONFIG_OBSVX1)
+	system("/usr/sbin/obsvx1-modem reset1 low");
+	sleep(2);
+	system("/usr/sbin/obsvx1-modem reset1 high");
+#else
 	int fd;
 	struct timespec req, rem;
 
@@ -323,6 +347,7 @@ int set_reset_kym11(char *gpio_reset)
 		return -1;
 	}
 	close(fd);
+#endif
 	return 0;
 }
 
@@ -582,7 +607,7 @@ int get_cclk(char *buf)
 	if( *p1 != '+'){	// check '+'
 		return -1;
 	}
-	printf("%s%s%s%s20%s.%s\n", mon, day, hour, min, year,sec);
+	printf("%s%s%s%s20%s.%s\n", mon, day, hour, min, year, sec);
 
 	return 0;
 #undef START
@@ -890,6 +915,9 @@ int get_cgsn_k(char *buf)
 int main(int ac, char *av[])
 {
 	FILE *fp;
+#if defined(CONFIG_OBSVX1)
+	struct stat sta;
+#endif
 	int fd=0;
 	int i=1, j=0;
 	char buf[BUFSZ];
@@ -900,6 +928,13 @@ int main(int ac, char *av[])
 		usage(av[0]);
 		return 1;
 	}
+
+#if defined(CONFIG_OBSVX1)
+	if(stat(OBSVX1_MODEM, &sta) == -1){
+		printf("%d: %s is not found.\n", __LINE__, OBSVX1_MODEM);
+		return 1;
+	}
+#endif
 
 	if(strncmp(av[1], "-d", 2) == 0){
 		strncpy(MODEM, av[2], sizeof(MODEM) - 1);
@@ -919,7 +954,7 @@ int main(int ac, char *av[])
 
 	while(i < ac){
 		if(strncmp(CMD_PON, av[i], sizeof(CMD_PON)) == 0){
-			if(access(MODEM, F_OK) != 0){
+			if((ret = access(MODEM, F_OK)) != 0){
 				if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0){
 					set_power("1");
 				}
@@ -985,7 +1020,9 @@ int main(int ac, char *av[])
 					send_atcmd(fd, AT_POFF_U200, buf, 100);
 				}
 				else if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
+#if !defined(CONFIG_OBSVX1)
 					send_atcmd(fd, AT_AT, buf, 0);
+#endif
 					send_atcmd(fd, AT_POFF_UM04, buf, 100);
 				}
 			}
@@ -1079,6 +1116,7 @@ int main(int ac, char *av[])
 				send_atcmd(fd, AT_PRST_UM04, buf, 100);
 			}
 			end_modem(&fd);
+#if !defined(CONFIG_OBSVX1)
 			if(access(MODEM, F_OK) == 0){
 				if(wait_device(NOEXIST)){
 					printf("%d: Can not Soft Reset!\n", __LINE__);
@@ -1089,6 +1127,7 @@ int main(int ac, char *av[])
 				printf("%d: Can not Soft Reset!\n", __LINE__);
 				return -1;
 			}
+#endif
 			if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
 				sleep(11);
 			}
@@ -1334,7 +1373,6 @@ int main(int ac, char *av[])
 
 					send_atcmd(fd, AT_AT, buf, 0);
 					send_atcmd(fd, AT_CCLK, buf, 200);
-//printf("%d: buf=%s", __LINE__, buf);
 					if(strstr(buf, "70/01/01,09:"))
 						continue;
 					if(!get_cclk(buf)){

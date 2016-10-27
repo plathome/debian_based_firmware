@@ -46,7 +46,12 @@ void die(int);
 #endif
 
 #define PID_FILE	"/var/run/pshd.pid"
+#if defined(CONFIG_OBSVX1)
+#define INITSW		"/sys/class/gpio/gpio345/value"
+#else
 #define INITSW		"/sys/class/gpio/gpio14/value"
+#endif
+#define READ_PATH	"/tmp/.pshd"
 #define REBOOT		2 * 1000
 #define HALT		3 * 1000	/* HALT 5 sec (REBOOT + 3) */
 #define RED		1
@@ -133,17 +138,40 @@ int getINITSW(int epfd, int fd, int tout, int *val)
 	return 1;
 }
 
+void system_exec(void) {
+
+	FILE *fp ;
+	char buf[1024] ;
+
+	memset(buf , 0x00 , sizeof(buf));
+
+	if ( (fp = fopen(READ_PATH, "r"))  == NULL ) {
+		return ;
+	}
+
+	if ( fgets(buf , sizeof(buf) , fp) == NULL ) {
+		fclose(fp) ;
+		return ;
+	}
+
+	fclose(fp) ;
+
+	system(buf);
+
+	return ;
+}
+
 void watch_pushsw(void)
 {
 	struct epoll_event ev;
 	int fd, epfd, val, ret;
 
 	if((epfd = epoll_create(1)) == -1){
-D("%d\n", __LINE__);
+//D("%d\n", __LINE__);
 		return;
 	}
 	if((fd = open(INITSW, O_RDWR | O_NONBLOCK)) == -1){
-D("%d\n", __LINE__);
+//D("%d\n", __LINE__);
 		close(epfd);
 		return;
 	}
@@ -153,49 +181,47 @@ D("%d\n", __LINE__);
 	ev.data.fd = fd;
 
 	if(epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &ev) == -1){
-D("%d\n", __LINE__);
+//D("%d\n", __LINE__);
 		return;
 	}
 	while(flag){
-D("%d\n", __LINE__);
+//D("%d\n", __LINE__);
 		ret = getINITSW(epfd, fd, -1, &val);
-D("ret=%d val=%d\n", ret, val);
+//D("ret=%d val=%d\n", ret, val);
 		if(ret == 0){
 			continue;
 		}
 		else if(ret == 1 && val == 0){
 			ret = getINITSW(epfd, fd, REBOOT, &val);
-D("ret=%d val=%d\n", ret, val);
+//D("ret=%d val=%d\n", ret, val);
 			if(ret == 1 || ret == -1){
-D("ret=%d\n", ret);
+//D("ret=%d\n", ret);
 				continue;
 			}
-			kill_runled();
-			setLED("0", "1", "1");
-D("%d\n", __LINE__);
+			//kill_runled();
+			//setLED("0", "1", "1");
+//D("%d\n", __LINE__);
 			ret = getINITSW(epfd, fd, HALT, &val);
-D("ret=%d val=%d\n", ret, val);
+//D("ret=%d val=%d\n", ret, val);
 			if(ret == 1 && val == 1){
-D("REBOOT!!\n");
-				execl("/sbin/shutdown", "shutdown", "-r", "now", NULL);
-				break;
+//D("REBOOT!!\n");
+				system_exec();
 			}
 			else if(ret == 0){
-				setLED("0", "0", "1");
+				//setLED("0", "0", "1");
 			}
 
 			val = 0;
 			do{
-D("%d\n", __LINE__);
+//D("%d\n", __LINE__);
 				ret = getINITSW(epfd, fd, 1000, &val);
-D("ret=%d val=%d\n", ret, val);
+//D("ret=%d val=%d\n", ret, val);
 				if(ret == -1){
 					break;
 				}
 			} while(!ret);
-D("HALT!!\n");
-			execl("/sbin/shutdown", "shutdown", "-h", "now", NULL);
-			break;
+//D("HALT!!\n");
+			system_exec();
 		}
 	}
 	close(fd);

@@ -49,6 +49,9 @@ FIRM_DIR=$(dirname $FIRM)
 if [ "$MODEL" == "obsbx1" ]; then
 	DESCRIPTION="Linux firmware for OpenBlocks IoT BX1"
 	TARGET=$MODEL
+elif [ "$MODEL" == "obsvx1" ]; then
+	DESCRIPTION="Linux firmware for OpenBlocks IoT VX1"
+	TARGET=$MODEL
 elif [ "$MODEL" == "bpv4-h" ]; then
 	DESCRIPTION="Linux firmware for Based Platform V Hinemos"
 	MODEL="bpv4"

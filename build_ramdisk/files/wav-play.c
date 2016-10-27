@@ -27,8 +27,9 @@ int read_header(char *fname, struct WAVE* wave)
 {
 	FILE *fp;
 	char top[12], buf[4];
+	unsigned char tmp[4];
 	int len;
-	char* p;
+	unsigned char* p;
 
 	if((fp = fopen(fname, "r")) == NULL){
 		printf("%d: %s(%s)\n", __LINE__, strerror(errno), fname);
@@ -71,7 +72,8 @@ int read_header(char *fname, struct WAVE* wave)
 		fclose(fp);
 		return -1;
 	}
-	len = buf[0] + (buf[1] << 8) + (buf[2] << 16) + (buf[3] << 24);
+	memcpy(tmp, buf, sizeof(buf));
+	len = tmp[0] + (tmp[1] << 8) + (tmp[2] << 16) + (tmp[3] << 24);
 	if((p = malloc(len)) == NULL){
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		fclose(fp);
@@ -111,7 +113,8 @@ int read_header(char *fname, struct WAVE* wave)
 		fclose(fp);
 		return -1;
 	}
-	wave->len = buf[0] + (buf[1] << 8) + (buf[2] << 16) + (buf[3] << 24);
+	memcpy(tmp, buf, sizeof(buf));
+	wave->len = tmp[0] + (tmp[1] << 8) + (tmp[2] << 16) + (tmp[3] << 24);
 	wave->hlen = ftell(fp);
 
 	fclose(fp);

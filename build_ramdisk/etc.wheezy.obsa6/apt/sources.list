@@ -7,4 +7,7 @@ deb-src http://cdn.debian.or.jp/debian/ wheezy-updates main
 #deb http://cdn.debian.or.jp/debian/ wheezy-backports main
 #deb-src http://cdn.debian.or.jp/debian/ wheezy-backports main
 
+deb http://security.debian.org wheezy/updates main
+deb-src http://security.debian.org wheezy/updates main
+
 deb http://ftp.plathome.co.jp/pub/OBSA6/debian/wheezy ./
