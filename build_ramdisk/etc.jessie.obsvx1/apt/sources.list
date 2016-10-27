@@ -10,4 +10,4 @@ deb-src http://cdn.debian.or.jp/debian/ jessie-updates main
 deb http://security.debian.org jessie/updates main
 deb-src http://security.debian.org jessie/updates main
 
-#deb http://ftp.plathome.co.jp/pub/OBSVX1/debian/jessie ./
+deb http://ftp.plathome.co.jp/pub/OBSVX1/debian/jessie ./
