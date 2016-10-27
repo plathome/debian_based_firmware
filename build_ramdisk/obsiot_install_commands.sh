@@ -55,18 +55,20 @@ obsbx1)
 	mkdir -p ${BUILDDIR}
 
 	echo "HOSTAPD"
-	if [ -d ${FILESDIR}/hostapd ]; then
-		if [ ! -f ${FILESDIR}/hostapd/.config ]; then
-			cp ${FILESDIR}/hostapd/hostapd/defconfig ${FILESDIR}/hostapd/hostapd/.config
-			echo "CONFIG_IEEE80211N=y" >> ${FILESDIR}/hostapd/hostapd/.config
-			echo "CONFIG_IEEE80211AC=y" >> ${FILESDIR}/hostapd/hostapd/.config
+	if [ ${DIST} != "jessie" ]; then
+		if [ -d ${FILESDIR}/hostapd ]; then
+			if [ ! -f ${FILESDIR}/hostapd/.config ]; then
+				cp ${FILESDIR}/hostapd/hostapd/defconfig ${FILESDIR}/hostapd/hostapd/.config
+				echo "CONFIG_IEEE80211N=y" >> ${FILESDIR}/hostapd/hostapd/.config
+				echo "CONFIG_IEEE80211AC=y" >> ${FILESDIR}/hostapd/hostapd/.config
+			fi
+			if cat /etc/debian_version | grep -q "^7"; then
+				echo "CONFIG_LIBNL20=y" >> ${FILESDIR}/hostapd/hostapd/.config
+			else
+				echo "CONFIG_LIBNL32=y" >> ${FILESDIR}/hostapd/hostapd/.config
+			fi
+			(cd ${FILESDIR}/hostapd/hostapd;CFLAGS="$CFLAGS -MMD" LDFLAGS="-m32" CC=gcc make;DESTDIR=${DISTDIR} make install)
 		fi
-		if cat /etc/debian_version | grep -q "^7"; then
-			echo "CONFIG_LIBNL20=y" >> ${FILESDIR}/hostapd/hostapd/.config
-		else
-			echo "CONFIG_LIBNL32=y" >> ${FILESDIR}/hostapd/hostapd/.config
-		fi
-		(cd ${FILESDIR}/hostapd/hostapd;CFLAGS="$CFLAGS -MMD" LDFLAGS="-m32" CC=gcc make;DESTDIR=${DISTDIR} make install)
 	fi
 
 	echo "WD-KEEPALIVE"
@@ -92,7 +94,8 @@ obsbx1)
 	$CC -o ${BUILDDIR}/brcm_patchram_plus ${FILESDIR}/brcm_patchram_plus.c $CFLAGS
 
 	echo "HUB-CTRL"
-	_CFLAGS="$CFLAGS -lusb"
+	apt-get -y install libusb-dev:i386
+	_CFLAGS="$CFLAGS -lusb "
 	$CC -o ${BUILDDIR}/hub-ctrl ${FILESDIR}/hub-ctrl.c $_CFLAGS
 
 	echo "BLUETOOTH_RFKILL_EVENT"
@@ -124,8 +127,69 @@ obsbx1)
 	fi
 	cp ${FILESDIR}/obsiot-modem.sh ${DISTDIR}/usr/sbin/obsiot-modem.sh
 	chmod 555 ${DISTDIR}/usr/sbin/obsiot-modem.sh
+	cp ${FILESDIR}/obsiot-power.sh ${DISTDIR}/usr/sbin/obsiot-power.sh
+	chmod 555 ${DISTDIR}/usr/sbin/obsiot-power.sh
 	cp ${FILESDIR}/retrieve_crashlog.sh ${DISTDIR}/usr/sbin/retrieve_crashlog.sh
 	chmod 555 ${DISTDIR}/usr/sbin/retrieve_crashlog.sh
+;;
+obsvx1)
+	BUILDDIR=/tmp/obstools.$$
+	LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
+
+	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -mstackrealign -fno-omit-frame-pointer -DCONFIG_OBSVX1"
+
+	mkdir -p ${BUILDDIR}
+
+	echo "WD-KEEPALIVE"
+	$CC -o ${BUILDDIR}/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
+
+	echo "OBS-UTIL"
+	$CC -o ${BUILDDIR}/obs-util ${FILESDIR}/obs-util.c $CFLAGS
+
+	echo "KOSANU"
+	$CC -o ${BUILDDIR}/kosanu ${FILESDIR}/kosanu.c $CFLAGS
+
+	echo "RUNLED"
+	$CC -o ${BUILDDIR}/runled ${FILESDIR}/runled_bx1.c $CFLAGS
+
+	echo "PSHD"
+	$CC -o ${BUILDDIR}/pshd ${FILESDIR}/pshd_bx1.c $CFLAGS
+
+	echo "ATCMD"
+	$CC -o ${BUILDDIR}/atcmd ${FILESDIR}/atcmd.c $CFLAGS
+
+	echo "OBS-HWCLOCK"
+	$CC -o ${BUILDDIR}/obs-hwclock ${FILESDIR}/obs-hwclock.c $CFLAGS
+
+	echo "HUB-CTRL"
+	apt-get -y install libusb-dev
+	_CFLAGS="$CFLAGS -lusb "
+	$CC -o ${BUILDDIR}/hub-ctrl ${FILESDIR}/hub-ctrl.c $_CFLAGS
+
+	echo "WAV-PLAY"
+	_CFLAGS="$CFLAGS -lasound"
+	$CC -o ${BUILDDIR}/wav-play ${FILESDIR}/wav-play.c $_CFLAGS
+
+	echo "OBSVX1-MODEM"
+	$CC -o ${BUILDDIR}/obsvx1-modem ${FILESDIR}/obsvx1-modem.c $CFLAGS
+
+	echo "OBSVX1-GPIO"
+	$CC -o ${BUILDDIR}/obsvx1-gpio ${FILESDIR}/obsvx1-gpio.c $CFLAGS
+
+	echo;echo;echo
+	(cd ${BUILDDIR}; ls -l wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wav-play obsvx1-modem obsvx1-gpio)
+
+	for cmd in wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wav-play obsvx1-modem obsvx1-gpio; do
+		(cd ${BUILDDIR}; install -c -o root -g root -m 555 $cmd ${DISTDIR}/usr/sbin/$cmd)
+		$STRIP ${DISTDIR}/usr/sbin/$cmd
+	done
+
+	cp ${FILESDIR}/chksignal.sh ${DISTDIR}/usr/sbin/
+	chmod 555 ${DISTDIR}/usr/sbin/chksignal.sh
+	cp ${FILESDIR}/obsiot-modem.sh ${DISTDIR}/usr/sbin/obsiot-modem.sh
+	chmod 555 ${DISTDIR}/usr/sbin/obsiot-modem.sh
+	cp ${FILESDIR}/obsiot-power.sh ${DISTDIR}/usr/sbin/obsiot-power.sh
+	chmod 555 ${DISTDIR}/usr/sbin/obsiot-power.sh
 ;;
 *)
 ;;
@@ -136,6 +200,13 @@ chmod 555 ${DISTDIR}/usr/sbin/flashcfg
 
 cp ${FILESDIR}/hwclock.sh ${DISTDIR}/usr/local/sbin/hwclock
 chmod 555 ${DISTDIR}/usr/local/sbin/hwclock
+
+if [ "$TARGET" == "obsvx1" ]; then
+	cp ${FILESDIR}/install-firmware.sh ${DISTDIR}/usr/sbin/install-firmware.sh
+	chmod 555 ${DISTDIR}/usr/sbin/install-firmware.sh
+	cp ${FILESDIR}/cp2130/libslab_usb_spi.so.1.0 ${DISTDIR}/lib/x86_64-linux-gnu/
+	cp ${FILESDIR}/cp2130/SLAB_USB_SPI.h ${DISTDIR}/usr/include/
+fi
 
 rm -rf ${BUILDDIR}
 

@@ -29,11 +29,11 @@
 . `dirname $0`/config.sh
 
 DIST_LIST="(wheezy|jessie)"
-TARGET_LIST="(obsmv4|bpv4|bpv4-h|bpv8|obsbx1|obsa6|obsa7|obsax3|obs600)"
+TARGET_LIST="(obsvx1|obsmv4|bpv4|bpv4-h|bpv8|obsbx1|obsa6|obsa7|obsax3|obs600)"
 
 function _usage(){
 	echo
-	echo "usage: $(basename $0) -M [obsmv4|bpv4|bpv4-h|bpv8|obsbx1|obsa6|obsa7|obsax3|obs600] -D [wheezy|jessie]"
+	echo "usage: $(basename $0) -M [obsvx1|obsmv4|bpv4|bpv4-h|bpv8|obsbx1|obsa6|obsa7|obsax3|obs600] -D [wheezy|jessie]"
 	echo
 	exit 1
 }

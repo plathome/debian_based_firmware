@@ -70,7 +70,7 @@ if [ "$TARGET" == "obs600" ]; then
 elif [ "$TARGET" == "obsvx1" ]; then
 	if [ "$DIST" == "jessie" ]; then
 		INCLUDE="openssh-server,strace,acpi-support-base"
-		INCLUDE="$INCLUDE,wpasupplicant,ppp,wireless-tools,ethtool,busybox,bluez,iw,sysvinit,sysvinit-utils,dosfstools,libasound2,parted,strace"
+		INCLUDE="$INCLUDE,wpasupplicant,ppp,wireless-tools,ethtool,bluez,iw,sysvinit,sysvinit-utils,dosfstools,libasound2,parted,bzip2"
 		EXCLUDE="nano"
 	fi
 elif [ "$TARGET" == "obsbx1" ]; then
@@ -80,7 +80,7 @@ elif [ "$TARGET" == "obsbx1" ]; then
 		EXCLUDE="nano"
 	else
 		INCLUDE="openssh-server,strace,acpi-support-base"
-		INCLUDE="$INCLUDE,wpasupplicant,ppp,wireless-tools,ethtool,busybox,bluez,iw,sysvinit,sysvinit-utils,dosfstools,libasound2,parted,strace"
+		INCLUDE="$INCLUDE,wpasupplicant,ppp,wireless-tools,ethtool,busybox,bluez,iw,sysvinit,sysvinit-utils,dosfstools,libasound2,parted"
 		EXCLUDE="nano"
 	fi
 elif [ "$DIST" == "jessie" ]; then

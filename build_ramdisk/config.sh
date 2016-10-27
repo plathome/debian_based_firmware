@@ -135,6 +135,14 @@ jessie)
 		RAMDISK_SIZE=1024
 		DEFCONFIG=bpv4_defconfig
 	;;
+	obsvx1)
+		KERNEL=4.4.26
+		ISOFILE=debian-8.5.0-amd64-DVD-1.iso
+		PATCHLEVEL=1
+		RAMDISK_SIZE=240
+#		ENA_VIRT=true
+		DEFCONFIG=obsvx1_defconfig
+	;;
 	obsbx1)
 		KERNEL=3.10.17
 		ARCH=i386
@@ -143,8 +151,9 @@ jessie)
 		RAMDISK_SIZE=250
 	;;
 	obsax3)
+KERNEL=4.4.23
 		DTBFILE=armada-xp-openblocks-ax3-4.dtb
-		ISOFILE=debian-8.5.0-armhf-DVD-1.iso
+		ISOFILE=debian-8.3.0-armhf-DVD-1.iso
 		RAMDISK_SIZE=180
 		PATCHLEVEL=0
 		ARCH=armhf

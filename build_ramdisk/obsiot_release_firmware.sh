@@ -44,7 +44,9 @@ VERSION=${KERNEL}-${PATCHLEVEL}
 
 (cd ${LINUX_SRC}; make INSTALL_MOD_PATH=${MOUNTDIR} ${KERN_COMPILE_OPTS} modules_install)
 cp -f ${LINUX_SRC}/System.map ${MOUNTDIR}/boot/
-if [ "$TARGET" == "obsbx1" ]; then
+
+case "$TARGET" in
+obsbx1)
 	echo "8812AU"
 	if [ ${KERNEL} == "3.10.17" ]; then
 		LOCAL_VER="-poky-edison"
@@ -59,9 +61,23 @@ if [ "$TARGET" == "obsbx1" ]; then
 	fi
 
 	mkdir -p ${MOUNTDIR}/factory
-	rm -f ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/source ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/build
-else
-	rm -f ${MOUNTDIR}/lib/modules/${KERNEL}/source ${MOUNTDIR}/lib/modules/${KERNEL}/build
+	;;
+obsvx1)
+	echo "8821AE"
+	if [ -d ${FILESDIR}/rtl8821AE_WiFi_linux_v5.1.4_18410-beta ]; then
+		(cd ${FILESDIR}/rtl8821AE_WiFi_linux_v5.1.4_18410-beta;	\
+			make KSRC=${LINUX_SRC} USER_EXTRA_CFLAGS='-Wno-error=date-time';	\
+			mkdir -p ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/kernel/drivers/net/wireless;	\
+			make install MODDESTDIR=${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/kernel/drivers/net/wireless)
+	fi
+	;;
+*)
+	;;
+esac
+rm -f ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/source ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/build
+
+if [ -d ${FILESDIR}/firmware-${TARGET} ]; then
+	cp -a ${FILESDIR}/firmware-${TARGET}/* ${MOUNTDIR}/lib/firmware
 fi
 
 if [ "$TARGET" == "obsbx1" ]; then
@@ -79,6 +95,13 @@ fi
 cp -f ${LINUX_SRC}/System.map ${RELEASEDIR}
 
 case $TARGET in
+obsvx1)
+	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/bzImage ${RELEASEDIR}
+	${COMP} -${COMP_LVL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/initrd.${COMPEXT}
+	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
+	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-obsiot.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/bzImage ${RELEASEDIR}/initrd.${COMPEXT} dummy ${FILESDIR}/flashcfg.sh ${RELEASEDIR}/MD5.${TARGET} dummy)
+	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
+	;;
 bpv4*|bpv8)
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/bzImage ${RELEASEDIR}
 	${COMP} -${COMP_LVL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/ramdisk-bpv.img.${COMPEXT}

@@ -45,13 +45,9 @@ mount -o loop ${_RAMDISK_IMG} ${MOUNTDIR}
 
 (cd ${DISTDIR};tar --numeric-owner --exclude=${QEMU_BIN} -cpf - . | tar -xf - -C ${MOUNTDIR})
 
-if [ "$ENA_VIRT" == "true" -a -f ${EXTRADEBDIR}/virtimg-${DIST}.tar.xz ]; then
-	tar -xJf ${EXTRADEBDIR}/virtimg-${DIST}.tar.xz -C ${MOUNTDIR}
+if [ "$ENA_VIRT" == "true" -a -f ${EXTRADEBDIR}/virtimg-${TARGET}-${DIST}.tar.xz ]; then
+	tar -xJf ${EXTRADEBDIR}/virtimg-${TARGET}-${DIST}.tar.xz -C ${MOUNTDIR}
 fi
-
-#if [ "$TARGET" == "obsbx1" -a -f ${EXTRADEBDIR}/obsbx1_python.tar.xz ]; then
-#	tar -xJf ${EXTRADEBDIR}/obsbx1_python.tar.xz -C ${MOUNTDIR}
-#fi
 
 case "$TARGET" in
 bpv*)

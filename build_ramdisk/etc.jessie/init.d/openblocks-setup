@@ -48,6 +48,8 @@ NAME="openblocks-setup"
 
 [ -f /etc/default/openblocks ] && . /etc/default/openblocks
 
+echo -e "\033[0m"
+
 RW_DIR="${RW_DIR:=/.rw}"
 RW_CF_LABEL="${RW_CF_LABEL:=DEBIAN}"
 CONFIG_LABEL="${CONFIG_LABEL:=DEB_CONFIG}"
@@ -113,7 +115,11 @@ restore_func(){
 WORK_DIR=/tmp/_tmpfs.$$
 
 	mkdir -p ${WORK_DIR}
-	mount ${SAVE_DIR} ${WORK_DIR} -r
+	if [ "$MODEL" == "obsvx1" ]; then
+		mount `findfs LABEL=${SAVE_DIR}` ${WORK_DIR} -r
+	else
+		mount ${SAVE_DIR} ${WORK_DIR} -r
+	fi
 	echo -n "Extract userland files... "
 	if (tar xpzmf ${WORK_DIR}/userland.tgz -C ${RW_DIR} > /dev/null 2>&1); then
 		echo "done."
@@ -287,6 +293,8 @@ start)
 
 	# check cf with LABEL=${RW_CF_LABEL}
 	rwdev=`findfs LABEL=${RW_CF_LABEL} 2> /dev/null`
+	grep -q 'noeasyblocks=1' /proc/cmdline && rwdev=""
+
 
 	# check aufs support
 	if grep -q aufs /proc/filesystems ; then
@@ -323,7 +331,7 @@ start)
 				$extract_func ${MTD_USER_DEV}
 				$extract_func ${MTD_CONF_DEV}
 			;;
-			obsbx1)
+			obsbx1|obsvx1)
 				restore_func
 			;;
 			esac

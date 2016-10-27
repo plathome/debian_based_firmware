@@ -52,7 +52,8 @@ obs*)
 	;;
 esac
 
-if [ ${TARGET} == "obsbx1" ]; then
+case ${TARGET} in
+obsbx1|obsvx1)
 	chmod 755 ${DISTDIR}/etc/init.d/bluetooth
 	chroot ${DISTDIR} /sbin/insserv -rf bluetooth
 	chroot ${DISTDIR} /sbin/insserv bluetooth
@@ -70,12 +71,18 @@ if [ ${TARGET} == "obsbx1" ]; then
 		chroot ${DISTDIR} /sbin/insserv -rf enable-pm
 		chroot ${DISTDIR} /sbin/insserv enable-pm
 	fi
-fi
+	if [ "$TARGET" == "obsvx1" ]; then
+		chmod 755 ${DISTDIR}/etc/init.d/instfirm
+		chroot ${DISTDIR} /sbin/insserv -rf instfirm
+		chroot ${DISTDIR} /sbin/insserv instfirm
+	fi
+	;;
+*)
+	;;
+esac
 chroot ${DISTDIR} /sbin/insserv
 
 touch ${DISTDIR}/etc/init.d/.legacy-bootordering
-
-#printf "0.0 0 0.0\n0\nUTC\n" > ${DISTDIR}/etc/adjtime
 
 if [ -f ${DISTDIR}/etc/modules ]; then
 	if grep -q "^ipv6" ${DISTDIR}/etc/modules; then

@@ -41,9 +41,14 @@
 #include <syslog.h>
 #include <errno.h>
 
-#define WD_FILE		"/dev/watchdog"
 #define PID_FILE	"/var/run/wd-keepalive.pid"
+#if defined(CONFIG_OBSVX1)
+#define INTERVAL	20
+#define WD_FILE		"/dev/watchdog0"
+#else
 #define INTERVAL	30
+#define WD_FILE		"/dev/watchdog"
+#endif
 
 static int forever;
 

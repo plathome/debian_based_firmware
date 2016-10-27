@@ -35,7 +35,11 @@
 const char *path = "/usr/sbin/";
 const char *slave = "0xa0";
 const char *command = "kosanu";
+#if defined(CONFIG_OBSVX1)
+const char *channel = "7";
+#else
 const char *channel = "1";
+#endif
 
 int main(int ac, char* av[])
 {

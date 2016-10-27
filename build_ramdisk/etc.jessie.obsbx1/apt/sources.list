@@ -7,4 +7,7 @@ deb-src http://cdn.debian.or.jp/debian/ jessie main
 deb http://cdn.debian.or.jp/debian/ jessie-updates main
 deb-src http://cdn.debian.or.jp/debian/ jessie-updates main
 
+deb http://security.debian.org jessie/updates main
+deb-src http://security.debian.org jessie/updates main
+
 deb http://ftp.plathome.co.jp/pub/BX1/debian/jessie ./

@@ -30,8 +30,8 @@
 ls ${EXTRADEBDIR}/*${ARCH}.deb 2> /dev/null
 if [ $? -eq 0 ]; then
 	rm -f ${DISTDIR}/*.deb
-	cp ${EXTRADEBDIR}/*${ARCH}.deb ${DISTDIR}/ 2> /dev/null
-	cp ${EXTRADEBDIR}/*all.deb ${DISTDIR}/ 2> /dev/null
+	rsync ${EXTRADEBDIR}/*${ARCH}.deb ${DISTDIR}/ ${EXCLUDE}
+	rsync ${EXTRADEBDIR}/*all.deb ${DISTDIR}/ ${EXCLUDE}
 
 	debs=$(cd ${DISTDIR}/; ls -1 *${ARCH}.deb 2> /dev/null)
 	debs+=" $(cd ${DISTDIR}/; ls -1 *all.deb 2> /dev/null)"

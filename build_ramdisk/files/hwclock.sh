@@ -25,6 +25,13 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
+[ -f /etc/default/openblocks ] && . /etc/default/openblocks
+case $MODEL in
+obsbx1) HWCLOCK=/usr/local/bin/hwclock ;;
+*) HWCLOCK=/sbin/hwclock ;;
+esac
+
+
 usage()
 {
 	echo -e "--systohc\t: set the hardware clock from the system time"
@@ -85,10 +92,10 @@ elif [ $? == 127 ]; then
 else
 	case $@ in
 	--alarm*|--clear*|--init|--status|--check)
-		/usr/local/bin/hwclock --help
+		$HWCLOCK --help
 	;;
 	*)
-		/usr/local/bin/hwclock $@	
+		$HWCLOCK $@	
 	;;
 	esac
 fi
