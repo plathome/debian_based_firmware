@@ -177,9 +177,9 @@ int set_power(char *val)
 int set_power_u200(int val, char *gpio_pin)
 {
 #if defined(CONFIG_OBSVX1)
-	system("/usr/sbin/obsvx1-modem power high");
-	sleep(3);
 	system("/usr/sbin/obsvx1-modem power low");
+	sleep(1);
+	system("/usr/sbin/obsvx1-modem power high");
 #else
 	int fd;
 
