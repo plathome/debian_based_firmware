@@ -72,11 +72,14 @@ function _get_md5() {
 	if [ $1 == "kernel" ]; then
 		obj="bzImage"
 	elif [ $1 == "ramdisk" ]; then
-		if [ "$MODEL" == "obsvx1" ]; then
+		case $MODEL in
+		obsbx1|obsvx1)
 			obj="initrd.gz"
-		else
+			;;
+		*)
 			obj="ramdisk-wheezy.${MODEL}.img.gz"
-		fi
+			;;
+		esac
 	fi
 
 	if [ -f "${FIRM_FILE}/MD5.${MODEL}" ]; then
@@ -568,8 +571,10 @@ firmware)
 	obsbx1|obsvx1)
 		if [ -e "${FIRM_FILE}/initrd.gz" ]; then
 			RAMDISK="initrd.gz"
+#			_RAMDISK="ramdisk-wheezy.obsbx1.img.gz"
 		else
 			RAMDISK="ramdisk-wheezy.obsbx1.img.gz"
+#			_RAMDISK="initrd.gz"
 		fi
 		# check MD5
 		_get_md5 ramdisk
@@ -601,8 +606,10 @@ firmware)
 		rm -f ${WORK_DIR}/openblocks-release
 		rm -f ${WORK_DIR}/bzImage
 		rm -f ${WORK_DIR}/${RAMDISK}
+#		rm -f ${WORK_DIR}/${RAMDISK} ${WORK_DIR}/${_RAMDISK}
 
 		# ramdisk
+		_get_md5 ramdisk
 		for i in {1..5}; do
 			cp -f ${FIRM_FILE}/${RAMDISK} ${WORK_DIR}
 			if [ $? != 0 ]; then
@@ -617,12 +624,13 @@ firmware)
 				echo "${WORK_DIR}/${RAMDISK}: MD5.${MODEL}=$MD5_RET, dest=$val"
 			fi
 		done
-		if [ $i == 6 ]; then
+		if [ $i == 5 ]; then
 			echo "$LINENO: retry over, write firmware failed."
 			exit 1
 		fi
 
 		# kernel
+		_get_md5 kernel
 		for i in {1..5}; do
 			cp -f ${FIRM_FILE}/bzImage ${WORK_DIR}
 			if [ $? != 0 ]; then
@@ -637,7 +645,7 @@ firmware)
 				echo "MD5.${MODEL}=$MD5_RET, dest=$val"
 			fi
 		done
-		if [ $i == 6 ]; then
+		if [ $i == 5 ]; then
 			echo "$LINENO: retry over, write firmware failed."
 			exit 1
 		fi
