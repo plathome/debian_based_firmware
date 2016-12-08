@@ -88,7 +88,14 @@ bpv4*|bpv8)
 *)
 	cp -f $INITRD $pkgdir/etc/
 	if [ -d $UBOOTENVPATH ]; then
-		cp -f $UBOOTENVPATH/update_ubootenv.sh $pkgdir/etc/
+		case $INITRD in
+		*initrd.gz)
+			cp -f $UBOOTENVPATH/update_ubootenv-jessie.sh $pkgdir/etc/update_ubootenv.sh
+			;;
+		*)
+			cp -f $UBOOTENVPATH/update_ubootenv-wheezy.sh $pkgdir/etc/update_ubootenv.sh
+			;;
+		esac
 		cp -f $UBOOTENVPATH/fw_printenv $pkgdir/etc/
 		cp -f $UBOOTENVPATH/fw_env.config $pkgdir/etc/
 	fi
