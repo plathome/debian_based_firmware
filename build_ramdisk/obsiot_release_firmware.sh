@@ -64,8 +64,8 @@ obsbx1)
 	;;
 obsvx1)
 	echo "8821AE"
-	if [ -d ${FILESDIR}/rtl8821AE_WiFi_linux_v5.1.4_18410-beta ]; then
-		(cd ${FILESDIR}/rtl8821AE_WiFi_linux_v5.1.4_18410-beta;	\
+	if [ -d ${FILESDIR}/rtl8821ae ]; then
+		(cd ${FILESDIR}/rtl8821ae; \
 			make KSRC=${LINUX_SRC} USER_EXTRA_CFLAGS='-Wno-error=date-time';	\
 			mkdir -p ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/kernel/drivers/net/wireless;	\
 			make install MODDESTDIR=${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/kernel/drivers/net/wireless)

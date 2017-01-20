@@ -66,14 +66,18 @@ default_env(){
 obsiot_env(){
 	fw_setenv env_version 'a'
 	fw_setenv rootfs 'root=/dev/ram'
-	fw_setenv stdcmd 'run bootDebian'
-	fw_setenv bootcmd 'mw.l 0xff008030 0x0;setexpr.b ret *0xff008018 \\& 0x20;if test.b \${ret} != 0;then run stdcmd;fi;'
-	fw_setenv bootDebian 'echo "Target:\${target_name}";run chkmodel;run do_partition; run do_handle_bootargs_mode;'
-	fw_setenv mmc-bootargs 'setenv bootargs \${rootfs} rw \${bootargs_console} \${bootargs_debug} systemd.unit=\${bootargs_target}.target hardware_id=\${hardware_id} g_multi.iSerialNumber=\${serial#} \${miscargs} \${noflashcfg} \${obsiot}'
-	fw_setenv load_kernel 'fatload mmc 0:7 \${loadaddr} bzImage;fatload mmc 0:7 0x8000000 initrd.gz'
-	fw_setenv boot_target_cmd 'run do_flash_os;run do_probe_dfu;run do_compute_target;run chkinit;run mmc-bootargs;mw.l 0xff008020 0x00458000;mw.l 0xff008038 0x00018000;run load_kernel;zboot \${loadaddr} 0x0 0x8000000 0x5000000'
+	fw_setenv kernel_img 'bzImage'
+	fw_setenv initrd_img 'initrd.gz'
+	fw_setenv initrd_addr '0x10000000'
+	fw_setenv bootcmd 'setenv firm_part 0:7;run bootDebian;'
+	fw_setenv bootDebian 'echo "Target:\${target_name}";run chkmodel;run chkmodem;run do_partition; run do_handle_bootargs_mode;'
+	fw_setenv mmc-bootargs 'setenv bootargs \${rootfs} rw \${bootargs_console} \${bootargs_debug} systemd.unit=\${bootargs_target}.target hardware_id=\${hardware_id} g_multi.iSerialNumber=\${serial#} \${miscargs} \${noflashcfg} \${obsiot} \${modem}'
+	fw_setenv load_kernel 'fatload mmc \${firm_part} \${loadaddr} \${kernel_img};fatload mmc \${firm_part} \${initrd_addr} \${initrd_img};setenv initrd_size 0x\${filesize}'
+	fw_setenv boot_target_cmd 'run do_flash_os;run do_probe_dfu;run do_compute_target;run chkinit;run mmc-bootargs;mw.l 0xff008020 0x00458000;mw.l 0xff008038 0x00018000;run load_kernel;zboot \${loadaddr} 0x0 \${initrd_addr} ${initrd_size}'
 	fw_setenv chkinit 'setexpr.b ret *0xff008005 \\& 0x40;if test.b \${ret} = 0;then setenv noflashcfg noflashcfg=1;else setenv noflashcfg;fi;'
 	fw_setenv chkmodel 'setexpr.b dip1 *0xff008009 \\& 0x10;if test.b ${dip1} != 0;then setenv obsiot obsiot=bx1;else setenv obsiot obsiot=ex1;fi;'
+	fw_setenv chkmodem 'setexpr.b dip1 *0xff008009 \\& 0x70;mw.l 0xff008030 0x0;setexpr.b dip2 *0xff008018 \\& 0x20;setenv modem modem="\${dip1}\${dip2}";'
+	fw_setenv bootRecovery 'setenv firm_part 0:9; setenv miscargs \$miscargs noflashcfg=1 noeasyblocks=1;run bootDebian;'
 }
 
 usage(){

@@ -73,37 +73,97 @@ obsvx1)
 	;;
 esac
 
-case "$id2$id1$id0" in
-000)			# EX1 none or BX0
-	echo "none"
-	exit 0
+case $MODEL in
+obsvx1)
+	case "$id2$id1$id0" in
+	000)			# EX1 none or BX0
+		echo "none"
+		exit 0
+		;;
+	010)			# EX1 UM04-KO
+		echo "UM04"
+		exit 2
+		;;
+	100)			# EX1 KYM11/12
+		echo "KYM11"
+		exit 4
+		;;
+	110)			# EX1 U200/U270
+		echo "U200E"
+		exit 6
+		;;
+	101)			# BX3 U200/U270
+		echo "U200"
+		exit 5
+		;;
+	111)			# BX1 EHS6
+		echo "EHS6"
+		exit 7
+		;;
+	011)			# BX3 U200/U270
+		echo "ERROR ($id2$id1$id0)"
+		exit 8
+		;;
+	001)
+		echo "S710E"
+		exit 9
+		;;
+	*)
+		echo "ERROR ($id2$id1$id0)"
+		exit 8
+		;;
+	esac
 	;;
-010)			# EX1 UM04-KO
-	echo "UM04"
-	exit 2
-	;;
-100)			# EX1 KYM11/12
-	echo "KYM11"
-	exit 4
-	;;
-110)			# EX1 U200/U270
-	echo "U200E"
-	exit 6
-	;;
-101)			# BX3 U200/U270
-	echo "U200"
-	exit 5
-	;;
-111)			# BX1 EHS6
-	echo "EHS6"
-	exit 7
-	;;
-011)			# BX3 U200/U270
-	echo "ERROR ($id2$id1$id0)"
-	exit 8
-	;;
-*)
-	echo "ERROR ($id2$id1$id0)"
-	exit 8
+obsbx1)
+	ary=(`cat /proc/cmdline`)
+	for i in `seq 1 ${#ary[@]}`
+	do
+		case ${ary[$i]} in
+		modem*)
+			IFS='='
+			set -- ${ary[$i]}
+			dipsw=$2
+			;;
+		esac
+	done
+
+	case $dipsw in
+	7020)
+		echo "EHS6"
+		exit 7
+		;;
+	5020)
+		echo "U200"
+		exit 5
+		;;
+	1020)
+		echo "S710"
+		exit 10
+		;;
+	6020)
+		echo "U200E"
+		exit 6
+		;;
+	4020)
+		echo "KYM11"
+		exit 4
+		;;
+	2020)
+		echo "UM04"
+		exit 2
+		;;
+	020)
+		echo "none"
+		exit 0
+		;;
+	400)
+		echo "S710E"
+		exit 9
+		;;
+	*)
+		echo "ERROR ($dipsw)"
+		exit 8
+		;;
+	esac
 	;;
 esac

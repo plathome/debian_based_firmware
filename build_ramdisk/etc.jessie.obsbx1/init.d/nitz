@@ -124,24 +124,34 @@ set_time_kym11(){
 	echo "done"
 }
 
+set_time_s710(){
+	echo "done"
+}
+
 case "$1" in
   start)
 	MODEM=`/usr/sbin/obsiot-modem.sh`
 	case $MODEM in
+#	S710E)
+#		echo 200 > $GPIOPATH/export	# 3G modem power
+#		echo low > $GPIOPATH/gpio200/direction
+#		echo 202 > $GPIOPATH/export	# 3G reset
+#		echo high > $GPIOPATH/gpio202/direction
+#		;;
 	U200E|UM04)
 		echo 200 > $GPIOPATH/export	# 3G modem power
 		echo high > $GPIOPATH/gpio200/direction
 		echo 202 > $GPIOPATH/export	# 3G reset
 		echo high > $GPIOPATH/gpio202/direction
 		;;
-	KYM11)
+	KYM11|S710E)
 		echo 202 > $GPIOPATH/export	# 3G reset
 		echo high > $GPIOPATH/gpio202/direction
 		echo 200 > $GPIOPATH/export	# 3G modem power
 		echo low > $GPIOPATH/gpio200/direction
 		if [ ! -e /dev/ttyACM0 ]; then
 			echo 1 > $GPIOPATH/gpio200/value
-			sleep 2
+			sleep 4
 			echo 0 > $GPIOPATH/gpio200/value
 			sleep 20
 		fi
@@ -179,18 +189,23 @@ case "$1" in
 		exit 1
 	fi
 
-	if [ $MODEM == "EHS6" ]; then
+	case $MODEM in
+	EHS6)
 		set_time_ehs6
-	elif [ $MODEM == "U200" ]; then
+		;;
+	U200)
 		set_time_u200
-	elif [ $MODEM == "U200E" -o $MODEM == "KYM11" ]; then
+		;;
+	S710)
+		set_time_s710
+		;;
+	U200E|KYM11|UM04|S710E|none)
 		echo "nitz: skipped time synchronization"
-	elif [ $MODEM == "UM04" -o $MODEM == "none" ]; then
-		echo "nitz: skipped time synchronization"
-	else
+		;;
+	*)
 		echo "fail"
 		exit 1
-	fi
+	esac
 
 	rfkill unblock bluetooth
 	exit 0
@@ -207,6 +222,9 @@ case "$1" in
 			set_time_u200
 		;;
 		KYM11)
+		;;
+		S710*)
+			set_time_s710
 		;;
 		*)
 		;;

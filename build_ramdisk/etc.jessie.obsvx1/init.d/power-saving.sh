@@ -1,11 +1,11 @@
 #! /bin/bash
 ### BEGIN INIT INFO
-# Provides:          nitz
+# Provides:          power-saving
 # Required-Start:    $local_fs $syslog $remote_fs
 # Required-Stop:
 # Default-Start:     2 3 4 5
 # Default-Stop:
-# Short-Description: get NITZ for OBS IoT
+# Short-Description: Power saving for OBSVX1
 # Description:       
 ### END INIT INFO
 #
@@ -34,97 +34,60 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
+# Edit here
+Ethernet=yes
+RS485=yes
+USB_SPI=yes
+
 # Do NOT "set -e"
 
 # PATH should only include /usr/* if it runs after the mountnfs.sh script
 PATH=/usr/local/sbin:/sbin:/usr/sbin:/bin:/usr/bin
-DESC="get NITZ for obs iot"
-NAME=nitz
+DESC="Power saving for OBSVX1"
+NAME=power-saving.sh
 SCRIPTNAME=/etc/init.d/$NAME
-GPIOPATH="/sys/class/gpio"
-ATCMD=/usr/sbin/atcmd
 
 # Read configuration variable file if it is present
 [ -r /etc/default/openblocks ] && . /etc/default/openblocks
 
-set_time_u200(){
-	# check builtin MODEM
-	echo -n "nitz: 3G modem power on : "
-	$ATCMD PON
-	if [ ! -e /dev/ttyACM0 ]; then
-		echo "fail"
-		exit 1
-	fi
-	echo "done"
-
-	echo -n "nitz: check SIM card : "
-	# check SIM card
-	sleep 2
-	val=`$ATCMD CCID`
-	if [ $? == 255 ]; then
-		echo "fail"
-		exit 1
-	fi
-	echo "done"
-
-	echo -n "nitz: time synchronization : "
-	val=`$ATCMD CCLK`
-	if [ $? == 255 ]; then
-		echo "fail"
-		exit 1
-	fi
-	echo "done"
-
-	# set NITZ to SYSTEM
-	date "$val"
-	# set SYSTEM to RTC
-	hwclock --systohc
-}
-
-set_time_kym11(){
-	echo "done"
-}
+PM_Ethernet="/sys/devices/pci0000:00/0000:00:1c.3/0000:04:00.0"
+PM_RS485="/sys/devices/pci0000:00/0000:00:14.0/usb1/1-4/1-4.1"
+PM_USB_SPI="/sys/devices/pci0000:00/0000:00:14.0/usb1/1-4/1-4.2"
 
 case "$1" in
   start)
 	if [ "$MODEL" == "obsvx1" ]; then
-		# initialize LED, INIT
-		GPIOPATH="/sys/class/gpio"
-		echo 342 > $GPIOPATH/export	# LED red
-		[ -d $GPIOPATH/gpio342 ] && echo out > $GPIOPATH/gpio342/direction
-		echo 343 > $GPIOPATH/export	# LED green
-		[ -d $GPIOPATH/gpio343 ] && echo out > $GPIOPATH/gpio343/direction
-		echo 344 > $GPIOPATH/export	# LED blue
-		[ -d $GPIOPATH/gpio344 ] && echo out > $GPIOPATH/gpio344/direction
-		echo 345 > $GPIOPATH/export	# INIT SW
-		[ -d $GPIOPATH/gpio345 ] && echo both > $GPIOPATH/gpio345/edge
-
-		MODEM=`/usr/sbin/obsiot-modem.sh`
-		if [ "$MODEM" != "none" ]; then
-			obsvx1-modem init
-			[ "$MODEM" == "S710" ] && obsvx1-modem power low
-			atcmd PON
+		# Ethernet
+		if [ "$Ethernet" == "yes" ]; then
+			if [ -w ${PM_Ethernet}/power/control ]; then
+				echo auto > ${PM_Ethernet}/power/control
+			else
+				logger -p user.notice -t $NAME "Cannot power saving of Ethernet"
+			fi
+		fi
+		# RS485
+		if [ "$RS485" == "yes" ]; then
+			if [ -w ${PM_RS485}/power/control ]; then
+				echo auto > ${PM_RS485}/power/control
+			else
+				logger -p user.notice -t $NAME "Cannot power saving of RS485"
+			fi
+		fi
+		# USB-SPI
+		if [ "$USB_SPI" == "yes" ]; then
+			if [ -w ${PM_USB_SPI}/power/control ]; then 
+				echo auto > ${PM_USB_SPI}/power/control
+			else
+				logger -p user.notice -t $NAME "Cannot power saving of USB-SPI"
+			fi
 		fi
 	fi
 	;;
   stop)
 	;;
-  settime)
-	MODEM=`/usr/sbin/obsiot-modem.sh`
-	case $MODEM in
-	U200*)
-		set_time_u200
-	;;
-	KYM11)
-		set_time_kym11
-	;;
-	*)
-	;;
-	esac
-	;;
   *)
-	echo "Usage: $SCRIPTNAME {start|stop|settime}" >&2
-	exit 3
+	echo "Usage: $SCRIPTNAME {start|stop}" >&2
+	exit 2
 	;;
 esac
 

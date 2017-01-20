@@ -75,6 +75,9 @@ obsbx1|obsvx1)
 		chmod 755 ${DISTDIR}/etc/init.d/instfirm
 		chroot ${DISTDIR} /sbin/insserv -rf instfirm
 		chroot ${DISTDIR} /sbin/insserv instfirm
+		chmod 755 ${DISTDIR}/etc/init.d/power-saving.sh
+		chroot ${DISTDIR} /sbin/insserv -rf power-saving.sh
+		chroot ${DISTDIR} /sbin/insserv power-saving.sh
 	fi
 	;;
 *)

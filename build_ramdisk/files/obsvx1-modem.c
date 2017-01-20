@@ -26,8 +26,8 @@
 
 #define I2C_NAME "/dev/i2c-5"
 #define SLAVE 0x20
-#define INIT_MODEM	0x70
-#define INIT_OUTPUT	0xFE
+#define INIT_MODEM0	0x70
+#define INIT_MODEM1	0xef
 
 #define POWER "power"
 #define RESET1 "reset1"
@@ -38,7 +38,8 @@
 #define PSHOLD "pshhold"
 #define RSTCHK "rstchk"
 #define RI "ri"
-#define FUPSTS "fupsts"
+//#define FUPSTS "fupsts"
+#define ESIM "esim"
 #define ANT0 "ant0"
 #define ANT1 "ant1"
 #define MOSIND "mosind"
@@ -54,14 +55,11 @@
 #define M_PSHOLD	0x02
 #define M_RSTCHK	0x04
 #define M_RI		0x08
-#define M_FUPSTS	0x10
+//#define M_FUPSTS	0x10
+#define M_ESIM		0x10
 #define M_ANT0		0x20
 #define M_ANT1		0x40
 #define M_MOSIND	0x80
-
-#define U200E	"U200E"
-#define UM04	"UM04"
-#define KYM11	"KYM11"
 
 enum {
 	INPUT0 = 0,
@@ -82,6 +80,7 @@ void usage(char *fname)
 	printf("reset1 [high|low]: change high/low reset of module1\n");
 	printf("reset2 [high|low]: change high/low reset of module2\n");
 	printf("usbrst [high|low]: change high/low reset of usb hub\n");
+	printf("esim   [high|low]: change high/low enable of eSIM\n");
 	printf("init             : initialize gpio\n");
 	printf("raw              : read raw data (DEBUG)\n");
 #if 0
@@ -114,19 +113,14 @@ int open_device(void)
 	return fd;
 }
 
-int read_gpio(unsigned char *val)
+int read_gpio(int reg, unsigned char *val)
 {
 	int fd;
 
 	if((fd = open_device()) < 0)
 		return -1;
 
-	if((val[0] = i2c_smbus_read_byte_data(fd, INPUT0)) == -1){
-		printf("ERR%d: %s\n", __LINE__, strerror(errno));
-		close(fd);
-		return -1;
-	}
-	if((val[1] = i2c_smbus_read_byte_data(fd, INPUT1)) == -1){
+	if((*val = i2c_smbus_read_byte_data(fd, reg)) == -1){
 		printf("ERR%d: %s\n", __LINE__, strerror(errno));
 		close(fd);
 		return -1;
@@ -136,14 +130,14 @@ int read_gpio(unsigned char *val)
 	return 0;
 }
 
-int write_gpio(unsigned char *val)
+int write_gpio(int reg, unsigned char val)
 {
 	int fd;
 
 	if((fd = open_device()) < 0)
 		return -1;
 
-	if(i2c_smbus_write_byte_data(fd, OUTPUT0, val[0]) == -1){
+	if(i2c_smbus_write_byte_data(fd, reg, val) == -1){
 		printf("ERR%d: %s\n", __LINE__, strerror(errno));
 		close(fd);
 		return -1;
@@ -156,80 +150,68 @@ int write_gpio(unsigned char *val)
 unsigned short init_gpio(void)
 {
 	int fd;
-	unsigned char val;
-#if 0
-	char mname[16];
-	FILE *fp;
-#endif
-
-#if 0
-	if((fp = popen("/usr/sbin/obsiot-modem.sh", "r")) == NULL){
-		printf("%d: %s\n", __LINE__, strerror(errno));
-		return -1;
-	}
-	fgets(mname, sizeof(mname)-1, fp);
-	pclose(fp);
-#endif
+	unsigned char val[2] = {0, 0};
 
 	if((fd = open_device()) < 0)
 		return -1;
 
-	if(i2c_smbus_write_byte_data(fd, CONFIG0, INIT_MODEM) == -1){
+	if(i2c_smbus_write_byte_data(fd, CONFIG0, INIT_MODEM0) == -1){
 		printf("ERR%d: %s\n", __LINE__, strerror(errno));
 		close(fd);
 		return -1;
 	}
-	if((val = i2c_smbus_read_byte_data(fd, CONFIG0)) == -1){
+	if(i2c_smbus_write_byte_data(fd, CONFIG1, INIT_MODEM1) == -1){
 		printf("ERR%d: %s\n", __LINE__, strerror(errno));
 		close(fd);
 		return -1;
 	}
-#if 0
-	if(strncmp(KYM11, mname, sizeof(KYM11)) == 0){
-		if(i2c_smbus_write_byte_data(fd, OUTPUT0, INIT_OUTPUT) == -1){
-			printf("ERR%d: %s\n", __LINE__, strerror(errno));
-			close(fd);
-			return -1;
-		}
+	if((val[0] = i2c_smbus_read_byte_data(fd, CONFIG0)) == -1){
+		printf("ERR%d: %s\n", __LINE__, strerror(errno));
+		close(fd);
+		return -1;
 	}
-#endif
+	if((val[1] = i2c_smbus_read_byte_data(fd, CONFIG1)) == -1){
+		printf("ERR%d: %s\n", __LINE__, strerror(errno));
+		close(fd);
+		return -1;
+	}
 	close(fd);
-	printf("%02x\n", val);
+	printf("init modem: %02x%02x\n", val[1], val[0]);
 
 	return 0;
 }
 
-int read_register(unsigned char mask)
+int read_register(int reg, unsigned char mask)
 {
-	unsigned char val[2];
+	unsigned char val=0;
 
-	if(read_gpio(val) < 0){
+	if(read_gpio(reg, &val) < 0){
 		return -1;
 	}
-	if(val[0] & mask)
+	if(val & mask)
 		return 1;
 	else
 		return 0;
 }
 
-int write_register(char *flag, unsigned char mask)
+int write_register(int reg, char *flag, unsigned char mask)
 {
-	unsigned char val[2];
+	unsigned char val=0;
 
-	if(read_gpio(val) < 0)
+	if(read_gpio(reg, &val) < 0)
 		return -1;
 
 	if(strcmp("high", flag) == 0)
-		val[0] |= mask;
+		val |= mask;
 	else if(strcmp("low", flag) == 0)
-		val[0] &= ~mask;
+		val &= ~mask;
 	else
 		return -1;
 
-	if(write_gpio(val) < 0)
+	if(write_gpio(reg, val) < 0)
 		return -1;
 
-	return read_register(mask);
+	return read_register(reg, mask);
 }
 
 int read_config(unsigned char *val)
@@ -290,48 +272,60 @@ int main(int ac, char *av[])
 	}
 	else if(strncmp(POWER, av[1], strlen(POWER)) == 0){
 		if(ac == 2){
-			if((ret = read_register(M_POWER)) == -1)
+			if((ret = read_register(INPUT0, M_POWER)) == -1)
 				return -1;
-			printf("%d\n", ret);
+			printf("%s\n", ret ? "high" : "low");
 		}
 		else{
-			if((ret = write_register(av[2], M_POWER)) == -1)
+			if((ret = write_register(OUTPUT0, av[2], M_POWER)) == -1)
 				return -1;
 		}
 	}
 	else if(strncmp(RESET1, av[1], strlen(RESET1)) == 0){
 		if(ac == 2){
-			if((ret = read_register(M_RESET1)) == -1)
+			if((ret = read_register(INPUT0, M_RESET1)) == -1)
 				return -1;
-			printf("%d\n", ret);
+			printf("%s\n", ret ? "high" : "low");
 		}
 		else{
-			if((ret = write_register(av[2], M_RESET1)) == -1)
+			if((ret = write_register(OUTPUT0, av[2], M_RESET1)) == -1)
 				return -1;
 		}
 	}
 	else if(strncmp(RESET2, av[1], strlen(RESET2)) == 0){
 		if(ac == 2){
-			if((ret = read_register(M_RESET2)) == -1)
+			if((ret = read_register(INPUT0, M_RESET2)) == -1)
 				return -1;
-			printf("%d\n", ret);
+			printf("%s\n", ret ? "high" : "low");
 		}
 		else{
-			if((ret = write_register(av[2], M_RESET2)) == -1)
+			if((ret = write_register(OUTPUT0, av[2], M_RESET2)) == -1)
 				return -1;
 		}
 	}
 	else if(strncmp(USBRST, av[1], strlen(USBRST)) == 0){
 		if(ac == 2){
-			if((ret = read_register(M_USBRST)) == -1)
+			if((ret = read_register(INPUT0, M_USBRST)) == -1)
 				return -1;
-			printf("%d\n", ret);
+			printf("%s\n", ret ? "high" : "low");
 		}
 		else{
-			if((ret = write_register(av[2], M_USBRST)) == -1)
+			if((ret = write_register(OUTPUT0, av[2], M_USBRST)) == -1)
 				return -1;
 		}
 	}
+	else if(strncmp(ESIM, av[1], strlen(ESIM)) == 0){
+		if(ac == 2){
+			if((ret = read_register(INPUT1, M_ESIM)) == -1)
+				return -1;
+			printf("%s\n", ret ? "high" : "low");
+		}
+		else{
+			if((ret = write_register(OUTPUT1, av[2], M_ESIM)) == -1)
+				return -1;
+		}
+	}
+#if 0
 	else if(strncmp(UARTINI, av[1], strlen(UARTINI)) == 0){
 	}
 	else if(strncmp(AREAIND, av[1], strlen(AREAIND)) == 0){
@@ -350,10 +344,13 @@ int main(int ac, char *av[])
 	}
 	else if(strncmp(MOSIND, av[1], strlen(MOSIND)) == 0){
 	}
+#endif
 	else if(strncmp(RAW, av[1], strlen(RAW)) == 0){
-		unsigned char val[2];
+		unsigned char val[2] = {0, 0};
 
-		if(read_gpio(val) < 0)
+		if(read_gpio(INPUT0, &val[0]) < 0)
+			return -1;
+		if(read_gpio(INPUT1, &val[1]) < 0)
 			return -1;
 		printf("input: %02x %02x\n", val[1], val[0]);
 		if(read_config(val) < 0)

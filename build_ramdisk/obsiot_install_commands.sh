@@ -118,6 +118,7 @@ obsbx1)
 		$STRIP ${DISTDIR}/usr/sbin/$cmd
 	done
 	(cd ${DISTDIR}/usr/sbin; ln -sf fw_printenv fw_setenv)
+	cp ${FILESDIR}/fw_env.config ${DISTDIR}/etc/
 	cp ${FILESDIR}/chksignal.sh ${DISTDIR}/usr/sbin/
 	chmod 555 ${DISTDIR}/usr/sbin/chksignal.sh
 	(cd ${DISTDIR}/usr/local/bin; ln -sf /bin/busybox hwclock)
