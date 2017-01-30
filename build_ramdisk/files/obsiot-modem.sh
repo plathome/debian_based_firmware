@@ -128,35 +128,35 @@ obsbx1)
 	done
 
 	case $dipsw in
-	7020)
+	70)
 		echo "EHS6"
 		exit 7
 		;;
-	5020)
+	50)
 		echo "U200"
 		exit 5
 		;;
-	1020)
+	10)
 		echo "S710"
 		exit 10
 		;;
-	6020)
+	60)
 		echo "U200E"
 		exit 6
 		;;
-	4020)
+	40)
 		echo "KYM11"
 		exit 4
 		;;
-	2020)
+	20)
 		echo "UM04"
 		exit 2
 		;;
-	020)
+	0)
 		echo "none"
 		exit 0
 		;;
-	400)
+	48)
 		echo "S710E"
 		exit 9
 		;;

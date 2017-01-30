@@ -76,7 +76,7 @@ obsiot_env(){
 	fw_setenv boot_target_cmd 'run do_flash_os;run do_probe_dfu;run do_compute_target;run chkinit;run mmc-bootargs;mw.l 0xff008020 0x00458000;mw.l 0xff008038 0x00018000;run load_kernel;zboot \${loadaddr} 0x0 \${initrd_addr} ${initrd_size}'
 	fw_setenv chkinit 'setexpr.b ret *0xff008005 \\& 0x40;if test.b \${ret} = 0;then setenv noflashcfg noflashcfg=1;else setenv noflashcfg;fi;'
 	fw_setenv chkmodel 'setexpr.b dip1 *0xff008009 \\& 0x10;if test.b ${dip1} != 0;then setenv obsiot obsiot=bx1;else setenv obsiot obsiot=ex1;fi;'
-	fw_setenv chkmodem 'setexpr.b dip1 *0xff008009 \\& 0x70;mw.l 0xff008030 0x0;setexpr.b dip2 *0xff008018 \\& 0x20;setenv modem modem="\${dip1}\${dip2}";'
+	fw_setenv chkmodem 'setexpr.b dip1 *0xff008009 \\& 0x78;setenv modem modem=\${dip1};'
 	fw_setenv bootRecovery 'setenv firm_part 0:9; setenv miscargs \$miscargs noflashcfg=1 noeasyblocks=1;run bootDebian;'
 }
 
