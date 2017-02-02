@@ -1,7 +1,7 @@
 //#define DEBUG
 /*	$ssdlinux: runled_bx1.c,v 1.17 2014/01/07 07:19:06 yamagata Exp $	*/
 /*
- * Copyright (c) 2008-2016 Plat'Home CO., LTD.
+ * Copyright (c) 2008-2017 Plat'Home CO., LTD.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
