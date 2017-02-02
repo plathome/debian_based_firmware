@@ -2,7 +2,6 @@
 #
 # Update the year of the copyright
 #
-#grep -r 'Copyright.*Plat.Home' LICENCE build_ramdisk/|sed -e 's/-2016/-2017/g'
 
 WRKDIR=$(cd $(dirname $0)/..; pwd)
 
@@ -21,7 +20,7 @@ then
 	usage
 fi
 
-files=$(grep -l -r 'Copyright.*Plat.Home' ${WRKDIR}/LICENCE ${WRKDIR}/build_ramdisk)
+files=$(grep -l -r 'Copyright.*Plat.Home' ${WRKDIR}/LICENCE ${WRKDIR}/README.md ${WRKDIR}/build_ramdisk)
 
 case $3 in
 	trial)
