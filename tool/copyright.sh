@@ -4,6 +4,7 @@
 #
 
 WRKDIR=$(cd $(dirname $0)/..; pwd)
+REGEXP="Copyright.*Plat'Home CO\., LTD\."
 
 usage()
 {
@@ -20,30 +21,31 @@ then
 	usage
 fi
 
-files=$(grep -l -r 'Copyright.*Plat.Home' ${WRKDIR}/LICENCE ${WRKDIR}/README.md ${WRKDIR}/build_ramdisk)
+files=$(grep -l -r "${REGEXP}" ${WRKDIR}/LICENCE ${WRKDIR}/README.md ${WRKDIR}/build_ramdisk)
 
 case $3 in
 	trial)
 		for p in ${files}
 		do
 			echo -n "$p: "
-			sed -e "/Copyright.*Plat.Home/s/$1/$2/g" $p | grep 'Copyright.*Plat.Home'
+			sed -e "/${REGEXP}/s/$1/$2/g" $p | grep "${REGEXP}"
 		done
 		;;
 	update)
 		for p in ${files}
 		do
-			sed -e "/Copyright.*Plat.Home/s/$1/$2/g" $p \
+			sed -e "/${REGEXP}/s/$1/$2/g" $p \
 				> ${p}.tmp
 			mv $p.tmp $p
 			pext="${p##*.}"
-			if [ x"$pext" = x"c" ]
+			if [ x"$pext" = x"c" -o x"$pext" = x"new" ]
 			then
 				chmod 644 $p
 			else
 				chmod 755 $p
 			fi
 		done
+		chmod 644 ${WRKDIR}/LICENCE ${WRKDIR}/README.md
 		;;
 	*)
 		usage
