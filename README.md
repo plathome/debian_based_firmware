@@ -2,7 +2,7 @@
 
 ぷらっとホーム株式会社
 
-Copyright (c) 2013-2016 Plat'Home CO., LTD.
+Copyright (c) 2013-2017 Plat'Home CO., LTD.
 
 # 1. はじめに
 
@@ -22,6 +22,7 @@ A6|7|obsa6|wheezy|armel
 600|7|obs600|wheezy|powerpc
 BXn|7|obsbx1|wheezy|i386
 EX1|7|obsbx1|wheezy|i386
+VX1|8|obsbx1|jessie|amd64
 
 BXn: BX0, BX1, BX3
 
@@ -81,6 +82,8 @@ http://ftp.plathome.co.jp/pub/OBSA6/wheezy/3.2.40-3/linux-3.2.40-20140220.tar.gz
 http://ftp.plathome.co.jp/pub/OBS600/debian/files/wheezy/3.10.25-0/linux-3.10.25-obs600.tar.gz
 * TARGET=obsbx1, DIST=wheezy, KERNEL=3.10.17, PATCHLEVEL=15の場合  
 http://ftp.plathome.co.jp/pub/BX1/wheezy/3.10.17-15/linux-3.10.17-20160309.tar.xz
+* TARGET=obsvx1, DIST=jessie, KERNEL=4.4.26, PATCHLEVEL=1の場合
+http://ftp.plathome.co.jp/pub/OBSVX1/jessie/4.4.26-1/linux-4.4.26-obs-20161027.tar.xz
 
 ### 3.4.2. 展開
 
@@ -102,6 +105,8 @@ debian-7.7.0-armel-DVD-1.iso
 debian-7.4.0-powerpc-DVD-1.iso
 * TARGET=obsbx1の場合  
 debian-7.8.0-i386-DVD-1.iso
+* TARGET=obsvx1の場合
+debian-8.5.0-amd64-DVD-1.iso
 
 これらのファイルは  
 http://ftp.plathome.co.jp/pub/cdimages/debian/  

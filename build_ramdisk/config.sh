@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2013-2016 Plat'Home CO., LTD.
+# Copyright (c) 2013-2017 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -148,7 +148,7 @@ jessie)
 		KERNEL=3.10.17
 		ARCH=i386
 		ISOFILE=debian-8.3.0-i386-DVD-1.iso
-		PATCHLEVEL=0
+		PATCHLEVEL=100
 		RAMDISK_SIZE=250
 	;;
 	obsax3)
