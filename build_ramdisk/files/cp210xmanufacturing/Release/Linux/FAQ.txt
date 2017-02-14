@@ -1,0 +1,216 @@
+SLABHIDtoUART library and HidUartExample Linux FAQ
+==================================================
+
+This document provides information on how to build and use the SLABHIDtoUART
+library, libslabhidtouart.so, to build and run the HidUartExample, hidUartExample.
+
+This document describes procedures that apply to Ubuntu Linux distributions.
+Exact procedures and commands may differ for your specific distribution.
+
+FAQ
+---
+
+Q1: Why do I get the following error when trying to build libslabhidtouart.so?
+
+make: *** No targets specified and no makefile found.  Stop.
+
+A1: The make command automatically searches for a file called Makefile in the
+current directory. For libslabhidtouart.so, you must specify the name of the
+makefile, Makefile-lib-linux, using the make -f argument:
+
+$ make -f Makefile-lib-linux
+
+
+Q2: Why do I get the following error when trying to build libslabhidtouart.so?
+
+Package libusb-1.0 was not found in the pkg-config search path.
+
+A2: The libslabhidtouart library requires libusb-1.0-0.dev to be installed.
+This will copy the libusb-1.0 library and include files and register the
+package with pkg-config.
+
+On Ubuntu, install libusb-1.0-0-dev:
+$ sudo apt-get install libusb-1.0-0-dev
+
+
+Q3: Why do I get the following error when trying to build libslabhidtouart.so?
+
+g++: not found
+
+A3: The libslabhidtouart library requires gcc, g++, and ld to compile and build
+the library.
+
+On Ubuntu, install g++:
+$ sudo apt-get install g++
+
+- or -
+
+To install a g++ package with support for 32-bit and 64-bit builds:
+$ sudo apt-get install g++-multilib
+
+
+Q4: Why do I get the following error when trying to build hidUartExample?
+
+ld: cannot find -lslabhidtouart
+
+A4: You must install a build of libslabhidtouart.so for your Linux distribution
+to /opt/lib/. You may install the library to another directory as long as you
+update the -L linker flag to specify the new location of the library and
+update the LD_LIBRARY_PATH environment variable to match the new location.
+Refer to SharedObjectLibraryUsage.txt for more information on how to install
+a library by creating symbolic links to libslabhidtouart.so.1.0.
+
+
+Q5: How do I run the hidUartExample?
+
+A5: Open a terminal and cd to the directory containing hidUartExample:
+$ cd Release/Linux
+
+Then, execute hidUartExample:
+$ ./hidUartExample
+
+
+Q6: Why do I get the following error when trying to run the hidUartExample?
+
+./hidUartExample: error while loading shared libraries: libslabhidtouart.so.1:
+cannot open shared object file: No such file or directory
+
+A6: Make sure that libslabhidtouart.so is installed to /opt/lib/ (refer to
+SharedObjectLibraryUsage.txt for more information). Add the path containing the
+library to your LD_LIBRARY_PATH environment variable:
+
+$ export LD_LIBRARY_PATH=/opt/lib:$LD_LIBRARY_PATH
+
+To view your existing LD_LIBRARY_PATH variable:
+$ export
+
+LD_LIBRARY_PATH is a list of directories to search when loading shared libraries.
+Each directory path should be separated by a colon (:).
+
+
+Q7: Why do I get the following error when trying to run hidUartExample?
+
+hidUartExample: command not found
+
+A7: You must run the command from the directory containing the hidUartExample:
+
+$ ./hidUartExample
+
+
+Q8: Why do I get the following error when trying to run hidUartExample?
+
+HID_UART_DEVICE_NOT_FOUND
+
+A8: The library can't find a CP211x device with a matching VID/PID because:
+
+A8:1. No CP211x devices are connected to the machine via USB. Connect a CP2110
+or CP2114 to your system.
+
+A8:2. The CP211x device file, commonly found in /dev/bus/usb/..., does not allow
+both read and write permissions for the user.
+
+Locating the device file can be difficult because the path is determined by
+the location relative to USB host controllers, and USB hubs. Each time the device
+is unplugged/replugged, the device file name is incremented.
+
+Check the read/write permissions on the device file:
+
+cd to the location of the device file (002 is just an example, your device
+file may exist elsewhere):
+
+$ cd /dev/usb/002/
+$ ls -l
+
+An easier method to check for a problem with read/write permissions is to run
+hidUartExample with root privileges:
+
+$ sudo ./hidUartExample
+
+root should always have read/write permissions to USB device files.
+
+To automatically grant global read/write permissions to all USB devices with the
+Silicon Labs Vendor ID (0x10c4), copy the SiliconLabs.rules file to
+/etc/udev/rules.d/:
+
+$ sudo cp SiliconLabs.rules /etc/udev/rules.d/
+
+Refer to SiliconLabs.rules for more information. Also it may be necessary to
+create your own udev rules file by modifying SiliconLabs.rules to include
+your own Vendor ID and optionally Product ID.
+
+A8:3 The udev rules file may not have been applied. udev should monitor the
+/etc/udev/rules.d/ directory for new rules file, but this does not always work.
+You may need to unplug/replug your device and possibly reboot for the udev
+rule to take affect.
+
+A8:4 By default, the hidUartExample tries to connect to the first CP2110 (VID = 
+0x10c4, PID = 0xea80). If you are using a device with a different VID/PID, then
+you will need to use the -vid, -pid, and -s parameters for the hidUartExample
+program. See the hidUartExample ReadMe.txt for more information.
+
+
+Q9: Why do I get the following error when trying to run hidUartExample?
+
+./hidUartExample: Permission denied
+
+A9: If you are trying to run the hidUartExample binary provided in the release
+without building your own, you will need to add execute permissions to the
+hidUartExample file:
+
+$ sudo chmod a+x hidUartExample
+
+Use ls -l to check the permissions of the file
+
+
+Q10: Why do I get the following error when trying to run hidUartExample?
+
+./hidUartExample: No such file or directory
+
+A10: If you are attempting to run a 32-bit hidUartExample binary on a 64-bit
+distribution or vice verse, you will need to install the appropriate libraries
+for your distribution.
+
+To install ia32-libs (32-bit libraries for a 64-bit machine):
+$ sudo apt-get install ia32-libs
+
+To install libusb-1.0-0-dev:i386 (32-bit libusb-1.0 for a 64-bit machine):
+$ sudo apt-get install libusb-1.0-0-dev:i386
+
+Alternatively, it is recommended to build your own binaries (libslabhidtouart.so
+and hidUartExample) for your specific Linux distribution.
+- Build libslabhidtouart.so (see library ReadMe.txt)
+- Install libslabhidtouart.so to /opt/lib/ (see SharedObjectLibraryUsage.txt)
+- Install udev rules (see SiliconLabs.rules)
+- Build hidUartExample (see example ReadMe.txt)
+- Set LD_LIBRARY_PATH
+- Run hidUartExample
+
+
+Q11: What is sudo?
+
+A11: Sudo allows you to execute a command on the command line with root
+permissions. Certain directories on the filesystem can only be modified with
+root access. This command may not be available in your Linux distribution, in
+which case you might seek an alternative or open a session with root access.
+
+
+Q12: How can I tell if a binary is built for 32-bit or 64-bit?
+
+A12: Use the file command to display the binary format
+
+$ file libslabhidtouart.so.1.0
+
+
+Q13: I've done everything here and I still can't build using make
+
+A13: Sometimes you might need to rebuild the project after installing new
+header files and libraries or to rebuild object files.
+
+$ make clean
+$ make
+
+- or -
+
+$ make -f <makefilename> clean
+$ make -f <makefilename>
+

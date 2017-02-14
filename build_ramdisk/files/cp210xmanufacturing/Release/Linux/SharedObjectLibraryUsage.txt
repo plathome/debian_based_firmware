@@ -1,0 +1,27 @@
+See more details at http://www.yolinux.com/TUTORIALS/LibraryArchives-StaticAndDynamic.html
+
+To link against a shared object library (.so) using -l<libraryname>:
+1. Copy the library built from the project to /opt/lib:
+
+  $ mkdir -p /opt/lib
+  $ cp libcp210xmanufacturing.so.1.0 /opt/lib/
+
+2. Create a .so link:
+
+  $ ln -sf /opt/lib/libcp210xmanufacturing.so.1.0 /opt/lib/libcp210xmanufacturing.so
+
+3. Create a .so.1 link:
+
+  $ ln -sf /opt/lib/libcp210xmanufacturing.so.1.0 /opt/lib/libcp210xmanufacturing.so.1
+
+To run an executable that was built against the shared object library (.so):
+1. Set the library path to /opt/lib before running the executable
+   example: export LD_LIBRARY_PATH=/opt/lib:$LD_LIBRARY_PATH
+
+To list the dependencies of an object file or binary:
+example: ldd main
+
+To view a list of exported symbols from an object file or library:
+example: nm -D libcp210xmanufacturing.so.1.0
+example (paginate displayed results): nm -D libcp210xmanufacturing.so.1.0 | less
+

@@ -70,7 +70,7 @@ if [ "$TARGET" == "obs600" ]; then
 elif [ "$TARGET" == "obsvx1" ]; then
 	if [ "$DIST" == "jessie" ]; then
 		INCLUDE="openssh-server,strace,acpi-support-base"
-		INCLUDE="$INCLUDE,wpasupplicant,ppp,wireless-tools,ethtool,bluez,iw,sysvinit,sysvinit-utils,dosfstools,libasound2,parted,bzip2"
+		INCLUDE="$INCLUDE,wpasupplicant,ppp,wireless-tools,ethtool,bluez,iw,sysvinit,sysvinit-utils,dosfstools,libasound2,parted,bzip2,libusb-1.0-0"
 		EXCLUDE="nano"
 	fi
 elif [ "$TARGET" == "obsbx1" ]; then

@@ -191,6 +191,15 @@ obsvx1)
 	chmod 555 ${DISTDIR}/usr/sbin/obsiot-modem.sh
 	cp ${FILESDIR}/obsiot-power.sh ${DISTDIR}/usr/sbin/obsiot-power.sh
 	chmod 555 ${DISTDIR}/usr/sbin/obsiot-power.sh
+
+	echo "CP2104-RS485"
+	(cd ${FILESDIR}/cp210xmanufacturing;make;							\
+		cp ${FILESDIR}/cp210xmanufacturing/Release/Linux/libcp210xmanufacturing.so.1.0 ${DISTDIR}/usr/lib/x86_64-linux-gnu/libcp210xmanufacturing.so;	\
+		cc -O2 -Wall -I./Release/Linux -I./Common -L./Release/Linux		\
+		-lcp210xmanufacturing -o cp2104-rs485 cp2104-rs485.c;			\
+		cp ${FILESDIR}/cp210xmanufacturing/cp2104-rs485 ${DISTDIR}/usr/sbin
+	)
+	chroot ${DISTDIR} ldconfig
 ;;
 *)
 ;;
@@ -205,8 +214,6 @@ chmod 555 ${DISTDIR}/usr/local/sbin/hwclock
 if [ "$TARGET" == "obsvx1" ]; then
 	cp ${FILESDIR}/install-firmware.sh ${DISTDIR}/usr/sbin/install-firmware.sh
 	chmod 555 ${DISTDIR}/usr/sbin/install-firmware.sh
-	cp ${FILESDIR}/cp2130/libslab_usb_spi.so.1.0 ${DISTDIR}/lib/x86_64-linux-gnu/
-	cp ${FILESDIR}/cp2130/SLAB_USB_SPI.h ${DISTDIR}/usr/include/
 fi
 
 rm -rf ${BUILDDIR}
