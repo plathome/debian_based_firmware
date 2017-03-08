@@ -297,7 +297,9 @@ start)
 
 
 	# check aufs support
-	if grep -q aufs /proc/filesystems ; then
+	if grep -q overlay /proc/filesystems ; then
+		union_fs=overlay
+	elif grep -q aufs /proc/filesystems ; then
 		union_fs=aufs
 	fi
 
@@ -379,16 +381,22 @@ start)
 	# mount filesystems
 	for dir in ${UNIONFS_DIRS} ; do
 		mawk '$1 !~ /^#/ {print $2}' < /etc/fstab | grep -q "^/$dir" && continue
-		[ "$union_fs" == "aufs" ] && xino_opt="xino=/.aufs.xino.$dir,trunc_xino,"
-		case $MODEL in
-		obsvx1)
-			xino_opt+="acl,"
-			;;
-		*)	;;
-		esac
 		mkdir -p ${RW_DIR}/$dir
-		mount -n -t ${union_fs} \
-			-o ${xino_opt}dirs=${RW_DIR}/$dir=rw:/$dir=ro ${union_fs} /$dir
+		case $union_fs in
+		overlay)
+			mkdir -p ${RW_DIR}/work/$dir
+			mount -n -t ${union_fs} \
+				-o lowerdir=$dir,upperdir=${RW_DIR}/$dir,workdir=${RW_DIR}/work/$dir ${union_fs} /$dir
+		;;
+		*)
+			if [ "$unionfs" == "aufs" ]; then
+				xino_opt="xino=/.aufs.xino.$dir,trunc_xino,"
+				[ "$MODEL" == "obsvx1" ] && xino_opt+="acl,"
+			fi
+			mount -n -t ${union_fs} \
+				-o ${xino_opt}dirs=${RW_DIR}/$dir=rw:/$dir=ro ${union_fs} /$dir
+		;;
+		esac
 	done
 
 	# reboot udev

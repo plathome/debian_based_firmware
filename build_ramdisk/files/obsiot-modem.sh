@@ -152,7 +152,7 @@ obsbx1)
 		echo "UM04"
 		exit 2
 		;;
-	0)
+	0|8)
 		echo "none"
 		exit 0
 		;;

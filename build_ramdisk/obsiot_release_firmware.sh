@@ -48,11 +48,14 @@ cp -f ${LINUX_SRC}/System.map ${MOUNTDIR}/boot/
 case "$TARGET" in
 obsbx1)
 	echo "8812AU"
-	if [ ${KERNEL} == "3.10.17" ]; then
+	case ${KERNEL} in
+	3.10.*)
 		LOCAL_VER="-poky-edison"
-	else
+		;;
+	*)
 		LOCAL_VER=""
-	fi
+		;;
+	esac
 	if [ -d ${FILESDIR}/rtl8812AU_8821AU_linux-master ]; then
 		(cd ${FILESDIR}/rtl8812AU_8821AU_linux-master;	\
 			CFLAGS="-m32" LDFLAGS="-m32" CC=gcc KERNELPATH=${LINUX_SRC} make; \
@@ -66,9 +69,9 @@ obsvx1)
 	echo "8821AE"
 	if [ -d ${FILESDIR}/rtl8821ae ]; then
 		(cd ${FILESDIR}/rtl8821ae; \
-			make KSRC=${LINUX_SRC} KVER=${KERNEL} USER_EXTRA_CFLAGS='-Wno-error=date-time';	\
-			mkdir -p ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/kernel/drivers/net/wireless;	\
-			make install MODDESTDIR=${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/kernel/drivers/net/wireless)
+			mkdir -p ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/kernel/drivers/net/wireless/realtek;	\
+#			make install KSRC=${LINUX_SRC} KVER=${KERNEL} MODDESTDIR=${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/kernel/drivers/net/wireless/realtek MOUNTDIR=${MOUNTDIR})
+			make install KSRC=${LINUX_SRC} KVER=${KERNEL} MODDESTDIR=${MOUNTDIR}/lib/modules/${KERNEL}/kernel/drivers/net/wireless/realtek MOUNTDIR=${MOUNTDIR})
 	fi
 	;;
 *)
