@@ -1,0 +1,18 @@
+#!/bin/bash
+
+modprobe mac80211
+
+insmod rtlwifi.ko
+insmod rtl_pci.ko
+insmod rtl_usb.ko
+insmod btcoexist/btcoexist.ko
+insmod rtl8192c/rtl8192c-common.ko
+insmod rtl8192ce/rtl8192ce.ko
+insmod rtl8192se/rtl8192se.ko
+insmod rtl8192de/rtl8192de.ko
+insmod rtl8723ae/rtl8723ae.ko
+insmod rtl8188ee/rtl8188ee.ko
+insmod rtl8723be/rtl8723be.ko
+insmod rtl8192ee/rtl8192ee.ko
+insmod rtl8821ae/rtl8821ae.ko
+
