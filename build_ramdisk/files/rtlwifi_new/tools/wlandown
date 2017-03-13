@@ -1,0 +1,17 @@
+#!/bin/bash
+
+rmmod rtl8821ae
+rmmod rtl8192ee
+rmmod rtl8192de
+rmmod rtl8192se
+rmmod rtl8192ce
+rmmod rtl8192c-common.ko
+rmmod rtl8723ae
+rmmod rtl8723be
+rmmod rtl8188ee
+rmmod btcoexist
+rmmod rtl_pci
+rmmod rtl_usb
+rmmod rtlwifi
+
+modprobe -r mac80211
