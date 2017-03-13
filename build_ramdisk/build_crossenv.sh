@@ -49,7 +49,7 @@ packages="libnl-3-dev:i386 libssl-dev:i386 libusb-dev:i386 zlib1g-dev:armel zlib
 
 apt-get -y install $packages
 
-packages="libnl-3-dev libssl-dev libusb-dev libasound2-dev libi2c-dev"
+packages="libnl-3-dev libssl-dev libusb-dev libasound2-dev libi2c-dev libusb-1.0-0 libusb-1.0-0-dev pkg-config"
 
 apt-get -y install $packages
 
