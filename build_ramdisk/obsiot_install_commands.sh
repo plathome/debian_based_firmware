@@ -57,17 +57,12 @@ obsbx1)
 	echo "HOSTAPD"
 	if [ ${DIST} != "jessie" ]; then
 		if [ -d ${FILESDIR}/hostapd ]; then
-			if [ ! -f ${FILESDIR}/hostapd/.config ]; then
-				cp ${FILESDIR}/hostapd/hostapd/defconfig ${FILESDIR}/hostapd/hostapd/.config
-				echo "CONFIG_IEEE80211N=y" >> ${FILESDIR}/hostapd/hostapd/.config
-				echo "CONFIG_IEEE80211AC=y" >> ${FILESDIR}/hostapd/hostapd/.config
-			fi
-			if cat /etc/debian_version | grep -q "^7"; then
-				echo "CONFIG_LIBNL20=y" >> ${FILESDIR}/hostapd/hostapd/.config
-			else
-				echo "CONFIG_LIBNL32=y" >> ${FILESDIR}/hostapd/hostapd/.config
-			fi
-			(cd ${FILESDIR}/hostapd/hostapd;CFLAGS="$CFLAGS -MMD" LDFLAGS="-m32" CC=gcc make;DESTDIR=${DISTDIR} make install)
+			rm -f ${FILESDIR}/hostapd/hostapd/.config
+			cp ${FILESDIR}/hostapd/hostapd/defconfig ${FILESDIR}/hostapd/hostapd/.config
+			echo "CONFIG_IEEE80211N=y" >> ${FILESDIR}/hostapd/hostapd/.config
+			echo "CONFIG_IEEE80211AC=y" >> ${FILESDIR}/hostapd/hostapd/.config
+			echo "CONFIG_LIBNL32=y" >> ${FILESDIR}/hostapd/hostapd/.config
+			(cd ${FILESDIR}/hostapd/hostapd;CFLAGS="$CFLAGS -MMD -I${DISTDIR}/usr/include" LDFLAGS="-m32 -L${DISTDIR}/usr/lib" CC=gcc make;DESTDIR=${DISTDIR} make install)
 		fi
 	fi
 

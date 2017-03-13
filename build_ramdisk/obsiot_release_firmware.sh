@@ -51,18 +51,17 @@ obsbx1)
 	case ${KERNEL} in
 	3.10.*)
 		LOCAL_VER="-poky-edison"
+		if [ -d ${FILESDIR}/rtl8812AU_8821AU_linux-master ]; then
+			(cd ${FILESDIR}/rtl8812AU_8821AU_linux-master;	\
+				CFLAGS="-m32" LDFLAGS="-m32" CC=gcc KERNELPATH=${LINUX_SRC} make; \
+				mkdir -p ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/kernel/drivers/net/wireless;	\
+				INSTALLPATH=${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/kernel/drivers/net/wireless make install)
+		fi
 		;;
 	*)
 		LOCAL_VER=""
 		;;
 	esac
-	if [ -d ${FILESDIR}/rtl8812AU_8821AU_linux-master ]; then
-		(cd ${FILESDIR}/rtl8812AU_8821AU_linux-master;	\
-			CFLAGS="-m32" LDFLAGS="-m32" CC=gcc KERNELPATH=${LINUX_SRC} make; \
-			mkdir -p ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/kernel/drivers/net/wireless;	\
-			INSTALLPATH=${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/kernel/drivers/net/wireless make install)
-	fi
-
 	mkdir -p ${MOUNTDIR}/factory
 	;;
 obsvx1)

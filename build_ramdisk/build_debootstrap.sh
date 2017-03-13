@@ -76,7 +76,8 @@ elif [ "$TARGET" == "obsvx1" ]; then
 elif [ "$TARGET" == "obsbx1" ]; then
 	if [ "$DIST" == "wheezy" ]; then
 		INCLUDE="openssh-server,strace,acpi-support-base"
-		INCLUDE="$INCLUDE,wpasupplicant,python-gobject,ppp,wireless-tools,libnl1,ethtool,busybox,bluez,iw,libasound2"
+#		INCLUDE="$INCLUDE,wpasupplicant,python-gobject,ppp,wireless-tools,libnl1,ethtool,busybox,bluez,iw,libasound2"
+		INCLUDE="$INCLUDE,wpasupplicant,python-gobject,ppp,wireless-tools,libnl-3-200,ethtool,busybox,bluez,iw,libasound2"
 		EXCLUDE="nano"
 	else
 		INCLUDE="openssh-server,strace,acpi-support-base"
