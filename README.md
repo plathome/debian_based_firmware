@@ -20,9 +20,11 @@ A7|8|obsa7|jessie|armel
 A7|7|obsa7|wheezy|armel
 A6|7|obsa6|wheezy|armel
 600|7|obs600|wheezy|powerpc
+BXn|8|obsbx1|jessie|i386
 BXn|7|obsbx1|wheezy|i386
+EX1|8|obsbx1|jessie|i386
 EX1|7|obsbx1|wheezy|i386
-VX1|8|obsbx1|jessie|amd64
+VX1|8|obsvx1|jessie|amd64
 
 BXn: BX0, BX1, BX3
 
