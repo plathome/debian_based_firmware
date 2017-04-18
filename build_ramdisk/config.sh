@@ -148,7 +148,7 @@ jessie)
 		KERNEL=3.10.17
 		ARCH=i386
 		ISOFILE=debian-8.3.0-i386-DVD-1.iso
-		PATCHLEVEL=100
+		PATCHLEVEL=101
 		RAMDISK_SIZE=250
 	;;
 	obsax3)
