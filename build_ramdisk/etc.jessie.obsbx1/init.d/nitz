@@ -132,12 +132,6 @@ case "$1" in
   start)
 	MODEM=`/usr/sbin/obsiot-modem.sh`
 	case $MODEM in
-#	S710E)
-#		echo 200 > $GPIOPATH/export	# 3G modem power
-#		echo low > $GPIOPATH/gpio200/direction
-#		echo 202 > $GPIOPATH/export	# 3G reset
-#		echo high > $GPIOPATH/gpio202/direction
-#		;;
 	U200E|UM04)
 		echo 200 > $GPIOPATH/export	# 3G modem power
 		echo high > $GPIOPATH/gpio200/direction
@@ -156,7 +150,7 @@ case "$1" in
 			sleep 20
 		fi
 		;;
-	EHS6)
+	EHS6|S710)
 		echo 165 > $GPIOPATH/export	# 3G modem power
 		echo low > $GPIOPATH/gpio165/direction
 		echo 15 > $GPIOPATH/export	# 3G reset
@@ -193,10 +187,10 @@ case "$1" in
 	EHS6)
 		set_time_ehs6
 		;;
-	U200)
+	U200|S710)
 		set_time_u200
 		;;
-	S710)
+	S710E)
 		set_time_s710
 		;;
 	U200E|KYM11|UM04|S710E|none)

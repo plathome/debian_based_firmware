@@ -160,6 +160,10 @@ obsbx1)
 		echo "S710E"
 		exit 9
 		;;
+	18)
+		echo "S710"
+		exit 9
+		;;
 	*)
 		echo "ERROR ($dipsw)"
 		exit 8

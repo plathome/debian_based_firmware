@@ -1071,6 +1071,9 @@ int main(int ac, char *av[])
 				else if(strncmp(S710E, MNAME, sizeof(S710E)) == 0){
 					set_power_s710(1, POWERSW_U200);
 				}
+				else if(strncmp(S710, MNAME, sizeof(S710)) == 0){
+					set_power_s710(1, POWERSW);
+				}
 
 				if(wait_device(EXIST)){
 					printf("%d: Can not Power ON!\n", __LINE__);
@@ -1090,7 +1093,8 @@ int main(int ac, char *av[])
 				else if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0){
 					sleep(12);
 				}
-				else if(strncmp(S710E, MNAME, sizeof(S710E)) == 0){
+				else if(strncmp(S710, MNAME, sizeof(S710)) == 0
+					|| strncmp(S710E, MNAME, sizeof(S710E)) == 0){
 					sleep(3);
 				}
 			}
@@ -1152,7 +1156,8 @@ int main(int ac, char *av[])
 		}
 		else if(strncmp(CMD_HRST, av[i], sizeof(CMD_HRST)) == 0){
 			end_modem(&fd);
-			if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0){
+			if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0
+					|| strncmp(S710, MNAME, sizeof(S710)) == 0){
 				if(access(MODEM, F_OK) == 0){
 					set_reset(RESETSW);
 				}
@@ -1219,7 +1224,8 @@ int main(int ac, char *av[])
 			else if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0){
 				sleep(6);
 			}
-			else if(strncmp(S710E, MNAME, sizeof(S710E)) == 0){
+			else if(strncmp(S710E, MNAME, sizeof(S710E)) == 0
+				|| strncmp(S710, MNAME, sizeof(S710)) == 0){
 				sleep(3);
 			}
 		}
@@ -1276,9 +1282,9 @@ int main(int ac, char *av[])
 			else if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0){
 				sleep(11);
 			}
-			else if(strncmp(S710, MNAME, sizeof(S710)) == 0
-				|| strncmp(S710E, MNAME, sizeof(S710E)) == 0){
-				sleep(30);
+			else if(strncmp(S710E, MNAME, sizeof(S710E)) == 0
+					|| strncmp(S710, MNAME, sizeof(S710)) == 0){
+				sleep(6);
 			}
 		}
 		else if(strncmp(CMD_SMONI, av[i], sizeof(CMD_SMONI)) == 0){

@@ -1,1 +1,0 @@
-ACTION=="add", KERNEL=="1-1", SUBSYSTEM=="usb", PROGRAM="/bin/echo on > /sys/bus/usb/devices/1-1/power/control;/bin/sleep 3", OPTIONS="last_rule"
