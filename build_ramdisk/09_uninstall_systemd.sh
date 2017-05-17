@@ -27,11 +27,11 @@
 
 . `dirname $0`/config.sh
 
-[ "${DIST}" != "jessie" ] && exit
-
-echo ${DISTDIR}
-chroot ${DISTDIR} /usr/bin/apt-get remove --purge --auto-remove -y systemd
-echo -e 'Package: systemd\nPin: origin ""\nPin-Priority: -1' > ${DISTDIR}/etc/apt/preferences.d/systemd
-echo -e '\n\nPackage: *systemd*\nPin: origin ""\nPin-Priority: -1' >> ${DISTDIR}/etc/apt/preferences.d/systemd
-buf="\n\nPackage: systemd:$ARCH\nPin: origin ""\nPin-Priority: -1"
-echo -e $buf >> ${DISTDIR}/etc/apt/preferences.d/systemd
+if [ "${DIST}" == "jessie" ]; then
+	echo ${DISTDIR}
+	chroot ${DISTDIR} /usr/bin/apt-get remove --purge --auto-remove -y systemd
+	echo -e 'Package: systemd\nPin: origin ""\nPin-Priority: -1' > ${DISTDIR}/etc/apt/preferences.d/systemd
+	echo -e '\n\nPackage: *systemd*\nPin: origin ""\nPin-Priority: -1' >> ${DISTDIR}/etc/apt/preferences.d/systemd
+	buf="\n\nPackage: systemd:$ARCH\nPin: origin ""\nPin-Priority: -1"
+	echo -e $buf >> ${DISTDIR}/etc/apt/preferences.d/systemd
+fi

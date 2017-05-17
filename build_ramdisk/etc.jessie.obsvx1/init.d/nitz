@@ -102,7 +102,7 @@ case "$1" in
 		MODEM=`/usr/sbin/obsiot-modem.sh`
 		if [ "$MODEM" != "none" ]; then
 			obsvx1-modem init
-			[ "$MODEM" == "S710" ] && obsvx1-modem power low
+			[ "$MODEM" == "S710E" ] && obsvx1-modem power low
 			atcmd PON
 		fi
 	fi
