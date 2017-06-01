@@ -79,6 +79,7 @@ esac
 rm -f ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/source ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/build
 
 if [ -d ${FILESDIR}/firmware-${TARGET} ]; then
+	mkdir -p ${MOUNTDIR}/lib/firmware
 	cp -a ${FILESDIR}/firmware-${TARGET}/* ${MOUNTDIR}/lib/firmware
 fi
 

@@ -137,7 +137,6 @@ jessie)
 	;;
 	obsvx1)
 		KERNEL=4.4.43
-#		KERNEL=4.9.5
 		ISOFILE=debian-8.5.0-amd64-DVD-1.iso
 		PATCHLEVEL=1
 		RAMDISK_SIZE=230
@@ -145,7 +144,8 @@ jessie)
 		DEFCONFIG=obsvx1_defconfig
 	;;
 	obsbx1)
-		KERNEL=3.10.17
+#		KERNEL=3.10.17
+		KERNEL=4.12.0-rc2
 		ARCH=i386
 		ISOFILE=debian-8.3.0-i386-DVD-1.iso
 		PATCHLEVEL=101

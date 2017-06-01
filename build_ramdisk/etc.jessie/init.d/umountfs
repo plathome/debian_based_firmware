@@ -81,17 +81,17 @@ do_stop () {
                if [ "$VERBOSE" = no ]
                then
                        log_action_begin_msg "Unmounting union filesystems"
-#                       umount -n -f -r -d $UNIONFS_MTPTS 2> /dev/null
 	               for dir in ${UNIONFS_MTPTS} ; do
+                           mount -n -o remount,ro,noxino $dir
 	                       umount -n -f -r -d $dir
 	               done 2> /dev/null
                        log_action_end_msg $?
                else
                        log_daemon_msg "Will now unmount union filesystems ($UNIONFS_MTPTS)"
-#                       umount -n -f -v -r -d $UNIONFS_MTPTS
 	               for dir in ${UNIONFS_MTPTS} ; do
-	                       umount -n -f -v -r -d $dir
-	               done 2> /dev/null
+                           mount -n -o remount,ro,noxino $dir > /dev/console
+	                       umount -n -f -v -r -d $dir > /dev/console
+	               done
                        log_end_msg $?
                fi
        fi
@@ -125,11 +125,13 @@ do_stop () {
 		if [ "$VERBOSE" = no ]
 		then
 			log_action_begin_msg "Unmounting /.rw filesystem"
+			mount -n -o remount,ro $RW_MTPT 2> /dev/null
 			umount -n -f -r -d $RW_MTPT 2> /dev/null
 			log_action_end_msg $?
 		else
 			log_daemon_msg "Will now unmount /.rw filesystem ($RW_MTPT)"
-			umount -n -f -v -r -d $RW_MTPT
+			mount -n -o remount,ro $RW_MTPT > /dev/console
+			umount -n -f -v -r -d $RW_MTPT > /dev/console
 			log_end_msg $?
 		fi
 	fi
