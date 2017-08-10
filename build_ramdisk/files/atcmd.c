@@ -1095,7 +1095,7 @@ int main(int ac, char *av[])
 				}
 				else if(strncmp(S710, MNAME, sizeof(S710)) == 0
 					|| strncmp(S710E, MNAME, sizeof(S710E)) == 0){
-					sleep(3);
+					sleep(12);
 				}
 			}
 			if(strncmp(S710, MNAME, sizeof(S710)) == 0
