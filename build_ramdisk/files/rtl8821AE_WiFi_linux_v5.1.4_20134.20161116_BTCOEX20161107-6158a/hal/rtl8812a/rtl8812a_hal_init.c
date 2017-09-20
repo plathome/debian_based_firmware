@@ -4138,8 +4138,14 @@ _InitBeaconParameters_8812A(
 	rtw_write16(Adapter, REG_BCN_CTRL, val16);
 	/* rtw_write16(Adapter, REG_BCN_CTRL, 0x1010); */
 
-	/* TODO: Remove these magic number */
-	rtw_write16(Adapter, REG_TBTT_PROHIBIT, 0x6404); /* ms */
+	/* TBTT setup time */
+	rtw_write8(Adapter, REG_TBTT_PROHIBIT, TBTT_PROHIBIT_SETUP_TIME);
+
+	/* TBTT hold time: 0x540[19:8] */
+	rtw_write8(Adapter, REG_TBTT_PROHIBIT + 1, TBTT_PROHIBIT_HOLD_TIME_STOP_BCN & 0xFF);
+	rtw_write8(Adapter, REG_TBTT_PROHIBIT + 2,
+		(rtw_read8(Adapter, REG_TBTT_PROHIBIT + 2) & 0xF0) | (TBTT_PROHIBIT_HOLD_TIME_STOP_BCN >> 8));
+
 	rtw_write8(Adapter, REG_DRVERLYINT, DRIVER_EARLY_INT_TIME_8812);/* 5ms */
 	rtw_write8(Adapter, REG_BCNDMATIM, BCN_DMA_ATIME_INT_TIME_8812); /* 2ms */
 
@@ -4932,9 +4938,9 @@ static void hw_var_set_opmode(PADAPTER Adapter, u8 variable, u8 *val)
 			rtw_write8(Adapter, REG_BCNDMATIM, 0x02); /* 2ms		 */
 
 			/* rtw_write8(Adapter, REG_BCN_MAX_ERR, 0xFF); */
-			rtw_write8(Adapter, REG_ATIMWND_1, 0x0a); /* 10ms for port1 */
+			rtw_write8(Adapter, REG_ATIMWND_1, 0x0c); /* 10ms for port1 */
 			rtw_write16(Adapter, REG_BCNTCFG, 0x00);
-			rtw_write16(Adapter, REG_TBTT_PROHIBIT, 0xff04);
+			//rtw_write16(Adapter, REG_TBTT_PROHIBIT, 0x8004);
 			rtw_write16(Adapter, REG_TSFTR_SYN_OFFSET, 0x7fff);/* +32767 (~32ms) */
 
 			/* reset TSF2	 */
@@ -5057,9 +5063,9 @@ static void hw_var_set_opmode(PADAPTER Adapter, u8 variable, u8 *val)
 			rtw_write8(Adapter, REG_BCNDMATIM, 0x02); /* 2ms			 */
 
 			/* rtw_write8(Adapter, REG_BCN_MAX_ERR, 0xFF); */
-			rtw_write8(Adapter, REG_ATIMWND, 0x0a); /* 10ms */
+			rtw_write8(Adapter, REG_ATIMWND, 0x0c); /* 10ms */
 			rtw_write16(Adapter, REG_BCNTCFG, 0x00);
-			rtw_write16(Adapter, REG_TBTT_PROHIBIT, 0xff04);
+			//rtw_write16(Adapter, REG_TBTT_PROHIBIT, 0xff04);
 			rtw_write16(Adapter, REG_TSFTR_SYN_OFFSET, 0x7fff);/* +32767 (~32ms) */
 
 			/* reset TSF */

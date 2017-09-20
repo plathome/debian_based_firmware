@@ -73,8 +73,9 @@ obsvx1)
 	;;
 esac
 
-case $MODEL in
-obsvx1)
+VER=`cut -c 1 /etc/debian_version`
+
+if [ "$MODEL" == "obsvx1" ]; then
 	case "$id2$id1$id0" in
 	000)			# EX1 none or BX0
 		echo "none"
@@ -113,8 +114,38 @@ obsvx1)
 		exit 8
 		;;
 	esac
-	;;
-obsbx1)
+elif [ "$MODEL" == "obsbx1" -a "$VER" == "7" ]; then
+	case "$id2$id1$id0" in
+	000)            # EX1 none or BX0
+		echo "none"
+		exit 0
+		;;
+	010)            # EX1 UM04-KO
+		echo "UM04"
+		exit 2
+		;;
+	100)            # EX1 KYM11/12
+		echo "KYM11"
+		exit 4
+		;;
+	110)            # EX1 U200/U270
+		echo "U200E"
+		exit 6
+		;;
+	101)            # BX3 U200/U270
+		echo "U200"
+		exit 5
+		;;
+	111)            # BX1 EHS6
+		echo "EHS6"
+		exit 7
+		;;
+	*)
+		echo "ERROR ($id2$id1$id0)"
+		exit 8
+		;;
+	esac
+elif [ "$MODEL" == "obsbx1" -a "$VER" == "8" ]; then
 	ary=(`cat /proc/cmdline`)
 	for i in `seq 1 ${#ary[@]}`
 	do
@@ -169,5 +200,4 @@ obsbx1)
 		exit 8
 		;;
 	esac
-	;;
-esac
+fi

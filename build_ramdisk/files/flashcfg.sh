@@ -74,7 +74,11 @@ function _get_md5() {
 	elif [ $1 == "ramdisk" ]; then
 		case $MODEL in
 		obsbx1|obsvx1)
-			obj="initrd.gz"
+			if [ -e "${FIRM_FILE}/initrd.gz" ]; then
+				obj="initrd.gz"
+			else
+				obj="ramdisk-wheezy.${MODEL}.img.gz"
+			fi
 			;;
 		*)
 			obj="ramdisk-wheezy.${MODEL}.img.gz"

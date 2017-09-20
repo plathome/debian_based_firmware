@@ -145,7 +145,6 @@ jessie)
 	;;
 	obsbx1)
 		KERNEL=3.10.17
-#		KERNEL=4.12.0-rc2
 		ARCH=i386
 		ISOFILE=debian-8.3.0-i386-DVD-1.iso
 		PATCHLEVEL=103

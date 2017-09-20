@@ -10664,9 +10664,11 @@ void ResumeTxBeacon(_adapter *padapter)
 
 	pHalData->RegFwHwTxQCtrl |= BIT(6);
 	rtw_write8(padapter, REG_FWHW_TXQ_CTRL + 2, pHalData->RegFwHwTxQCtrl);
-	rtw_write8(padapter, REG_TBTT_PROHIBIT + 1, 0xff);
-	pHalData->RegReg542 |= BIT(0);
-	rtw_write8(padapter, REG_TBTT_PROHIBIT + 2, pHalData->RegReg542);
+
+	/* TBTT hold time: 0x540[19:8] */
+	rtw_write8(padapter, REG_TBTT_PROHIBIT + 1, TBTT_PROHIBIT_HOLD_TIME & 0xFF);
+	rtw_write8(padapter, REG_TBTT_PROHIBIT + 2,
+		(rtw_read8(padapter, REG_TBTT_PROHIBIT + 2) & 0xF0) | (TBTT_PROHIBIT_HOLD_TIME >> 8));
 }
 
 void StopTxBeacon(_adapter *padapter)
@@ -10680,9 +10682,10 @@ void StopTxBeacon(_adapter *padapter)
 
 	pHalData->RegFwHwTxQCtrl &= ~BIT(6);
 	rtw_write8(padapter, REG_FWHW_TXQ_CTRL + 2, pHalData->RegFwHwTxQCtrl);
-	rtw_write8(padapter, REG_TBTT_PROHIBIT + 1, 0x64);
-	pHalData->RegReg542 &= ~BIT(0);
-	rtw_write8(padapter, REG_TBTT_PROHIBIT + 2, pHalData->RegReg542);
+        /* TBTT hold time: 0x540[19:8] */
+        rtw_write8(padapter, REG_TBTT_PROHIBIT + 1, TBTT_PROHIBIT_HOLD_TIME_STOP_BCN & 0xFF);
+        rtw_write8(padapter, REG_TBTT_PROHIBIT + 2,
+                (rtw_read8(padapter, REG_TBTT_PROHIBIT + 2) & 0xF0) | (TBTT_PROHIBIT_HOLD_TIME_STOP_BCN >> 8));
 
 	/*CheckFwRsvdPageContent(padapter);*/  /* 2010.06.23. Added by tynli. */
 }
