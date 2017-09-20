@@ -153,7 +153,7 @@ jessie)
 	;;
 	obsax3)
 		DTBFILE=armada-xp-openblocks-ax3-4.dtb
-		ISOFILE=debian-8.3.0-armhf-DVD-1.iso
+		ISOFILE=debian-8.5.0-armhf-DVD-1.iso
 		RAMDISK_SIZE=180
 		PATCHLEVEL=1
 		ARCH=armhf
