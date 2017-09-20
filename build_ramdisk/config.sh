@@ -138,7 +138,7 @@ jessie)
 	obsvx1)
 		KERNEL=4.4.43
 		ISOFILE=debian-8.5.0-amd64-DVD-1.iso
-		PATCHLEVEL=1
+		PATCHLEVEL=2
 		RAMDISK_SIZE=230
 #		ENA_VIRT=true
 		DEFCONFIG=obsvx1_defconfig
