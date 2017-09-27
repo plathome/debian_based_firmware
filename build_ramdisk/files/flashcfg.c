@@ -44,7 +44,7 @@
 #if defined(CONFIG_OBSA6)
 #include <mtd/mtd-abi.h>
 #endif
-#if defined(CONFIG_OBSA6) || defined(CONFIG_LINUX_3_11_X) || defined(CONFIG_LINUX_4_0)
+#if defined(CONFIG_OBSA6) || defined(CONFIG_LINUX_3_11_X) || defined(CONFIG_LINUX_4_0) || defined(CONFIG_LINUX_4_9)
 #include <zlib.h>
 #else
 #include <linux/zlib.h>
@@ -244,7 +244,7 @@ usage()
 	fprintf(stderr, "       flashcfg -t              Test read and write in coredump save area\n");
 	fprintf(stderr, "       flashcfg -T              Read message in coredump save area\n");
 #if defined(CONFIG_OBSAX3)
-#if defined(CONFIG_LINUX_4_0)
+#if defined(CONFIG_LINUX_4_0) || defined(CONFIG_LINUX_4_9)
 	fprintf(stderr, "       flashcfg -p (now|dis|wfi|idle|snooze) Print or set Power Management Level\n");
 #else
 	fprintf(stderr, "       flashcfg -p (now|wfi|idle|snooze) Print or set Power Management Level\n");
@@ -513,7 +513,7 @@ invalid_arg:
 				fprintf(stderr, "invalid option %s\n", optarg);
 				return ERROR_END;
 			}
-#if !defined(CONFIG_LINUX_4_0)
+#if !defined(CONFIG_LINUX_4_0) && !defined(CONFIG_LINUX_4_9)
 			if(mtd_protect(MTD_UBOOTENV, 0) != 0){
 				fprintf(stderr, "Fail to kernel image protect off\n");
 				ret = ERROR_END;
@@ -524,7 +524,7 @@ invalid_arg:
 				mtd_protect(MTD_UBOOTENV, 1);
 				return ERROR_END;
 			}
-#if !defined(CONFIG_LINUX_4_0)
+#if !defined(CONFIG_LINUX_4_0) && !defined(CONFIG_LINUX_4_9)
 			if(mtd_protect(MTD_UBOOTENV, 1) != 0){
 				fprintf(stderr, "Fail to kernel image protect off\n");
 				ret = ERROR_END;
@@ -2077,13 +2077,15 @@ char * set_tarpath(void)
 int mtd_protect(int mtd_num, int on)
 {
 	int fd;
-#if defined(CONFIG_LINUX_4_0)
+#if defined(CONFIG_LINUX_4_0) || defined(CONFIG_LINUX_4_9)
 	char buf[256], val[8];
 #else
 	char buf[256], val[] = {0,0,0,0,0,0};
 #endif
 
-#if defined(CONFIG_LINUX_4_0) && defined(CONFIG_OBSAX3)
+#if defined(CONFIG_LINUX_4_9)
+	sprintf(buf, "/sys/class/mtd/mtd%d/flags", mtd_num);
+#elif defined(CONFIG_LINUX_4_0) && defined(CONFIG_OBSAX3)
 	sprintf(buf, "/sys/devices/platform/soc/d0010400.devbus-bootcs/f0000000.nor/mtd/mtd%d/flags", mtd_num);
 #else
 	sprintf(buf, "/sys/devices/virtual/mtd/mtd%d/flags", mtd_num);
@@ -2243,7 +2245,9 @@ int umount_mtddev(void)
 
 #if defined(CONFIG_OBSAX3)
 #include <time.h>
-#if defined(CONFIG_LINUX_4_0) && defined(CONFIG_OBSAX3)
+#if defined(CONFIG_LINUX_4_9)
+#define MTDSYSDIR      "/sys/class/mtd/mtd%s/"
+#elif defined(CONFIG_LINUX_4_0) && defined(CONFIG_OBSAX3)
 #define MTDSYSDIR	"/sys/devices/platform/soc/d0010400.devbus-bootcs/f0000000.nor/mtd/%s/"
 #else
 #define MTDSYSDIR	"/sys/devices/virtual/mtd/%s/"
@@ -2439,7 +2443,7 @@ int read_core_area(void)
 	return NORMAL_END;
 }
 
-#if defined(CONFIG_LINUX_4_0)
+#if defined(CONFIG_LINUX_4_0) || defined(CONFIG_LINUX_4_9)
 int get_pm(void)
 {
 	FILE* fp;

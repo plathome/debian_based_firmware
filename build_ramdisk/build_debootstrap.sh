@@ -59,38 +59,68 @@ fi
 rm -rf   ${DISTDIR}
 mkdir -p ${DISTDIR}
 
-if [ "$TARGET" == "obs600" ]; then
-	if [ "$DIST" == "jessie" ]; then
-		EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano"
-		INCLUDE="openssh-server,liblzo2-2,sysvinit,sysvinit-utils,parted,strace"
-	else
+case $DIST in
+wheezy|squeeze)
+	case $TARGET in
+	obsbx1)
+		INCLUDE="openssh-server,strace,acpi-support-base"
+		INCLUDE="$INCLUDE,wpasupplicant,python-gobject,ppp,wireless-tools,libnl-3-200,libnl-genl-3-200,libnl-route-3-200,ethtool,busybox,bluez,iw,libasound2"
+		EXCLUDE="nano"
+		;;
+	obs600)
 		EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano"
 		INCLUDE="openssh-server,lzma,strace,perl"
-	fi
-elif [ "$TARGET" == "obsvx1" ]; then
-	if [ "$DIST" == "jessie" ]; then
-		INCLUDE="openssh-server,strace,acpi-support-base"
-		INCLUDE="$INCLUDE,wpasupplicant,ppp,wireless-tools,ethtool,bluez,iw,sysvinit,sysvinit-utils,dosfstools,libasound2,parted,bzip2,libusb-1.0-0"
-		EXCLUDE="nano"
-	fi
-elif [ "$TARGET" == "obsbx1" ]; then
-	if [ "$DIST" == "wheezy" ]; then
-		INCLUDE="openssh-server,strace,acpi-support-base"
-#		INCLUDE="$INCLUDE,wpasupplicant,python-gobject,ppp,wireless-tools,libnl1,ethtool,busybox,bluez,iw,libasound2"
-		INCLUDE="$INCLUDE,wpasupplicant,python-gobject,ppp,wireless-tools,libnl-3-200,ethtool,busybox,bluez,iw,libasound2"
-		EXCLUDE="nano"
-	else
+		;;
+	*)
+		EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano"
+		INCLUDE="openssh-server,strace"
+		;;
+	esac
+	;;
+jessie)
+	case $TARGET in
+	obsbx1)
 		INCLUDE="openssh-server,strace,acpi-support-base"
 		INCLUDE="$INCLUDE,wpasupplicant,ppp,wireless-tools,ethtool,busybox,bluez,iw,sysvinit,sysvinit-utils,dosfstools,libasound2,parted"
 		EXCLUDE="nano"
-	fi
-elif [ "$DIST" == "jessie" ]; then
-	EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,nano"
-	INCLUDE="openssh-server,lzma,parted,strace"
-else
-	EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano"
-	INCLUDE="openssh-server,strace"
-fi
+		;;
+	obsvx1)
+		INCLUDE="openssh-server,strace,acpi-support-base"
+		INCLUDE="$INCLUDE,wpasupplicant,ppp,wireless-tools,ethtool,bluez,iw,sysvinit,sysvinit-utils,dosfstools,libasound2,parted,bzip2,libusb-1.0-0"
+		EXCLUDE="nano"
+		;;
+	obs600)
+		EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,powerpc-utils,powerpc-ibm-utils,nano"
+		INCLUDE="openssh-server,liblzo2-2,sysvinit,sysvinit-utils,parted,strace"
+		;;
+	obsa6)
+		;;
+	*)
+		EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,nano"
+		INCLUDE="openssh-server,lzma,parted,strace"
+		;;
+	esac
+	;;
+stretch)
+	case $TARGET in
+	obsvx1)
+		INCLUDE="openssh-server,xz-utils,parted,insserv,strace,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200"
+		EXCLUDE="nano"
+		;;
+	obsbx*)
+		INCLUDE="openssh-server,xz-utils,parted,insserv,strace,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200,busybox"
+		EXCLUDE="nano"
+		;;
+	obs600|obsa6)
+		echo "Error: $TARGET is never supported."
+		;;
+	*)
+		INCLUDE="openssh-server,xz-utils,parted,insserv,strace"
+		EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,nano"
+		;;
+	esac
+	;;
+esac
 
 if [ "$ENA_AUDIO" == "true" ]; then
 	INCLUDE="$INCLUDE,alsa-utils"

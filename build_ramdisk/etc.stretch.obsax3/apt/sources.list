@@ -1,0 +1,14 @@
+
+deb http://cdn.debian.or.jp/debian/ stretch main
+deb-src http://cdn.debian.or.jp/debian/ stretch main
+
+#deb http://cdn.debian.or.jp/debian/ stretch-backports main
+#deb-src http://cdn.debian.or.jp/debian/ stretch-backports main
+
+deb http://cdn.debian.or.jp/debian/ stretch-updates main
+deb-src http://cdn.debian.or.jp/debian/ stretch-updates main
+
+deb http://security.debian.org stretch/updates main
+deb-src http://security.debian.org stretch/updates main
+
+#deb http://ftp.plathome.co.jp/pub/OBSAX3/debian/stretch ./

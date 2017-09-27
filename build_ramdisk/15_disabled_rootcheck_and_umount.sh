@@ -27,5 +27,11 @@
 
 . `dirname $0`/config.sh
 
-chroot ${DISTDIR} /sbin/insserv -rfv checkroot.sh
-chroot ${DISTDIR} /sbin/insserv -rfv umountroot
+case $DIST in
+stretch)
+	;;
+*)
+	chroot ${DISTDIR} /sbin/insserv -rfv checkroot.sh
+	chroot ${DISTDIR} /sbin/insserv -rfv umountroot
+	;;
+esac

@@ -1,0 +1,95 @@
+#!/bin/bash
+#
+# instfirm
+#
+### BEGIN INIT INFO
+# Provides:          instfirm
+# Required-Start:
+# Required-Stop:
+# X-Start-Before:    easyblockssync easyblocks-standalone
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: install firmware
+# Description:       install firmware for OBSVX1
+### END INIT INFO
+NAME=instfirm
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+#includes lsb functions 
+. /lib/lsb/init-functions
+
+EBDIR=/etc/easyblocks
+[ -f ${EBDIR}/lib/common ] && . ${EBDIR}/lib/common
+
+[ -f /etc/default/openblocks ] && . /etc/default/openblocks
+
+set -e
+
+#debug=echo
+
+MODESTR="instfirm="
+ROOTFS="SFR-rootfs.tar.bz2"
+
+case "$1" in
+start)
+	[ "$MODEL" != "obsvx1" ] && exit
+	grep -qv $MODESTR /proc/cmdline && exit
+
+	BOOT=`findfs LABEL=${FIRM_DIR} 2> /dev/null`
+	if [ -z "$BOOT" ]; then
+		echo "Boot partition is not found."
+		exit 1
+	fi
+
+	# format partition
+	if [ -e ${BOOT/%?/}2 ]; then
+		wipefs -a ${BOOT/%?/}2
+		mkfs.ext4 -L DEBIAN -U e8c3e922-b1f5-43a2-a026-6a14f01197f6 ${BOOT/%?/}2
+	fi
+	if [ -e ${BOOT/%?/}3 ]; then
+		wipefs -a ${BOOT/%?/}3
+		mkfs.ext4 ${BOOT/%?/}3	# swap partition is unused, format ext4
+	fi
+
+	mount $BOOT /media || exit 1
+	if grep ${MODESTR}debian /proc/cmdline > /dev/null; then
+		cp /media/SFR/${MODEL}-bzImage /media/bzImage
+		cp /media/SFR/${MODEL}-initrd.gz /media/initrd.gz
+		cp /media/SFR/openblocks-release /media/openblocks-release
+		cp /media/EFI/boot/bootx64.conf-obsiot /media/EFI/boot/bootx64.conf
+		if [ -f /media/SFR/${MODEL}_userland.tgz ]; then
+			mount ${BOOT/%?/}2 /mnt || exit 1
+			tar xfzp /media/SFR/${MODEL}_userland.tgz -C /mnt
+			sync
+			umount /mnt
+		fi
+		rm -f /media/etc.tgz /media/userland.tgz
+		sync
+	fi
+#	if grep ${MODESTR}wr7idp /proc/cmdline > /dev/null; then
+#		if [ ! -e ${BOOT/%?/}2 ]; then
+#			umount /media
+#			echo "userland partition is not found."
+#			exit 1
+#		fi
+#		cp /media/SFR/SFR-bzImage /media/bzImage
+#		cp /media/SFR/SFR-initramfs.img /media/idp-initramfs.img
+#		cp /media/EFI/boot/bootx64.conf-wr7idp /media/EFI/boot/bootx64.conf
+#		mount ${BOOT/%?/}2 /mnt || exit 1
+#		tar xfjp /media/SFR/${ROOTFS} -C /mnt
+#		sync
+#		umount /mnt
+#	fi
+	umount /media
+	reboot
+	;;
+stop)
+	;;
+*)
+	echo "Usage: /etc/init.d/$NAME {start}" >&2
+	exit 1
+	;;
+esac
+
+umount /media
+exit 0

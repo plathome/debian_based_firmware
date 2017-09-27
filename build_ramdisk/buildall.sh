@@ -28,12 +28,12 @@
 #debug=echo
 . `dirname $0`/config.sh
 
-DIST_LIST="(wheezy|jessie)"
+DIST_LIST="(wheezy|jessie|stretch)"
 TARGET_LIST="(obsvx1|obsmv4|bpv4|bpv4-h|bpv8|obsbx1|obsa6|obsa7|obsax3|obs600)"
 
 function _usage(){
 	echo
-	echo "usage: $(basename $0) -M [obsvx1|obsmv4|bpv4|bpv4-h|bpv8|obsbx1|obsa6|obsa7|obsax3|obs600] -D [wheezy|jessie]"
+	echo "usage: $(basename $0) -M [obsvx1|obsmv4|bpv4|bpv4-h|bpv8|obsbx1|obsa6|obsa7|obsax3|obs600] -D [wheezy|jessie|stretch]"
 	echo
 	exit 1
 }
@@ -61,11 +61,24 @@ if ! (echo $_TARGET | grep -Eq "$TARGET_LIST") ; then
 	_usage
 fi
 
-if [ "$_TARGET" == "obsa6" -a "$_DIST" == "jessie" ]; then
-	echo
-	echo "obsa6 on jessie is not supported."
-	exit 1
-fi
+case $_DIST in
+jessie)
+	if [ "$_TARGET" == "obsa6" ]; then
+		echo
+		echo "$_TARGET is never supported."
+		exit 1
+	fi
+	;;
+stretch)
+	case $_TARGET in
+	obs600|obsa6|obsbx1)
+		echo
+		echo "$_TARGET is never supported."
+		exit 1
+		;;
+	esac
+	;;
+esac
 
 SCRIPTS="build_debootstrap.sh build_kernel.sh build_ramdisk.sh release_firmware.sh"
 

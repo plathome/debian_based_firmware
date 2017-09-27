@@ -25,13 +25,44 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-. `dirname $0`/config.sh
-
-if [ "${DIST}" == "jessie" ]; then
-	echo ${DISTDIR}
-	chroot ${DISTDIR} /usr/bin/apt-get remove --purge --auto-remove -y systemd
-	echo -e 'Package: systemd\nPin: origin ""\nPin-Priority: -1' > ${DISTDIR}/etc/apt/preferences.d/systemd
-	echo -e '\n\nPackage: *systemd*\nPin: origin ""\nPin-Priority: -1' >> ${DISTDIR}/etc/apt/preferences.d/systemd
-	buf="\n\nPackage: systemd:$ARCH\nPin: origin ""\nPin-Priority: -1"
-	echo -e $buf >> ${DISTDIR}/etc/apt/preferences.d/systemd
+#
+# check host machine
+#
+if ! grep -q "^9" /etc/debian_version ; then
+	echo "This machine is not Debian 9"
+	echo "Abort!!"
+	exit 1
 fi
+
+#
+# add architecture
+#
+dpkg --add-architecture i386
+dpkg --add-architecture armhf
+dpkg --add-architecture armel
+apt update 
+
+#
+# host machine development tools
+#
+packages="build-essential u-boot-tools libncurses5-dev debootstrap qemu-user-static bc gcc-multilib xz-utils dosfstools libnl-3-dev libssl-dev libusb-dev libasound2-dev libi2c-dev libusb-1.0-0 libusb-1.0-0-dev pkg-config"
+apt -y install $packages
+
+#
+# i386 development tools
+#
+packages="libnl-3-dev:i386 libssl-dev:i386 libusb-dev:i386 libnl-genl-3-dev:i386 libglib2.0-dev:i386 libbluetooth-dev:i386 libasound2-dev:i386 "
+apt -y install $packages
+
+#
+# armel development tools
+#
+packages="gcc-arm-linux-gnueabi zlib1g-dev:armel libusb-dev:armel "
+apt -y install $packages
+
+#
+# armhf development tools
+#
+packages="gcc-arm-linux-gnueabihf zlib1g-dev:armhf libusb-dev:armhf "
+apt -y install $packages
+

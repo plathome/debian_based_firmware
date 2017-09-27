@@ -45,7 +45,7 @@ LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
 
 
 if [ "$TARGET" == "obs600" ]; then
-	if [ "$DIST" == "jessie" ]; then
+	if [ "$DIST" == "jessie" -o "$DIST" == "stretch" ]; then
 		CFLAGS+=" ${MODEL} -DDEBIAN"
 	else
 		CFLAGS+=" -DHAVE_PUSHSW_OBS600_H -DDEBIAN"
@@ -75,8 +75,11 @@ case $KERNEL in
 3.13)
 	CFLAGS+=" -DCONFIG_LINUX_3_11_X"
 ;;
-4.*)
+4.1*)
 	CFLAGS+=" -DCONFIG_LINUX_4_0"
+;;
+4.9*)
+	CFLAGS+=" -DCONFIG_LINUX_4_0 -DCONFIG_LINUX_4_9"
 ;;
 esac
 

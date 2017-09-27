@@ -314,11 +314,6 @@ void rtw_hal_config_rftype(PADAPTER  padapter);
 #define WL_FUNC_FTM			BIT3
 #define WL_FUNC_BIT_NUM		4
 
-#define TBTT_PROHIBIT_SETUP_TIME 0x04 /* 128us, unit is 32us */
-#define TBTT_PROHIBIT_HOLD_TIME 0x80 /* 4ms, unit is 32us*/
-#define TBTT_PROHIBIT_HOLD_TIME_STOP_BCN 0x64 /* 3.2ms unit is 32us*/
-
-
 int hal_spec_init(_adapter *adapter);
 void dump_hal_spec(void *sel, _adapter *adapter);
 

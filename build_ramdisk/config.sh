@@ -206,6 +206,45 @@ jessie)
 	*) exit 1 ;;
 	esac
 ;;
+stretch)
+	KERNEL=4.9.30
+	case ${TARGET} in
+	obsvx1)
+		ISOFILE=debian-9.1.0-amd64-DVD-1.iso
+		PATCHLEVEL=0
+		RAMDISK_SIZE=200
+		DEFCONFIG=obsvx1_defconfig
+	;;
+	obsax3)
+		DTBFILE=armada-xp-openblocks-ax3-4.dtb
+		ISOFILE=debian-9.1.0-armhf-DVD-1.iso
+		RAMDISK_SIZE=145
+		PATCHLEVEL=0
+		ARCH=armhf
+		COMP_LVL=9
+		COMP=lzma
+		COMP_EXT=lzma
+		UBOOT_VER=3.0.1
+		UBOOT_PL=2
+		UBOOT_OLD_VER="1\\\.0\\\.0\|1\\\.1\\\.[1235]\|2\\\.0\\\.[347]\|3\\\.0\\\.0"
+	;;
+	obsa7)
+		DTBFILE=kirkwood-openblocks_a7.dtb
+		ISOFILE=debian-9.1.0-armel-DVD-1.iso
+		RAMDISK_SIZE=160
+		PATCHLEVEL=0
+		ARCH=armel
+		COMP_LVL=9
+		COMP=gzip
+		COMP_EXT=gz
+		UBOOT_VER=1.2.13
+		UBOOT_PL=2
+		UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
+	;;
+	*)
+	;;
+	esac
+;;
 esac
 
 if [ -f _config.sh ] ; then

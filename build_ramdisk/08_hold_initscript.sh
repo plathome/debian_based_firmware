@@ -27,20 +27,31 @@
 
 . `dirname $0`/config.sh
 
-if [ ${DIST} == "wheezy" ]; then
+case $DIST in
+wheezy)
 	chroot ${DISTDIR} /usr/bin/aptitude hold initscripts
-fi
-
-cat > ${DISTDIR}/tmp/hold.$$ <<_HOLD
-echo initscripts hold | dpkg --set-selections
-_HOLD
-chroot ${DISTDIR} /bin/bash /tmp/hold.$$
-rm -f ${DISTDIR}/tmp/hold.$$
-
-if [ ${DIST} == "jessie" ]; then
+	;;
+jessie)
 	cat > ${DISTDIR}/tmp/hold.$$ <<_HOLD2
 	echo ifupdown hold | dpkg --set-selections
 _HOLD2
+	chroot ${DISTDIR} /bin/bash /tmp/hold.$$
+	rm -f ${DISTDIR}/tmp/hold.$$
+	;;
+stretch)
+	cat > ${DISTDIR}/tmp/hold.$$ <<_HOLD3
+	echo kmod hold | dpkg --set-selections
+	echo libkmod2 hold | dpkg --set-selections
+_HOLD3
+	chroot ${DISTDIR} /bin/bash /tmp/hold.$$
+	rm -f ${DISTDIR}/tmp/hold.$$
+	;;
+esac
+
+if [ "$DIST" != "stretch" ]; then
+	cat > ${DISTDIR}/tmp/hold.$$ <<_HOLD
+	echo initscripts hold | dpkg --set-selections
+_HOLD
 	chroot ${DISTDIR} /bin/bash /tmp/hold.$$
 	rm -f ${DISTDIR}/tmp/hold.$$
 fi

@@ -43,5 +43,6 @@ if [ -f "${DISTDIR}/usr/share/doc/base-files/README" ] ; then
 fi
 
 rm -f etc/ssh/ssh_host*key etc/ssh/ssh_host*key.pub
+find ${DISTDIR}/var -name "*\-old" | xargs rm -f
 
 > etc/resolv.conf

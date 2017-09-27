@@ -88,10 +88,25 @@ chroot ${DISTDIR} /sbin/insserv
 touch ${DISTDIR}/etc/init.d/.legacy-bootordering
 
 if [ -f ${DISTDIR}/etc/modules ]; then
-	if grep -q "^ipv6" ${DISTDIR}/etc/modules; then
-		echo "/etc/modules: The line, ipv6, exists"
-	else
-		echo "ipv6" >> ${DISTDIR}/etc/modules
+	if [ "$DIST" != "stretch" ]; then
+		if grep -q "^ipv6" ${DISTDIR}/etc/modules; then
+			echo "/etc/modules: The line, ipv6, exists"
+		else
+			echo "ipv6" >> ${DISTDIR}/etc/modules
+		fi
+	fi
+
+	if [ "$TARGET" == "obsvx1" ];then
+		if grep -q "^rtl8821ae" ${DISTDIR}/etc/modules; then
+			echo "/etc/modules: The line, rtl8821ae, exists"
+		else
+			echo "rtl8821ae" >> ${DISTDIR}/etc/modules
+		fi
+		if grep -q "^ath10k_pci" ${DISTDIR}/etc/modules; then
+			echo "/etc/modules: The line, ath10k_pci, exists"
+		else
+			echo "ath10k_pci" >> ${DISTDIR}/etc/modules
+		fi
 	fi
 
 	if [ "$ENA_VIRT" == "true" ]; then
@@ -103,8 +118,17 @@ if [ -f ${DISTDIR}/etc/modules ]; then
 	fi
 fi
 
-if [ ${DIST} == "jessie" ]; then
+if [ ${DIST} == "jessie" -o ${DIST} == "stretch" ]; then
 	sed -e "s|^PermitRootLogin without-password|PermitRootLogin yes|" \
 		< ${DITDIR}/etc/ssh/sshd_config > /tmp/sshd_config.new
 	mv -f /tmp/sshd_config.new ${DISTDIR}/etc/ssh/sshd_config
+fi
+
+if [ ${DIST} == "stretch" ]; then
+	if [ ! -e "${DISTDIR}/etc/udev/rules.d/73-usb-net-by-mac.rules" ]; then
+		ln -s /dev/null ${DISTDIR}/etc/udev/rules.d/73-usb-net-by-mac.rules
+	fi
+	if [ ! -e "${DISTDIR}/etc/udev/rules.d/75-net-description.rules" ]; then
+		ln -s /dev/null ${DISTDIR}/etc/udev/rules.d/75-net-description.rules
+	fi
 fi
