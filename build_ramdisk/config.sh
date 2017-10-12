@@ -207,17 +207,17 @@ jessie)
 	esac
 ;;
 stretch)
-	KERNEL=4.9.30
+	KERNEL=4.9.51
 	case ${TARGET} in
 	obsvx1)
-		ISOFILE=debian-9.1.0-amd64-DVD-1.iso
+		ISOFILE=debian-9.2.0-amd64-DVD-1.iso
 		PATCHLEVEL=0
 		RAMDISK_SIZE=200
 		DEFCONFIG=obsvx1_defconfig
 	;;
 	obsax3)
 		DTBFILE=armada-xp-openblocks-ax3-4.dtb
-		ISOFILE=debian-9.1.0-armhf-DVD-1.iso
+		ISOFILE=debian-9.2.0-armhf-DVD-1.iso
 		RAMDISK_SIZE=145
 		PATCHLEVEL=0
 		ARCH=armhf
@@ -230,7 +230,7 @@ stretch)
 	;;
 	obsa7)
 		DTBFILE=kirkwood-openblocks_a7.dtb
-		ISOFILE=debian-9.1.0-armel-DVD-1.iso
+		ISOFILE=debian-9.2.0-armel-DVD-1.iso
 		RAMDISK_SIZE=160
 		PATCHLEVEL=0
 		ARCH=armel

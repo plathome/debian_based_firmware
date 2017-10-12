@@ -104,18 +104,18 @@ jessie)
 stretch)
 	case $TARGET in
 	obsvx1)
-		INCLUDE="openssh-server,xz-utils,parted,insserv,strace,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200"
+		INCLUDE="openssh-server,xz-utils,parted,insserv,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200"
 		EXCLUDE="nano"
 		;;
 	obsbx*)
-		INCLUDE="openssh-server,xz-utils,parted,insserv,strace,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200,busybox"
+		INCLUDE="openssh-server,xz-utils,parted,insserv,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200,busybox"
 		EXCLUDE="nano"
 		;;
 	obs600|obsa6)
 		echo "Error: $TARGET is never supported."
 		;;
 	*)
-		INCLUDE="openssh-server,xz-utils,parted,insserv,strace"
+		INCLUDE="openssh-server,xz-utils,parted,insserv"
 		EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,nano"
 		;;
 	esac
