@@ -370,8 +370,10 @@ start)
 
 	# extract CONFIG_FILE and execute CONFIG_SCRIPT
 	if [ -n "$confdev" ] ; then
+		[ "$MODEL" == "obsvx1" ] && /etc/init.d/dbus start
 		if_exists_extract_config_file
 		if_exists_execute_config_script
+		[ "$MODEL" == "obsvx1" ] && /etc/init.d/dbus stop
 	fi
 
 	# if using DEBIAN storage, /tmp directory mount under storage.
@@ -445,6 +447,7 @@ start)
 		fi
 	fi
 	umount /proc
+	mount -oremount,ro /
 ;;
 stop)
 	if [ "$MODEL" == "obsax3" ]; then
