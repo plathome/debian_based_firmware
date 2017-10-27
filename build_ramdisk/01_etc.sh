@@ -78,6 +78,10 @@ obsbx1|obsvx1)
 		chmod 755 ${DISTDIR}/etc/init.d/power-saving.sh
 		chroot ${DISTDIR} /sbin/insserv -rf power-saving.sh
 		chroot ${DISTDIR} /sbin/insserv power-saving.sh
+	elif [ "$TARGET" == "obsbx1" ]; then
+		chmod 755 ${DISTDIR}/etc/init.d/reset-smsc95xx
+		chroot ${DISTDIR} /sbin/insserv -rf reset-smsc95xx
+		chroot ${DISTDIR} /sbin/insserv reset-smsc95xx
 	fi
 	;;
 *)
