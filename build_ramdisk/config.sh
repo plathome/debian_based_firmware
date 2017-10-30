@@ -230,7 +230,7 @@ stretch)
 	;;
 	obsa7)
 		DTBFILE=kirkwood-openblocks_a7.dtb
-		ISOFILE=debian-9.2.0-armel-DVD-1.iso
+		ISOFILE=debian-9.2.1-armel-DVD-1.iso
 		RAMDISK_SIZE=160
 		PATCHLEVEL=0
 		ARCH=armel
