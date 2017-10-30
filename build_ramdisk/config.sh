@@ -217,7 +217,7 @@ stretch)
 	;;
 	obsax3)
 		DTBFILE=armada-xp-openblocks-ax3-4.dtb
-		ISOFILE=debian-9.2.0-armhf-DVD-1.iso
+		ISOFILE=debian-9.2.1-armhf-DVD-1.iso
 		RAMDISK_SIZE=145
 		PATCHLEVEL=0
 		ARCH=armhf
