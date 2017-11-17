@@ -60,6 +60,8 @@ fi
 #echo
 #find ${MOUNTDIR} | xargs touch -t `date +"%Y%m%d0000"`
 
+depmod -ae -b ${MOUNTDIR} -F ${MOUNTDIR}/boot/System.map ${KERNEL}
+
 umount ${MOUNTDIR}
 
 if [ ! -d ${RELEASEDIR} ]; then

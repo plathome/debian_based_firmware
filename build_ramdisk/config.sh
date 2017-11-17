@@ -35,6 +35,7 @@ COMPEXT=${COMPEXT:=lzma}
 export TARGET DIST
 
 ENA_BX1PM=false
+ENA_SYSVINIT=false
 
 KERNEL=3.12.35
 ISOFILE=debian-7.8.0-amd64-DVD-1.iso
@@ -213,7 +214,9 @@ stretch)
 		ISOFILE=debian-9.2.0-amd64-DVD-1.iso
 		PATCHLEVEL=0
 		RAMDISK_SIZE=200
-		DEFCONFIG=obsvx1_defconfig
+#		DEFCONFIG=obsvx1_defconfig
+		DEFCONFIG=${TARGET}_sysvinit_defconfig
+		ENA_SYSVINIT=true
 	;;
 	obsax3)
 		DTBFILE=armada-xp-openblocks-ax3-4.dtb
@@ -224,6 +227,8 @@ stretch)
 		COMP_LVL=9
 		COMP=lzma
 		COMP_EXT=lzma
+#		DEFCONFIG=${TARGET}_sysvinit_defconfig
+#		ENA_SYSVINIT=true
 		UBOOT_VER=3.0.1
 		UBOOT_PL=2
 		UBOOT_OLD_VER="1\\\.0\\\.0\|1\\\.1\\\.[1235]\|2\\\.0\\\.[347]\|3\\\.0\\\.0"
@@ -237,6 +242,8 @@ stretch)
 		COMP_LVL=9
 		COMP=gzip
 		COMP_EXT=gz
+#		DEFCONFIG=${TARGET}_sysvinit_defconfig
+#		ENA_SYSVINIT=true
 		UBOOT_VER=1.2.13
 		UBOOT_PL=2
 		UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"

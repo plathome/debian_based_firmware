@@ -38,6 +38,9 @@
 
 case ${TARGET} in
 obs*)
+	if [ "$ENA_SYSVINIT" == "true" ]; then
+		cp ${FILESDIR}/openblocks-setup.stretch-sysvinit ${DISTDIR}/etc/init.d/openblocks-setup
+	fi
 	chmod 755 ${DISTDIR}/etc/init.d/openblocks-setup
 	chroot ${DISTDIR} /sbin/insserv -rf openblocks-setup
 	chroot ${DISTDIR} /sbin/insserv openblocks-setup
@@ -124,7 +127,8 @@ fi
 
 if [ ${DIST} == "jessie" -o ${DIST} == "stretch" ]; then
 	sed -e "s|^PermitRootLogin without-password|PermitRootLogin yes|" \
-		< ${DITDIR}/etc/ssh/sshd_config > /tmp/sshd_config.new
+		-e "s|^#PermitRootLogin prohibit-password|PermitRootLogin yes|" \
+		< ${DISTDIR}/etc/ssh/sshd_config > /tmp/sshd_config.new
 	mv -f /tmp/sshd_config.new ${DISTDIR}/etc/ssh/sshd_config
 fi
 

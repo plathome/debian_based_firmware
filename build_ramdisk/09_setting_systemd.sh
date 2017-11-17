@@ -37,7 +37,11 @@ jessie)
 	echo -e $buf >> ${DISTDIR}/etc/apt/preferences.d/systemd
 	;;
 stretch)
-#	ln -sf /lib/systemd/system/serial-getty@.service ${DISTDIR}/etc/systemd/system/getty.target.wants/serial-getty@ttyS0.service
+	if [ "$ENA_SYSVINIT" == "true" ]; then
+		chroot ${DISTDIR} /usr/bin/apt remove --purge --auto-remove -y systemd
+		echo -e 'Package: *systemd*\nPin: release *\nPin-Priority: -1\n' > ${DISTDIR}/etc/apt/preferences.d/systemd
+		cp ${FILESDIR}/inittab-${DIST} ${DISTDIR}/etc/inittab
+	fi
 	;;
 *)
 	;;

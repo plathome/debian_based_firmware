@@ -32,6 +32,10 @@ if [ $? -eq 0 ]; then
 	rm -f ${DISTDIR}/*.deb
 	rsync ${EXTRADEBDIR}/*${ARCH}.deb ${DISTDIR}/ ${EXCLUDE}
 	rsync ${EXTRADEBDIR}/*all.deb ${DISTDIR}/ ${EXCLUDE}
+	if [ "$ENA_SYSVINIT" == "true" ]; then
+		rsync ${EXTRADEBDIR}/sysvinit/*${ARCH}.deb ${DISTDIR}/ ${EXCLUDE}
+		rsync ${EXTRADEBDIR}/sysvinit/*all.deb ${DISTDIR}/ ${EXCLUDE}
+	fi
 
 	debs=$(cd ${DISTDIR}/; ls -1 *${ARCH}.deb 2> /dev/null)
 	debs+=" $(cd ${DISTDIR}/; ls -1 *all.deb 2> /dev/null)"
