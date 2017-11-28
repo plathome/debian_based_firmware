@@ -211,7 +211,7 @@ stretch)
 	KERNEL=4.9.51
 	case ${TARGET} in
 	obsvx1)
-		ISOFILE=debian-9.2.0-amd64-DVD-1.iso
+		ISOFILE=debian-9.2.1-amd64-DVD-1.iso
 		PATCHLEVEL=0
 		RAMDISK_SIZE=200
 		DEFCONFIG=obsvx1_defconfig

@@ -38,9 +38,6 @@
 
 case ${TARGET} in
 obs*)
-	if [ "$ENA_SYSVINIT" == "true" ]; then
-		cp ${FILESDIR}/openblocks-setup.stretch-sysvinit ${DISTDIR}/etc/init.d/openblocks-setup
-	fi
 	chmod 755 ${DISTDIR}/etc/init.d/openblocks-setup
 	chroot ${DISTDIR} /sbin/insserv -rf openblocks-setup
 	chroot ${DISTDIR} /sbin/insserv openblocks-setup
@@ -50,6 +47,9 @@ obs*)
 	chmod 755 ${DISTDIR}/etc/init.d/pshd
 	chroot ${DISTDIR} /sbin/insserv -rf pshd
 	chroot ${DISTDIR} /sbin/insserv pshd
+	chmod 755 ${DISTDIR}/etc/init.d/wd-keepalive
+	chroot ${DISTDIR} /sbin/insserv -rf wd-keepalive
+	chroot ${DISTDIR} /sbin/insserv wd-keepalive
 	;;
 *)
 	;;
@@ -63,9 +63,6 @@ obsbx1|obsvx1)
 	chmod 755 ${DISTDIR}/etc/init.d/nitz
 	chroot ${DISTDIR} /sbin/insserv -rf nitz
 	chroot ${DISTDIR} /sbin/insserv nitz
-	chmod 755 ${DISTDIR}/etc/init.d/wd-keepalive
-	chroot ${DISTDIR} /sbin/insserv -rf wd-keepalive
-	chroot ${DISTDIR} /sbin/insserv wd-keepalive
 	chmod 755 ${DISTDIR}/etc/init.d/disable-modem
 	chroot ${DISTDIR} /sbin/insserv -rf disable-modem
 	chroot ${DISTDIR} /sbin/insserv disable-modem

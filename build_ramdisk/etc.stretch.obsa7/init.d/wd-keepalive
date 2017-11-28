@@ -5,7 +5,7 @@
 # Required-Stop:     umountfs
 # Default-Start:	 S
 # Default-Stop:
-# Short-Description: wd-keepalive daemon for OBSAX3
+# Short-Description: wd-keepalive daemon for OBS A7
 # Description:       
 ### END INIT INFO
 #
@@ -41,7 +41,7 @@ PATH=/sbin:/usr/sbin:/bin:/usr/bin
 DESC="watchdog sampling daemon for obsax3"
 NAME=wd-keepalive
 DAEMON=/usr/sbin/$NAME
-DAEMON_ARGS="60 30"
+DAEMON_ARGS="21 10"
 PIDFILE=/var/run/watchdog.pid
 SCRIPTNAME=/etc/init.d/$NAME
 

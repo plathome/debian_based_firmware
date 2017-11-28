@@ -40,7 +40,10 @@ stretch)
 	if [ "$ENA_SYSVINIT" == "true" ]; then
 		chroot ${DISTDIR} /usr/bin/apt remove --purge --auto-remove -y systemd
 		echo -e 'Package: *systemd*\nPin: release *\nPin-Priority: -1\n' > ${DISTDIR}/etc/apt/preferences.d/systemd
-		cp ${FILESDIR}/inittab-${DIST} ${DISTDIR}/etc/inittab
+		(cd ${ETCDIR}.sysvinit;tar --exclude=CVS -cf - .) | tar xf - -C ${DISTDIR}/etc/
+		chmod 755 ${DISTDIR}/etc/init.d/openblocks-setup
+		chroot ${DISTDIR} /sbin/insserv -rf openblocks-setup
+		chroot ${DISTDIR} /sbin/insserv openblocks-setup
 	fi
 	;;
 *)
