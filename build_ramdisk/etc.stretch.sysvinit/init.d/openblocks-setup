@@ -218,43 +218,6 @@ sshd_host_keys_required() {
 	fi
 }
 
-sshd_create_key() {
-	msg="$1"
-	shift
-	hostkeys="$1"
-	shift
-	file="$1"
-	shift
-
-	if echo "$hostkeys" | grep -x "$file" >/dev/null && \
-	   [ ! -f "$file" ] ; then
-		echo -n $msg
-		ssh-keygen -q -f "$file" -N '' "$@"
-		echo
-		if type restorecon >/dev/null 2>&1; then
-			restorecon "$file.pub"
-		fi
-	fi
-}
-
-
-sshd_create_keys() {
-	hostkeys="$(sshd_host_keys_required)"
-
-	sshd_create_key "Creating SSH1 key; this may take some time ..." \
-		"$hostkeys" /etc/ssh/ssh_host_key -t rsa1
-
-	sshd_create_key "Creating SSH2 RSA key; this may take some time ..." \
-		"$hostkeys" /etc/ssh/ssh_host_rsa_key -t rsa
-	sshd_create_key "Creating SSH2 DSA key; this may take some time ..." \
-		"$hostkeys" /etc/ssh/ssh_host_dsa_key -t dsa
-	sshd_create_key "Creating SSH2 ECDSA key; this may take some time ..." \
-		"$hostkeys" /etc/ssh/ssh_host_ecdsa_key -t ecdsa
-	sshd_create_key "Creating SSH2 Ed25519 key; this may take some time ..." \
-		"$hostkeys" /etc/ssh/ssh_host_ed25519_key -t ed25519
-}
-
-
 case "$1" in
 start)
 	mount -oremount,rw /
@@ -417,7 +380,7 @@ start)
 
 	# create ssh keys for openssh-server
 	if [ -x /usr/sbin/sshd ] ; then
-		sshd_create_keys
+		dpkg-reconfigure openssh-server
 	fi
 
 	# create mount directory for fstab

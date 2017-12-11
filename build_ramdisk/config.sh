@@ -137,7 +137,7 @@ jessie)
 		DEFCONFIG=bpv4_defconfig
 	;;
 	obsvx1)
-		KERNEL=4.4.43
+		KERNEL=4.4.103
 		ISOFILE=debian-8.5.0-amd64-DVD-1.iso
 		PATCHLEVEL=2
 		RAMDISK_SIZE=230

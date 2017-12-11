@@ -61,19 +61,16 @@ done
 # make partition
 parted ${dist} -s mklabel gpt
 parted ${dist} -s mkpart boot fat16 1M 1537M
-parted ${dist} -s mkpart primary ext4 1537M 7291M
-parted ${dist} -s mkpart swap ext4 7291M 7803M
+parted ${dist} -s mkpart primary ext4 1537M -1s
 sleep 1
 
 # remove partitions info
 wipefs -a ${dist}p1
 wipefs -a ${dist}p2
-wipefs -a ${dist}p3
 
 # format partition
 mkfs.vfat -n BOOT ${dist}p1
 mkfs.ext4 -L DEBIAN -U e8c3e922-b1f5-43a2-a026-6a14f01197f6 ${dist}p2
-#mkfs.ext4 ${dist}p3	# swap partition is unused, format ext4
 
 # copy partition
 mount ${src}1 /media || exit 1
