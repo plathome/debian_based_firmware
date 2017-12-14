@@ -220,6 +220,7 @@ sshd_host_keys_required() {
 
 case "$1" in
 start)
+	sleep 1
 	mount -oremount,rw /
 	protect_mtd
 
