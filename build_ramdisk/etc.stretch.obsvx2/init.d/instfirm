@@ -28,11 +28,9 @@ set -e
 #debug=echo
 
 MODESTR="instfirm="
-ROOTFS="SFR-rootfs.tar.bz2"
 
 case "$1" in
 start)
-	[ "$MODEL" != "obsvx1" ] && exit
 	grep -qv $MODESTR /proc/cmdline && exit
 
 	BOOT=`findfs LABEL=${FIRM_DIR} 2> /dev/null`
@@ -53,6 +51,12 @@ start)
 		cp /media/SFR/${MODEL}-initrd.gz /media/initrd.gz
 		cp /media/SFR/openblocks-release /media/openblocks-release
 		cp /media/EFI/boot/bootx64.conf-obsiot /media/EFI/boot/bootx64.conf
+		if [ -f /media/SFR/${MODEL}_rootfs.tgz ]; then
+			mount ${BOOT/%?/}2 /mnt || exit 1
+			tar xfzp /media/SFR/${MODEL}_rootfs.tgz -C /mnt
+			sync
+			umount /mnt
+		fi
 		if [ -f /media/SFR/${MODEL}_userland.tgz ]; then
 			mount ${BOOT/%?/}2 /mnt || exit 1
 			tar xfzp /media/SFR/${MODEL}_userland.tgz -C /mnt

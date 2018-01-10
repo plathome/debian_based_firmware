@@ -28,11 +28,13 @@ set -e
 #debug=echo
 
 MODESTR="instfirm="
-ROOTFS="SFR-rootfs.tar.bz2"
 
 case "$1" in
 start)
-	[ "$MODEL" != "obsvx1" ] && exit
+	case $MODEL in
+	obsvx*) ;;
+	*) exit ;;
+	esac
 	grep -qv $MODESTR /proc/cmdline && exit
 
 	BOOT=`findfs LABEL=${FIRM_DIR} 2> /dev/null`
@@ -44,42 +46,37 @@ start)
 	# format partition
 	if [ -e ${BOOT/%?/}2 ]; then
 		wipefs -a ${BOOT/%?/}2
-		mkfs.ext4 -L DEBIAN -U e8c3e922-b1f5-43a2-a026-6a14f01197f6 ${BOOT/%?/}2
+		mkfs.ext4 -U e8c3e922-b1f5-43a2-a026-6a14f01197f6 ${BOOT/%?/}2
 	fi
-	#if [ -e ${BOOT/%?/}3 ]; then
-	#	wipefs -a ${BOOT/%?/}3
-	#	mkfs.ext4 ${BOOT/%?/}3	# swap partition is unused, format ext4
-	#fi
 
 	mount $BOOT /media || exit 1
 	if grep ${MODESTR}debian /proc/cmdline > /dev/null; then
-		cp /media/SFR/${MODEL}-bzImage /media/bzImage
-		cp /media/SFR/${MODEL}-initrd.gz /media/initrd.gz
+		TARGET="obsvx1"
+		[ -f /media/SFR/obsvx2-bzImage ] && TARGET="obsvx2"
+		cp /media/SFR/${TARGET}-bzImage /media/bzImage
+		if [ "$TARGET" == "obsvx2" ]; then
+			[ -f /media/initrd.gz ] && rm /media/initrd.gz
+		else
+			cp /media/SFR/${TARGET}-initrd.gz /media/initrd.gz
+			e2label ${BOOT/%?/}2 DEBIAN
+		fi
 		cp /media/SFR/openblocks-release /media/openblocks-release
 		cp /media/EFI/boot/bootx64.conf-obsiot /media/EFI/boot/bootx64.conf
-		if [ -f /media/SFR/${MODEL}_userland.tgz ]; then
+		if [ -f /media/SFR/${TARGET}_userland.tgz ]; then
 			mount ${BOOT/%?/}2 /mnt || exit 1
-			tar xfzp /media/SFR/${MODEL}_userland.tgz -C /mnt
+			tar xfzp /media/SFR/${TARGET}_userland.tgz -C /mnt
+			sync
+			umount /mnt
+		elif [ -f /media/SFR/${TARGET}-rootfs.tgz ]; then
+			mount ${BOOT/%?/}2 /mnt || exit 1
+			tar xfzp /media/SFR/${TARGET}-rootfs.tgz -C /mnt
+			depmod -ae -b /mnt -F /mnt/boot/System.map `cat /mnt/etc/openblocks-release | cut -d - -f1`
 			sync
 			umount /mnt
 		fi
 		rm -f /media/etc.tgz /media/userland.tgz
 		sync
 	fi
-#	if grep ${MODESTR}wr7idp /proc/cmdline > /dev/null; then
-#		if [ ! -e ${BOOT/%?/}2 ]; then
-#			umount /media
-#			echo "userland partition is not found."
-#			exit 1
-#		fi
-#		cp /media/SFR/SFR-bzImage /media/bzImage
-#		cp /media/SFR/SFR-initramfs.img /media/idp-initramfs.img
-#		cp /media/EFI/boot/bootx64.conf-wr7idp /media/EFI/boot/bootx64.conf
-#		mount ${BOOT/%?/}2 /mnt || exit 1
-#		tar xfjp /media/SFR/${ROOTFS} -C /mnt
-#		sync
-#		umount /mnt
-#	fi
 	umount /media
 	reboot
 	;;

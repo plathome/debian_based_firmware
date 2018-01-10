@@ -257,9 +257,11 @@ sshd_create_keys() {
 
 case "$1" in
 start)
-	mount -oremount,rw /
-	mount -t proc proc /proc
-	protect_mtd
+	if [ "$MODEL" != "obsvx2" ]; then
+		mount -oremount,rw /
+		mount -t proc proc /proc
+		protect_mtd
+	fi
 
 	depmod -a
 
@@ -352,20 +354,22 @@ start)
 	[ -f ${RW_DIR}/etc/default/openblocks ] && \
 		. ${RW_DIR}/etc/default/openblocks
 
-	if [ -z "$rwdev" ] ; then
-		mount -o remount,size=${RW_TMPFS_SIZE} ${RW_DIR}
-	else
-		remount_opt=
-		if [ "$rwdev_fs" == "ext4" ] ; then
-			remount_opt="$remount_opt discard"
-		fi
-		if [ "$NOATIME" == "true" ] ; then
-			remount_opt="$remount_opt noatime"
-		fi
-		_remount_opt="$(echo $remount_opt|sed -e 's# #,#')"
+	if [ "$MODEL" != "obsvx2" ]; then
+		if [ -z "$rwdev" ] ; then
+			mount -o remount,size=${RW_TMPFS_SIZE} ${RW_DIR}
+		else
+			remount_opt=
+			if [ "$rwdev_fs" == "ext4" ] ; then
+				remount_opt="$remount_opt discard"
+			fi
+			if [ "$NOATIME" == "true" ] ; then
+				remount_opt="$remount_opt noatime"
+			fi
+			_remount_opt="$(echo $remount_opt|sed -e 's# #,#')"
 
-		[ -n "$_remount_opt" ] && \
-			mount -oremount,$_remount_opt ${RW_DIR}
+			[ -n "$_remount_opt" ] && \
+				mount -oremount,$_remount_opt ${RW_DIR}
+		fi
 	fi
 
 	# extract CONFIG_FILE and execute CONFIG_SCRIPT
@@ -382,25 +386,27 @@ start)
 	#fi
 
 	# mount filesystems
-	for dir in ${UNIONFS_DIRS} ; do
-		mawk '$1 !~ /^#/ {print $2}' < /etc/fstab | grep -q "^/$dir" && continue
-		mkdir -p ${RW_DIR}/$dir
-		case $union_fs in
-		overlay)
-			mkdir -p ${RW_DIR}/work/$dir
-			mount -n -t ${union_fs} \
-				-o lowerdir=$dir,upperdir=${RW_DIR}/$dir,workdir=${RW_DIR}/work/$dir ${union_fs} /$dir
-		;;
-		*)
-			if [ "$unionfs" == "aufs" ]; then
-				xino_opt="xino=/.aufs.xino.$dir,trunc_xino,"
-				[ "$MODEL" == "obsvx1" ] && xino_opt+="acl,"
-			fi
-			mount -n -t ${union_fs} \
-				-o ${xino_opt}dirs=${RW_DIR}/$dir=rw:/$dir=ro ${union_fs} /$dir
-		;;
-		esac
-	done
+	if [ "$MODEL" != "obsvx2" ]; then
+		for dir in ${UNIONFS_DIRS} ; do
+			mawk '$1 !~ /^#/ {print $2}' < /etc/fstab | grep -q "^/$dir" && continue
+			mkdir -p ${RW_DIR}/$dir
+			case $union_fs in
+			overlay)
+				mkdir -p ${RW_DIR}/work/$dir
+				mount -n -t ${union_fs} \
+					-o lowerdir=$dir,upperdir=${RW_DIR}/$dir,workdir=${RW_DIR}/work/$dir ${union_fs} /$dir
+			;;
+			*)
+				if [ "$unionfs" == "aufs" ]; then
+					xino_opt="xino=/.aufs.xino.$dir,trunc_xino,"
+					[ "$MODEL" == "obsvx1" ] && xino_opt+="acl,"
+				fi
+				mount -n -t ${union_fs} \
+					-o ${xino_opt}dirs=${RW_DIR}/$dir=rw:/$dir=ro ${union_fs} /$dir
+			;;
+			esac
+		done
+	fi
 
 	# extract Oracle Java
 	# /usr/lib/jre directory and /etc/profile.d/java.(sh|csh) file.
@@ -446,8 +452,10 @@ start)
 			/usr/local/sbin/hwclock --status
 		fi
 	fi
-	umount /proc
-	mount -oremount,ro /
+	if [ "$MODEL" != "obsvx2" ]; then
+		umount /proc
+		mount -oremount,ro /
+	fi
 ;;
 stop)
 	if [ "$MODEL" == "obsax3" ]; then

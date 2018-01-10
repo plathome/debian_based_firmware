@@ -56,7 +56,7 @@ obs*)
 esac
 
 case ${TARGET} in
-obsbx1|obsvx1)
+obsbx1|obsvx*)
 	chmod 755 ${DISTDIR}/etc/init.d/bluetooth
 	chroot ${DISTDIR} /sbin/insserv -rf bluetooth
 	chroot ${DISTDIR} /sbin/insserv bluetooth
@@ -71,7 +71,7 @@ obsbx1|obsvx1)
 		chroot ${DISTDIR} /sbin/insserv -rf enable-pm
 		chroot ${DISTDIR} /sbin/insserv enable-pm
 	fi
-	if [ "$TARGET" == "obsvx1" ]; then
+	if [ "$TARGET" == "obsvx1" -o "$TARGET" == "obsvx2" ]; then
 		chmod 755 ${DISTDIR}/etc/init.d/instfirm
 		chroot ${DISTDIR} /sbin/insserv -rf instfirm
 		chroot ${DISTDIR} /sbin/insserv instfirm
@@ -100,17 +100,17 @@ if [ -f ${DISTDIR}/etc/modules ]; then
 		fi
 	fi
 
-	if [ "$TARGET" == "obsvx1" ];then
+	if [ "$TARGET" == "obsvx1" -o "$TARGET" == "obsvx2" ];then
 		if grep -q "^rtl8821ae" ${DISTDIR}/etc/modules; then
 			echo "/etc/modules: The line, rtl8821ae, exists"
 		else
 			echo "rtl8821ae" >> ${DISTDIR}/etc/modules
 		fi
-		if grep -q "^ath10k_pci" ${DISTDIR}/etc/modules; then
-			echo "/etc/modules: The line, ath10k_pci, exists"
-		else
-			echo "ath10k_pci" >> ${DISTDIR}/etc/modules
-		fi
+#		if grep -q "^ath10k_pci" ${DISTDIR}/etc/modules; then
+#			echo "/etc/modules: The line, ath10k_pci, exists"
+#		else
+#			echo "ath10k_pci" >> ${DISTDIR}/etc/modules
+#		fi
 	fi
 
 	if [ "$ENA_VIRT" == "true" ]; then

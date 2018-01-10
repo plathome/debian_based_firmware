@@ -46,7 +46,7 @@ obsbx1)
 	echo 45 > $GPIOPATH/unexport
 	echo 46 > $GPIOPATH/unexport
 	;;
-obsvx1)
+obsvx*)
 	[ ! -e $GPIOPATH/gpio360 ] && echo 360 > $GPIOPATH/export
 	[ ! -e $GPIOPATH/gpio361 ] && echo 361 > $GPIOPATH/export
 	[ ! -e $GPIOPATH/gpio362 ] && echo 362 > $GPIOPATH/export
@@ -75,7 +75,7 @@ esac
 
 VER=`cut -c 1 /etc/debian_version`
 
-if [ "$MODEL" == "obsvx1" ]; then
+if [ "$MODEL" == "obsvx1" -o "$MODEL" == "obsvx2" ]; then
 	case "$id2$id1$id0" in
 	000)			# EX1 none or BX0
 		echo "none"

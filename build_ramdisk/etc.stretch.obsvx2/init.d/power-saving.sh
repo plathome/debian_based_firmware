@@ -56,30 +56,28 @@ PM_USB_SPI="/sys/devices/pci0000:00/0000:00:14.0/usb1/1-4/1-4.2"
 
 case "$1" in
   start)
-	if [ "$MODEL" == "obsvx1" ]; then
-		# Ethernet
-		if [ "$Ethernet" == "yes" ]; then
-			if [ -w ${PM_Ethernet}/power/control ]; then
-				echo auto > ${PM_Ethernet}/power/control
-			else
-				logger -p user.notice -t $NAME "Cannot power saving of Ethernet"
-			fi
+	# Ethernet
+	if [ "$Ethernet" == "yes" ]; then
+		if [ -w ${PM_Ethernet}/power/control ]; then
+			echo auto > ${PM_Ethernet}/power/control
+		else
+			logger -p user.notice -t $NAME "Cannot power saving of Ethernet"
 		fi
-		# RS485
-		if [ "$RS485" == "yes" ]; then
-			if [ -w ${PM_RS485}/power/control ]; then
-				echo auto > ${PM_RS485}/power/control
-			else
-				logger -p user.notice -t $NAME "Cannot power saving of RS485"
-			fi
+	fi
+	# RS485
+	if [ "$RS485" == "yes" ]; then
+		if [ -w ${PM_RS485}/power/control ]; then
+			echo auto > ${PM_RS485}/power/control
+		else
+			logger -p user.notice -t $NAME "Cannot power saving of RS485"
 		fi
-		# USB-SPI
-		if [ "$USB_SPI" == "yes" ]; then
-			if [ -w ${PM_USB_SPI}/power/control ]; then 
-				echo auto > ${PM_USB_SPI}/power/control
-			else
-				logger -p user.notice -t $NAME "Cannot power saving of USB-SPI"
-			fi
+	fi
+	# USB-SPI
+	if [ "$USB_SPI" == "yes" ]; then
+		if [ -w ${PM_USB_SPI}/power/control ]; then 
+			echo auto > ${PM_USB_SPI}/power/control
+		else
+			logger -p user.notice -t $NAME "Cannot power saving of USB-SPI"
 		fi
 	fi
 	;;

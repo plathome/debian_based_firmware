@@ -103,7 +103,7 @@ jessie)
 	;;
 stretch)
 	case $TARGET in
-	obsvx1)
+	obsvx*)
 		INCLUDE="openssh-server,xz-utils,parted,insserv,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200"
 		EXCLUDE="nano"
 		;;

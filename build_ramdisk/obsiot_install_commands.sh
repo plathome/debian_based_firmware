@@ -128,7 +128,7 @@ obsbx1)
 	cp ${FILESDIR}/retrieve_crashlog.sh ${DISTDIR}/usr/sbin/retrieve_crashlog.sh
 	chmod 555 ${DISTDIR}/usr/sbin/retrieve_crashlog.sh
 ;;
-obsvx1)
+obsvx*)
 	BUILDDIR=/tmp/obstools.$$
 	LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
 
@@ -206,7 +206,7 @@ chmod 555 ${DISTDIR}/usr/sbin/flashcfg
 cp ${FILESDIR}/hwclock.sh ${DISTDIR}/usr/local/sbin/hwclock
 chmod 555 ${DISTDIR}/usr/local/sbin/hwclock
 
-if [ "$TARGET" == "obsvx1" ]; then
+if [ "$TARGET" == "obsvx1" -o "$TARGET" == "obsvx2" ]; then
 	cp ${FILESDIR}/install-firmware.sh ${DISTDIR}/usr/sbin/install-firmware.sh
 	chmod 555 ${DISTDIR}/usr/sbin/install-firmware.sh
 fi

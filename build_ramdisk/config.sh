@@ -214,9 +214,11 @@ stretch)
 		ISOFILE=debian-9.3.0-amd64-DVD-1.iso
 		PATCHLEVEL=0
 		RAMDISK_SIZE=200
-		DEFCONFIG=obsvx1_defconfig
-#		DEFCONFIG=${TARGET}_sysvinit_defconfig
-#		ENA_SYSVINIT=true
+	;;
+	obsvx2)
+		ISOFILE=debian-9.3.0-amd64-DVD-1.iso
+		PATCHLEVEL=0
+		RAMDISK_SIZE=200
 	;;
 	obsax3)
 		DTBFILE=armada-xp-openblocks-ax3-4.dtb

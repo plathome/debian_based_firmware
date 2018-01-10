@@ -28,6 +28,11 @@
 [ -f /etc/os-release ] && . /etc/os-release
 [ -f /etc/default/openblocks ] && . /etc/default/openblocks
 
+if [ "$MODEL" == "obsvx2" ]; then
+	echo "obsvx2 is not supported."
+	exit
+fi
+
 RW_DIR="${RW_DIR:=/.rw}"
 RW_CF_LABEL="${RW_CF_LABEL:=DEBIAN}"
 

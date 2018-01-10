@@ -38,10 +38,14 @@ usage()
 src=$1
 dist=$2
 
-if [ ${MODEL} != "obsvx1" ]; then
+case $MODEL in
+obsvx*)
+	;;
+*)
 	usage
 	exit 1
-fi
+	;;
+esac
 if [ ! -e ${dist} ]; then
 	usage
 	exit 1
@@ -75,12 +79,20 @@ mkfs.ext4 -L DEBIAN -U e8c3e922-b1f5-43a2-a026-6a14f01197f6 ${dist}p2
 # copy partition
 mount ${src}1 /media || exit 1
 
-## boot partition
+# boot partition
 mount ${dist}p1 /mnt || exit 1
 ( cd /media; tar cfpm - . | tar xfpm - -C /mnt )
 cp /mnt/EFI/boot/bootx64.conf-obsiot /mnt/EFI/boot/bootx64.conf
 sync
 umount /mnt
+
+# restore RootFS
+if [ -f /media/SFR/${MODEL}_rootfs.tgz ]; then
+	mount ${dist}p2 /mnt || exit 1
+	tar xfzp /media/SFR/${MODEL}_rootfs.tgz -C /mnt
+	sync
+	umount /mnt
+fi
 
 # restore WebUI
 if [ -f /media/SFR/${MODEL}_userland.tgz ]; then

@@ -48,6 +48,8 @@ fi
 
 
 cd ${LINUX_SRC}
+[ -f "${LINUX_SRC}/localversion-rt" ] && rm -f ${LINUX_SRC}/localversion-rt
+
 if [ ${DEFCONFIG} ]; then
 	make ${MAKE_OPTION} ${DEFCONFIG}
 else

@@ -44,15 +44,18 @@
 
 GPIOPATH="/sys/class/gpio"
 
-if [ "$MODEL" = "obsvx1" ]; then
+case $MODEL in
+obsvx*)
 	USBPOW=366
 	ACPOW=367
 	DCPOW=365
-else
+	;;
+*)
 	USBPOW=40
 	ACPOW=41
 	DCPOW=42
-fi
+	;;
+esac
 
 if [ ! -e ${GPIOPATH}/gpio${USBPOW} ]; then
 	echo ${USBPOW} > ${GPIOPATH}/export
