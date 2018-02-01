@@ -25,29 +25,64 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-. `dirname $0`/config.sh
+#set -x
 
-case $DIST in
-jessie)
-	echo ${DISTDIR}
-	chroot ${DISTDIR} /usr/bin/apt-get remove --purge --auto-remove -y systemd
-	echo -e 'Package: systemd\nPin: origin ""\nPin-Priority: -1' > ${DISTDIR}/etc/apt/preferences.d/systemd
-	echo -e '\n\nPackage: *systemd*\nPin: origin ""\nPin-Priority: -1' >> ${DISTDIR}/etc/apt/preferences.d/systemd
-	buf="\n\nPackage: systemd:$ARCH\nPin: origin ""\nPin-Priority: -1"
-	echo -e $buf >> ${DISTDIR}/etc/apt/preferences.d/systemd
-	;;
-stretch)
-	if [ "$ENA_SYSVINIT" == "true" ]; then
-		chroot ${DISTDIR} /usr/bin/apt remove --purge --auto-remove -y systemd
-		echo -e 'Package: *systemd*\nPin: release *\nPin-Priority: -1\n' > ${DISTDIR}/etc/apt/preferences.d/systemd
-		(cd ${ETCDIR}.sysvinit;tar --exclude=CVS -cf - .) | tar xf - -C ${DISTDIR}/etc/
-		chmod 755 ${DISTDIR}/etc/init.d/openblocks-setup
-		chroot ${DISTDIR} /sbin/insserv -rf openblocks-setup
-		chroot ${DISTDIR} /sbin/insserv openblocks-setup
-	else
-		chroot ${DISTDIR} /bin/systemctl enable rc-local.service
-	fi
-	;;
-*)
-	;;
-esac
+if [ "$#" -ne "9" ] ; then
+	echo
+	echo "usage: $0 [VERSION] [ARCH] [MODEL] [bzImage] [obstools.tgz] [flashcfg] [MD5] [modules.tgz] [System.map]"
+	echo
+	echo "ex) $0 1.0.0-0 amd64 obsvx2 bzImage obstools.tgz flashcfg MD5.obsvx2 modules.tgz System.map"
+	echo
+	exit 1
+fi
+
+VERSION=$1
+ARCH=$2
+MODEL=$3
+FIRM=$4
+OBSTOOLS=$5
+FLASHCFG=$6
+MD5=$7
+MODULES=$8
+MAP=$9
+FIRM_DIR=$(dirname $FIRM)
+
+if [ "$MODEL" == "obsvx2" ]; then
+	DESCRIPTION="Linux firmware for OpenBlocks IoT VX2"
+	TARGET=$MODEL
+else
+	echo
+	echo "$MODEL is not supported."
+	echo
+	exit 1
+fi
+
+pkgdir=kernel-image-${VERSION}-${TARGET}
+
+rm -rf  $pkgdir
+mkdir -p $pkgdir
+(cd template;tar --exclude=CVS -cf - .) | tar -xvf - -C $pkgdir/
+
+echo $VERSION > $pkgdir/etc/openblocks-release
+sed -e "s|__VERSION__|$VERSION|" \
+    -e "s|__ARCH__|$ARCH|" \
+    -e "s|__PACKAGE__|kernel-image-$MODEL|" \
+    -e "s|__DESCRIPTION__|$DESCRIPTION|" \
+	< $pkgdir/DEBIAN/control > /tmp/control.new
+mv -f /tmp/control.new $pkgdir/DEBIAN/control
+
+cp -f $FIRM $pkgdir/etc/
+cp -f $OBSTOOLS $pkgdir/etc/
+cp -f $FLASHCFG $pkgdir/etc/flashcfg.sh
+cp -f $MD5 $pkgdir/etc/
+cp -f $MODULES $pkgdir/etc/
+cp -f $MAP $pkgdir/etc/
+
+rm -rf ${pkgdir}.deb
+
+dpkg-deb --build $pkgdir
+
+[ "$FIRM_DIR" != "." ] && mv -fv $pkgdir.deb $FIRM_DIR/
+
+rm -rf $pkgdir
+

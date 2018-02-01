@@ -41,6 +41,11 @@
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/hci.h>
 #include <bluetooth/hci_lib.h>
+#if defined(CONFIG_LINUX4)
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#endif
 
 
 enum {
@@ -481,6 +486,17 @@ int main(int argc, char **argv)
     int ret, hci_dev_id;
     char *script;
     char sysname[PATH_MAX];
+
+#if defined(CONFIG_LINUX4)
+	if(ac == 2 && stat(argv[1], NULL) == 0){
+		hci_uart_default_dev[PATH_MAX] = 0;
+		strncpy(hci_uart_default_dev[PATH_MAX], argv[1], PATH_MAX-1);
+	}
+	else{
+		printf("Can't open %s device", argv[1]);
+		return -1;
+	}
+#endif
 
     /* this code is ispired by rfkill source code */
 

@@ -137,7 +137,7 @@ jessie)
 		DEFCONFIG=bpv4_defconfig
 	;;
 	obsvx1)
-		KERNEL=4.4.103
+		KERNEL=4.4.112
 		ISOFILE=debian-8.5.0-amd64-DVD-1.iso
 		PATCHLEVEL=2
 		RAMDISK_SIZE=230
@@ -145,7 +145,8 @@ jessie)
 		DEFCONFIG=obsvx1_defconfig
 	;;
 	obsbx1)
-		KERNEL=3.10.17
+#		KERNEL=3.10.17
+		KERNEL=4.4.52
 		ARCH=i386
 		ISOFILE=debian-8.3.0-i386-DVD-1.iso
 		PATCHLEVEL=103
@@ -217,7 +218,7 @@ stretch)
 	;;
 	obsvx2)
 		ISOFILE=debian-9.3.0-amd64-DVD-1.iso
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		RAMDISK_SIZE=200
 	;;
 	obsax3)
@@ -249,6 +250,14 @@ stretch)
 		UBOOT_VER=1.2.13
 		UBOOT_PL=2
 		UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
+	;;
+	obsbx1)
+		KERNEL=4.4.52
+		ARCH=i386
+		ISOFILE=debian-9.3.0-i386-DVD-1.iso
+		PATCHLEVEL=0
+		RAMDISK_SIZE=240
+		ENA_SYSVINIT=true
 	;;
 	*)
 	;;

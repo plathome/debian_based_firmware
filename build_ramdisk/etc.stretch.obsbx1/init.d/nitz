@@ -1,0 +1,232 @@
+#! /bin/bash
+### BEGIN INIT INFO
+# Provides:          nitz
+# Required-Start:    $local_fs $syslog $remote_fs
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: get NITZ for OBS IoT
+# Description:       
+### END INIT INFO
+#
+# Copyright (c) 2013-2017 Plat'Home CO., LTD.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY PLAT'HOME CO., LTD. AND CONTRIBUTORS ``AS IS''
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED.  IN NO EVENT SHALL PLAT'HOME CO., LTD. AND CONTRIBUTORS
+# BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+#
+
+# Do NOT "set -e"
+
+# PATH should only include /usr/* if it runs after the mountnfs.sh script
+PATH=/usr/local/sbin:/sbin:/usr/sbin:/bin:/usr/bin
+DESC="get NITZ for obs iot"
+NAME=nitz
+SCRIPTNAME=/etc/init.d/$NAME
+GPIOPATH="/sys/class/gpio"
+ATCMD=/usr/sbin/atcmd
+
+# Read configuration variable file if it is present
+[ -r /etc/default/openblocks ] && . /etc/default/openblocks
+
+set_time_ehs6(){
+	# check builtin MODEM
+	echo -n "nitz: 3G modem power on : "
+	$ATCMD PON
+	if [ ! -e /dev/ttyACM0 ]; then
+		echo "fail"
+		exit 1
+	fi
+	echo "done"
+
+	echo -n "nitz: check SIM card : "
+	# check SIM card
+	val=`$ATCMD CCID`
+	if [ $? == 255 ]; then
+		echo "fail"
+#		$ATCMD POFF
+		exit 1
+	fi
+	echo "done"
+
+	echo -n "nitz: time synchronization : "
+	val=`$ATCMD SIND`
+	if [ $? == 255 ]; then
+		echo "fail"
+#		$ATCMD POFF
+		exit 1
+	fi
+	echo "done"
+
+	# set NITZ to SYSTEM
+	date "$val" --utc
+	# set SYSTEM to RTC
+	hwclock --systohc
+#	$ATCMD POFF
+}
+
+set_time_u200(){
+	# check builtin MODEM
+	echo -n "nitz: 3G modem power on : "
+	$ATCMD PON
+	if [ ! -e /dev/ttyACM0 ]; then
+		echo "fail"
+		exit 1
+	fi
+	echo "done"
+
+	echo -n "nitz: check SIM card : "
+	# check SIM card
+	sleep 2
+	val=`$ATCMD CCID`
+	if [ $? == 255 ]; then
+		echo "fail"
+#		$ATCMD POFF
+		exit 1
+	fi
+	echo "done"
+
+	echo -n "nitz: time synchronization : "
+	val=`$ATCMD CCLK`
+	if [ $? == 255 ]; then
+		echo "fail"
+#		$ATCMD POFF
+		exit 1
+	fi
+	echo "done"
+
+	# set NITZ to SYSTEM
+	date "$val"
+	# set SYSTEM to RTC
+	hwclock --systohc
+#	$ATCMD POFF
+}
+
+set_time_kym11(){
+	echo "done"
+}
+
+set_time_s710(){
+	echo "done"
+}
+
+case "$1" in
+  start)
+	MODEM=`/usr/sbin/obsiot-modem.sh`
+	case $MODEM in
+	U200E|UM04)
+		echo 200 > $GPIOPATH/export	# 3G modem power
+		echo high > $GPIOPATH/gpio200/direction
+		echo 202 > $GPIOPATH/export	# 3G reset
+		echo high > $GPIOPATH/gpio202/direction
+		;;
+	KYM11|S710E)
+		echo 202 > $GPIOPATH/export	# 3G reset
+		echo high > $GPIOPATH/gpio202/direction
+		echo 200 > $GPIOPATH/export	# 3G modem power
+		echo low > $GPIOPATH/gpio200/direction
+		if [ ! -e /dev/ttyACM0 ]; then
+			echo 1 > $GPIOPATH/gpio200/value
+			sleep 4
+			echo 0 > $GPIOPATH/gpio200/value
+			sleep 20
+		fi
+		;;
+	EHS6|S710)
+		echo 165 > $GPIOPATH/export	# 3G modem power
+		echo low > $GPIOPATH/gpio165/direction
+		echo 15 > $GPIOPATH/export	# 3G reset
+		echo low > $GPIOPATH/gpio15/direction
+		;;
+	U200)
+		echo 165 > $GPIOPATH/export	# 3G modem power
+		echo high > $GPIOPATH/gpio165/direction
+		echo 15 > $GPIOPATH/export	# 3G reset
+		echo low > $GPIOPATH/gpio15/direction
+		;;
+	*)
+		;;
+	esac
+
+	# set LED, INIT
+	echo 47 > $GPIOPATH/export	# LED red
+	echo out > $GPIOPATH/gpio47/direction
+	echo 48 > $GPIOPATH/export	# LED green
+	echo out > $GPIOPATH/gpio48/direction
+	echo 49 > $GPIOPATH/export	# LED blue
+	echo out > $GPIOPATH/gpio49/direction
+	echo 14 > $GPIOPATH/export	# INIT SW
+	echo both > $GPIOPATH/gpio14/edge
+
+	# check init sw
+	grep -q 'noflashcfg=1' /proc/cmdline
+	if [ $? == 0 ]; then
+		echo "nitz: push INIT switch"
+		exit 1
+	fi
+
+	case $MODEM in
+	EHS6)
+		set_time_ehs6
+		;;
+	U200|S710)
+		set_time_u200
+		;;
+	S710E)
+		set_time_s710
+		;;
+	U200E|KYM11|UM04|S710E|none)
+		echo "nitz: skipped time synchronization"
+		;;
+	*)
+		echo "fail"
+		exit 1
+	esac
+
+	rfkill unblock bluetooth
+	exit 0
+	;;
+  stop)
+	;;
+  settime)
+		MODEM=`/usr/sbin/obsiot-modem.sh`
+		case $MODEM in
+		EHS6)
+			set_time_ehs6
+		;;
+		U200*)
+			set_time_u200
+		;;
+		KYM11)
+		;;
+		S710*)
+			set_time_s710
+		;;
+		*)
+		;;
+		esac
+	;;
+  *)
+	echo "Usage: $SCRIPTNAME {start|stop|settime}" >&2
+	exit 3
+	;;
+esac
+

@@ -1,4 +1,13 @@
-#!/bin/bash
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          disable-modem
+# Required-Start:    $local_fs $syslog $remote_fs
+# Required-Stop:     $local_fs $syslog $remote_fs
+# Default-Start:
+# Default-Stop:      0 6
+# Short-Description: disable-modem for OBSBX1
+# Description:       
+### END INIT INFO
 #
 # Copyright (c) 2013-2017 Plat'Home CO., LTD.
 # All rights reserved.
@@ -25,29 +34,37 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-. `dirname $0`/config.sh
+# Do NOT "set -e"
 
-case $DIST in
-jessie)
-	echo ${DISTDIR}
-	chroot ${DISTDIR} /usr/bin/apt-get remove --purge --auto-remove -y systemd
-	echo -e 'Package: systemd\nPin: origin ""\nPin-Priority: -1' > ${DISTDIR}/etc/apt/preferences.d/systemd
-	echo -e '\n\nPackage: *systemd*\nPin: origin ""\nPin-Priority: -1' >> ${DISTDIR}/etc/apt/preferences.d/systemd
-	buf="\n\nPackage: systemd:$ARCH\nPin: origin ""\nPin-Priority: -1"
-	echo -e $buf >> ${DISTDIR}/etc/apt/preferences.d/systemd
+# PATH should only include /usr/* if it runs after the mountnfs.sh script
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+DESC="disable modem for obsbx1"
+NAME=disable-modem
+SCRIPTNAME=/etc/init.d/$NAME
+
+# Read configuration variable file if it is present
+[ -r /etc/default/$NAME ] && . /etc/default/$NAME
+
+# Load the VERBOSE setting and other rcS variables
+. /lib/init/vars.sh
+
+# Define LSB log_* functions.
+# Depend on lsb-base (>= 3.0-6) to ensure that this file is present.
+. /lib/lsb/init-functions
+
+VERBOSE=yes
+
+case "$1" in
+  start)
 	;;
-stretch)
-	if [ "$ENA_SYSVINIT" == "true" ]; then
-		chroot ${DISTDIR} /usr/bin/apt remove --purge --auto-remove -y systemd
-		echo -e 'Package: *systemd*\nPin: release *\nPin-Priority: -1\n' > ${DISTDIR}/etc/apt/preferences.d/systemd
-		(cd ${ETCDIR}.sysvinit;tar --exclude=CVS -cf - .) | tar xf - -C ${DISTDIR}/etc/
-		chmod 755 ${DISTDIR}/etc/init.d/openblocks-setup
-		chroot ${DISTDIR} /sbin/insserv -rf openblocks-setup
-		chroot ${DISTDIR} /sbin/insserv openblocks-setup
-	else
-		chroot ${DISTDIR} /bin/systemctl enable rc-local.service
-	fi
+  stop)
+		if [ -e /dev/ttyACM0 -a -x /usr/sbin/atcmd ]; then
+			/usr/sbin/atcmd POFF
+		fi
 	;;
-*)
+  *)
+	echo "Usage: $SCRIPTNAME {stop}" >&2
+	exit 3
 	;;
 esac
+

@@ -200,8 +200,16 @@ obsvx*)
 ;;
 esac
 
-cp ${FILESDIR}/flashcfg.sh ${DISTDIR}/usr/sbin/flashcfg
-chmod 555 ${DISTDIR}/usr/sbin/flashcfg
+case $TARGET in
+obsvx2)
+	cp ${FILESDIR}/flashcfg-rootfs.sh ${DISTDIR}/usr/sbin/flashcfg
+	chmod 555 ${DISTDIR}/usr/sbin/flashcfg
+	;;
+*)
+	cp ${FILESDIR}/flashcfg.sh ${DISTDIR}/usr/sbin/flashcfg
+	chmod 555 ${DISTDIR}/usr/sbin/flashcfg
+	;;
+esac
 
 cp ${FILESDIR}/hwclock.sh ${DISTDIR}/usr/local/sbin/hwclock
 chmod 555 ${DISTDIR}/usr/local/sbin/hwclock

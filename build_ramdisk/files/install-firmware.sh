@@ -27,9 +27,10 @@
 
 usage()
 {
-	echo -e "$0 src dst"
+	echo -e "$0 src dst [model]"
 	echo -e "src : Partition of source storage (exp. USB memory is /dev/sda)"
 	echo -e "dst : Distnation storage (exp. eMMC is= /dev/mmcblk0)"
+	echo -e "[model] : obsvx1 or obsvx2 (default is obsvx1)"
 	return 0
 }
 
@@ -37,15 +38,20 @@ usage()
 
 src=$1
 dist=$2
+target=$3
 
 case $MODEL in
 obsvx*)
+	[ -z $target ] && target="obsvx1"
 	;;
 *)
+	echo -e "This is not VX series"
+	echo
 	usage
 	exit 1
 	;;
 esac
+
 if [ ! -e ${dist} ]; then
 	usage
 	exit 1
@@ -65,7 +71,7 @@ done
 # make partition
 parted ${dist} -s mklabel gpt
 parted ${dist} -s mkpart boot fat16 1M 1537M
-parted ${dist} -s mkpart primary ext4 1537M -1s
+parted ${dist} -s mkpart primary ext4 1537M 100%
 sleep 1
 
 # remove partitions info
@@ -74,7 +80,8 @@ wipefs -a ${dist}p2
 
 # format partition
 mkfs.vfat -n BOOT ${dist}p1
-mkfs.ext4 -L DEBIAN -U e8c3e922-b1f5-43a2-a026-6a14f01197f6 ${dist}p2
+#mkfs.ext4 -L DEBIAN -U e8c3e922-b1f5-43a2-a026-6a14f01197f6 ${dist}p2
+mkfs.ext4 -U e8c3e922-b1f5-43a2-a026-6a14f01197f6 ${dist}p2
 
 # copy partition
 mount ${src}1 /media || exit 1
@@ -83,24 +90,22 @@ mount ${src}1 /media || exit 1
 mount ${dist}p1 /mnt || exit 1
 ( cd /media; tar cfpm - . | tar xfpm - -C /mnt )
 cp /mnt/EFI/boot/bootx64.conf-obsiot /mnt/EFI/boot/bootx64.conf
+cp /mnt/SFR/${target}-bzImage /mnt/bzImage
+if [ "$target" == "obsvx1" ]; then
+	cp /mnt/SFR/obsvx1-initrd.gz /mnt/initrd.gz
+fi
 sync
 umount /mnt
 
-# restore RootFS
-if [ -f /media/SFR/${MODEL}_rootfs.tgz ]; then
-	mount ${dist}p2 /mnt || exit 1
-	tar xfzp /media/SFR/${MODEL}_rootfs.tgz -C /mnt
-	sync
-	umount /mnt
+# restore RootFS and WebUI
+mount ${dist}p2 /mnt || exit 1
+if [ -f /media/SFR/${target}_userland.tgz ]; then
+	tar xfzp /media/SFR/${target}_userland.tgz -C /mnt
+elif [ -f /media/SFR/${target}-rootfs.tgz ]; then
+	tar xfzp /media/SFR/${target}-rootfs.tgz -C /mnt
 fi
-
-# restore WebUI
-if [ -f /media/SFR/${MODEL}_userland.tgz ]; then
-	mount ${dist}p2 /mnt || exit 1
-	tar xfzp /media/SFR/${MODEL}_userland.tgz -C /mnt
-	sync
-	umount /mnt
-fi
+sync
+umount /mnt
 
 umount /media
 

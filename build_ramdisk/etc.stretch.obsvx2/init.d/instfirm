@@ -48,18 +48,19 @@ start)
 	mount $BOOT /media || exit 1
 	if grep ${MODESTR}debian /proc/cmdline > /dev/null; then
 		cp /media/SFR/${MODEL}-bzImage /media/bzImage
-		cp /media/SFR/${MODEL}-initrd.gz /media/initrd.gz
+		if [ -f /media/SFR/${MODEL}-initrd.gz ]; then
+			cp /media/SFR/${MODEL}-initrd.gz /media/initrd.gz
+		fi
 		cp /media/SFR/openblocks-release /media/openblocks-release
 		cp /media/EFI/boot/bootx64.conf-obsiot /media/EFI/boot/bootx64.conf
-		if [ -f /media/SFR/${MODEL}_rootfs.tgz ]; then
-			mount ${BOOT/%?/}2 /mnt || exit 1
-			tar xfzp /media/SFR/${MODEL}_rootfs.tgz -C /mnt
-			sync
-			umount /mnt
-		fi
 		if [ -f /media/SFR/${MODEL}_userland.tgz ]; then
 			mount ${BOOT/%?/}2 /mnt || exit 1
 			tar xfzp /media/SFR/${MODEL}_userland.tgz -C /mnt
+			sync
+			umount /mnt
+		elif [ -f /media/SFR/${MODEL}-rootfs.tgz ]; then
+			mount ${BOOT/%?/}2 /mnt || exit 1
+			tar xfzp /media/SFR/${MODEL}-rootfs.tgz -C /mnt
 			sync
 			umount /mnt
 		fi

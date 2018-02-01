@@ -25,6 +25,8 @@ configure)
 			rm -f /etc/ramdisk*.img.gz /etc/initrd.gz
 			rm -f /etc/flashcfg.sh
 			rm -f /etc/MD5.*
+			rm -f /etc/obstools*
+			rm -f /etc/obsvx2-rootfs*
 			if [ -d /etc/grub.cfg ]; then
 				rm -rf /etc/grub.cfg
 			fi
