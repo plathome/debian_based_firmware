@@ -55,7 +55,7 @@ obsbx1)
 	mkdir -p ${BUILDDIR}
 
 	echo "HOSTAPD"
-	if [ ${DIST} != "jessie" ]; then
+	if [ ${DIST} == "wheezy" ]; then
 		if [ -d ${FILESDIR}/hostapd ]; then
 			rm -f ${FILESDIR}/hostapd/hostapd/.config
 			cp ${FILESDIR}/hostapd/hostapd/defconfig ${FILESDIR}/hostapd/hostapd/.config
@@ -95,6 +95,9 @@ obsbx1)
 
 	echo "BLUETOOTH_RFKILL_EVENT"
 	_CFLAGS="$CFLAGS -I/usr/include/glib-2.0 -I/usr/lib/i386-linux-gnu/glib-2.0/include -lglib-2.0"
+	if [ "$DIST" == "stretch" ]; then
+		_CFLAGS="$_CFLAGS -DCONFIG_LINUX4"
+	fi
 	$CC -o ${BUILDDIR}/bluetooth_rfkill_event ${FILESDIR}/bluetooth_rfkill_event.c $_CFLAGS
 
 	echo "WAV-PLAY"

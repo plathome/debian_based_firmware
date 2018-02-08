@@ -1,11 +1,11 @@
-deb http://cdn.debian.or.jp/debian/ jessie main
-deb-src http://cdn.debian.or.jp/debian/ jessie main
+deb http://ftp.jp.debian.org/debian/ jessie main
+deb-src http://ftp.jp.debian.org/debian/ jessie main
 
-#deb http://cdn.debian.or.jp/debian/ jessie-backports main
-#deb-src http://cdn.debian.or.jp/debian/ jessie-backports main
+#deb http://ftp.jp.debian.org/debian/ jessie-backports main
+#deb-src http://ftp.jp.debian.org/debian/ jessie-backports main
 
-deb http://cdn.debian.or.jp/debian/ jessie-updates main
-deb-src http://cdn.debian.or.jp/debian/ jessie-updates main
+deb http://ftp.jp.debian.org/debian/ jessie-updates main
+deb-src http://ftp.jp.debian.org/debian/ jessie-updates main
 
 deb http://security.debian.org jessie/updates main
 deb-src http://security.debian.org jessie/updates main

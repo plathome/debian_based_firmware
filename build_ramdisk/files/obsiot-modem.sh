@@ -145,7 +145,7 @@ elif [ "$MODEL" == "obsbx1" -a "$VER" == "7" ]; then
 		exit 8
 		;;
 	esac
-elif [ "$MODEL" == "obsbx1" -a "$VER" == "8" ]; then
+elif [ "$MODEL" == "obsbx1" ]; then
 	ary=(`cat /proc/cmdline`)
 	for i in `seq 1 ${#ary[@]}`
 	do

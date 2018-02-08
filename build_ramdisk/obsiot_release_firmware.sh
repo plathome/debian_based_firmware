@@ -47,9 +47,9 @@ cp -f ${LINUX_SRC}/System.map ${MOUNTDIR}/boot/
 
 case "$TARGET" in
 obsbx1)
-	echo "8812AU"
 	case ${KERNEL} in
 	3.10.*)
+		echo "8812AU"
 		LOCAL_VER="-poky-edison"
 		if [ -d ${FILESDIR}/rtl8812AU_8821AU_linux-master ]; then
 			(cd ${FILESDIR}/rtl8812AU_8821AU_linux-master;	\
@@ -57,6 +57,15 @@ obsbx1)
 				mkdir -p ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/kernel/drivers/net/wireless;	\
 				INSTALLPATH=${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/kernel/drivers/net/wireless make install)
 		fi
+		;;
+	4.4.*)
+		LOCAL_VER="-brillo-edison"
+#		if [ -d ${FILESDIR}/rtl8812AU_8821AU_linux-master ]; then
+#			(cd ${FILESDIR}/rtl8812AU_8821AU_linux-master;	\
+#				CFLAGS="-m32" LDFLAGS="-m32" CC=gcc KERNELPATH=${LINUX_SRC} make; \
+#				mkdir -p ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/kernel/drivers/net/wireless;	\
+#				INSTALLPATH=${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/kernel/drivers/net/wireless make install)
+#		fi
 		;;
 	*)
 		LOCAL_VER=""

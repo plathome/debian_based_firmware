@@ -45,12 +45,6 @@ stretch)
 		chroot ${DISTDIR} /sbin/insserv -rf openblocks-setup
 		chroot ${DISTDIR} /sbin/insserv openblocks-setup
 	else
-		if [ "$TARGET" == "obsvx2" ]; then
-			cp -f ${ETCDIR}.sysvinit/init.d/openblocks-setup ${DISTDIR}/etc/init.d/
-			chmod 755 ${DISTDIR}/etc/init.d/openblocks-setup
-			chroot ${DISTDIR} /sbin/insserv -rf openblocks-setup
-			chroot ${DISTDIR} /sbin/insserv openblocks-setup
-		fi
 		chroot ${DISTDIR} /bin/systemctl enable rc-local.service
 	fi
 	;;

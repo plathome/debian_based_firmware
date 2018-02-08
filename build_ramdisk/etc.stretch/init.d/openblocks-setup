@@ -184,84 +184,11 @@ mkdir_mtree_list() {
 	fi
 }
 
-
-# merge from /var/lib/dpkg/info/openssh-server.postinst
-# get_config_option, host_keys_required, create_key, create_keys
-sshd_get_config_option() {
-	option="$1"
-
-	[ -f /etc/ssh/sshd_config ] || return
-
-	# TODO: actually only one '=' allowed after option
-	perl -lne 's/\s+/ /g; print if s/^\s*'"$option"'[[:space:]=]+//i' \
-	   /etc/ssh/sshd_config
-}
-
-sshd_host_keys_required() {
-	hostkeys="$(sshd_get_config_option HostKey)"
-	if [ "$hostkeys" ]; then
-		echo "$hostkeys"
-	else
-		# No HostKey directives at all, so the server picks some
-		# defaults depending on the setting of Protocol.
-		protocol="$(sshd_get_config_option Protocol)"
-		[ "$protocol" ] || protocol=1,2
-#		if echo "$protocol" | grep 1 >/dev/null; then
-#			echo /etc/ssh/ssh_host_key
-#		fi
-		if echo "$protocol" | grep 2 >/dev/null; then
-			echo /etc/ssh/ssh_host_rsa_key
-			echo /etc/ssh/ssh_host_dsa_key
-			echo /etc/ssh/ssh_host_ecdsa_key
-			echo /etc/ssh/ssh_host_ed25519_key
-		fi
-	fi
-}
-
-sshd_create_key() {
-	msg="$1"
-	shift
-	hostkeys="$1"
-	shift
-	file="$1"
-	shift
-
-	if echo "$hostkeys" | grep -x "$file" >/dev/null && \
-	   [ ! -f "$file" ] ; then
-		echo -n $msg
-		ssh-keygen -q -f "$file" -N '' "$@"
-		echo
-		if type restorecon >/dev/null 2>&1; then
-			restorecon "$file.pub"
-		fi
-	fi
-}
-
-
-sshd_create_keys() {
-	hostkeys="$(sshd_host_keys_required)"
-
-	sshd_create_key "Creating SSH1 key; this may take some time ..." \
-		"$hostkeys" /etc/ssh/ssh_host_key -t rsa1
-
-	sshd_create_key "Creating SSH2 RSA key; this may take some time ..." \
-		"$hostkeys" /etc/ssh/ssh_host_rsa_key -t rsa
-	sshd_create_key "Creating SSH2 DSA key; this may take some time ..." \
-		"$hostkeys" /etc/ssh/ssh_host_dsa_key -t dsa
-	sshd_create_key "Creating SSH2 ECDSA key; this may take some time ..." \
-		"$hostkeys" /etc/ssh/ssh_host_ecdsa_key -t ecdsa
-	sshd_create_key "Creating SSH2 Ed25519 key; this may take some time ..." \
-		"$hostkeys" /etc/ssh/ssh_host_ed25519_key -t ed25519
-}
-
-
 case "$1" in
 start)
-	if [ "$MODEL" != "obsvx2" ]; then
-		mount -oremount,rw /
-		mount -t proc proc /proc
-		protect_mtd
-	fi
+	mount -oremount,rw /
+	mount -t proc proc /proc
+	protect_mtd
 
 	depmod -a
 
@@ -354,22 +281,20 @@ start)
 	[ -f ${RW_DIR}/etc/default/openblocks ] && \
 		. ${RW_DIR}/etc/default/openblocks
 
-	if [ "$MODEL" != "obsvx2" ]; then
-		if [ -z "$rwdev" ] ; then
-			mount -o remount,size=${RW_TMPFS_SIZE} ${RW_DIR}
-		else
-			remount_opt=
-			if [ "$rwdev_fs" == "ext4" ] ; then
-				remount_opt="$remount_opt discard"
-			fi
-			if [ "$NOATIME" == "true" ] ; then
-				remount_opt="$remount_opt noatime"
-			fi
-			_remount_opt="$(echo $remount_opt|sed -e 's# #,#')"
-
-			[ -n "$_remount_opt" ] && \
-				mount -oremount,$_remount_opt ${RW_DIR}
+	if [ -z "$rwdev" ] ; then
+		mount -o remount,size=${RW_TMPFS_SIZE} ${RW_DIR}
+	else
+		remount_opt=
+		if [ "$rwdev_fs" == "ext4" ] ; then
+			remount_opt="$remount_opt discard"
 		fi
+		if [ "$NOATIME" == "true" ] ; then
+			remount_opt="$remount_opt noatime"
+		fi
+		_remount_opt="$(echo $remount_opt|sed -e 's# #,#')"
+
+		[ -n "$_remount_opt" ] && \
+			mount -oremount,$_remount_opt ${RW_DIR}
 	fi
 
 	# extract CONFIG_FILE and execute CONFIG_SCRIPT
@@ -386,27 +311,25 @@ start)
 	#fi
 
 	# mount filesystems
-	if [ "$MODEL" != "obsvx2" ]; then
-		for dir in ${UNIONFS_DIRS} ; do
-			mawk '$1 !~ /^#/ {print $2}' < /etc/fstab | grep -q "^/$dir" && continue
-			mkdir -p ${RW_DIR}/$dir
-			case $union_fs in
-			overlay)
-				mkdir -p ${RW_DIR}/work/$dir
-				mount -n -t ${union_fs} \
-					-o lowerdir=$dir,upperdir=${RW_DIR}/$dir,workdir=${RW_DIR}/work/$dir ${union_fs} /$dir
-			;;
-			*)
-				if [ "$unionfs" == "aufs" ]; then
-					xino_opt="xino=/.aufs.xino.$dir,trunc_xino,"
-					[ "$MODEL" == "obsvx1" ] && xino_opt+="acl,"
-				fi
-				mount -n -t ${union_fs} \
-					-o ${xino_opt}dirs=${RW_DIR}/$dir=rw:/$dir=ro ${union_fs} /$dir
-			;;
-			esac
-		done
-	fi
+	for dir in ${UNIONFS_DIRS} ; do
+		mawk '$1 !~ /^#/ {print $2}' < /etc/fstab | grep -q "^/$dir" && continue
+		mkdir -p ${RW_DIR}/$dir
+		case $union_fs in
+		overlay)
+			mkdir -p ${RW_DIR}/work/$dir
+			mount -n -t ${union_fs} \
+				-o lowerdir=$dir,upperdir=${RW_DIR}/$dir,workdir=${RW_DIR}/work/$dir ${union_fs} /$dir
+		;;
+		*)
+			if [ "$unionfs" == "aufs" ]; then
+				xino_opt="xino=/.aufs.xino.$dir,trunc_xino,"
+				[ "$MODEL" == "obsvx1" ] && xino_opt+="acl,"
+			fi
+			mount -n -t ${union_fs} \
+				-o ${xino_opt}dirs=${RW_DIR}/$dir=rw:/$dir=ro ${union_fs} /$dir
+		;;
+		esac
+	done
 
 	# extract Oracle Java
 	# /usr/lib/jre directory and /etc/profile.d/java.(sh|csh) file.
@@ -422,7 +345,7 @@ start)
 
 	# create ssh keys for openssh-server
 	if [ -x /usr/sbin/sshd ] ; then
-		sshd_create_keys
+		dpkg-reconfigure openssh-server
 	fi
 
 	# create mount directory for fstab
@@ -452,10 +375,8 @@ start)
 			/usr/local/sbin/hwclock --status
 		fi
 	fi
-	if [ "$MODEL" != "obsvx2" ]; then
-		umount /proc
-		mount -oremount,ro /
-	fi
+	umount /proc
+	mount -oremount,ro /
 ;;
 stop)
 	if [ "$MODEL" == "obsax3" ]; then

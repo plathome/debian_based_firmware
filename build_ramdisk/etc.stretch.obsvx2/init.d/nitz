@@ -87,6 +87,11 @@ set_time_kym11(){
 
 case "$1" in
   start)
+	if [ "$MODEL" == "obsvx2" ]; then
+		if [ -x /usr/sbin/sshd ] ; then
+			dpkg-reconfigure openssh-server
+		fi
+	fi
 	# initialize LED, INIT
 	GPIOPATH="/sys/class/gpio"
 	echo 342 > $GPIOPATH/export	# LED red
@@ -126,3 +131,4 @@ case "$1" in
 	;;
 esac
 
+exit 0

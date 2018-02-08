@@ -41,12 +41,6 @@
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/hci.h>
 #include <bluetooth/hci_lib.h>
-#if defined(CONFIG_LINUX4)
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#endif
-
 
 enum {
     BT_PWR,
@@ -56,7 +50,12 @@ enum {
 /* list of all supported chips:
    name is defined in the kernel driver implementing rfkill interface for power */
 #define BCM_RFKILL_NAME "bcm43xx Bluetooth\n"
+#if defined(CONFIG_LINUX4)
+#define BCM_43341_UART_DEV "/dev/ttyS0"
+#else
 #define BCM_43341_UART_DEV "/dev/ttyMFD0"
+#endif
+
 #define BD_ADD_FACTORY_FILE "/factory/bluetooth_address"
 char factory_bd_add[18];
 const char default_bd_addr[] = "00:43:34:b1:be:ef";
@@ -486,17 +485,6 @@ int main(int argc, char **argv)
     int ret, hci_dev_id;
     char *script;
     char sysname[PATH_MAX];
-
-#if defined(CONFIG_LINUX4)
-	if(ac == 2 && stat(argv[1], NULL) == 0){
-		hci_uart_default_dev[PATH_MAX] = 0;
-		strncpy(hci_uart_default_dev[PATH_MAX], argv[1], PATH_MAX-1);
-	}
-	else{
-		printf("Can't open %s device", argv[1]);
-		return -1;
-	}
-#endif
 
     /* this code is ispired by rfkill source code */
 

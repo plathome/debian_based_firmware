@@ -3,7 +3,7 @@
 # Provides:          wd-keepalive
 # Required-Start:
 # Required-Stop:
-# Default-Start:     S
+# Default-Start:     2 3 4 5
 # Default-Stop:      0 6
 # Short-Description: wd-keepalive daemon for OBSVX1
 # Description:       
@@ -149,3 +149,5 @@ case "$1" in
 esac
 
 :
+
+exit 0
