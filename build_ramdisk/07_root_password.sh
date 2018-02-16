@@ -32,3 +32,33 @@ pw='$1$afC9J.v6$Dkq.k8sVRq7n0Py5eWWAp1'
 chroot ${DISTDIR} /usr/sbin/usermod -p $pw root
 # add "dialout" for tty device
 chroot ${DISTDIR} /usr/sbin/adduser root dialout
+
+if [ "$DIST" == "stretch" -a "$TARGET" == "obsbx1" ]; then
+	# group
+	if ! grep -q "^net_bt_admin:" ${DISTDIR}/etc/group; then
+		echo "net_bt_admin:x:3001:root" >> ${DISTDIR}/etc/group
+	fi
+	if ! grep -q "^net_bt:" ${DISTDIR}/etc/group; then
+		echo "net_bt:x:3002:root" >> ${DISTDIR}/etc/group
+	fi
+	if ! grep -q "^inet:" ${DISTDIR}/etc/group; then
+		echo "inet:x:3003:root" >> ${DISTDIR}/etc/group
+	fi
+	if ! grep -q "^net_raw:" ${DISTDIR}/etc/group; then
+		echo "net_raw:x:3004:root" >> ${DISTDIR}/etc/group
+	fi
+	if ! grep -q "^net_admin:" ${DISTDIR}/etc/group; then
+		echo "net_admin:x:3005:root" >> ${DISTDIR}/etc/group
+	fi
+	if ! grep -q "^net_bw_stats:" ${DISTDIR}/etc/group; then
+		echo "net_bw_stats:x:3006:root" >> ${DISTDIR}/etc/group
+	fi
+	if ! grep -q "^net_bw_acct:" ${DISTDIR}/etc/group; then
+		echo "net_bw_acct:x:3007:root" >> ${DISTDIR}/etc/group
+	fi
+	# passed
+	sed -e "s|_apt:x:104:65534:|_apt:x:104:3003:|" \
+	< ${DISTDIR}/etc/passwd > /tmp/passwd.new
+	mv -f /tmp/passwd.new ${DISTDIR}/etc/passwd
+fi
+

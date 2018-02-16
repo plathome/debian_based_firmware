@@ -36,24 +36,20 @@
 
 (cd ${DISTDIR}/etc; (cd ${ETCDIR_ADD};find . -type f) | xargs chown root:root ${DISTDIR}/etc)
 
-case ${TARGET} in
-obs*)
-	chmod 755 ${DISTDIR}/etc/init.d/openblocks-setup
-	chroot ${DISTDIR} /sbin/insserv -rf openblocks-setup
-	chroot ${DISTDIR} /sbin/insserv openblocks-setup
-	chmod 755 ${DISTDIR}/etc/init.d/runled
-	chroot ${DISTDIR} /sbin/insserv -rf runled
-	chroot ${DISTDIR} /sbin/insserv runled
-	chmod 755 ${DISTDIR}/etc/init.d/pshd
-	chroot ${DISTDIR} /sbin/insserv -rf pshd
-	chroot ${DISTDIR} /sbin/insserv pshd
-	chmod 755 ${DISTDIR}/etc/init.d/wd-keepalive
-	chroot ${DISTDIR} /sbin/insserv -rf wd-keepalive
-	chroot ${DISTDIR} /sbin/insserv wd-keepalive
+if [ "$DIST" == "stretch" ]; then
+	case $TARGET in
+	obsa*)
+		for file in pshd runled;
+		do
+			sed -e "s|# Required-Start:    \$local_fs \$syslog \$remote_fs nitz|# Required-Start:    $local_fs $syslog $remote_fs|"	\
+			< ${DISTDIR}/etc/init.d/${file} > /tmp/${file}.new
+			mv -f /tmp/${file}.new ${DISTDIR}/etc/init.d/${file}
+		done
 	;;
-*)
+	*)
 	;;
-esac
+	esac
+fi
 
 case ${TARGET} in
 obsbx1|obsvx*)
@@ -87,6 +83,26 @@ obsbx1|obsvx*)
 *)
 	;;
 esac
+
+case ${TARGET} in
+obs*)
+	chmod 755 ${DISTDIR}/etc/init.d/openblocks-setup
+	chroot ${DISTDIR} /sbin/insserv -rf openblocks-setup
+	chroot ${DISTDIR} /sbin/insserv openblocks-setup
+	chmod 755 ${DISTDIR}/etc/init.d/runled
+	chroot ${DISTDIR} /sbin/insserv -rf runled
+	chroot ${DISTDIR} /sbin/insserv runled
+	chmod 755 ${DISTDIR}/etc/init.d/pshd
+	chroot ${DISTDIR} /sbin/insserv -rf pshd
+	chroot ${DISTDIR} /sbin/insserv pshd
+	chmod 755 ${DISTDIR}/etc/init.d/wd-keepalive
+	chroot ${DISTDIR} /sbin/insserv -rf wd-keepalive
+	chroot ${DISTDIR} /sbin/insserv wd-keepalive
+	;;
+*)
+	;;
+esac
+
 chroot ${DISTDIR} /sbin/insserv
 
 touch ${DISTDIR}/etc/init.d/.legacy-bootordering

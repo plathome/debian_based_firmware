@@ -229,8 +229,8 @@ stretch)
 		COMP_LVL=9
 		COMP=lzma
 		COMP_EXT=lzma
-#		DEFCONFIG=${TARGET}_sysvinit_defconfig
-#		ENA_SYSVINIT=true
+		DEFCONFIG=${TARGET}_sysvinit_defconfig
+		ENA_SYSVINIT=true
 		UBOOT_VER=3.0.1
 		UBOOT_PL=2
 		UBOOT_OLD_VER="1\\\.0\\\.0\|1\\\.1\\\.[1235]\|2\\\.0\\\.[347]\|3\\\.0\\\.0"
@@ -255,7 +255,7 @@ stretch)
 		ARCH=i386
 		ISOFILE=debian-9.3.0-i386-DVD-1.iso
 		PATCHLEVEL=0
-		RAMDISK_SIZE=220
+		RAMDISK_SIZE=210
 	;;
 	*)
 	;;
