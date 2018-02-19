@@ -98,19 +98,16 @@ else
 	depmod -ae -b ${MOUNTDIR} -F ${MOUNTDIR}/boot/System.map ${KERNEL}
 fi
 
-if [ "$TARGET" == "obsvx2" ]; then
-	# kernel modules and firmware
-	WORK=/tmp/_tmpfs.$$
-	mkdir -p ${WORK}
-	(cd ${MOUNTDIR}/lib; tar cfzp ${RELEASEDIR}/modules.tgz firmware modules)
-	rm -rf ${WORK}
-fi
-
-umount ${MOUNTDIR}
-
 if [ ! -d ${RELEASEDIR} ]; then
 	mkdir -p ${RELEASEDIR}
 fi
+
+if [ "$TARGET" == "obsvx2" ]; then
+	# kernel modules and firmware
+	(cd ${MOUNTDIR}/lib; tar cfzp ${RELEASEDIR}/modules.tgz firmware modules)
+fi
+
+umount ${MOUNTDIR}
 
 cp -f ${LINUX_SRC}/System.map ${RELEASEDIR}
 
@@ -139,7 +136,7 @@ obsvx2)
 	# Debian rootfs
 	mount -o loop ${_RAMDISK_IMG} ${MOUNTDIR}
 	(cd ${MOUNTDIR}; tar cfzp ${RELEASEDIR}/${TARGET}-rootfs.tgz .)
-	umount ${MOUNTDIR}
+#	umount ${MOUNTDIR}
 
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/bzImage ${RELEASEDIR}/obstools.tgz ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/modules.tgz ${RELEASEDIR}/System.map)
