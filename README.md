@@ -12,23 +12,22 @@ Copyright (c) 2013-2018 Plat'Home CO., LTD.
 
 OpenBlocksのファームウェアは、機種(Aファミリ, IoTファミリ, 600)とOS(Debian GNU/Linux)によって異なります。対応しているファームウェアは下の表をご覧ください。
 
-機種|Debian|TARGET|DIST|ARCH
----|---|---|---|---
-AX3|8|obsax3|jessie|armhf
-AX3|7|obsax3|wheezy|armhf
-A7|8|obsa7|jessie|armel
-A7|7|obsa7|wheezy|armel
-A6|7|obsa6|wheezy|armel
-600|7|obs600|wheezy|powerpc
-BXn|8|obsbx1|jessie|i386
-BXn|7|obsbx1|wheezy|i386
-EX1|8|obsbx1|jessie|i386
-EX1|7|obsbx1|wheezy|i386
-VX1|8|obsvx1|jessie|amd64
+機種|Debian|TARGET|DIST|ARCH|ファームウェアを作成するホストのOS
+---|---|---|---|---|---
+AX3|8|obsax3|jessie|armhf|Debian GNU/Linux 8/amd64
+AX3|7|obsax3|wheezy|armhf|Debian GNU/Linux 8/amd64
+A7|8|obsa7|jessie|armel|Debian GNU/Linux 8/amd64
+A7|7|obsa7|wheezy|armel|Debian GNU/Linux 8/amd64
+A6|7|obsa6|wheezy|armel|Debian GNU/Linux 8/amd64
+600|7|obs600|wheezy|powerpc|Debian GNU/Linux 8/amd64
+BXn|8|obsbx1|jessie|i386|Debian GNU/Linux 8/amd64
+BXn|7|obsbx1|wheezy|i386|Debian GNU/Linux 8/amd64
+EX1|8|obsbx1|jessie|i386|Debian GNU/Linux 8/amd64
+EX1|7|obsbx1|wheezy|i386|Debian GNU/Linux 8/amd64
+VX2|9|obsvx2|stretch|amd64|Debian GNU/Linux 9/amd64
+VX1|8|obsvx1|jessie|amd64|Debian GNU/Linux 8/amd64
 
-BXn: BX0, BX1, BX3
-
-ファームウェアを作成するホストのOSはDebian GNU/Linux 8/amd64です。
+BXn: BX0, BX1, BX3, BX5
 
 項目TARGETとDISTは、ファームウェアを作成するときに実行するシェルスクリプトに指定する文字列です。後節で参照します。
 
@@ -36,7 +35,7 @@ BXn: BX0, BX1, BX3
 
 ## 3.1. 作成ホスト
 
-作成ホストのOSはDebian 8/amd64です。ホストを用意して、そのOSをインストールします。ホストは物理マシンと仮想マシンのどちらでもよろしいです。インターネットに接続できるよう、ネッワークの設定をしてください。
+作成ホストのOSは、2. 対応ファームウェアの表を参照してください。ホストを用意して、そのOSをインストールします。ホストは物理マシンと仮想マシンのどちらでもよろしいです。インターネットに接続できるよう、ネッワークの設定をしてください。
 
 ## 3.2. Gitリポジトリの取得
 
@@ -57,13 +56,52 @@ $ git clone git://github.com/plathome/debian_based_firmware.git
 
 以下では、ディレクトリdebian_based_firmwareに移動したものとして説明します。
 
+### 3.2.1. タグの指定
+
+リリースしたファームウェア毎にタグを付けています。以下のコマンド
+
+```
+$ git tag
+```
+
+でタグの一覧が表示されます。
+
+ファームウェアのバージョンとタグの対応は、以下のコマンド
+
+```
+$ git show タグ名
+```
+
+や、以下のページ
+
+https://github.com/plathome/debian_based_firmware/releases
+
+から知ることができます。
+
+タグ名を指定してファームウェアを作成するには以下のコマンドを実行します。
+
+```
+$ git checkout -b ブランチ名 タグ名
+```
+
+ここでブランチ名は、お好みの文字列を指定してください。
+
 ## 3.3. クロス開発環境
 
 ファームウェアの作成に必要なパッケージをインストールします。
 
+作成するホストのOSが、Debian GNU/Linux 8/amd64の場合。
+
 ```
 # cd build_ramdisk
 # ./build_crossenv.sh
+```
+
+作成するホストのOSが、Debian GNU/Linux 9/amd64の場合。
+
+```
+# cd build_ramdisk
+# ./build_crossenv-stretch.sh
 ```
 
 ## 3.4. カーネルソース
