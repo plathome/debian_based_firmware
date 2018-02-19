@@ -1,6 +1,6 @@
 /*	$ssdlinux: flashcfg.c,v 1.38 2014/01/07 07:21:28 yamagata Exp $	*/
 /*
- * Copyright (c) 2012-2017 Plat'Home CO., LTD.
+ * Copyright (c) 2012-2018 Plat'Home CO., LTD.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
