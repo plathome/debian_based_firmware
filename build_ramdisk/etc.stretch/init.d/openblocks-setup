@@ -184,6 +184,75 @@ mkdir_mtree_list() {
 	fi
 }
 
+# merge from /var/lib/dpkg/info/openssh-server.postinst
+# get_config_option, host_keys_required, create_key, create_keys
+sshd_get_config_option() {
+	option="$1"
+
+	[ -f /etc/ssh/sshd_config ] || return
+
+	# TODO: actually only one '=' allowed after option
+	perl -lne 's/\s+/ /g; print if s/^\s*'"$option"'[[:space:]=]+//i' \
+	   /etc/ssh/sshd_config
+}
+
+sshd_host_keys_required() {
+	hostkeys="$(sshd_get_config_option HostKey)"
+	if [ "$hostkeys" ]; then
+		echo "$hostkeys"
+	else
+		# No HostKey directives at all, so the server picks some
+		# defaults depending on the setting of Protocol.
+		protocol="$(sshd_get_config_option Protocol)"
+		[ "$protocol" ] || protocol=1,2
+		if echo "$protocol" | grep 1 >/dev/null; then
+			echo /etc/ssh/ssh_host_key
+		fi
+		if echo "$protocol" | grep 2 >/dev/null; then
+			echo /etc/ssh/ssh_host_rsa_key
+			echo /etc/ssh/ssh_host_dsa_key
+			echo /etc/ssh/ssh_host_ecdsa_key
+			echo /etc/ssh/ssh_host_ed25519_key
+		fi
+	fi
+}
+
+sshd_create_key() {
+	msg="$1"
+	shift
+	hostkeys="$1"
+	shift
+	file="$1"
+	shift
+
+	if echo "$hostkeys" | grep -x "$file" >/dev/null && \
+	   [ ! -f "$file" ] ; then
+		echo -n $msg
+		ssh-keygen -q -f "$file" -N '' "$@"
+		echo
+		if type restorecon >/dev/null 2>&1; then
+			restorecon "$file.pub"
+		fi
+	fi
+}
+
+
+sshd_create_keys() {
+	hostkeys="$(sshd_host_keys_required)"
+
+	sshd_create_key "Creating SSH1 key; this may take some time ..." \
+		"$hostkeys" /etc/ssh/ssh_host_key -t rsa1
+
+	sshd_create_key "Creating SSH2 RSA key; this may take some time ..." \
+		"$hostkeys" /etc/ssh/ssh_host_rsa_key -t rsa
+	sshd_create_key "Creating SSH2 DSA key; this may take some time ..." \
+		"$hostkeys" /etc/ssh/ssh_host_dsa_key -t dsa
+	sshd_create_key "Creating SSH2 ECDSA key; this may take some time ..." \
+		"$hostkeys" /etc/ssh/ssh_host_ecdsa_key -t ecdsa
+	sshd_create_key "Creating SSH2 Ed25519 key; this may take some time ..." \
+		"$hostkeys" /etc/ssh/ssh_host_ed25519_key -t ed25519
+}
+
 case "$1" in
 start)
 	mount -oremount,rw /
@@ -345,7 +414,8 @@ start)
 
 	# create ssh keys for openssh-server
 	if [ -x /usr/sbin/sshd ] ; then
-		dpkg-reconfigure openssh-server
+#		dpkg-reconfigure openssh-server
+		sshd_create_keys
 	fi
 
 	# create mount directory for fstab
