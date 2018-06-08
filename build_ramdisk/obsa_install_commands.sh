@@ -117,4 +117,8 @@ for cmd in flashcfg-debian runled pshd wd-keepalive; do
 	$STRIP ${DISTDIR}/usr/sbin/$cmd
 done
 
+if [ "$TARGET" == "obsax3" -a "$DIST" == "stretch" ]; then
+	(cd ${DISTDIR}/usr/sbin; ln -sf /bin/busybox hwclock)
+fi
+
 rm -rf ${BUILDDIR}

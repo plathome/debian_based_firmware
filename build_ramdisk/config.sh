@@ -208,7 +208,7 @@ jessie)
 	esac
 ;;
 stretch)
-	KERNEL=4.9.65
+	KERNEL=4.9.82
 	case ${TARGET} in
 	obsvx1)
 		ISOFILE=debian-9.3.0-amd64-DVD-1.iso
@@ -216,7 +216,6 @@ stretch)
 		RAMDISK_SIZE=200
 	;;
 	obsvx2)
-		KERNEL=4.9.82
 		ISOFILE=debian-9.3.0-amd64-DVD-1.iso
 		PATCHLEVEL=0
 		RAMDISK_SIZE=200
@@ -230,7 +229,8 @@ stretch)
 		COMP_LVL=9
 		COMP=lzma
 		COMP_EXT=lzma
-		DEFCONFIG=${TARGET}_sysvinit_defconfig
+		DEFCONFIG=${TARGET}_defconfig
+#		DEFCONFIG=${TARGET}_sysvinit_defconfig
 		ENA_SYSVINIT=true
 		UBOOT_VER=3.0.1
 		UBOOT_PL=2

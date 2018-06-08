@@ -47,6 +47,13 @@ stretch)
 	else
 		chroot ${DISTDIR} /bin/systemctl enable rc-local.service
 	fi
+	#
+	# test
+	#
+	if [ "$TARGET" == "obsax3" -a "$DIST" == "stretch" ]; then
+		cp -a ${ETCDIR}/init.d/openblocks-setup ${DISTDIR}/etc/init.d/
+		chroot ${DISTDIR} /sbin/insserv -rf openblocks-setup
+	fi
 	;;
 *)
 	;;

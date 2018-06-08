@@ -71,9 +71,9 @@ ACVAL=`cat ${GPIOPATH}/gpio${ACPOW}/value`
 DCVAL=`cat ${GPIOPATH}/gpio${DCPOW}/value`
 #echo $USBVAL $ACVAL $DCVAL
 
-obs-hwclock --check
-if [ $? = 255 ]; then	# EX1 Rev1 or BX?(exclude BX0)
-	exit 0
+if [ "$MODEL" != "obsvx2" ]; then
+	obs-hwclock --check
+	[ $? = 255 ] && exit 0	# EX1 Rev1 or BX?(exclude BX0)
 fi
 
 val=`expr $USBVAL + $ACVAL + $DCVAL`

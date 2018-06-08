@@ -228,7 +228,7 @@ sshd_create_key() {
 	if echo "$hostkeys" | grep -x "$file" >/dev/null && \
 	   [ ! -f "$file" ] ; then
 		echo -n $msg
-		ssh-keygen -q -f "$file" -N '' "$@"
+		ssh-keygen -q -f "$file" -N '' "$@" -A
 		echo
 		if type restorecon >/dev/null 2>&1; then
 			restorecon "$file.pub"

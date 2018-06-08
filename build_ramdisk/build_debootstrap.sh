@@ -114,6 +114,10 @@ stretch)
 	obs600|obsa6)
 		echo "Error: $TARGET is never supported."
 		;;
+	obsax3)
+		INCLUDE="openssh-server,xz-utils,parted,insserv,busybox"
+		EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,nano"
+		;;
 	*)
 		INCLUDE="openssh-server,xz-utils,parted,insserv"
 		EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,nano"

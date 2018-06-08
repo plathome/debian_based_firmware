@@ -175,10 +175,13 @@ obsvx*)
 	echo "OBSVX1-GPIO"
 	$CC -o ${BUILDDIR}/obsvx1-gpio ${FILESDIR}/obsvx1-gpio.c $CFLAGS
 
-	echo;echo;echo
-	(cd ${BUILDDIR}; ls -l wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wav-play obsvx1-modem obsvx1-gpio)
+	echo "OBSIOT-POWER"
+	$CC -o ${BUILDDIR}/obsiot-power ${FILESDIR}/obsiot-power.c $CFLAGS
 
-	for cmd in wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wav-play obsvx1-modem obsvx1-gpio; do
+	echo;echo;echo
+	(cd ${BUILDDIR}; ls -l wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wav-play obsvx1-modem obsvx1-gpio obsiot-power)
+
+	for cmd in wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wav-play obsvx1-modem obsvx1-gpio obsiot-power; do
 		(cd ${BUILDDIR}; install -c -o root -g root -m 555 $cmd ${DISTDIR}/usr/sbin/$cmd)
 		$STRIP ${DISTDIR}/usr/sbin/$cmd
 	done
