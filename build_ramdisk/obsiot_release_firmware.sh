@@ -123,10 +123,14 @@ obsvx1)
 obsvx2)
 	# obs tools
 	USRSBIN=${DISTDIR}/usr/sbin
-	OBSTOOLS="${USRSBIN}/wd-keepalive ${USRSBIN}/obs-util ${USRSBIN}/kosanu ${USRSBIN}/runled ${USRSBIN}/pshd ${USRSBIN}/atcmd ${USRSBIN}/obs-hwclock ${USRSBIN}/hub-ctrl ${USRSBIN}/wav-play ${USRSBIN}/obsvx1-modem ${USRSBIN}/obsvx1-gpio"
+	OBSTOOLS="${USRSBIN}/wd-keepalive ${USRSBIN}/obs-util ${USRSBIN}/kosanu ${USRSBIN}/runled ${USRSBIN}/pshd ${USRSBIN}/atcmd ${USRSBIN}/obs-hwclock ${USRSBIN}/hub-ctrl ${USRSBIN}/wav-play ${USRSBIN}/obsvx1-modem ${USRSBIN}/obsvx1-gpio ${USRSBIN}/obsiot-power"
+	ETCINITD=${DISTDIR}/etc/init.d
+	OBSSCRIPTS="${ETCINITD}/obsiot-power"
 	WORK=/tmp/_tmpfs.$$
 	mkdir -p ${WORK}/usr/sbin
+	mkdir -p ${WORK}/etc/init.d
 	cp -f ${OBSTOOLS} ${WORK}/usr/sbin
+	cp -f ${OBSSCRIPTS} ${WORK}/etc/init.d
 	(cd ${WORK}; tar cfzp ${RELEASEDIR}/obstools.tgz .)
 	rm -rf ${WORK}
 
