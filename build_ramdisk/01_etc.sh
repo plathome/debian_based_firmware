@@ -62,9 +62,9 @@ obsbx1|obsvx*)
 	chmod 755 ${DISTDIR}/etc/init.d/disable-modem
 	chroot ${DISTDIR} /sbin/insserv -rf disable-modem
 	chroot ${DISTDIR} /sbin/insserv disable-modem
-	chmod 755 ${DISTDIR}/etc/init.d/obsiot-power
-	chroot ${DISTDIR} /sbin/insserv -rf obsiot-power
-	chroot ${DISTDIR} /sbin/insserv obsiot-power
+#	chmod 755 ${DISTDIR}/etc/init.d/obsiot-power
+#	chroot ${DISTDIR} /sbin/insserv -rf obsiot-power
+#	chroot ${DISTDIR} /sbin/insserv obsiot-power
 	if [ ${ENA_BX1PM} == "true" ]; then
 		chmod 755 ${DISTDIR}/etc/init.d/enable-pm
 		chroot ${DISTDIR} /sbin/insserv -rf enable-pm

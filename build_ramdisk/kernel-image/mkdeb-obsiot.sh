@@ -90,7 +90,11 @@ bpv4*|bpv8)
 	if [ -d $UBOOTENVPATH ]; then
 		case $INITRD in
 		*initrd.gz)
+			if [ "$VERSION" == "3.10.17" ]; then
 			cp -f $UBOOTENVPATH/update_ubootenv-jessie.sh $pkgdir/etc/update_ubootenv.sh
+			else
+			cp -f $UBOOTENVPATH/update_ubootenv-stretch.sh $pkgdir/etc/update_ubootenv.sh
+			fi
 			;;
 		*)
 			cp -f $UBOOTENVPATH/update_ubootenv-wheezy.sh $pkgdir/etc/update_ubootenv.sh
