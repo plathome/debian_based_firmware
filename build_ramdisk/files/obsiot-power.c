@@ -49,7 +49,13 @@
 extern int errno;
 
 #define PID_FILE "/var/run/obsiot-power.pid"
+#if defined(CONFIG_OBSVX1)
 #define I2C_NAME	"/dev/i2c-2"
+#elif defined(CONFIG_OBSBX1)
+#define I2C_NAME	"/dev/i2c-1"
+#elif defined(CONFIG_OBSGEM1)
+#define I2C_NAME	"/dev/i2c-1"
+#endif
 #define SLAVE		0x21
 #define INIT_BAT	0xfb
 enum{
@@ -62,9 +68,13 @@ enum{
 #define POWER_AC	"/sys/class/gpio/gpio367/value"
 #define POWER_DC	"/sys/class/gpio/gpio365/value"
 #elif defined(CONFIG_OBSBX1)
-#define POWER_USB	"/sys/class/gpio/gpio366/value"
-#define POWER_AC	"/sys/class/gpio/gpio367/value"
-#define POWER_DC	"/sys/class/gpio/gpio365/value"
+#define POWER_USB	"/sys/class/gpio/gpio40/value"
+#define POWER_AC	"/sys/class/gpio/gpio41/value"
+#define POWER_DC	"/sys/class/gpio/gpio42/value"
+#elif defined(CONFIG_OBSGEM1)
+#define POWER_USB	"/sys/class/gpio/gpio113/value"
+#define POWER_AC	"/sys/class/gpio/gpio110/value"
+#define POWER_DC	"/sys/class/gpio/gpio114/value"
 #endif
 
 int chg_charging(unsigned char);
@@ -88,7 +98,13 @@ extern int optreset;
 
 int INTERVAL		= 60;
 int LIMIT		= 300;
+#if defined(CONFIG_OBSVX1)
 #define DEF_COMMAND	"/sbin/poweroff"
+#elif defined(CONFIG_OBSBX1)
+#define DEF_COMMAND	"/sbin/halt"
+#elif defined(CONFIG_OBSGEM1)
+#define DEF_COMMAND	"/sbin/halt"
+#endif
 char COMMAND[1024];
 
 enum{
@@ -358,7 +374,7 @@ int chk_power()
 //			closelog();
 		}
 
-		if(!chk_voltage()){
+		if(count > 0 && !chk_voltage()){
 			openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
 			syslog(LOG_ERR, "%d: Detect low voltage\n", __LINE__);
 			closelog();

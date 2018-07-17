@@ -50,7 +50,7 @@ obsbx1)
 	BUILDDIR=/tmp/obstools.$$
 	LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
 
-	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -m32 -O2 -march=core2 -mtune=core2 -msse3 -mfpmath=sse -mstackrealign -fno-omit-frame-pointer"
+	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -m32 -O2 -march=core2 -mtune=core2 -msse3 -mfpmath=sse -mstackrealign -fno-omit-frame-pointer -DCONFIG_OBSBX1"
 
 	mkdir -p ${BUILDDIR}
 
@@ -94,6 +94,7 @@ obsbx1)
 	$CC -o ${BUILDDIR}/hub-ctrl ${FILESDIR}/hub-ctrl.c $_CFLAGS
 
 	echo "BLUETOOTH_RFKILL_EVENT"
+	apt-get -y install libglib2.0-dev:i386
 	_CFLAGS="$CFLAGS -I/usr/include/glib-2.0 -I/usr/lib/i386-linux-gnu/glib-2.0/include -lglib-2.0"
 	if [ "$DIST" == "stretch" ]; then
 		_CFLAGS="$_CFLAGS -DCONFIG_LINUX4"
@@ -104,10 +105,13 @@ obsbx1)
 	_CFLAGS="$CFLAGS -lasound"
 	$CC -o ${BUILDDIR}/wav-play ${FILESDIR}/wav-play.c $_CFLAGS
 
-	echo;echo;echo
-	(cd ${BUILDDIR}; ls -l wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock bluetooth_rfkill_event brcm_patchram_plus wav-play)
+	echo "OBSIOT-POWER"
+	$CC -o ${BUILDDIR}/obsiot-power ${FILESDIR}/obsiot-power.c $CFLAGS
 
-	for cmd in wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock bluetooth_rfkill_event brcm_patchram_plus wav-play; do
+	echo;echo;echo
+	(cd ${BUILDDIR}; ls -l wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock bluetooth_rfkill_event brcm_patchram_plus wav-play obsiot-power)
+
+	for cmd in wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock bluetooth_rfkill_event brcm_patchram_plus wav-play obsiot-power; do
 		(cd ${BUILDDIR}; install -c -o root -g root -m 555 $cmd ${DISTDIR}/usr/sbin/$cmd)
 		$STRIP ${DISTDIR}/usr/sbin/$cmd
 	done
@@ -182,6 +186,71 @@ obsvx*)
 	(cd ${BUILDDIR}; ls -l wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wav-play obsvx1-modem obsvx1-gpio obsiot-power)
 
 	for cmd in wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wav-play obsvx1-modem obsvx1-gpio obsiot-power; do
+		(cd ${BUILDDIR}; install -c -o root -g root -m 555 $cmd ${DISTDIR}/usr/sbin/$cmd)
+		$STRIP ${DISTDIR}/usr/sbin/$cmd
+	done
+
+	cp ${FILESDIR}/chksignal.sh ${DISTDIR}/usr/sbin/
+	chmod 555 ${DISTDIR}/usr/sbin/chksignal.sh
+	cp ${FILESDIR}/obsiot-modem.sh ${DISTDIR}/usr/sbin/obsiot-modem.sh
+	chmod 555 ${DISTDIR}/usr/sbin/obsiot-modem.sh
+	cp ${FILESDIR}/obsiot-power.sh ${DISTDIR}/usr/sbin/obsiot-power.sh
+	chmod 555 ${DISTDIR}/usr/sbin/obsiot-power.sh
+
+	echo "CP2104-RS485"
+	(cd ${FILESDIR}/cp210xmanufacturing;make;							\
+		cp ${FILESDIR}/cp210xmanufacturing/Release/Linux/libcp210xmanufacturing.so.1.0 ${DISTDIR}/usr/lib/x86_64-linux-gnu/libcp210xmanufacturing.so;	\
+		cc -O2 -Wall -I./Release/Linux -I./Common -L./Release/Linux		\
+		-lcp210xmanufacturing -o cp2104-rs485 cp2104-rs485.c;			\
+		cp ${FILESDIR}/cp210xmanufacturing/cp2104-rs485 ${DISTDIR}/usr/sbin
+	)
+	chroot ${DISTDIR} ldconfig
+;;
+obsgem*)
+	BUILDDIR=/tmp/obstools.$$
+	LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
+
+	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -fno-omit-frame-pointer -DCONFIG_OBSGEM1"
+
+	mkdir -p ${BUILDDIR}
+
+	echo "WD-KEEPALIVE"
+	$CC -o ${BUILDDIR}/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
+
+	echo "OBS-UTIL"
+	$CC -o ${BUILDDIR}/obs-util ${FILESDIR}/obs-util.c $CFLAGS
+
+	echo "KOSANU"
+	$CC -o ${BUILDDIR}/kosanu ${FILESDIR}/kosanu.c $CFLAGS
+
+	echo "RUNLED"
+	$CC -o ${BUILDDIR}/runled ${FILESDIR}/runled_bx1.c $CFLAGS
+
+	echo "PSHD"
+	$CC -o ${BUILDDIR}/pshd ${FILESDIR}/pshd_bx1.c $CFLAGS
+
+	echo "ATCMD"
+	$CC -o ${BUILDDIR}/atcmd ${FILESDIR}/atcmd.c $CFLAGS
+
+	echo "OBS-HWCLOCK"
+	$CC -o ${BUILDDIR}/obs-hwclock ${FILESDIR}/obs-hwclock.c $CFLAGS
+
+#	echo "HUB-CTRL"
+#	apt-get -y install libusb-dev
+#	_CFLAGS="$CFLAGS -lusb "
+#	$CC -o ${BUILDDIR}/hub-ctrl ${FILESDIR}/hub-ctrl.c $_CFLAGS
+
+	echo "WAV-PLAY"
+	_CFLAGS="$CFLAGS -lasound"
+	$CC -o ${BUILDDIR}/wav-play ${FILESDIR}/wav-play.c $_CFLAGS
+
+	echo "OBSIOT-POWER"
+	$CC -o ${BUILDDIR}/obsiot-power ${FILESDIR}/obsiot-power.c $CFLAGS
+
+	echo;echo;echo
+	(cd ${BUILDDIR}; ls -l wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wav-play obsiot-power)
+
+	for cmd in wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wav-play obsiot-power; do
 		(cd ${BUILDDIR}; install -c -o root -g root -m 555 $cmd ${DISTDIR}/usr/sbin/$cmd)
 		$STRIP ${DISTDIR}/usr/sbin/$cmd
 	done

@@ -1,8 +1,8 @@
 #! /bin/sh
 ### BEGIN INIT INFO
 # Provides:          obsiot-power
-# Required-Start:
-# Required-Stop:
+# Required-Start:    $local_fs $syslog $remote_fs
+# Required-Stop:     $local_fs $syslog $remote_fs
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 6
 # Short-Description: battery monitaring daemon for OBS IoT series
@@ -122,15 +122,45 @@ do_reload() {
 
 case "$1" in
   start)
-	if [ ! -d /sys/class/gpio/gpio366 ]; then
-		echo 366 > /sys/class/gpio/export
-	fi
-	if [ ! -d /sys/class/gpio/gpio367 ]; then
-		echo 367 > /sys/class/gpio/export
-	fi
-	if [ ! -d /sys/class/gpio/gpio365 ]; then
-		echo 365 > /sys/class/gpio/export
-	fi
+	case $MODEL in
+	obsa*|obs600)
+		echo "Not supported."
+		exit 1
+		;;
+	obsvx*)
+		if [ ! -d /sys/class/gpio/gpio366 ]; then
+			echo 366 > /sys/class/gpio/export
+		fi
+		if [ ! -d /sys/class/gpio/gpio367 ]; then
+			echo 367 > /sys/class/gpio/export
+		fi
+		if [ ! -d /sys/class/gpio/gpio365 ]; then
+			echo 365 > /sys/class/gpio/export
+		fi
+		;;
+	obsgem*)
+		if [ ! -d /sys/class/gpio/gpio113 ]; then
+			echo 113 > /sys/class/gpio/export
+		fi
+		if [ ! -d /sys/class/gpio/gpio110 ]; then
+			echo 110 > /sys/class/gpio/export
+		fi
+		if [ ! -d /sys/class/gpio/gpio114 ]; then
+			echo 114 > /sys/class/gpio/export
+		fi
+		;;
+	obsbx1)
+		if [ ! -d /sys/class/gpio/gpio40 ]; then
+			echo 40 > /sys/class/gpio/export
+		fi
+		if [ ! -d /sys/class/gpio/gpio41 ]; then
+			echo 41 > /sys/class/gpio/export
+		fi
+		if [ ! -d /sys/class/gpio/gpio42 ]; then
+			echo 42 > /sys/class/gpio/export
+		fi
+		;;
+	esac
 	[ "$VERBOSE" != no ] && log_daemon_msg "Starting $DESC" "$NAME"
 	do_start
 	case "$?" in
@@ -139,15 +169,45 @@ case "$1" in
 	esac
 	;;
   stop)
-	if [ ! -d /sys/class/gpio/gpio366 ]; then
-		echo 366 > /sys/class/gpio/unexport
-	fi
-	if [ ! -d /sys/class/gpio/gpio367 ]; then
-		echo 367 > /sys/class/gpio/unexport
-	fi
-	if [ ! -d /sys/class/gpio/gpio365 ]; then
-		echo 365 > /sys/class/gpio/unexport
-	fi
+	case $MODEL in
+	obsa*|obs600)
+		echo "Not supported."
+		exit 1
+		;;
+	obsvx*)
+		if [ -d /sys/class/gpio/gpio366 ]; then
+			echo 366 > /sys/class/gpio/unexport
+		fi
+		if [ -d /sys/class/gpio/gpio367 ]; then
+			echo 367 > /sys/class/gpio/unexport
+		fi
+		if [ -d /sys/class/gpio/gpio365 ]; then
+			echo 365 > /sys/class/gpio/unexport
+		fi
+		;;
+	obsgem*)
+		if [ -d /sys/class/gpio/gpio113 ]; then
+			echo 113 > /sys/class/gpio/unexport
+		fi
+		if [ -d /sys/class/gpio/gpio110 ]; then
+			echo 110 > /sys/class/gpio/unexport
+		fi
+		if [ -d /sys/class/gpio/gpio114 ]; then
+			echo 114 > /sys/class/gpio/unexport
+		fi
+		;;
+	obsbx1)
+		if [ -d /sys/class/gpio/gpio40 ]; then
+			echo 40 > /sys/class/gpio/unexport
+		fi
+		if [ -d /sys/class/gpio/gpio41 ]; then
+			echo 41 > /sys/class/gpio/unexport
+		fi
+		if [ -d /sys/class/gpio/gpio42 ]; then
+			echo 42 > /sys/class/gpio/unexport
+		fi
+		;;
+	esac
 	[ "$VERBOSE" != no ] && log_daemon_msg "Stopping $DESC" "$NAME"
 	if [ "$MODEL" = "obsbx1" ]; then
 		echo 1 > /sys/class/misc/watchdog/disable
