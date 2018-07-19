@@ -252,9 +252,9 @@ stretch)
 		UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
 	;;
 	obsbx1)
-		KERNEL=4.4.52
+		KERNEL=3.10.17
 		ARCH=i386
-		ISOFILE=debian-9.3.0-i386-DVD-1.iso
+		ISOFILE=debian-9.5.0-i386-DVD-1.iso
 		PATCHLEVEL=0
 		RAMDISK_SIZE=210
 	;;

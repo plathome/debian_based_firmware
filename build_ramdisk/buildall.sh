@@ -71,7 +71,7 @@ jessie)
 	;;
 stretch)
 	case $_TARGET in
-	obs600|obsa6|obsvx1)
+	obs600|obsa6)
 		echo
 		echo "$_TARGET is never supported."
 		exit 1
