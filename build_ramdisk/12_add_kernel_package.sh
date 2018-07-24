@@ -52,3 +52,12 @@ chroot ${DISTDIR} dpkg -r kernel-image
 chroot ${DISTDIR} dpkg -i /dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb
 rm -f ${DISTDIR}/dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb
 rm -f ${PWD}/kernel-image/dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb
+
+
+if [ "$DTBFILE" == "armada-xp-openblocks-ax3-2.dtb" ]; then
+	cat > ${DISTDIR}/tmp/hold.$$ <<_HOLD4
+	echo kernel-image hold | dpkg --set-selections
+_HOLD4
+	chroot ${DISTDIR} /bin/bash /tmp/hold.$$
+	rm -f ${DISTDIR}/tmp/hold.$$
+fi
