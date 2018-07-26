@@ -50,10 +50,10 @@ stretch)
 	#
 	# test
 	#
-	if [ "$TARGET" == "obsax3" -a "$DIST" == "stretch" ]; then
-		cp -a ${ETCDIR}/init.d/openblocks-setup ${DISTDIR}/etc/init.d/
-		chroot ${DISTDIR} /sbin/insserv -rf openblocks-setup
-	fi
+#	if [ "$TARGET" == "obsax3" -a "$DIST" == "stretch" ]; then
+#		cp -a ${ETCDIR}/init.d/openblocks-setup ${DISTDIR}/etc/init.d/
+#		chroot ${DISTDIR} /sbin/insserv -rf openblocks-setup
+#	fi
 	;;
 *)
 	;;

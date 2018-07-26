@@ -57,13 +57,6 @@ bpv*)
 		mv -f /tmp/$f $MOUNTDIR/var/lib/dpkg/$f
 	done
 	;;
-obsbx1)
-	if [ "$DIST" == "stretch" ]; then
-		sed -e "s|ttyMFD0|ttyS0|" \
-			< ${MOUNTDIR}/etc/firmware/bcm43341.conf > /tmp/bcm43341.conf
-		mv -f /tmp/bcm43341.conf ${MOUNTDIR}/etc/firmware/bcm43341.conf
-	fi
-	;;
 *)
 	;;
 esac
