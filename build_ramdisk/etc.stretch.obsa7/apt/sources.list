@@ -10,5 +10,3 @@ deb-src http://ftp.jp.debian.org/debian/ stretch-updates main
 
 deb http://security.debian.org stretch/updates main
 deb-src http://security.debian.org stretch/updates main
-
-deb http://ftp.plathome.co.jp/pub/OBSA7/debian/stretch ./
