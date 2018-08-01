@@ -57,7 +57,7 @@ extern int errno;
 #define I2C_NAME	"/dev/i2c-1"
 #endif
 #define SLAVE		0x21
-#define INIT_BAT	0xfb
+#define INIT_BAT	0xfd
 enum{
 	STOP	= 0,
 	START	= 2,
