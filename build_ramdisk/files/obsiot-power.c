@@ -96,7 +96,7 @@ extern int opterr;
 extern int optreset;
 
 
-int INTERVAL		= 60;
+int INTERVAL		= 10;
 int LIMIT		= 300;
 #if defined(CONFIG_OBSVX1)
 #define DEF_COMMAND	"/sbin/poweroff"
@@ -391,7 +391,7 @@ void usage(char *fname)
 {
 	printf("usage : %s -i seconds -t seconds -C command\n", fname);
 	printf("\n");
-	printf("\t-i : Monitaring interval(in seconds)\n");
+//	printf("\t-i : Monitaring interval(in seconds)\n");
 	printf("\t-t : Execute command after specified time(in seconds)\n");
 	printf("\t-C : Command to execute(strings)\n");
 }
@@ -412,7 +412,7 @@ main(int ac, char *av[])
 	while ((i = getopt(ac, av, "i:t:C:h")) != -1) {
 		switch (i) {
 		case 'i':
-			INTERVAL = strtol(optarg, NULL, 10);
+//			INTERVAL = strtol(optarg, NULL, 10);
 			break;
 		case 't':
 			LIMIT = strtol(optarg, NULL, 10);
