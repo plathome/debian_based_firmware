@@ -118,6 +118,10 @@ stretch)
 		INCLUDE="openssh-server,xz-utils,parted,insserv,busybox"
 		EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,nano"
 		;;
+	obsgem*)
+		INCLUDE="openssh-server,xz-utils,parted,insserv,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200,busybox"
+		EXCLUDE="nano"
+		;;
 	*)
 		INCLUDE="openssh-server,xz-utils,parted,insserv"
 		EXCLUDE="quik,mac-fdisk,amiga-fdisk,hfsutils,yaboot,nano"

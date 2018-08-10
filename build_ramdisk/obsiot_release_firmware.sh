@@ -82,6 +82,9 @@ obsvx*)
 			make all install KSRC=${LINUX_SRC} KVER=${KERNEL} MODDESTDIR=${MOUNTDIR}/lib/modules/${KERNEL}/kernel/drivers/net/wireless/realtek MOUNTDIR=${MOUNTDIR} ${COMPRESS_XZ} USER_EXTRA_CFLAGS="-Wno-error=date-time -fno-pic -Wno-pointer-sign")
 	fi
 	;;
+obsgem*)
+	LOCAL_VER="-qcomlt-arm64"
+	;;
 *)
 	;;
 esac
@@ -92,20 +95,27 @@ if [ -d ${FILESDIR}/firmware-${TARGET} ]; then
 	cp -a ${FILESDIR}/firmware-${TARGET}/* ${MOUNTDIR}/lib/firmware
 fi
 
-if [ "$TARGET" == "obsbx1" ]; then
+case $TARGET in
+obsbx1|obsgem*)
 	depmod -ae -b ${MOUNTDIR} -F ${MOUNTDIR}/boot/System.map ${KERNEL}${LOCAL_VER}
-else
+	;;
+*)
 	depmod -ae -b ${MOUNTDIR} -F ${MOUNTDIR}/boot/System.map ${KERNEL}
-fi
+	;;
+esac
 
 if [ ! -d ${RELEASEDIR} ]; then
 	mkdir -p ${RELEASEDIR}
 fi
 
-if [ "$TARGET" == "obsvx2" ]; then
+case $TARGET in
+obsvx2|obsgem*)
 	# kernel modules and firmware
 	(cd ${MOUNTDIR}/lib; tar cfzp ${RELEASEDIR}/modules.tgz firmware modules)
-fi
+	;;
+*)
+	;;
+esac
 
 umount ${MOUNTDIR}
 
@@ -136,6 +146,33 @@ obsvx2)
 
 	# Linux kernel
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/bzImage ${RELEASEDIR}
+
+	# Debian rootfs
+	mount -o loop ${_RAMDISK_IMG} ${MOUNTDIR}
+	(cd ${MOUNTDIR}; tar cfzp ${RELEASEDIR}/${TARGET}-rootfs.tgz .)
+	umount ${MOUNTDIR}
+
+	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
+	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/bzImage ${RELEASEDIR}/obstools.tgz ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/modules.tgz ${RELEASEDIR}/System.map)
+	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
+	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
+	;;
+obsgem*)
+	# obs tools
+	USRSBIN=${DISTDIR}/usr/sbin
+	OBSTOOLS="${USRSBIN}/wd-keepalive ${USRSBIN}/obs-util ${USRSBIN}/kosanu ${USRSBIN}/runled ${USRSBIN}/pshd ${USRSBIN}/atcmd ${USRSBIN}/obs-hwclock ${USRSBIN}/hub-ctrl ${USRSBIN}/wav-play ${USRSBIN}/obsiot-power"
+	ETCINITD=${DISTDIR}/etc/init.d
+	OBSSCRIPTS="${ETCINITD}/obsiot-power"
+	WORK=/tmp/_tmpfs.$$
+	mkdir -p ${WORK}/usr/sbin
+	mkdir -p ${WORK}/etc/init.d
+	cp -f ${OBSTOOLS} ${WORK}/usr/sbin
+	cp -f ${OBSSCRIPTS} ${WORK}/etc/init.d
+	(cd ${WORK}; tar cfzp ${RELEASEDIR}/obstools.tgz .)
+	rm -rf ${WORK}
+
+	# Linux kernel
+	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
 
 	# Debian rootfs
 	mount -o loop ${_RAMDISK_IMG} ${MOUNTDIR}

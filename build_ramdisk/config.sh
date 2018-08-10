@@ -259,6 +259,17 @@ stretch)
 		PATCHLEVEL=0
 		RAMDISK_SIZE=210
 	;;
+	obsgem*)
+		KERNEL=4.14.15
+		DTBFILE=qcom/apq8016-sbc.dtb
+		ISOFILE=debian-9.5.0-arm64-DVD-1.iso
+		RAMDISK_SIZE=160
+		PATCHLEVEL=0
+		ARCH=arm64
+		COMP_LVL=9
+		COMP=gzip
+		COMP_EXT=gz
+	;;
 	*)
 	;;
 	esac
