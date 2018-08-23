@@ -248,9 +248,11 @@ obsgem*)
 	$CC -o ${BUILDDIR}/obsiot-power ${FILESDIR}/obsiot-power.c $CFLAGS
 
 	echo;echo;echo
-	(cd ${BUILDDIR}; ls -l wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wav-play obsiot-power)
+#	(cd ${BUILDDIR}; ls -l wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wav-play obsiot-power)
+	(cd ${BUILDDIR}; ls -l wd-keepalive pshd runled kosanu atcmd obs-util obs-hwclock wav-play obsiot-power)
 
-	for cmd in wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wav-play obsiot-power; do
+#	for cmd in wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wav-play obsiot-power; do
+	for cmd in wd-keepalive pshd runled kosanu atcmd obs-util obs-hwclock wav-play obsiot-power; do
 		(cd ${BUILDDIR}; install -c -o root -g root -m 555 $cmd ${DISTDIR}/usr/sbin/$cmd)
 		$STRIP ${DISTDIR}/usr/sbin/$cmd
 	done
@@ -261,15 +263,6 @@ obsgem*)
 	chmod 555 ${DISTDIR}/usr/sbin/obsiot-modem.sh
 	cp ${FILESDIR}/obsiot-power.sh ${DISTDIR}/usr/sbin/obsiot-power.sh
 	chmod 555 ${DISTDIR}/usr/sbin/obsiot-power.sh
-
-	echo "CP2104-RS485"
-	(cd ${FILESDIR}/cp210xmanufacturing;make;							\
-		cp ${FILESDIR}/cp210xmanufacturing/Release/Linux/libcp210xmanufacturing.so.1.0 ${DISTDIR}/usr/lib/x86_64-linux-gnu/libcp210xmanufacturing.so;	\
-		cc -O2 -Wall -I./Release/Linux -I./Common -L./Release/Linux		\
-		-lcp210xmanufacturing -o cp2104-rs485 cp2104-rs485.c;			\
-		cp ${FILESDIR}/cp210xmanufacturing/cp2104-rs485 ${DISTDIR}/usr/sbin
-	)
-	chroot ${DISTDIR} ldconfig
 ;;
 *)
 ;;

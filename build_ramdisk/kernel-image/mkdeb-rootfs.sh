@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 #
 # Copyright (c) 2013-2018 Plat'Home CO., LTD.
 # All rights reserved.
@@ -49,6 +49,9 @@ FIRM_DIR=$(dirname $FIRM)
 
 if [ "$MODEL" == "obsvx2" ]; then
 	DESCRIPTION="Linux firmware for OpenBlocks IoT VX2"
+	TARGET=$MODEL
+elif [ "$MODEL" == "obsgem1" ]; then
+	DESCRIPTION="Linux firmware for OpenBlocks IoT GEM1"
 	TARGET=$MODEL
 else
 	echo

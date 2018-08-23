@@ -66,6 +66,26 @@ obsvx*)
 	echo 361 > $GPIOPATH/unexport
 	echo 362 > $GPIOPATH/unexport
 	;;
+obsgem*)
+	[ ! -e $GPIOPATH/gpio72 ] && echo 72 > $GPIOPATH/export
+	[ ! -e $GPIOPATH/gpio73 ] && echo 73 > $GPIOPATH/export
+	[ ! -e $GPIOPATH/gpio74 ] && echo 74 > $GPIOPATH/export
+
+	echo in > $GPIOPATH/gpio72/direction
+	echo in > $GPIOPATH/gpio73/direction
+	echo in > $GPIOPATH/gpio74/direction
+	echo 1 > $GPIOPATH/gpio72/active_low
+	echo 1 > $GPIOPATH/gpio73/active_low
+	echo 1 > $GPIOPATH/gpio74/active_low
+
+	id0=`cat $GPIOPATH/gpio72/value`
+	id1=`cat $GPIOPATH/gpio73/value`
+	id2=`cat $GPIOPATH/gpio74/value`
+
+	echo 72 > $GPIOPATH/unexport
+	echo 73 > $GPIOPATH/unexport
+	echo 74 > $GPIOPATH/unexport
+	;;
 *)
 	id0="F"
 	id1="F"

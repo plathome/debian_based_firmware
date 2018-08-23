@@ -46,17 +46,15 @@ FLASHCFG=$7
 MD5=$8
 UBOOTENVPATH=$9
 FIRM_DIR=$(dirname $FIRM)
-if [ "$MODEL" == "obsbx1" ]; then
-	DESCRIPTION="Linux firmware for OpenBlocks IoT BX1"
-	TARGET=$MODEL
-elif [ "$MODEL" == "obsvx1" ]; then
-	DESCRIPTION="Linux firmware for OpenBlocks IoT VX1"
+if [ "$MODEL" == "bpv4" ]; then
+	DESCRIPTION="Linux firmware for Based Platform V"
 	TARGET=$MODEL
 elif [ "$MODEL" == "bpv4-h" ]; then
 	DESCRIPTION="Linux firmware for Based Platform V Hinemos"
 	MODEL="bpv4"
 else
-	DESCRIPTION="Linux firmware for Based Platform V"
+	NAME=${MODEL#obs}
+	DESCRIPTION="Linux firmware for OpenBlocks IoT ${NAME^^}"
 	TARGET=$MODEL
 fi
 
