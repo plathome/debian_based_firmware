@@ -61,7 +61,28 @@ if [ -f "${LINUX_SRC}/../linux-${KERNEL}.dot.config" ]; then
 	make ${MAKE_OPTION} oldconfig
 fi
 
+case $TARGET in
+obsgem*)
+make -j$((${cpunum}+1)) ${MAKE_OPTION} ${MAKE_IMAGE} modules dtbs
+	;;
+*)
 make -j$((${cpunum}+1)) ${MAKE_OPTION} ${MAKE_IMAGE} modules
 if [ -n "$DTBFILE" ]; then
 	make ${MAKE_OPTION} $DTBFILE
 fi
+	;;
+esac
+
+case $TARGET in
+obsgem*)
+	cat ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/${DTBFILE} > ${RELEASEDIR}/${MAKE_IMAGE}.dtb
+	skales-dtbtool -o ${RELEASEDIR}/dt.img -s 2048 ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/qcom/
+	skales-mkbootimg	--kernel ${RELEASEDIR}/${MAKE_IMAGE}.dtb \
+						--ramdisk ${FILESDIR}/${INITRAMFS} \
+						--output ${RELEASEDIR}/boot-obsgem1.img \
+						--dt ${RELEASEDIR}/dt.img \
+						--pagesize 2048 \
+						--base 0x80000000 \
+						--cmdline "root=/dev/disk/by-partlabel/rootfs rw rootwait console=ttyMSM0,115200n8"
+	;;
+esac

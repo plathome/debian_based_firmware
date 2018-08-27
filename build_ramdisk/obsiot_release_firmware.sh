@@ -96,6 +96,9 @@ rm -f ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/source ${MOUNTDIR}/lib/modul
 if [ -d ${FILESDIR}/firmware-${TARGET} ]; then
 	mkdir -p ${MOUNTDIR}/lib/firmware
 	cp -a ${FILESDIR}/firmware-${TARGET}/* ${MOUNTDIR}/lib/firmware
+	if [ "$TARGET" == "obsgem1" -a "$DIST" == "stretch" ]; then
+		(cd ${MOUNTDIR}/lib/firmware; rm -rf amdgpu cxgb4 radeon)
+	fi
 fi
 
 	depmod -ae -b ${MOUNTDIR} -F ${MOUNTDIR}/boot/System.map ${KERNEL}${LOCAL_VER}
