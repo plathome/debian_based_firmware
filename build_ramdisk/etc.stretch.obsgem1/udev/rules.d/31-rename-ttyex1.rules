@@ -1,1 +1,1 @@
-ACTION=="add", KERNELS=="1-2", SUBSYSTEMS=="usb", SYMLINK+="ttyEX1"
+ACTION=="add", KERNELS=="1-1.2", SUBSYSTEMS=="usb", SYMLINK+="ttyEX1"
