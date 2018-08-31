@@ -73,11 +73,6 @@ obsbx1)
 	POWER_AC=41
 	POWER_DC=42
 	;;
-obsgem*)
-	POWER_USB=113
-	POWER_AC=110
-	POWER_DC=114
-	;;
 *)
 	exit 1
 	;;
