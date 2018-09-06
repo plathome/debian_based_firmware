@@ -10,7 +10,7 @@ default_env(){
 	fw_setenv dfu_alt_info_ram 'kernel ram \${loadaddr} 0x800000'
 	fw_setenv dfu_alt_info_reset 'reset ram 0x0 0x0'
 	fw_setenv dfu_to_sec '3'
-	fw_setenv do_boot 'run boot_target_cmd;'
+	fw_setenv do_boot 'run boot_target_cmd_s;'
 	fw_setenv do_compute_target 'if itest.b \${first_install_retry} -gt \${first_install_max_retries} || itest.b \${ota_update_retry} -gt \${ota_update_max_retries}; then echo "Switch to Rescue target"; setenv bootargs_target rescue; saveenv; fi'
 	fw_setenv do_dfu_alt_info_ifwi 'setenv dfu_alt_info "ifwi\${hardware_id} mmc 0 8192 mmcpart 1;ifwib\${hardware_id} mmc 0 8192 mmcpart 2"'
 	fw_setenv do_dfu_alt_info_mmc 'setenv dfu_alt_info "ifwi\${hardware_id} mmc 0 8192 mmcpart 1;ifwib\${hardware_id} mmc 0 8192 mmcpart 2;u-boot0 part 0 1;u-boot-env0 part 0 2;u-boot1 part 0 3;u-boot-env1 part 0 4;boot part 0 7;rootfs part 0 8;update part 0 9;home part 0 10;vmlinuz fat 0 7;initrd fat 0 7"'
