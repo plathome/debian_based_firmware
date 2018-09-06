@@ -1,4 +1,13 @@
-#!/bin/bash
+#! /bin/bash
+### BEGIN INIT INFO
+# Provides:          reset-smsc95xx
+# Required-Start:
+# Required-Stop:     $network
+# Default-Start:
+# Default-Stop:      6
+# Short-Description: reset-smsc95xx for OBSBX0
+# Description:       
+### END INIT INFO
 #
 # Copyright (c) 2013-2018 Plat'Home CO., LTD.
 # All rights reserved.
@@ -25,43 +34,42 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-. `dirname $0`/config.sh
+# Do NOT "set -e"
 
-pw='$1$afC9J.v6$Dkq.k8sVRq7n0Py5eWWAp1'
+# PATH should only include /usr/* if it runs after the mountnfs.sh script
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+DESC="reset smsc95xx NIC chip for obsbx0"
+NAME=reset-smsc95xx
+SCRIPTNAME=/etc/init.d/$NAME
 
-chroot ${DISTDIR} /usr/sbin/usermod -p $pw root
-# add "dialout" for tty device
-chroot ${DISTDIR} /usr/sbin/adduser root dialout
+# Read configuration variable file if it is present
+[ -r /etc/default/$NAME ] && . /etc/default/$NAME
 
-if [ "$DIST" == "stretch" ]; then
-	case $TARGET in
-	obsbx*)
-		# group
-		if ! grep -q "^net_bt_admin:" ${DISTDIR}/etc/group; then
-			echo "net_bt_admin:x:3001:root" >> ${DISTDIR}/etc/group
+# Load the VERBOSE setting and other rcS variables
+. /lib/init/vars.sh
+
+# Define LSB log_* functions.
+# Depend on lsb-base (>= 3.0-6) to ensure that this file is present.
+. /lib/lsb/init-functions
+
+VERBOSE=yes
+
+case "$1" in
+  start)
+	;;
+  stop)
+		if [ `obsiot-modem.sh` == "none" ]; then
+			echo 15 > /sys/class/gpio/export
+			echo low > /sys/class/gpio/gpio15/direction
+			echo 1 > /sys/class/gpio/gpio15/value
+			sleep 0.5
+			echo 0 > /sys/class/gpio/gpio15/value
+			echo 15 > /sys/class/gpio/unexport
 		fi
-		if ! grep -q "^net_bt:" ${DISTDIR}/etc/group; then
-			echo "net_bt:x:3002:root" >> ${DISTDIR}/etc/group
-		fi
-		if ! grep -q "^inet:" ${DISTDIR}/etc/group; then
-			echo "inet:x:3003:root" >> ${DISTDIR}/etc/group
-		fi
-		if ! grep -q "^net_raw:" ${DISTDIR}/etc/group; then
-			echo "net_raw:x:3004:root" >> ${DISTDIR}/etc/group
-		fi
-		if ! grep -q "^net_admin:" ${DISTDIR}/etc/group; then
-			echo "net_admin:x:3005:root" >> ${DISTDIR}/etc/group
-		fi
-		if ! grep -q "^net_bw_stats:" ${DISTDIR}/etc/group; then
-			echo "net_bw_stats:x:3006:root" >> ${DISTDIR}/etc/group
-		fi
-		if ! grep -q "^net_bw_acct:" ${DISTDIR}/etc/group; then
-			echo "net_bw_acct:x:3007:root" >> ${DISTDIR}/etc/group
-		fi
-		# passed
-		sed -e "s|_apt:x:104:65534:|_apt:x:104:3003:|" < ${DISTDIR}/etc/passwd > /tmp/passwd.new
-		mv -f /tmp/passwd.new ${DISTDIR}/etc/passwd
-		;;
-	esac
-fi
+	;;
+  *)
+	echo "Usage: $SCRIPTNAME {stop}" >&2
+	exit 3
+	;;
+esac
 

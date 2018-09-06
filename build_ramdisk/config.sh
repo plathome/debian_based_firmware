@@ -216,9 +216,17 @@ stretch)
 		RAMDISK_SIZE=200
 	;;
 	obsvx2)
-		ISOFILE=debian-9.3.0-amd64-DVD-1.iso
+		ISOFILE=debian-9.5.0-amd64-DVD-1.iso
 		PATCHLEVEL=1
 		RAMDISK_SIZE=200
+	;;
+	obsbx1s)
+		KERNEL=3.10.17
+		ARCH=i386
+        DEFCONFIG=obsbx1_defconfig
+		ISOFILE=debian-9.5.0-i386-DVD-1.iso
+		PATCHLEVEL=1
+		RAMDISK_SIZE=250
 	;;
 	obsax3)
 #		DTBFILE=armada-xp-openblocks-ax3-4.dtb

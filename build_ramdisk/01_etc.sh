@@ -52,7 +52,7 @@ if [ "$DIST" == "stretch" ]; then
 fi
 
 case ${TARGET} in
-obsbx1|obsvx*)
+obsbx*|obsvx*)
 	chmod 755 ${DISTDIR}/etc/init.d/bluetooth
 	chroot ${DISTDIR} /sbin/insserv -rf bluetooth
 	chroot ${DISTDIR} /sbin/insserv bluetooth
@@ -74,7 +74,7 @@ obsbx1|obsvx*)
 		chmod 755 ${DISTDIR}/etc/init.d/instfirm
 		chroot ${DISTDIR} /sbin/insserv -rf instfirm
 		chroot ${DISTDIR} /sbin/insserv instfirm
-	elif [ "$TARGET" == "obsbx1" ]; then
+	elif [ "$TARGET" == "obsbx1" -o "$TARGET" == "obsbx1s" ]; then
 		chmod 755 ${DISTDIR}/etc/init.d/reset-smsc95xx
 		chroot ${DISTDIR} /sbin/insserv -rf reset-smsc95xx
 		chroot ${DISTDIR} /sbin/insserv reset-smsc95xx

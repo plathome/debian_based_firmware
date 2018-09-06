@@ -50,6 +50,9 @@ FIRM_DIR=$(dirname $FIRM)
 if [ "$MODEL" == "obsvx2" ]; then
 	DESCRIPTION="Linux firmware for OpenBlocks IoT VX2"
 	TARGET=$MODEL
+elif [ "$MODEL" == "obsbx1s" ]; then
+	DESCRIPTION="Linux firmware for OpenBlocks IoT BX1S"
+	TARGET=$MODEL
 else
 	echo
 	echo "$MODEL is not supported."

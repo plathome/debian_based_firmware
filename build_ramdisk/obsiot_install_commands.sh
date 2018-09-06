@@ -46,7 +46,7 @@ bpv4*|obsmv4)
 		$STRIP ${DISTDIR}/usr/sbin/$cmd
 	done
 ;;
-obsbx1)
+obsbx*)
 	BUILDDIR=/tmp/obstools.$$
 	LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
 
