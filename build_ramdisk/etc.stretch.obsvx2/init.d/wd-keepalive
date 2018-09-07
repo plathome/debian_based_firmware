@@ -5,7 +5,7 @@
 # Required-Stop:
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 6
-# Short-Description: wd-keepalive daemon for OBSVX1
+# Short-Description: wd-keepalive daemon for OBSVX2
 # Description:       
 ### END INIT INFO
 #

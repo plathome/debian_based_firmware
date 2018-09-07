@@ -26,7 +26,8 @@ configure)
 			rm -f /etc/flashcfg.sh
 			rm -f /etc/MD5.*
 			rm -f /etc/obstools*
-			rm -f /etc/obsvx2-rootfs*
+			rm -f /etc/modules.tgz
+			rm -f /etc/obsvx2-rootfs* /etc/obsbx1s-rootfs*
 			if [ -d /etc/grub.cfg ]; then
 				rm -rf /etc/grub.cfg
 			fi

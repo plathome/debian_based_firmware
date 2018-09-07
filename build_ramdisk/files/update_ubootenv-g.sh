@@ -65,7 +65,7 @@ default_env(){
 
 obsiot_env(){
 	fw_setenv env_version 'g'
-	fw_setenv rootfs 'root=/dev/ram'
+	fw_setenv rootfs 'root=/dev/mmcblk0p10'
 	fw_setenv kernel_img 'bzImage'
 	fw_setenv initrd_img 'initrd.gz'
 	fw_setenv initrd_addr '0x10000000'
@@ -73,11 +73,14 @@ obsiot_env(){
 	fw_setenv bootDebian 'echo "Target:\${target_name}";run chkmodel;run chkmodem;run do_partition; run do_handle_bootargs_mode;'
 	fw_setenv mmc-bootargs 'setenv bootargs \${rootfs} rw \${bootargs_console} \${bootargs_debug} systemd.unit=\${bootargs_target}.target hardware_id=\${hardware_id} g_multi.iSerialNumber=\${serial#} \${miscargs} \${noflashcfg} \${obsiot} \${modem}'
 	fw_setenv load_kernel 'fatload mmc \${firm_part} \${loadaddr} \${kernel_img};fatload mmc \${firm_part} \${initrd_addr} \${initrd_img};setenv initrd_size 0x\${filesize}'
+	fw_setenv load_kernel_s 'fatload mmc \${firm_part} \${loadaddr} \${kernel_img};'
 	fw_setenv boot_target_cmd 'run do_flash_os;run do_probe_dfu;run do_compute_target;run chkinit;run mmc-bootargs;mw.l 0xff008020 0x00458000;mw.l 0xff008038 0x00018000;run load_kernel;zboot \${loadaddr} 0x0 \${initrd_addr} ${initrd_size}'
+	fw_setenv boot_target_cmd_s 'run do_flash_os;run do_probe_dfu;run do_compute_target;run chkinit;run mmc-bootargs;mw.l 0xff008020 0x00458000;mw.l 0xff008038 0x00018000;run load_kernel_s;zboot \${loadaddr};'
 	fw_setenv chkinit 'setexpr.b ret *0xff008005 \\& 0x40;if test.b \${ret} = 0;then setenv noflashcfg noflashcfg=1;else setenv noflashcfg;fi;'
 	fw_setenv chkmodel 'setexpr.b dip1 *0xff008009 \\& 0x10;if test.b ${dip1} != 0;then setenv obsiot obsiot=bx1;else setenv obsiot obsiot=ex1;fi;'
 	fw_setenv chkmodem 'setexpr.b dip1 *0xff008009 \\& 0x78;setenv modem modem=\${dip1};'
-	fw_setenv bootRecovery 'setenv firm_part 0:9; setenv miscargs \$miscargs noflashcfg=1 noeasyblocks=1;run bootDebian;'
+	fw_setenv bootRecovery 'setenv firm_part 0:9; setenv rootfs root=/dev/ram; setenv miscargs \$miscargs noflashcfg=1 noeasyblocks=1;run bootDebian;'
+	fw_setenv chgboot 'if itest.s "$do_boot" == "run boot_target_cmd;"; then setenv do_boot "run boot_target_cmd_s;"; setenv rootfs root=/dev/mmcblk0p10; echo "root is eMMC";else setenv do_boot "run boot_target_cmd;"; setenv rootfs root=/dev/ram; echo "root is ramdisk";fi;'
 }
 
 usage(){
