@@ -145,12 +145,12 @@ debian-7.7.0-armel-DVD-1.iso
 debian-7.4.0-powerpc-DVD-1.iso
 * TARGET=obsbx1, DIST=wheezyの場合  
 debian-7.8.0-i386-DVD-1.iso
-* TARGET=obsvx1, DIST=jessieの場合
+* TARGET=obsvx1, DIST=jessieの場合  
 debian-8.5.0-amd64-DVD-1.iso
 
 これらのファイルは  
-http://ftp.plathome.co.jp/pub/cdimages/debian/
-https://cdimage.debian.org/mirror/cdimage/archive/
+http://ftp.plathome.co.jp/pub/cdimages/debian/  
+https://cdimage.debian.org/mirror/cdimage/archive/  
 からも取得できます。
 
 # 4. 作成
