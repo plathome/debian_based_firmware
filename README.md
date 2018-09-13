@@ -131,25 +131,26 @@ http://ftp.plathome.co.jp/pub/OBSVX1/jessie/4.4.26-1/linux-4.4.26-obs-20161027.t
 
 ## 3.5. DVDイメージ
 
-DIST=wheezyの場合、DebianのDVDイメージをDebianのミラーサイトからダウンロードしてディレクトリisofilesにコピーします。
+DebianのDVDイメージをDebianのミラーサイトからダウンロードしてディレクトリisofilesにコピーします。
 
 ファイルbuild_ramdisk/config.shのcase文中のISOFILEからDVDイメージのファイル名が分ります。
 
 以下はファイル名の例です。
 
-* TARGET=obsax3の場合  
+* TARGET=obsax3, DIST=wheezyの場合  
 debian-7.7.0-armhf-DVD-1.iso
-* TARGET=obsa7, obsa6の場合  
+* TARGET=obsa7, obsa6, DIST=wheezyの場合  
 debian-7.7.0-armel-DVD-1.iso
-* TARGET=obs600の場合  
+* TARGET=obs600, DIST=wheezyの場合  
 debian-7.4.0-powerpc-DVD-1.iso
-* TARGET=obsbx1の場合  
+* TARGET=obsbx1, DIST=wheezyの場合  
 debian-7.8.0-i386-DVD-1.iso
-* TARGET=obsvx1の場合
+* TARGET=obsvx1, DIST=jessieの場合
 debian-8.5.0-amd64-DVD-1.iso
 
 これらのファイルは  
-http://ftp.plathome.co.jp/pub/cdimages/debian/  
+http://ftp.plathome.co.jp/pub/cdimages/debian/
+https://cdimage.debian.org/mirror/cdimage/archive/
 からも取得できます。
 
 # 4. 作成
