@@ -122,7 +122,7 @@ http://ftp.plathome.co.jp/pub/OBSA6/wheezy/3.2.40-3/linux-3.2.40-20140220.tar.gz
 http://ftp.plathome.co.jp/pub/OBS600/debian/files/wheezy/3.10.25-0/linux-3.10.25-obs600.tar.gz
 * TARGET=obsbx1, DIST=wheezy, KERNEL=3.10.17, PATCHLEVEL=15の場合  
 http://ftp.plathome.co.jp/pub/BX1/wheezy/3.10.17-15/linux-3.10.17-20160309.tar.xz
-* TARGET=obsvx1, DIST=jessie, KERNEL=4.4.26, PATCHLEVEL=1の場合
+* TARGET=obsvx1, DIST=jessie, KERNEL=4.4.26, PATCHLEVEL=1の場合  
 http://ftp.plathome.co.jp/pub/OBSVX1/jessie/4.4.26-1/linux-4.4.26-obs-20161027.tar.xz
 
 ### 3.4.2. 展開
