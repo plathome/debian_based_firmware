@@ -226,6 +226,7 @@ stretch)
 		ISOFILE=debian-9.5.0-i386-DVD-1.iso
 		PATCHLEVEL=1
 		RAMDISK_SIZE=250
+		DEFCONFIG=obsbx1_defconfig
 	;;
 	obsax3)
 #		DTBFILE=armada-xp-openblocks-ax3-4.dtb

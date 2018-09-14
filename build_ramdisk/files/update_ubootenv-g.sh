@@ -79,7 +79,7 @@ obsiot_env(){
 	fw_setenv chkinit 'setexpr.b ret *0xff008005 \\& 0x40;if test.b \${ret} = 0;then setenv noflashcfg noflashcfg=1;else setenv noflashcfg;fi;'
 	fw_setenv chkmodel 'setexpr.b dip1 *0xff008009 \\& 0x10;if test.b ${dip1} != 0;then setenv obsiot obsiot=bx1;else setenv obsiot obsiot=ex1;fi;'
 	fw_setenv chkmodem 'setexpr.b dip1 *0xff008009 \\& 0x78;setenv modem modem=\${dip1};'
-	fw_setenv bootRecovery 'setenv firm_part 0:9; setenv rootfs root=/dev/ram; setenv miscargs \$miscargs noflashcfg=1 noeasyblocks=1;run bootDebian;'
+	fw_setenv bootRecovery 'setenv firm_part 0:9; setenv rootfs root=/dev/ram; setenv do_boot "run boot_target_cmd"; setenv miscargs \$miscargs noflashcfg=1 noeasyblocks=1;run bootDebian;'
 	fw_setenv chgboot 'if itest.s "$do_boot" == "run boot_target_cmd;"; then setenv do_boot "run boot_target_cmd_s;"; setenv rootfs root=/dev/mmcblk0p10; echo "root is eMMC";else setenv do_boot "run boot_target_cmd;"; setenv rootfs root=/dev/ram; echo "root is ramdisk";fi;'
 }
 
