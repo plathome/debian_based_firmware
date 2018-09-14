@@ -5,7 +5,7 @@
 # * /usr/sbin/flashcfg
 
 # BEGIN: don't edit
-MODEL="obsbx1s"
+MODEL="obsbx1"
 
 FIRM_DIR="/dev/mmcblk0p7"
 SAVE_DIR="/dev/mmcblk0p8"

@@ -223,7 +223,6 @@ stretch)
 	obsbx1s)
 		KERNEL=3.10.17
 		ARCH=i386
-        DEFCONFIG=obsbx1_defconfig
 		ISOFILE=debian-9.5.0-i386-DVD-1.iso
 		PATCHLEVEL=1
 		RAMDISK_SIZE=250
