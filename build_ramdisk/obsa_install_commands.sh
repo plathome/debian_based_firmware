@@ -78,7 +78,7 @@ case $KERNEL in
 4.1*)
 	CFLAGS+=" -DCONFIG_LINUX_4_0"
 ;;
-4.9*)
+4.9*|4.4*)
 	CFLAGS+=" -DCONFIG_LINUX_4_0 -DCONFIG_LINUX_4_9"
 ;;
 esac
