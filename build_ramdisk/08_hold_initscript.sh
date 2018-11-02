@@ -42,6 +42,10 @@ stretch)
 	cat > ${DISTDIR}/tmp/hold.$$ <<_HOLD3
 	echo kmod hold | dpkg --set-selections
 	echo libkmod2 hold | dpkg --set-selections
+	case $TARGET in
+	obsbx1*)
+		echo acpi-support-base hold | dpkg --set-selections ;;
+	esac
 _HOLD3
 	chroot ${DISTDIR} /bin/bash /tmp/hold.$$
 	rm -f ${DISTDIR}/tmp/hold.$$
