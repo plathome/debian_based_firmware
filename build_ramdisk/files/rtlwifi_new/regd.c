@@ -283,10 +283,13 @@ static void _rtl_reg_apply_radar_flags(struct wiphy *wiphy)
 		 *- If AP mode does not yet support radar detection/DFS
 		 *do not allow AP mode
 		 */
+		// Force Comment for STA connect to W53/W56 stealth AP
+		/*
 		if (!(ch->flags & IEEE80211_CHAN_DISABLED))
 			ch->flags |= IEEE80211_CHAN_RADAR |
 			    IEEE80211_CHAN_NO_IBSS |
 			    IEEE80211_CHAN_PASSIVE_SCAN;
+		*/
 	}
 }
 
