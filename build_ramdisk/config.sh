@@ -229,18 +229,19 @@ stretch)
 		DEFCONFIG=obsbx1_defconfig
 	;;
 	obsax3)
-#		DTBFILE=armada-xp-openblocks-ax3-4.dtb
-		DTBFILE=armada-xp-openblocks-ax3-2.dtb
-		ISOFILE=debian-9.5.0-armhf-DVD-1.iso
+		KERNEL=4.4.120
+		DTBFILE=armada-xp-openblocks-ax3-4.dtb
+#		DTBFILE=armada-xp-openblocks-ax3-2.dtb
+		ISOFILE=debian-9.6.0-armhf-DVD-1.iso
 		RAMDISK_SIZE=145
 		PATCHLEVEL=0
 		ARCH=armhf
 		COMP_LVL=9
 		COMP=lzma
 		COMP_EXT=lzma
-		DEFCONFIG=${TARGET}_defconfig
-#		DEFCONFIG=${TARGET}_sysvinit_defconfig
-#		ENA_SYSVINIT=true
+#		DEFCONFIG=${TARGET}_defconfig
+		DEFCONFIG=${TARGET}_sysvinit_defconfig
+		ENA_SYSVINIT=true
 		UBOOT_VER=3.0.1
 		UBOOT_PL=2
 		UBOOT_OLD_VER="1\\\.0\\\.0\|1\\\.1\\\.[1235]\|2\\\.0\\\.[347]\|3\\\.0\\\.0"
