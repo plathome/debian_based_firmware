@@ -255,8 +255,8 @@ stretch)
 		COMP_LVL=9
 		COMP=gzip
 		COMP_EXT=gz
-		DEFCONFIG=${TARGET}_sysvinit_defconfig
-		ENA_SYSVINIT=true
+#		DEFCONFIG=${TARGET}_sysvinit_defconfig
+#		ENA_SYSVINIT=true
 		UBOOT_VER=1.2.13
 		UBOOT_PL=2
 		UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
