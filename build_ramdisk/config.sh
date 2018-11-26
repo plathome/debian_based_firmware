@@ -260,7 +260,8 @@ stretch)
 		RAMDISK_SIZE=210
 	;;
 	obsgem*)
-		KERNEL=4.14.15
+#		KERNEL=4.14.15
+		KERNEL=4.9.56
 		DTBFILE=qcom/apq8016-sbc.dtb
 		ISOFILE=debian-9.5.0-arm64-DVD-1.iso
 		INITRAMFS=initrd.img-4.14.0-qcomlt-arm64

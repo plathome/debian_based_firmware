@@ -93,13 +93,20 @@ obsgem*)
 esac
 rm -f ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/source ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/build
 
-if [ -d ${FILESDIR}/firmware-${TARGET} ]; then
-	mkdir -p ${MOUNTDIR}/lib/firmware
-	cp -a ${FILESDIR}/firmware-${TARGET}/* ${MOUNTDIR}/lib/firmware
-	if [ "$TARGET" == "obsgem1" -a "$DIST" == "stretch" ]; then
-		(cd ${MOUNTDIR}/lib/firmware; rm -rf amdgpu cxgb4 radeon)
+case $TARGET in
+obsgem*)
+	if [ -d ${FILESDIR}/firmware-${TARGET}-${KERNEL} ]; then
+		mkdir -p ${MOUNTDIR}/lib/firmware
+		cp -a ${FILESDIR}/firmware-${TARGET}-${KERNEL}/* ${MOUNTDIR}/lib/firmware
 	fi
-fi
+	;;
+*)
+	if [ -d ${FILESDIR}/firmware-${TARGET} ]; then
+		mkdir -p ${MOUNTDIR}/lib/firmware
+		cp -a ${FILESDIR}/firmware-${TARGET}/* ${MOUNTDIR}/lib/firmware
+	fi
+	;;
+esac
 
 	depmod -ae -b ${MOUNTDIR} -F ${MOUNTDIR}/boot/System.map ${KERNEL}${LOCAL_VER}
 
