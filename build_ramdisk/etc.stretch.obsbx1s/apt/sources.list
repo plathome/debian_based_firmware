@@ -10,4 +10,4 @@ deb-src http://ftp.jp.debian.org/debian/ stretch-updates main
 deb http://security.debian.org stretch/updates main
 deb-src http://security.debian.org stretch/updates main
 
-deb http://ftp.plathome.co.jp/pub/OBSBX1/debian/stretch ./
+deb http://ftp.plathome.co.jp/pub/BX1/debian/stretch ./
