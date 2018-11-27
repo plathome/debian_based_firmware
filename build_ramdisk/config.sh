@@ -230,8 +230,8 @@ stretch)
 	;;
 	obsax3)
 		KERNEL=4.4.120
-		DTBFILE=armada-xp-openblocks-ax3-4.dtb
-#		DTBFILE=armada-xp-openblocks-ax3-2.dtb
+#		DTBFILE=armada-xp-openblocks-ax3-4.dtb
+		DTBFILE=armada-xp-openblocks-ax3-2.dtb
 		ISOFILE=debian-9.6.0-armhf-DVD-1.iso
 		RAMDISK_SIZE=145
 		PATCHLEVEL=0
