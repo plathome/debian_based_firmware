@@ -37,19 +37,5 @@ stretch)
 esac
 
 cp ${FILESDIR}/${keyfile} ${DISTDIR}/
-case $DIST in
-stretch)
-	if [ "$TARGET" == "obsax3" -o "$TARGET" == "obsa7" ]; then
-		chroot ${DISTDIR} /bin/mount proc /proc -t proc
-	fi
-	;;
-esac
 chroot ${DISTDIR} /usr/bin/apt-key add /${keyfile}
-case $DIST in
-stretch)
-	if [ "$TARGET" == "obsax3" -o "$TARGET" == "obsa7" ]; then
-		chroot ${DISTDIR} /bin/umount /proc
-	fi
-	;;
-esac
 rm -f ${DISTDIR}/${keyfile}
