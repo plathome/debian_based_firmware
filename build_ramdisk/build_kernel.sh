@@ -77,9 +77,9 @@ case $TARGET in
 obsgem*)
 	[ ! -d $RELEASEDIR ] && mkdir -p $RELEASEDIR
 	cat ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/${DTBFILE} > ${RELEASEDIR}/${MAKE_IMAGE}.dtb
-	skales-dtbtool -o ${RELEASEDIR}/dt.img -s 2048 ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/qcom/
-	skales-mkbootimg	--kernel ${RELEASEDIR}/${MAKE_IMAGE}.dtb \
-						--ramdisk ${FILESDIR}/${INITRAMFS} \
+	${SKALESDIR}/dtbTool -o ${RELEASEDIR}/dt.img -s 2048 ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/qcom/
+	${SKALESDIR}/mkbootimg	--kernel ${RELEASEDIR}/${MAKE_IMAGE}.dtb \
+						--ramdisk ${FILESDIR}/initrd.img-${KERNEL}-linaro-lt-qcom \
 						--output ${RELEASEDIR}/boot-obsgem1.img \
 						--dt ${RELEASEDIR}/dt.img \
 						--pagesize 2048 \

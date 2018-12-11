@@ -41,6 +41,9 @@ ISOFILEDIR=${WRKDIR}/isofiles
 EXTRADEBDIR=${WRKDIR}/extradebs/${DIST}
 
 ETCDIR=${PWD}/etc.${DIST}
+
+TOOLDIR=${WRKDIR}/tool
+SKALESDIR=${TOOLDIR}/skales
 case $TARGET in
 bpv4*)
 	RELEASEDIR=${WRKDIR}/release/${TARGET}/${DIST}/${KERNEL}-${PATCHLEVEL}

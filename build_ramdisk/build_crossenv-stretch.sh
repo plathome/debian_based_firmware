@@ -46,7 +46,7 @@ apt update
 #
 # host machine development tools
 #
-packages="build-essential u-boot-tools libncurses5-dev debootstrap qemu-user-static bc gcc-multilib xz-utils dosfstools libnl-3-dev libssl-dev libusb-dev libasound2-dev libi2c-dev libusb-1.0-0 libusb-1.0-0-dev pkg-config skales libfdt1"
+packages="build-essential u-boot-tools libncurses5-dev debootstrap qemu-user-static bc gcc-multilib xz-utils dosfstools libnl-3-dev libssl-dev libusb-dev libasound2-dev libi2c-dev libusb-1.0-0 libusb-1.0-0-dev pkg-config libfdt-dev"
 apt -y install $packages
 
 #
