@@ -216,39 +216,30 @@ stretch)
 		RAMDISK_SIZE=200
 	;;
 	obsvx2)
-		ISOFILE=debian-9.5.0-amd64-DVD-1.iso
-		PATCHLEVEL=3
+		ISOFILE=debian-9.3.0-amd64-DVD-1.iso
+		PATCHLEVEL=1
 		RAMDISK_SIZE=200
 	;;
-	obsbx1s)
-		KERNEL=3.10.17
-		ARCH=i386
-		ISOFILE=debian-9.6.0-i386-DVD-1.iso
-		PATCHLEVEL=200
-		RAMDISK_SIZE=250
-		DEFCONFIG=obsbx1_defconfig
-	;;
 	obsax3)
-		KERNEL=4.4.120
 #		DTBFILE=armada-xp-openblocks-ax3-4.dtb
 		DTBFILE=armada-xp-openblocks-ax3-2.dtb
-		ISOFILE=debian-9.6.0-armhf-DVD-1.iso
+		ISOFILE=debian-9.5.0-armhf-DVD-1.iso
 		RAMDISK_SIZE=145
 		PATCHLEVEL=0
 		ARCH=armhf
 		COMP_LVL=9
 		COMP=lzma
 		COMP_EXT=lzma
-#		DEFCONFIG=${TARGET}_defconfig
-		DEFCONFIG=${TARGET}_sysvinit_defconfig
-		ENA_SYSVINIT=true
+		DEFCONFIG=${TARGET}_defconfig
+#		DEFCONFIG=${TARGET}_sysvinit_defconfig
+#		ENA_SYSVINIT=true
 		UBOOT_VER=3.0.1
 		UBOOT_PL=2
 		UBOOT_OLD_VER="1\\\.0\\\.0\|1\\\.1\\\.[1235]\|2\\\.0\\\.[347]\|3\\\.0\\\.0"
 	;;
 	obsa7)
 		DTBFILE=kirkwood-openblocks_a7.dtb
-		ISOFILE=debian-9.6.0-armel-DVD-1.iso
+		ISOFILE=debian-9.3.0-armel-DVD-1.iso
 		RAMDISK_SIZE=160
 		PATCHLEVEL=0
 		ARCH=armel
@@ -264,9 +255,21 @@ stretch)
 	obsbx1)
 		KERNEL=3.10.17
 		ARCH=i386
-		ISOFILE=debian-9.6.0-i386-DVD-1.iso
-		PATCHLEVEL=200
+		ISOFILE=debian-9.5.0-i386-DVD-1.iso
+		PATCHLEVEL=0
 		RAMDISK_SIZE=210
+	;;
+	obsgem*)
+#		KERNEL=4.14.15
+		KERNEL=4.9.56
+		DTBFILE=qcom/apq8016-sbc.dtb
+		ISOFILE=debian-9.5.0-arm64-DVD-1.iso
+		RAMDISK_SIZE=200
+		PATCHLEVEL=0
+		ARCH=arm64
+		COMP_LVL=9
+		COMP=gzip
+		COMP_EXT=gz
 	;;
 	*)
 	;;
