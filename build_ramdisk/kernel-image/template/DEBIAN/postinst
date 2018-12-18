@@ -43,6 +43,9 @@ configure)
 			exit 1
 		fi
 	fi
+	if [ -e /etc/rc2.d/S02power-saving.sh ]; then
+		/sbin/insserv -rf power-saving.sh
+	fi
 ;;
 
 abort-upgrade|abort-remove|abort-deconfigure)
