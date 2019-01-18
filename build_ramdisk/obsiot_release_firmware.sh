@@ -179,7 +179,7 @@ obsbx1s)
 	USRSBIN=${DISTDIR}/usr/sbin
 	OBSTOOLS="${USRSBIN}/wd-keepalive ${USRSBIN}/obs-util ${USRSBIN}/kosanu ${USRSBIN}/runled ${USRSBIN}/pshd ${USRSBIN}/atcmd ${USRSBIN}/obs-hwclock ${USRSBIN}/hub-ctrl ${USRSBIN}/wav-play ${USRSBIN}/obsiot-power"
 	ETCINITD=${DISTDIR}/etc/init.d
-	OBSSCRIPTS="${ETCINITD}/obsiot-power"
+	OBSSCRIPTS="${ETCINITD}/obsiot-power ${ETCINITD}/nitz"
 	WORK=/tmp/_tmpfs.$$
 	mkdir -p ${WORK}/usr/sbin
 	mkdir -p ${WORK}/etc/init.d
