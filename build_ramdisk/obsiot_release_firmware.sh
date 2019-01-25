@@ -129,11 +129,15 @@ obsvx2)
 	OBSTOOLS="${USRSBIN}/wd-keepalive ${USRSBIN}/obs-util ${USRSBIN}/kosanu ${USRSBIN}/runled ${USRSBIN}/pshd ${USRSBIN}/atcmd ${USRSBIN}/obs-hwclock ${USRSBIN}/hub-ctrl ${USRSBIN}/wav-play ${USRSBIN}/obsvx1-modem ${USRSBIN}/obsvx1-gpio ${USRSBIN}/obsiot-power"
 	ETCINITD=${DISTDIR}/etc/init.d
 	OBSSCRIPTS="${ETCINITD}/obsiot-power"
+	ETCUDEVRULES=${DISTDIR}/etc/udev/rules.d
+	OBSUDEVRULES="${ETCUDEVRULES}/50-obsvx1-symlink-ttyMODEM.rules"
 	WORK=/tmp/_tmpfs.$$
 	mkdir -p ${WORK}/usr/sbin
 	mkdir -p ${WORK}/etc/init.d
+	mkdir -p ${WORK}/etc/udev/rules.d
 	cp -f ${OBSTOOLS} ${WORK}/usr/sbin
 	cp -f ${OBSSCRIPTS} ${WORK}/etc/init.d
+	cp -f ${OBSUDEVRULES} ${WORK}/etc/udev/rules.d
 	(cd ${WORK}; tar cfzp ${RELEASEDIR}/obstools.tgz .)
 	rm -rf ${WORK}
 
@@ -180,11 +184,15 @@ obsbx1s)
 	OBSTOOLS="${USRSBIN}/wd-keepalive ${USRSBIN}/obs-util ${USRSBIN}/kosanu ${USRSBIN}/runled ${USRSBIN}/pshd ${USRSBIN}/atcmd ${USRSBIN}/obs-hwclock ${USRSBIN}/hub-ctrl ${USRSBIN}/wav-play ${USRSBIN}/obsiot-power"
 	ETCINITD=${DISTDIR}/etc/init.d
 	OBSSCRIPTS="${ETCINITD}/obsiot-power ${ETCINITD}/nitz"
+	ETCUDEVRULES=${DISTDIR}/etc/udev/rules.d
+	OBSUDEVRULES="${ETCUDEVRULES}/50-obsbx1-symlink-ttyMODEM.rules"
 	WORK=/tmp/_tmpfs.$$
 	mkdir -p ${WORK}/usr/sbin
 	mkdir -p ${WORK}/etc/init.d
+	mkdir -p ${WORK}/etc/udev/rules.d
 	cp -f ${OBSTOOLS} ${WORK}/usr/sbin
 	cp -f ${OBSSCRIPTS} ${WORK}/etc/init.d
+	cp -f ${OBSUDEVRULES} ${WORK}/etc/udev/rules.d
 	(cd ${WORK}; tar cfzp ${RELEASEDIR}/obstools.tgz .)
 	rm -rf ${WORK}
 
