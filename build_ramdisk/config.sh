@@ -260,8 +260,8 @@ stretch)
 		RAMDISK_SIZE=210
 	;;
 	obsgem*)
-#		KERNEL=4.14.15
-		KERNEL=4.9.27
+		KERNEL=4.14.90
+#		KERNEL=4.9.27
 		DTBFILE=qcom/apq8016-sbc.dtb
 		ISOFILE=debian-9.5.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=200

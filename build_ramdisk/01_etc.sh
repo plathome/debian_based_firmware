@@ -95,9 +95,11 @@ obs*)
 	chmod 755 ${DISTDIR}/etc/init.d/pshd
 	chroot ${DISTDIR} /sbin/insserv -rf pshd
 	chroot ${DISTDIR} /sbin/insserv pshd
-	chmod 755 ${DISTDIR}/etc/init.d/wd-keepalive
-	chroot ${DISTDIR} /sbin/insserv -rf wd-keepalive
-	chroot ${DISTDIR} /sbin/insserv wd-keepalive
+	if [ ${TARGET} != "obsgem1" ]; then
+		chmod 755 ${DISTDIR}/etc/init.d/wd-keepalive
+		chroot ${DISTDIR} /sbin/insserv -rf wd-keepalive
+		chroot ${DISTDIR} /sbin/insserv wd-keepalive
+	fi
 	;;
 *)
 	;;
