@@ -1,5 +1,0 @@
-ACTION=="add", KERNEL=="ttyUSB*", DRIVERS=="option", ATTRS{bInterfaceNumber}=="00", SYMLINK+="ttyACM1"
-ACTION=="add", KERNEL=="ttyUSB*", DRIVERS=="option", ATTRS{bInterfaceNumber}=="01", SYMLINK+="ttyACM2"
-ACTION=="add", KERNEL=="ttyUSB*", DRIVERS=="option", ATTRS{bInterfaceNumber}=="02", SYMLINK+="ttyACM0"
-ACTION=="add", KERNEL=="ttyUSB*", DRIVERS=="option", ATTRS{bInterfaceNumber}=="03", SYMLINK+="ttyACM3"
-ACTION=="add", KERNEL=="ttyUSB*", DRIVERS=="option", ATTRS{bInterfaceNumber}=="04", SYMLINK+="ttyACM4"
