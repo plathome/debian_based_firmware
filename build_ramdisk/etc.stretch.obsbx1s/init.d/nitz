@@ -42,7 +42,7 @@ DESC="get NITZ for obs iot"
 NAME=nitz
 SCRIPTNAME=/etc/init.d/$NAME
 GPIOPATH="/sys/class/gpio"
-ATCMD=/usr/sbin/atcmd
+ATCMD="/usr/sbin/atcmd -d /dev/ttyMODEM0"
 
 # Read configuration variable file if it is present
 [ -r /etc/default/openblocks ] && . /etc/default/openblocks
@@ -278,6 +278,12 @@ case "$1" in
 		echo "fail"
 		exit 1
 	esac
+
+	if [ "$VERBOSE" != no ]; then
+		hwclock --hctosys > /dev/null 2>&1
+	else
+		hwclock --hctosys
+	fi
 
 	rfkill unblock bluetooth
 	exit 0

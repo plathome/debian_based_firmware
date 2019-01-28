@@ -29,7 +29,7 @@ trap '$ATCMD POFF;rm -f $PID_FILE' INT QUIT TERM
 
 DEBUG=no
 [ "$1" = "DEBUG" ] && DEBUG=yes
-ATCMD=/usr/sbin/atcmd
+ATCMD="/usr/sbin/atcmd -d /dev/ttyMODEM0"
 
 PID_FILE="/var/run/chksignal.sh.pid"
 if [ -f $PID_FILE ]; then
