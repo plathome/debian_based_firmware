@@ -51,7 +51,7 @@ set_time_ehs6(){
 	# check builtin MODEM
 	echo -n "nitz: 3G modem power on : "
 	$ATCMD PON
-	if [ ! -e /dev/ttyACM0 ]; then
+	if [ ! -e /dev/ttyMODEM0 ]; then
 		echo "fail"
 		exit 1
 	fi
@@ -87,7 +87,7 @@ set_time_u200(){
 	# check builtin MODEM
 	echo -n "nitz: 3G modem power on : "
 	$ATCMD PON
-	if [ ! -e /dev/ttyACM0 ]; then
+	if [ ! -e /dev/ttyMODEM0 ]; then
 		echo "fail"
 		exit 1
 	fi
@@ -217,7 +217,7 @@ case "$1" in
 		echo high > $GPIOPATH/gpio202/direction
 		echo 200 > $GPIOPATH/export	# 3G modem power
 		echo low > $GPIOPATH/gpio200/direction
-		if [ ! -e /dev/ttyACM0 ]; then
+		if [ ! -e /dev/ttyMODEM0 ]; then
 			echo 1 > $GPIOPATH/gpio200/value
 			sleep 4
 			echo 0 > $GPIOPATH/gpio200/value

@@ -51,7 +51,7 @@ set_time_u200(){
 	# check builtin MODEM
 	echo -n "nitz: 3G modem power on : "
 	$ATCMD PON
-	if [ ! -e /dev/ttyACM0 ]; then
+	if [ ! -e /dev/ttyMODEM0 ]; then
 		echo "fail"
 		exit 1
 	fi
