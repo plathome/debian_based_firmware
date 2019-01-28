@@ -42,7 +42,7 @@ DESC="get NITZ for obs iot"
 NAME=nitz
 SCRIPTNAME=/etc/init.d/$NAME
 GPIOPATH="/sys/class/gpio"
-ATCMD=/usr/sbin/atcmd
+ATCMD="/usr/sbin/atcmd -d /dev/ttyMODEM0"
 
 # Read configuration variable file if it is present
 [ -r /etc/default/openblocks ] && . /etc/default/openblocks
@@ -51,7 +51,7 @@ set_time_u200(){
 	# check builtin MODEM
 	echo -n "nitz: 3G modem power on : "
 	$ATCMD PON
-	if [ ! -e /dev/ttyACM0 ]; then
+	if [ ! -e /dev/ttyMODEM0 ]; then
 		echo "fail"
 		exit 1
 	fi

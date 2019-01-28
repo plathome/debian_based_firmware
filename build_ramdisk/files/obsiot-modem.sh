@@ -260,7 +260,7 @@ elif [ "$MODEL" == "obsgem1" ]; then
 		echo "S710"
 		exit 10
 		;;
-	1111)
+	1011)
 		echo "S710E"
 		exit 9
 		;;

@@ -58,7 +58,7 @@ case "$1" in
   start)
 	;;
   stop)
-		if [ -e /dev/ttyACM0 -a -x /usr/sbin/atcmd ]; then
+		if [ -e /dev/ttyMODEM0 -a -x /usr/sbin/atcmd ]; then
 			/usr/sbin/atcmd POFF
 		fi
 	;;
