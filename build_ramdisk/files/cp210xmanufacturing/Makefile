@@ -57,7 +57,7 @@ contrib: $(OUT)libcp210xmanufacturing.so.1.0
 clean:
 	$(RM) $(OBJS) $(OUT)libcp210xmanufacturing.so*
 	$(RM) main.o $(OUT)cp210xmanufacturing-example
-	$(RM) cp2104-rs485
+	$(RM) cp2104-rs485 cp2105-rs485
 	$(MAKE) -C contrib clean
 
 .PHONY: clean

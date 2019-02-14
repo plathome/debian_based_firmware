@@ -198,7 +198,7 @@ obsvx*)
 	chmod 555 ${DISTDIR}/usr/sbin/obsiot-power.sh
 
 	echo "CP2104-RS485"
-	(cd ${FILESDIR}/cp210xmanufacturing;make;							\
+	(cd ${FILESDIR}/cp210xmanufacturing;make clean;make;				\
 		cp ${FILESDIR}/cp210xmanufacturing/Release/Linux/libcp210xmanufacturing.so.1.0 ${DISTDIR}/usr/lib/x86_64-linux-gnu/libcp210xmanufacturing.so;	\
 		cc -O2 -Wall -I./Release/Linux -I./Common -L./Release/Linux		\
 		-lcp210xmanufacturing -o cp2104-rs485 cp2104-rs485.c;			\
@@ -263,6 +263,15 @@ obsgem*)
 	chmod 555 ${DISTDIR}/usr/sbin/obsiot-modem.sh
 	cp ${FILESDIR}/obsiot-power.sh ${DISTDIR}/usr/sbin/obsiot-power.sh
 	chmod 555 ${DISTDIR}/usr/sbin/obsiot-power.sh
+
+	echo "CP2105-RS485"
+	(cd ${FILESDIR}/cp210xmanufacturing;make clean;make;				\
+		cp ${FILESDIR}/cp210xmanufacturing/Release/Linux/libcp210xmanufacturing.so.1.0 ${DISTDIR}/usr/lib/aarch64-linux-gnu/libcp210xmanufacturing.so;	\
+		cc -O2 -Wall -I./Release/Linux -I./Common -L./Release/Linux		\
+		-lcp210xmanufacturing -o cp2105-rs485 cp2105-rs485.c;			\
+		cp ${FILESDIR}/cp210xmanufacturing/cp2105-rs485 ${DISTDIR}/usr/sbin
+	)
+	chroot ${DISTDIR} ldconfig
 ;;
 *)
 ;;
