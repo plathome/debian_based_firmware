@@ -46,7 +46,7 @@ apt update
 #
 # host machine development tools
 #
-packages="build-essential u-boot-tools libncurses5-dev debootstrap qemu-user-static bc gcc-multilib xz-utils dosfstools libnl-3-dev libssl-dev libusb-dev libasound2-dev libi2c-dev libusb-1.0-0 libusb-1.0-0-dev pkg-config libfdt-dev"
+packages="build-essential u-boot-tools libncurses5-dev debootstrap qemu-user-static bc gcc-multilib xz-utils dosfstools libnl-3-dev libssl-dev libusb-dev libasound2-dev libi2c-dev libusb-1.0-0-dev pkg-config libfdt-dev"
 apt -y install $packages
 
 #
@@ -70,6 +70,6 @@ apt -y install $packages
 #
 # arm64 development tools
 #
-packages="gcc-aarch64-linux-gnu zlib1g-dev:arm64 libusb-dev:arm64 libasound2-dev:arm64 "
+packages="gcc-aarch64-linux-gnu zlib1g-dev:arm64 libusb-dev:arm64 libasound2-dev:arm64 libusb-1.0-0-dev:arm64"
 apt -y install $packages
 
