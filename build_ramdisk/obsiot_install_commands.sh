@@ -136,10 +136,13 @@ obsbx*)
 	chmod 555 ${DISTDIR}/usr/sbin/retrieve_crashlog.sh
 
 	echo "CP2105-RS485"
-	(cd ${FILESDIR}/cp210xmanufacturing;make;							\
+	(cd ${FILESDIR}/cp210xmanufacturing;make clean;					\
+		CFLAGS=-m32 CXXFLAGS=-m32 LDFLAGS=-m32 make;				\
+		strip ${FILESDIR}/cp210xmanufacturing/Release/Linux/libcp210xmanufacturing.so.1.0
 		cp ${FILESDIR}/cp210xmanufacturing/Release/Linux/libcp210xmanufacturing.so.1.0 ${DISTDIR}/usr/lib/i386-linux-gnu/libcp210xmanufacturing.so;	\
-		cc -O2 -Wall -I./Release/Linux -I./Common -L./Release/Linux		\
+		cc -O2 -Wall -m32 -I./Release/Linux -I./Common -L./Release/Linux	\
 		-lcp210xmanufacturing -o cp2105-rs485 cp2105-rs485.c;			\
+		strip ${FILESDIR}/cp210xmanufacturing/cp2105-rs485
 		cp ${FILESDIR}/cp210xmanufacturing/cp2105-rs485 ${DISTDIR}/usr/sbin
 	)
 	chroot ${DISTDIR} ldconfig
@@ -208,9 +211,11 @@ obsvx*)
 
 	echo "CP2104-RS485"
 	(cd ${FILESDIR}/cp210xmanufacturing;make;							\
+		strip ${FILESDIR}/cp210xmanufacturing/Release/Linux/libcp210xmanufacturing.so.1.0
 		cp ${FILESDIR}/cp210xmanufacturing/Release/Linux/libcp210xmanufacturing.so.1.0 ${DISTDIR}/usr/lib/x86_64-linux-gnu/libcp210xmanufacturing.so;	\
 		cc -O2 -Wall -I./Release/Linux -I./Common -L./Release/Linux		\
 		-lcp210xmanufacturing -o cp2104-rs485 cp2104-rs485.c;			\
+		strip ${FILESDIR}/cp210xmanufacturing/cp2104-rs485
 		cp ${FILESDIR}/cp210xmanufacturing/cp2104-rs485 ${DISTDIR}/usr/sbin
 	)
 	chroot ${DISTDIR} ldconfig

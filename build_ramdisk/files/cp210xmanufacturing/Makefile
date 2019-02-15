@@ -34,7 +34,7 @@ INCLUDES ?= -I./Common -I./CP210xManufacturing `pkg-config libusb-1.0 --cflags`
 
 
 $(OUT)libcp210xmanufacturing.so.1.0: $(OBJS)
-	$(CXX) -shared -Wl,-soname,libcp210xmanufacturing.so.1 -o $(OUT)libcp210xmanufacturing.so.1.0 $^ $(LIBS)
+	$(CXX) $(CXXFLAGS) -shared -Wl,-soname,libcp210xmanufacturing.so.1 -o $(OUT)libcp210xmanufacturing.so.1.0 $^ $(LIBS)
 	ln -s libcp210xmanufacturing.so.1.0 $(OUT)libcp210xmanufacturing.so.1
 	ln -s libcp210xmanufacturing.so.1.0 $(OUT)libcp210xmanufacturing.so
 
@@ -57,7 +57,7 @@ contrib: $(OUT)libcp210xmanufacturing.so.1.0
 clean:
 	$(RM) $(OBJS) $(OUT)libcp210xmanufacturing.so*
 	$(RM) main.o $(OUT)cp210xmanufacturing-example
-	$(RM) cp2104-rs485
+	$(RM) cp2104-rs485 cp2105-rs485
 	$(MAKE) -C contrib clean
 
 .PHONY: clean
