@@ -51,7 +51,7 @@ apt -y install $packages
 #
 # i386 development tools
 #
-packages="libnl-3-dev:i386 libssl-dev:i386 libusb-dev:i386 libnl-genl-3-dev:i386 libglib2.0-dev:i386 libbluetooth-dev:i386 libasound2-dev:i386 "
+packages="libnl-3-dev:i386 libssl-dev:i386 libusb-dev:i386 libnl-genl-3-dev:i386 libglib2.0-dev:i386 libbluetooth-dev:i386 libasound2-dev:i386 libusb-1.0-0-dev:i386"
 apt -y install $packages
 
 #
