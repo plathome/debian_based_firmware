@@ -134,6 +134,15 @@ obsbx1)
 	chmod 555 ${DISTDIR}/usr/sbin/obsiot-power.sh
 	cp ${FILESDIR}/retrieve_crashlog.sh ${DISTDIR}/usr/sbin/retrieve_crashlog.sh
 	chmod 555 ${DISTDIR}/usr/sbin/retrieve_crashlog.sh
+
+	echo "CP2105-RS485"
+	(cd ${FILESDIR}/cp210xmanufacturing;make clean;make;				\
+		cp ${FILESDIR}/cp210xmanufacturing/Release/Linux/libcp210xmanufacturing.so.1.0 ${DISTDIR}/usr/lib/i386-linux-gnu/libcp210xmanufacturing.so;	\
+		cc -O2 -Wall -I./Release/Linux -I./Common -L./Release/Linux		\
+		-lcp210xmanufacturing -o cp2105-rs485 cp2105-rs485.c;			\
+		cp ${FILESDIR}/cp210xmanufacturing/cp2105-rs485 ${DISTDIR}/usr/sbin
+	)
+	chroot ${DISTDIR} ldconfig
 ;;
 obsvx*)
 	BUILDDIR=/tmp/obstools.$$
@@ -264,14 +273,6 @@ obsgem*)
 	cp ${FILESDIR}/obsiot-power.sh ${DISTDIR}/usr/sbin/obsiot-power.sh
 	chmod 555 ${DISTDIR}/usr/sbin/obsiot-power.sh
 
-	echo "CP2105-RS485"
-	(cd ${FILESDIR}/cp210xmanufacturing;make clean;make;				\
-		cp ${FILESDIR}/cp210xmanufacturing/Release/Linux/libcp210xmanufacturing.so.1.0 ${DISTDIR}/usr/lib/aarch64-linux-gnu/libcp210xmanufacturing.so;	\
-		cc -O2 -Wall -I./Release/Linux -I./Common -L./Release/Linux		\
-		-lcp210xmanufacturing -o cp2105-rs485 cp2105-rs485.c;			\
-		cp ${FILESDIR}/cp210xmanufacturing/cp2105-rs485 ${DISTDIR}/usr/sbin
-	)
-	chroot ${DISTDIR} ldconfig
 ;;
 *)
 ;;

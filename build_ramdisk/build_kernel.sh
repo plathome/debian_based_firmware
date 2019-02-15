@@ -85,5 +85,12 @@ obsgem*)
 						--pagesize 2048 \
 						--base 0x80000000 \
 						--cmdline "root=/dev/disk/by-partlabel/rootfs rw rootwait console=ttyMSM0,115200n8"
+	${SKALESDIR}/mkbootimg	--kernel ${RELEASEDIR}/${MAKE_IMAGE}.dtb \
+						--ramdisk ${FILESDIR}/initrd.img-${KERNEL}-linaro-lt-qcom \
+						--output ${RELEASEDIR}/sdboot-obsgem1.img \
+						--dt ${RELEASEDIR}/dt.img \
+						--pagesize 2048 \
+						--base 0x80000000 \
+						--cmdline "root=/dev/mmcblk1p8 rw rootwait console=ttyMSM0,115200n8"
 	;;
 esac

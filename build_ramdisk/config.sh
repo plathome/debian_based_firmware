@@ -239,7 +239,7 @@ stretch)
 	;;
 	obsa7)
 		DTBFILE=kirkwood-openblocks_a7.dtb
-		ISOFILE=debian-9.3.0-armel-DVD-1.iso
+		ISOFILE=debian-9.6.0-armel-DVD-1.iso
 		RAMDISK_SIZE=160
 		PATCHLEVEL=0
 		ARCH=armel
@@ -261,7 +261,7 @@ stretch)
 	;;
 	obsgem*)
 		KERNEL=4.14.90
-#		KERNEL=4.9.27
+#		KERNEL=4.14.15
 		DTBFILE=qcom/apq8016-sbc.dtb
 		ISOFILE=debian-9.5.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=200
