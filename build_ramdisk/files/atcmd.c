@@ -40,7 +40,7 @@
 #include <errno.h>
 
 #define OBSVX1_MODEM "/usr/sbin/obsvx1-modem"
-#define DEFAULT_MODEM "/dev/ttyACM0"
+#define DEFAULT_MODEM "/dev/ttyMODEM0"
 #define POWERSW "/sys/class/gpio/gpio165/value"
 #define RESETSW "/sys/class/gpio/gpio15/value"
 #define POWERSW_U200 "/sys/class/gpio/gpio200/value"
@@ -131,7 +131,7 @@ void usage(char *fname)
 	printf("CGSN\t= get Serial number\n");
 	printf("\n");
 	printf("option:\n");
-	printf("\t-d modemdevice (default is /dev/ttyACM0)\n");
+	printf("\t-d modemdevice (default is %s)\n", DEFAULT_MODEM);
 	printf("\n");
 }
 
@@ -1386,7 +1386,7 @@ int main(int ac, char *av[])
 				|| strncmp(S710E, MNAME, sizeof(S710E)) == 0){
 				send_atcmd(fd, AT_AT, buf, 0);
 				send_atcmd(fd, AT_CCID_S, buf, 100);
-				if(get_ccid(buf, 3)){
+				if(get_ccid(buf, 2)){
 					return -1;
 				}
 			}
