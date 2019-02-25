@@ -6,6 +6,7 @@ iface lo inet loopback
 
 #auto wlan0
 #iface wlan0 inet dhcp
+#pre-up /bin/sleep 5
 #wpa-conf	/etc/wpa_supplicant/wpa.conf
 
 auto wlan0
@@ -14,6 +15,7 @@ address 192.168.254.254
 network 192.168.254.0
 netmask 255.255.255.0
 broadcast 192.168.254.255
+pre-up /bin/sleep 5
 #gateway 192.168.254.1
 #wpa-conf	/etc/wpa_supplicant/wpa.conf
 
