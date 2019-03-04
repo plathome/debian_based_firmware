@@ -95,9 +95,11 @@ rm -f ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/source ${MOUNTDIR}/lib/modul
 
 case $TARGET in
 obsgem*)
-	if [ -d ${FILESDIR}/firmware-${TARGET}-${KERNEL} ]; then
+	_TARGET=${TARGET}
+	[ ${TARGET} == "obsgem1s" ] && _TARGET="obsgem1"
+	if [ -d ${FILESDIR}/firmware-${_TARGET}-${KERNEL} ]; then
 		mkdir -p ${MOUNTDIR}/lib/firmware
-		cp -a ${FILESDIR}/firmware-${TARGET}-${KERNEL}/* ${MOUNTDIR}/lib/firmware
+		cp -a ${FILESDIR}/firmware-${_TARGET}-${KERNEL}/* ${MOUNTDIR}/lib/firmware
 	fi
 	;;
 *)
@@ -115,7 +117,7 @@ if [ ! -d ${RELEASEDIR} ]; then
 fi
 
 case $TARGET in
-obsvx2|obsgem*)
+obsvx2|obsgem1s)
 	# kernel modules and firmware
 	(cd ${MOUNTDIR}/lib; tar cfzp ${RELEASEDIR}/modules.tgz firmware modules)
 	;;
@@ -161,7 +163,15 @@ obsvx2)
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
-obsgem*)
+obsgem1)
+	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
+	${COMP} -${COMP_LVL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/initrd.${COMPEXT}
+	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
+	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-obsiot.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/${MAKE_IMAGE} ${RELEASEDIR}/initrd.${COMPEXT} dummy ${FILESDIR}/flashcfg.sh ${RELEASEDIR}/MD5.${TARGET} dummy)
+	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
+	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
+	;;
+obsgem1s)
 	# obs tools
 	USRSBIN=${DISTDIR}/usr/sbin
 	OBSTOOLS="${USRSBIN}/wd-keepalive ${USRSBIN}/obs-util ${USRSBIN}/kosanu ${USRSBIN}/runled ${USRSBIN}/pshd ${USRSBIN}/atcmd ${USRSBIN}/obs-hwclock ${USRSBIN}/wav-play ${USRSBIN}/obsiot-power"

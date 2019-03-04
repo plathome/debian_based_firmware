@@ -25,67 +25,57 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-#set -x
+NOROOT=yes
 
-if [ "$#" -ne "9" ] ; then
+. `dirname $0`/config.sh
+
+case $TARGET in
+obsgem*)
+	UBOOT_SRC=${WRKDIR}/uboot-image/${TARGET}/u-boot-${UBOOT_VER}
+	if [ ! -d "${UBOOT_SRC}" ]; then
+		echo
+		echo "U-boot source not exists."
+		echo
+		exit 1
+	fi
+	UMAKE_OPTION="ARCH=arm CROSS_COMPILE=${CROSS_COMPILE}"
+	;;
+*)
 	echo
-	echo "usage: $0 [VERSION] [ARCH] [MODEL] [bzImage] [obstools.tgz] [flashcfg] [MD5] [modules.tgz] [System.map]"
-	echo
-	echo "ex) $0 1.0.0-0 amd64 obsvx2 bzImage obstools.tgz flashcfg MD5.obsvx2 modules.tgz System.map"
+	echo "$TARGET is not supported."
 	echo
 	exit 1
-fi
+	;;
+esac
 
-VERSION=$1
-ARCH=$2
-MODEL=$3
-FIRM=$4
-OBSTOOLS=$5
-FLASHCFG=$6
-MD5=$7
-MODULES=$8
-MAP=$9
-FIRM_DIR=$(dirname $FIRM)
+cpunum=$(grep '^processor' /proc/cpuinfo  | wc -l)
 
-if [ "$MODEL" == "obsvx2" ]; then
-	DESCRIPTION="Linux firmware for OpenBlocks IoT VX2"
-	TARGET=$MODEL
-elif [ "$MODEL" == "obsgem1s" ]; then
-	DESCRIPTION="Linux firmware for OpenBlocks IoT GEM1"
-	TARGET=$MODEL
+cd ${UBOOT_SRC}
+
+if [ ${UDEFCONFIG} ]; then
+	make ${UMAKE_OPTION} ${UDEFCONFIG}
 else
-	echo
-	echo "$MODEL is not supported."
-	echo
-	exit 1
+	make ${UMAKE_OPTION} ${TARGET}_defconfig
 fi
 
-pkgdir=kernel-image-${VERSION}-${TARGET}
+if [ -f "${UBOOT_SRC}/../uboot-${UBOOT_VER}.dot.config" ]; then
+	cp -f ${UBOOT_SRC}/../uboot-${UBOOT_VER}.dot.config .config
+	make ${UMAKE_OPTION} oldconfig
+fi
 
-rm -rf  $pkgdir
-mkdir -p $pkgdir
-(cd template;tar --exclude=CVS -cf - .) | tar -xvf - -C $pkgdir/
-
-echo $VERSION > $pkgdir/etc/openblocks-release
-sed -e "s|__VERSION__|$VERSION|" \
-    -e "s|__ARCH__|$ARCH|" \
-    -e "s|__PACKAGE__|kernel-image-$MODEL|" \
-    -e "s|__DESCRIPTION__|$DESCRIPTION|" \
-	< $pkgdir/DEBIAN/control > /tmp/control.new
-mv -f /tmp/control.new $pkgdir/DEBIAN/control
-
-cp -f $FIRM $pkgdir/etc/
-cp -f $OBSTOOLS $pkgdir/etc/
-cp -f $FLASHCFG $pkgdir/etc/flashcfg.sh
-cp -f $MD5 $pkgdir/etc/
-cp -f $MODULES $pkgdir/etc/
-cp -f $MAP $pkgdir/etc/
-
-rm -rf ${pkgdir}.deb
-
-dpkg-deb --build $pkgdir
-
-[ "$FIRM_DIR" != "." ] && mv -fv $pkgdir.deb $FIRM_DIR/
-
-rm -rf $pkgdir
+case $TARGET in
+obsgem*)
+	make -j$((${cpunum}+1)) ${UMAKE_OPTION}
+	touch rd
+	[ ! -d $RELEASEDIR ] && mkdir -p $RELEASEDIR
+	${SKALESDIR}/dtbTool -o ${RELEASEDIR}/u-dt.img arch/arm/dts
+	${SKALESDIR}/mkbootimg	--kernel u-boot-dtb.bin \
+						--ramdisk rd \
+						--output ${RELEASEDIR}/u-boot.img \
+						--dt ${RELEASEDIR}/u-dt.img \
+						--pagesize 2048 \
+						--base 0x80000000 \
+						--cmdline ""
+	;;
+esac
 

@@ -52,7 +52,7 @@ if [ "$DIST" == "stretch" ]; then
 fi
 
 case ${TARGET} in
-obsbx1|obsvx*|obsgem1)
+obsbx1|obsvx*|obsgem*)
 	chmod 755 ${DISTDIR}/etc/init.d/bluetooth
 	chroot ${DISTDIR} /sbin/insserv -rf bluetooth
 	chroot ${DISTDIR} /sbin/insserv bluetooth
@@ -85,6 +85,17 @@ obsbx1|obsvx*|obsgem1)
 esac
 
 case ${TARGET} in
+obsgem*)
+	chmod 755 ${DISTDIR}/etc/init.d/openblocks-setup
+	chroot ${DISTDIR} /sbin/insserv -rf openblocks-setup
+	chroot ${DISTDIR} /sbin/insserv openblocks-setup
+	chmod 755 ${DISTDIR}/etc/init.d/runled
+	chroot ${DISTDIR} /sbin/insserv -rf runled
+	chroot ${DISTDIR} /sbin/insserv runled
+	chmod 755 ${DISTDIR}/etc/init.d/pshd
+	chroot ${DISTDIR} /sbin/insserv -rf pshd
+	chroot ${DISTDIR} /sbin/insserv pshd
+	;;
 obs*)
 	chmod 755 ${DISTDIR}/etc/init.d/openblocks-setup
 	chroot ${DISTDIR} /sbin/insserv -rf openblocks-setup
@@ -95,11 +106,9 @@ obs*)
 	chmod 755 ${DISTDIR}/etc/init.d/pshd
 	chroot ${DISTDIR} /sbin/insserv -rf pshd
 	chroot ${DISTDIR} /sbin/insserv pshd
-	if [ ${TARGET} != "obsgem1" ]; then
-		chmod 755 ${DISTDIR}/etc/init.d/wd-keepalive
-		chroot ${DISTDIR} /sbin/insserv -rf wd-keepalive
-		chroot ${DISTDIR} /sbin/insserv wd-keepalive
-	fi
+	chmod 755 ${DISTDIR}/etc/init.d/wd-keepalive
+	chroot ${DISTDIR} /sbin/insserv -rf wd-keepalive
+	chroot ${DISTDIR} /sbin/insserv wd-keepalive
 	;;
 *)
 	;;
