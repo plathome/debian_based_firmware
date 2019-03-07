@@ -48,7 +48,7 @@ fi
 
 
 cd ${LINUX_SRC}
-[ -f "${LINUX_SRC}/localversion-rt" ] && rm -f ${LINUX_SRC}/localversion-rt
+rm -f ${LINUX_SRC}/localversion*
 
 if [ ${DEFCONFIG} ]; then
 	make ${MAKE_OPTION} ${DEFCONFIG}
@@ -91,6 +91,6 @@ obsgem*)
 						--dt ${RELEASEDIR}/dt.img \
 						--pagesize 2048 \
 						--base 0x80000000 \
-						--cmdline "root=/dev/mmcblk1p8 rw rootwait console=ttyMSM0,115200n8"
+						--cmdline "root=/dev/mmcblk1p9 rw rootwait console=ttyMSM0,115200n8"
 	;;
 esac
