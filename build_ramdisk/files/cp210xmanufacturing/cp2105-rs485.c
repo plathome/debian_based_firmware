@@ -66,13 +66,13 @@ int writePortConfig(DWORD devnum)
 		return -1;
 	}
 
-	portConfig.Mode = 0x5151;
-	portConfig.Reset_Latch = 0xfefe;
-	portConfig.Suspend_Latch = 0xfefe;
+	portConfig.Mode = 0x5951;
+	portConfig.Reset_Latch = 0xf6fe;
+	portConfig.Suspend_Latch = 0xf6fe;
 	portConfig.EnhancedFxn_ECI |= EF_GPIO_1_RS485_ECI | EF_RS485_INVERT;
-//	portConfig.EnhancedFxn_SCI = 0x10;
-//	portConfig.EnhancedFxn_Device = 0x10;
-#if 0
+	portConfig.EnhancedFxn_SCI = 0x10;
+	portConfig.EnhancedFxn_Device = 0x10;
+#if 1
 	if((sta = CP210x_SetDualPortConfig(hd, &portConfig)) != CP210x_SUCCESS){
 		printf("SetDualPortConfig error.(status=%x)\n", sta);
 		CP210x_Close(hd);

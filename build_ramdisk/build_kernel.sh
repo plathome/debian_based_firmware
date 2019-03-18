@@ -62,7 +62,7 @@ if [ -f "${LINUX_SRC}/../linux-${KERNEL}.dot.config" ]; then
 fi
 
 case $TARGET in
-obsgem*)
+obsgem1)
 make -j$((${cpunum}+1)) ${MAKE_OPTION} ${MAKE_IMAGE} modules dtbs
 	;;
 *)
@@ -74,23 +74,27 @@ fi
 esac
 
 case $TARGET in
-obsgem*)
+obsgem1)
 	[ ! -d $RELEASEDIR ] && mkdir -p $RELEASEDIR
-	cat ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/${DTBFILE} > ${RELEASEDIR}/${MAKE_IMAGE}.dtb
-	${SKALESDIR}/dtbTool -o ${RELEASEDIR}/dt.img -s 2048 ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/qcom/
-	${SKALESDIR}/mkbootimg	--kernel ${RELEASEDIR}/${MAKE_IMAGE}.dtb \
-						--ramdisk ${FILESDIR}/initrd.img-${KERNEL}-linaro-lt-qcom \
+	[ ! -d $TMPDIR ] && mkdir -p $TMPDIR
+	cat ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/${DTBFILE} > ${TMPDIR}/${MAKE_IMAGE}.dtb
+	touch ${TMPDIR}/rd
+	${SKALESDIR}/dtbTool -o ${TMPDIR}/dt.img -s 2048 ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/qcom/
+	cp ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/${DTBFILE} ${RELEASEDIR}/${TARGET}.dtb
+	${SKALESDIR}/mkbootimg	--kernel ${TMPDIR}/${MAKE_IMAGE}.dtb \
+						--ramdisk ${TMPDIR}/rd \
 						--output ${RELEASEDIR}/boot-obsgem1.img \
-						--dt ${RELEASEDIR}/dt.img \
+						--dt ${TMPDIR}/dt.img \
 						--pagesize 2048 \
 						--base 0x80000000 \
-						--cmdline "root=/dev/disk/by-partlabel/rootfs rw rootwait console=ttyMSM0,115200n8"
-	${SKALESDIR}/mkbootimg	--kernel ${RELEASEDIR}/${MAKE_IMAGE}.dtb \
-						--ramdisk ${FILESDIR}/initrd.img-${KERNEL}-linaro-lt-qcom \
+						--cmdline "root=/dev/disk/by-partlabel/rootfs rw rootwait console=ttyMSM0,115200n8 noinitrd"
+	${SKALESDIR}/mkbootimg	--kernel ${TMPDIR}/${MAKE_IMAGE}.dtb \
+						--ramdisk ${TMPDIR}/rd \
 						--output ${RELEASEDIR}/sdboot-obsgem1.img \
-						--dt ${RELEASEDIR}/dt.img \
+						--dt ${TMPDIR}/dt.img \
 						--pagesize 2048 \
 						--base 0x80000000 \
-						--cmdline "root=/dev/mmcblk1p9 rw rootwait console=ttyMSM0,115200n8"
+						--cmdline "root=/dev/mmcblk1p9 rw rootwait console=ttyMSM0,115200n8 noinitrd"
+#	rm -rf ${TMPDIR}	// move in obsiot_release_firmware.sh
 	;;
 esac

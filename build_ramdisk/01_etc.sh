@@ -52,7 +52,7 @@ if [ "$DIST" == "stretch" ]; then
 fi
 
 case ${TARGET} in
-obsbx1|obsvx*|obsgem*)
+obsbx1|obsvx*|obsgem1)
 	chmod 755 ${DISTDIR}/etc/init.d/bluetooth
 	chroot ${DISTDIR} /sbin/insserv -rf bluetooth
 	chroot ${DISTDIR} /sbin/insserv bluetooth
@@ -85,7 +85,7 @@ obsbx1|obsvx*|obsgem*)
 esac
 
 case ${TARGET} in
-obsgem*)
+obsgem1)
 	chmod 755 ${DISTDIR}/etc/init.d/openblocks-setup
 	chroot ${DISTDIR} /sbin/insserv -rf openblocks-setup
 	chroot ${DISTDIR} /sbin/insserv openblocks-setup

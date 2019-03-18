@@ -66,16 +66,18 @@ fi
 case $TARGET in
 obsgem*)
 	make -j$((${cpunum}+1)) ${UMAKE_OPTION}
-	touch rd
+	[ ! -d $TMPDIR ] && mkdir -p $TMPDIR
+	[ ! -f ${TMPDIR}/rd ] && touch ${TMPDIR}/rd
 	[ ! -d $RELEASEDIR ] && mkdir -p $RELEASEDIR
-	${SKALESDIR}/dtbTool -o ${RELEASEDIR}/u-dt.img arch/arm/dts
+	${SKALESDIR}/dtbTool -o ${TMPDIR}/u-dt.img arch/arm/dts
 	${SKALESDIR}/mkbootimg	--kernel u-boot-dtb.bin \
-						--ramdisk rd \
+						--ramdisk ${TMPDIR}/rd \
 						--output ${RELEASEDIR}/u-boot.img \
-						--dt ${RELEASEDIR}/u-dt.img \
+						--dt ${TMPDIR}/u-dt.img \
 						--pagesize 2048 \
 						--base 0x80000000 \
 						--cmdline ""
+	rm -rf ${TMPDIR}
 	;;
 esac
 
