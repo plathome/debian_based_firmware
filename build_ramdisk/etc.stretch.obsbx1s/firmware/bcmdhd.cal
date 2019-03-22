@@ -113,9 +113,7 @@ cckpapden=1
 aci_detect_en_2g=1
 interference=3
 
-# Enable the below for HW OOB on GPIO 4
-#muxenab=0x2
+# Enable the below for SW OOB on GPIO 0
 sd_gpout=0
-sd_gpval=1
-sd_oobonly=1
-sd_gpdc=0
+sd_gpval=0
+sd_gpdc=0x200020
