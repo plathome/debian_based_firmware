@@ -105,9 +105,12 @@ if [ ! -d ${RELEASEDIR} ]; then
 	mkdir -p ${RELEASEDIR}
 fi
 
-if [ "$TARGET" == "obsvx2" -o "$TARGET" == "obsbx1s" ]; then
+if [ "$TARGET" == "obsvx2" ]; then
 	# kernel modules and firmware
 	(cd ${MOUNTDIR}/lib; tar cfzp ${RELEASEDIR}/modules.tgz firmware modules)
+elif [ "$TARGET" == "obsbx1s" ]; then
+	# kernel modules and firmware
+	(cd ${MOUNTDIR}; tar cfzp ${RELEASEDIR}/modules.tgz etc/firmware lib/modules)
 fi
 
 umount ${MOUNTDIR}
