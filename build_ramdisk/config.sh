@@ -272,6 +272,18 @@ stretch)
 	;;
 	esac
 ;;
+buster)
+	KERNEL=4.19.28
+	case ${TARGET} in
+	obsvx1)
+		ISOFILE=debian-buster-DI-alpha5-amd64-DVD-1.iso
+		PATCHLEVEL=0
+		RAMDISK_SIZE=200
+	;;
+	*)
+	;;
+	esac
+;;
 esac
 
 if [ -f _config.sh ] ; then
