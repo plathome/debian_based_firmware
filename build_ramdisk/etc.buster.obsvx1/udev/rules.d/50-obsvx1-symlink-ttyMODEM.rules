@@ -1,0 +1,22 @@
+# VX / LISA
+ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="u-blox Wireless Module Modem" , ATTRS{bInterfaceNumber}=="00", SYMLINK+="ttyMODEM0"
+ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="u-blox Wireless Module Port"  , ATTRS{bInterfaceNumber}=="02", SYMLINK+="ttyMODEM1"
+ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="u-blox Wireless Module Port"  , ATTRS{bInterfaceNumber}=="04", SYMLINK+="ttyMODEM2"
+ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="u-blox Wireless Module Port"  , ATTRS{bInterfaceNumber}=="06", SYMLINK+="ttyMODEM3"
+ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="u-blox Wireless Module Port"  , ATTRS{bInterfaceNumber}=="08", SYMLINK+="ttyMODEM4"
+ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="u-blox Wireless Module Port"  , ATTRS{bInterfaceNumber}=="0a", SYMLINK+="ttyMODEM5"
+ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="u-blox Wireless Module Port"  , ATTRS{bInterfaceNumber}=="0c", SYMLINK+="ttyMODEM6"
+
+# VX / KYM
+ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="ACM Communication Class Interface" , ATTRS{bInterfaceNumber}=="02", SYMLINK+="ttyMODEM0"
+
+# VX / SIM7100
+ACTION=="add", KERNEL=="ttyUSB*", KERNELS=="1-2:1.*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="02", SYMLINK+="ttyMODEM0"
+ACTION=="add", KERNEL=="ttyUSB*", KERNELS=="1-2:1.*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="ff" , ATTRS{bInterfaceNumber}=="00", SYMLINK+="ttyMODEM1"
+ACTION=="add", KERNEL=="ttyUSB*", KERNELS=="1-2:1.*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="01", SYMLINK+="ttyMODEM2"
+ACTION=="add", KERNEL=="ttyUSB*", KERNELS=="1-2:1.*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="03", SYMLINK+="ttyMODEM3"
+ACTION=="add", KERNEL=="ttyUSB*", KERNELS=="1-2:1.*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="04", SYMLINK+="ttyMODEM4"
+
+# VX / TOBY & UM04
+ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="CDC Abstract Control Model (ACM)" , ATTRS{bInterfaceNumber}=="02", SYMLINK+="ttyMODEM0"
+ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="CDC Abstract Control Model (ACM)" , ATTRS{bInterfaceNumber}=="04", SYMLINK+="ttyMODEM1"

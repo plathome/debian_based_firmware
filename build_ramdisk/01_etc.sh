@@ -53,9 +53,11 @@ fi
 
 case ${TARGET} in
 obsbx*|obsvx*)
-	chmod 755 ${DISTDIR}/etc/init.d/bluetooth
-	chroot ${DISTDIR} /sbin/insserv -rf bluetooth
-	chroot ${DISTDIR} /sbin/insserv bluetooth
+	if [ "$DIST" != "buster" ]; then
+		chmod 755 ${DISTDIR}/etc/init.d/bluetooth
+		chroot ${DISTDIR} /sbin/insserv -rf bluetooth
+		chroot ${DISTDIR} /sbin/insserv bluetooth
+	fi
 	chmod 755 ${DISTDIR}/etc/init.d/nitz
 	chroot ${DISTDIR} /sbin/insserv -rf nitz
 	chroot ${DISTDIR} /sbin/insserv nitz
@@ -70,15 +72,18 @@ obsbx*|obsvx*)
 		chroot ${DISTDIR} /sbin/insserv -rf enable-pm
 		chroot ${DISTDIR} /sbin/insserv enable-pm
 	fi
-	if [ "$TARGET" == "obsvx1" -o "$TARGET" == "obsvx2" ]; then
+	case $TARGET in
+	obsvx*)
 		chmod 755 ${DISTDIR}/etc/init.d/instfirm
 		chroot ${DISTDIR} /sbin/insserv -rf instfirm
 		chroot ${DISTDIR} /sbin/insserv instfirm
-	elif [ "$TARGET" == "obsbx1" -o "$TARGET" == "obsbx1s" ]; then
+		;;
+	obsbx1*)
 		chmod 755 ${DISTDIR}/etc/init.d/reset-smsc95xx
 		chroot ${DISTDIR} /sbin/insserv -rf reset-smsc95xx
 		chroot ${DISTDIR} /sbin/insserv reset-smsc95xx
-	fi
+		;;
+	esac
 	;;
 *)
 	;;
@@ -108,7 +113,7 @@ chroot ${DISTDIR} /sbin/insserv
 touch ${DISTDIR}/etc/init.d/.legacy-bootordering
 
 if [ -f ${DISTDIR}/etc/modules ]; then
-	if [ "$DIST" != "stretch" ]; then
+	if [ "$DIST" != "stretch" -a "$DIST" != "buster" ]; then
 		if grep -q "^ipv6" ${DISTDIR}/etc/modules; then
 			echo "/etc/modules: The line, ipv6, exists"
 		else
@@ -138,14 +143,18 @@ if [ -f ${DISTDIR}/etc/modules ]; then
 	fi
 fi
 
-if [ ${DIST} == "jessie" -o ${DIST} == "stretch" ]; then
+case $DIST in
+jessie|stretch|buster)
 	sed -e "s|^PermitRootLogin without-password|PermitRootLogin yes|" \
 		-e "s|^#PermitRootLogin prohibit-password|PermitRootLogin yes|" \
 		< ${DISTDIR}/etc/ssh/sshd_config > /tmp/sshd_config.new
 	mv -f /tmp/sshd_config.new ${DISTDIR}/etc/ssh/sshd_config
-fi
+	;;
+*)
+	;;
+esac
 
-if [ ${DIST} == "stretch" ]; then
+if [ "$DIST" == "stretch" -o "$DIST" == "buster" ]; then
 	if [ ! -e "${DISTDIR}/etc/udev/rules.d/73-usb-net-by-mac.rules" ]; then
 		ln -s /dev/null ${DISTDIR}/etc/udev/rules.d/73-usb-net-by-mac.rules
 	fi
