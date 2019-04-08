@@ -210,7 +210,7 @@ obsvx*)
 	chmod 555 ${DISTDIR}/usr/sbin/obsiot-power.sh
 
 	echo "CP2104-RS485"
-	(cd ${FILESDIR}/cp210xmanufacturing;make;							\
+	(cd ${FILESDIR}/cp210xmanufacturing;make clean;make;				\
 		strip ${FILESDIR}/cp210xmanufacturing/Release/Linux/libcp210xmanufacturing.so.1.0
 		cp ${FILESDIR}/cp210xmanufacturing/Release/Linux/libcp210xmanufacturing.so.1.0 ${DISTDIR}/usr/lib/x86_64-linux-gnu/libcp210xmanufacturing.so;	\
 		cc -O2 -Wall -I./Release/Linux -I./Common -L./Release/Linux		\

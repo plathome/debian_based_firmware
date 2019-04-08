@@ -518,13 +518,19 @@ static bool _rtl8723be_phy_bb8723b_config_parafile(struct ieee80211_hw *hw)
 	bool rtstatus;
 
 	/* switch ant to BT */
-	if (rtlpriv->rtlhal.interface == INTF_USB)
+	if (rtlpriv->rtlhal.interface == INTF_USB){
+		pr_info("**** %s: reg 0x948 0x0\n", __func__);
 		rtl_write_dword(rtlpriv, 0x948, 0x0);
+	}
 	else {
-		if (rtlpriv->btcoexist.btc_info.single_ant_path == 0)
+		if (rtlpriv->btcoexist.btc_info.single_ant_path == 0){
+			pr_info("**** %s: single_ant_path %d, reg 0x948 0x280\n", __func__, rtlpriv->btcoexist.btc_info.single_ant_path);
 			rtl_write_dword(rtlpriv, 0x948, 0x280);
-		else
+		}
+		else {
+			pr_info("**** %s: single_ant_path %d, reg 0x948 0x0\n", __func__, rtlpriv->btcoexist.btc_info.single_ant_path);
 			rtl_write_dword(rtlpriv, 0x948, 0x0);
+		}
 	}
 
 	rtstatus = _rtl8723be_phy_config_bb_with_headerfile(hw,
@@ -1472,6 +1478,7 @@ static u8 _rtl8723be_phy_path_a_iqk(struct ieee80211_hw *hw)
 	/* leave IQK mode */
 	rtl_set_bbreg(hw, RFPGA0_IQK, MASKDWORD, 0x00000000);
 	/* switch to path A */
+	pr_info("**** %s: reg 0x948 0x0\n", __func__);
 	rtl_set_bbreg(hw, 0x948, MASKDWORD, 0x00000000);
 	/* enable path A PA in TXIQK mode */
 	rtl_set_rfreg(hw, RF90_PATH_A, RF_WE_LUT, RFREG_OFFSET_MASK, 0x800a0);
@@ -1546,6 +1553,7 @@ static u8 _rtl8723be_phy_path_a_rx_iqk(struct ieee80211_hw *hw)
 	rtl_set_bbreg(hw, RFPGA0_IQK, MASKDWORD, 0x00000000);
 
 	/* switch to path A */
+	pr_info("**** %s: reg 0x948 0x0\n", __func__);
 	rtl_set_bbreg(hw, 0x948, MASKDWORD, 0x00000000);
 
 	/* 1 Get TXIMR setting */
@@ -1692,6 +1700,7 @@ static u8 _rtl8723be_phy_path_b_iqk(struct ieee80211_hw *hw)
 	/* leave IQK mode */
 	rtl_set_bbreg(hw, RFPGA0_IQK, MASKDWORD, 0x00000000);
 	/* switch to path B */
+	pr_info("**** %s: reg 0x948 0x280\n", __func__);
 	rtl_set_bbreg(hw, 0x948, MASKDWORD, 0x00000280);
 
 	/* enable path B PA in TXIQK mode */
@@ -1765,6 +1774,7 @@ static u8 _rtl8723be_phy_path_b_rx_iqk(struct ieee80211_hw *hw)
 	/* leave IQK mode */
 	rtl_set_bbreg(hw, RFPGA0_IQK, MASKDWORD, 0x00000000);
 	/* switch to path B */
+	pr_info("**** %s: reg 0x948 0x280\n", __func__);
 	rtl_set_bbreg(hw, 0x948, MASKDWORD, 0x00000280);
 
 	/* 1 Get TXIMR setting */
@@ -2160,6 +2170,7 @@ static void _rtl8723be_phy_iq_calibrate(struct ieee80211_hw *hw,
 						  rtlphy->iqk_bb_backup,
 						  IQK_BB_REG_NUM);
 
+		pr_info("**** %s: reg 0x948 0x%x\n", __func__, path_sel_bb);
 		rtl_set_bbreg(hw, 0x948, MASKDWORD, path_sel_bb);
 		/*rtl_set_rfreg(hw, RF90_PATH_B, 0xb0, 0xfffff, path_sel_rf);*/
 
@@ -2402,6 +2413,7 @@ void rtl8723be_phy_iq_calibrate(struct ieee80211_hw *hw, bool b_recovery)
 	rtl8723_save_adda_registers(hw, iqk_bb_reg,
 				    rtlphy->iqk_bb_backup, 9);
 
+	pr_info("**** %s: reg 0x948 0x%x\n", __func__, path_sel_bb);
 	rtl_set_bbreg(hw, 0x948, MASKDWORD, path_sel_bb);
 	/* rtl_set_rfreg(hw, RF90_PATH_A, 0xb0, 0xfffff, path_sel_rf); */
 

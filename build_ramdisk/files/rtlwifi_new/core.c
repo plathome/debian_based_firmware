@@ -130,7 +130,6 @@ found_alt:
 		       firmware->size);
 		rtlpriv->rtlhal.wowlan_fwsize = firmware->size;
 	}
-	rtlpriv->rtlhal.fwsize = firmware->size;
 	release_firmware(firmware);
 }
 
@@ -160,7 +159,11 @@ static int rtl_op_start(struct ieee80211_hw *hw)
 	mutex_lock(&rtlpriv->locks.conf_mutex);
 	err = rtlpriv->intf_ops->adapter_start(hw);
 	if (!err)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+		rtl_watch_dog_timer_callback(&rtlpriv->works.watchdog_timer);
+#else
 		rtl_watch_dog_timer_callback((unsigned long)hw);
+#endif
 	mutex_unlock(&rtlpriv->locks.conf_mutex);
 	return err;
 }
@@ -196,7 +199,7 @@ static void rtl_op_stop(struct ieee80211_hw *hw)
 		/* reset sec info */
 		rtl_cam_reset_sec_info(hw);
 
-		rtl_deinit_deferred_work(hw);
+		rtl_deinit_deferred_work(hw, false);
 	}
 	rtlpriv->intf_ops->adapter_stop(hw);
 
@@ -548,15 +551,13 @@ static int rtl_op_suspend(struct ieee80211_hw *hw,
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
 	struct rtl_hal *rtlhal = rtl_hal(rtlpriv);
 	struct rtl_ps_ctl *ppsc = rtl_psc(rtl_priv(hw));
-	struct timeval ts;
 
 	RT_TRACE(rtlpriv, COMP_POWER, DBG_DMESG, "\n");
 	if (WARN_ON(!wow))
 		return -EINVAL;
 
 	/* to resolve s4 can not wake up*/
-	do_gettimeofday(&ts);
-	rtlhal->last_suspend_sec = ts.tv_sec;
+	rtlhal->last_suspend_sec = ktime_get_real_seconds();
 
 	if ((ppsc->wo_wlan_mode & WAKE_ON_PATTERN_MATCH) && wow->n_patterns)
 		_rtl_add_wowlan_patterns(hw, wow);
@@ -575,7 +576,7 @@ static int rtl_op_resume(struct ieee80211_hw *hw)
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
 	struct rtl_hal *rtlhal = rtl_hal(rtlpriv);
 	struct rtl_mac *mac = rtl_mac(rtl_priv(hw));
-	struct timeval ts;
+	time64_t now;
 
 	RT_TRACE(rtlpriv, COMP_POWER, DBG_DMESG, "\n");
 	rtlhal->driver_is_goingto_unload = false;
@@ -583,8 +584,8 @@ static int rtl_op_resume(struct ieee80211_hw *hw)
 	rtlhal->wake_from_pnp_sleep = true;
 
 	/* to resovle s4 can not wake up*/
-	do_gettimeofday(&ts);
-	if (ts.tv_sec - rtlhal->last_suspend_sec < 5)
+	now = ktime_get_real_seconds();
+	if (now - rtlhal->last_suspend_sec < 5)
 		return -1;
 
 	rtl_op_start(hw);
@@ -1424,7 +1425,7 @@ static int rtl_op_ampdu_action(struct ieee80211_hw *hw,
 			 "IEEE80211_AMPDU_RX_STOP:TID:%d\n", tid);
 		return rtl_rx_agg_stop(hw, sta, tid);
 	default:
-		pr_err("IEEE80211_AMPDU_ERR!!!!:\n");
+		pr_err("IEEE80211_AMPDU_ERR for action %d!!!!:\n", action);
 		return -EOPNOTSUPP;
 	}
 	return 0;

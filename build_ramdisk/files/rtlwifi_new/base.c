@@ -573,10 +573,17 @@ static void _rtl_init_deferred_work(struct ieee80211_hw *hw)
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
 
 	/* <1> timer */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+	timer_setup(&rtlpriv->works.watchdog_timer,
+		    rtl_watch_dog_timer_callback, 0);
+	timer_setup(&rtlpriv->works.dualmac_easyconcurrent_retrytimer,
+		    rtl_easy_concurrent_retrytimer_callback, 0);
+#else
 	setup_timer(&rtlpriv->works.watchdog_timer,
 		    rtl_watch_dog_timer_callback, (unsigned long)hw);
 	setup_timer(&rtlpriv->works.dualmac_easyconcurrent_retrytimer,
 		    rtl_easy_concurrent_retrytimer_callback, (unsigned long)hw);
+#endif
 	/* <2> work queue */
 	rtlpriv->works.hw = hw;
 	rtlpriv->works.rtl_wq = alloc_workqueue("%s", 0, 0, rtlpriv->cfg->name);
@@ -595,18 +602,21 @@ static void _rtl_init_deferred_work(struct ieee80211_hw *hw)
 
 }
 
-void rtl_deinit_deferred_work(struct ieee80211_hw *hw)
+void rtl_deinit_deferred_work(struct ieee80211_hw *hw, bool ips_wq)
 {
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
 
 	del_timer_sync(&rtlpriv->works.watchdog_timer);
 
-	cancel_delayed_work(&rtlpriv->works.watchdog_wq);
-	cancel_delayed_work(&rtlpriv->works.ips_nic_off_wq);
-	cancel_delayed_work(&rtlpriv->works.ps_work);
-	cancel_delayed_work(&rtlpriv->works.ps_rfon_wq);
-	cancel_delayed_work(&rtlpriv->works.fwevt_wq);
-	cancel_delayed_work(&rtlpriv->works.c2hcmd_wq);
+	cancel_delayed_work_sync(&rtlpriv->works.watchdog_wq);
+	if (ips_wq)
+		cancel_delayed_work(&rtlpriv->works.ips_nic_off_wq);
+	else
+		cancel_delayed_work_sync(&rtlpriv->works.ips_nic_off_wq);
+	cancel_delayed_work_sync(&rtlpriv->works.ps_work);
+	cancel_delayed_work_sync(&rtlpriv->works.ps_rfon_wq);
+	cancel_delayed_work_sync(&rtlpriv->works.fwevt_wq);
+	cancel_delayed_work_sync(&rtlpriv->works.c2hcmd_wq);
 }
 EXPORT_SYMBOL_GPL(rtl_deinit_deferred_work);
 
@@ -2088,10 +2098,18 @@ label_lps_done:
 	rtl_scan_list_expire(hw);
 }
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+void rtl_watch_dog_timer_callback(struct timer_list *t)
+#else
 void rtl_watch_dog_timer_callback(unsigned long data)
+#endif
 {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+	struct rtl_priv *rtlpriv = from_timer(rtlpriv, t, works.watchdog_timer);
+#else
 	struct ieee80211_hw *hw = (struct ieee80211_hw *)data;
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
+#endif
 
 	queue_delayed_work(rtlpriv->works.rtl_wq,
 			   &rtlpriv->works.watchdog_wq, 0);
@@ -2115,12 +2133,14 @@ void rtl_c2hcmd_enqueue(struct ieee80211_hw *hw, u8 tag, u8 len, u8 *val)
 	unsigned long flags;
 	struct rtl_c2hcmd *c2hcmd;
 
-	c2hcmd = kmalloc(sizeof(*c2hcmd), GFP_ATOMIC);
+	c2hcmd = kmalloc(sizeof(*c2hcmd),
+			 in_interrupt() ? GFP_ATOMIC : GFP_ATOMIC);
 
 	if (!c2hcmd)
 		goto label_err;
 
-	c2hcmd->val = kmalloc(len, GFP_ATOMIC);
+	c2hcmd->val = kmalloc(len,
+			      in_interrupt() ? GFP_ATOMIC : GFP_ATOMIC);
 
 	if (!c2hcmd->val)
 		goto label_err2;
@@ -2194,10 +2214,20 @@ void rtl_c2hcmd_wq_callback(void *data)
 	rtl_c2hcmd_launcher(hw, 1);
 }
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+void rtl_easy_concurrent_retrytimer_callback(struct timer_list *t)
+#else
 void rtl_easy_concurrent_retrytimer_callback(unsigned long data)
+#endif
 {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+	struct rtl_priv *rtlpriv =
+		from_timer(rtlpriv, t, works.dualmac_easyconcurrent_retrytimer);
+	struct ieee80211_hw *hw = rtlpriv->hw;
+#else
 	struct ieee80211_hw *hw = (struct ieee80211_hw *)data;
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
+#endif
 	struct rtl_priv *buddy_priv = rtlpriv->buddy_priv;
 
 	if (buddy_priv == NULL)

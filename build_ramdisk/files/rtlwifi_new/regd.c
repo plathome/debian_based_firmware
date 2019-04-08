@@ -354,7 +354,7 @@ static const struct ieee80211_regdomain *_rtl_regdomain_select(
 	case COUNTRY_CODE_SPAIN:
 	case COUNTRY_CODE_FRANCE:
 	case COUNTRY_CODE_ISRAEL:
-		return &rtl_regdom_12_13;
+		return &rtl_regdom_12_13_5g_all;
 	case COUNTRY_CODE_MKK:
 	case COUNTRY_CODE_MKK1:
 	case COUNTRY_CODE_TELEC:
@@ -410,6 +410,7 @@ static u8 channel_plan_to_country_code(u8 channelplan)
 	case 0x22:
 		return COUNTRY_CODE_IC;
 	case 0x25:
+	case 0x26:
 		return COUNTRY_CODE_ETSI;
 	case 0x32:
 		return COUNTRY_CODE_TELEC_NETGEAR;

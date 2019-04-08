@@ -118,8 +118,12 @@ void rtl_init_rx_config(struct ieee80211_hw *hw);
 void rtl_init_rfkill(struct ieee80211_hw *hw);
 void rtl_deinit_rfkill(struct ieee80211_hw *hw);
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+void rtl_watch_dog_timer_callback(struct timer_list *t);
+#else
 void rtl_watch_dog_timer_callback(unsigned long data);
-void rtl_deinit_deferred_work(struct ieee80211_hw *hw);
+#endif
+void rtl_deinit_deferred_work(struct ieee80211_hw *hw, bool ips_wq);
 
 bool rtl_action_proc(struct ieee80211_hw *hw, struct sk_buff *skb, u8 is_tx);
 int rtlwifi_rate_mapping(struct ieee80211_hw *hw, bool isht,
@@ -167,7 +171,11 @@ int rtl_send_smps_action(struct ieee80211_hw *hw,
 u8 *rtl_find_ie(u8 *data, unsigned int len, u8 ie);
 void rtl_recognize_peer(struct ieee80211_hw *hw, u8 *data, unsigned int len);
 u8 rtl_tid_to_ac(u8 tid);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+void rtl_easy_concurrent_retrytimer_callback(struct timer_list *t);
+#else
 void rtl_easy_concurrent_retrytimer_callback(unsigned long data);
+#endif
 extern struct rtl_global_var rtl_global_var;
 void rtl_phy_scan_operation_backup(struct ieee80211_hw *hw, u8 operation);
 

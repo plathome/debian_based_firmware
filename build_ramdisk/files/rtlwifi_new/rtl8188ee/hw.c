@@ -252,9 +252,20 @@ static void _rtl88ee_set_fw_ps_rf_off_low_power(struct ieee80211_hw *hw)
 	rpwm_val |= FW_PS_STATE_RF_OFF_LOW_PWR_88E;
 	_rtl88ee_set_fw_clock_off(hw, rpwm_val);
 }
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+void rtl88ee_fw_clk_off_timer_callback(struct timer_list *t)
+#else
 void rtl88ee_fw_clk_off_timer_callback(unsigned long data)
+#endif
 {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+	struct rtl_priv *rtlpriv = from_timer(rtlpriv, t,
+					      works.fw_clockoff_timer);
+	struct ieee80211_hw *hw = rtlpriv->hw;
+#else
 	struct ieee80211_hw *hw = (struct ieee80211_hw *)data;
+#endif
 
 	_rtl88ee_set_fw_ps_rf_off_low_power(hw);
 }

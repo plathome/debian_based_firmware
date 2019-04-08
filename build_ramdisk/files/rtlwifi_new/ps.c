@@ -55,7 +55,11 @@ bool rtl_ps_enable_nic(struct ieee80211_hw *hw)
 	rtlpriv->cfg->ops->enable_interrupt(hw);
 
 	/*<enable timer> */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+	rtl_watch_dog_timer_callback(&rtlpriv->works.watchdog_timer);
+#else
 	rtl_watch_dog_timer_callback((unsigned long)hw);
+#endif
 
 	return true;
 }
@@ -66,7 +70,7 @@ bool rtl_ps_disable_nic(struct ieee80211_hw *hw)
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
 
 	/*<1> Stop all timer */
-	rtl_deinit_deferred_work(hw);
+	rtl_deinit_deferred_work(hw, true);
 
 	/*<2> Disable Interrupt */
 	rtlpriv->cfg->ops->disable_interrupt(hw);
@@ -287,7 +291,7 @@ void rtl_ips_nic_on(struct ieee80211_hw *hw)
 	struct rtl_ps_ctl *ppsc = rtl_psc(rtl_priv(hw));
 	enum rf_pwrstate rtstate;
 
-	cancel_delayed_work(&rtlpriv->works.ips_nic_off_wq);
+	cancel_delayed_work_sync(&rtlpriv->works.ips_nic_off_wq);
 
 	spin_lock(&rtlpriv->locks.ips_lock);
 	if (ppsc->inactiveps) {

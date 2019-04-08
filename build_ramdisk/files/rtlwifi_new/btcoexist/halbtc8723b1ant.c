@@ -1641,6 +1641,8 @@ static void halbtc8723b1ant_monitor_bt_enable_disable(struct btc_coexist
 		bt_disable_cnt++;
 		if (bt_disable_cnt >= 2)
 			bt_disabled = true;
+		else
+			bt_disabled = false;
 	}
 	if (coex_sta->bt_disabled != bt_disabled) {
 		BTC_SPRINTF(trace_buf, BT_TMP_BUF_SIZE,

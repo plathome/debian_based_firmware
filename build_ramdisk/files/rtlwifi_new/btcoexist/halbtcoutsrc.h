@@ -69,7 +69,7 @@ static inline void BTC_TRACE(const char *ptr)
 #define		IN
 #define		OUT
 
-#define		BT_TMP_BUF_SIZE				100
+#define		BT_TMP_BUF_SIZE				200
 
 #define		BT_COEX_ANT_TYPE_PG			0
 #define		BT_COEX_ANT_TYPE_ANTDIV			1
@@ -137,8 +137,6 @@ enum btc_chip_type {
 /* following is for command line utility */
 #define CL_PRINTF(ptr)			halbtc_dbg_info_print(btcoexist, ptr)
 #define	CL_SPRINTF(ptr, ...)	snprintf(ptr, ##__VA_ARGS__)
-
-#define		BT_TMP_BUF_SIZE				100
 
 #define RT_TRACE_BTC(comp, level, fmt, ...)				\
 	do {								\

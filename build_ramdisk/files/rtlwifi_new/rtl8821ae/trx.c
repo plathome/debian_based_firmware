@@ -461,7 +461,7 @@ bool rtl8821ae_rx_query_desc(struct ieee80211_hw *hw,
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
 	struct rx_fwinfo_8821ae *p_drvinfo;
 	struct ieee80211_hdr *hdr;
-
+	u8 wake_match;
 	u32 phystatus = GET_RX_DESC_PHYST(pdesc);
 
 	status->length = (u16)GET_RX_DESC_PKT_LEN(pdesc);
@@ -498,18 +498,18 @@ bool rtl8821ae_rx_query_desc(struct ieee80211_hw *hw,
 		status->packet_report_type = NORMAL_RX;
 
 	if (GET_RX_STATUS_DESC_PATTERN_MATCH(pdesc))
-		status->wake_match = BIT(2);
+		wake_match = BIT(2);
 	else if (GET_RX_STATUS_DESC_MAGIC_MATCH(pdesc))
-		status->wake_match = BIT(1);
+		wake_match = BIT(1);
 	else if (GET_RX_STATUS_DESC_UNICAST_MATCH(pdesc))
-		status->wake_match = BIT(0);
+		wake_match = BIT(0);
 	else
-		status->wake_match = 0;
+		wake_match = 0;
 
-	if (status->wake_match)
+	if (wake_match)
 		RT_TRACE(rtlpriv, COMP_RXDESC, DBG_LOUD,
 			 "GGGGGGGGGGGGGet Wakeup Packet!! WakeMatch=%d\n",
-			 status->wake_match);
+			 wake_match);
 	rx_status->freq = hw->conf.chandef.chan->center_freq;
 	rx_status->band = hw->conf.chandef.chan->band;
 
@@ -519,6 +519,7 @@ bool rtl8821ae_rx_query_desc(struct ieee80211_hw *hw,
 	if (status->crc)
 		rx_status->flag |= RX_FLAG_FAILED_FCS_CRC;
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 12, 0)
 	if (status->rx_packet_bw == HT_CHANNEL_WIDTH_20_40)
 		rx_status->flag |= RX_FLAG_40MHZ;
 	else if (status->rx_packet_bw == HT_CHANNEL_WIDTH_80)
@@ -536,6 +537,21 @@ bool rtl8821ae_rx_query_desc(struct ieee80211_hw *hw,
 		rx_status->flag |= RX_FLAG_SHORT_GI;
 
 	rx_status->vht_nss = status->vht_nss;
+#else
+	if (status->rx_packet_bw == HT_CHANNEL_WIDTH_20_40)
+		rx_status->bw = RATE_INFO_BW_40;
+	else if (status->rx_packet_bw == HT_CHANNEL_WIDTH_80)
+		rx_status->bw = RATE_INFO_BW_80;
+	if (status->is_ht)
+		rx_status->encoding = RX_ENC_HT;
+	if (status->is_vht)
+		rx_status->encoding = RX_ENC_VHT;
+
+	if (status->is_short_gi)
+		rx_status->enc_flags |= RX_ENC_FLAG_SHORT_GI;
+
+	rx_status->nss = status->vht_nss;
+#endif
 	rx_status->flag |= RX_FLAG_MACTIME_START;
 
 	/* hw will set status->decrypted true, if it finds the
