@@ -44,3 +44,9 @@ if [ $? -eq 0 ]; then
 
 	rm -f ${DISTDIR}/*.deb
 fi
+
+if [ "$DIST" == "buster" ]; then
+	chroot ${DISTDIR} insserv -r rng-tools
+	chroot ${DISTDIR} insserv -r hostapd
+	chroot ${DISTDIR} systemctl disable hostapd
+fi

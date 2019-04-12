@@ -28,7 +28,7 @@
 #debug=echo
 . `dirname $0`/config.sh
 
-DIST_LIST="(wheezy|jessie|stretch)"
+DIST_LIST="(wheezy|jessie|stretch|buster)"
 TARGET_LIST="(obsvx1|obsvx2|obsmv4|bpv4|bpv4-h|bpv8|obsbx1|obsbx1s|obsa6|obsa7|obsax3|obs600)"
 
 function _usage(){
@@ -72,6 +72,15 @@ jessie)
 stretch)
 	case $_TARGET in
 	obs600|obsa6)
+		echo
+		echo "$_TARGET is never supported."
+		exit 1
+		;;
+	esac
+	;;
+buster)
+	case $_TARGET in
+	obs600|obsa*)
 		echo
 		echo "$_TARGET is never supported."
 		exit 1

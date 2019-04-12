@@ -414,8 +414,8 @@ start)
 
 	# create ssh keys for openssh-server
 	if [ -x /usr/sbin/sshd ] ; then
-#		dpkg-reconfigure openssh-server
-		sshd_create_keys
+		rngd -r /dev/urandom
+		ssh-keygen -N '' -A
 	fi
 
 	# create mount directory for fstab

@@ -278,7 +278,7 @@ buster)
 	obsvx1)
 		ISOFILE=debian-buster-DI-alpha5-amd64-DVD-1.iso
 		PATCHLEVEL=0
-		RAMDISK_SIZE=200
+		RAMDISK_SIZE=260
 	;;
 	*)
 	;;

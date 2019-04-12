@@ -1,13 +1,13 @@
-deb http://ftp.jp.debian.org/debian/ jessie main
-deb-src http://ftp.jp.debian.org/debian/ jessie main
+deb http://ftp.jp.debian.org/debian/ buster main
+deb-src http://ftp.jp.debian.org/debian/ buster main
 
-#deb http://ftp.jp.debian.org/debian/ jessie-backports main
-#deb-src http://ftp.jp.debian.org/debian/ jessie-backports main
+#deb http://ftp.jp.debian.org/debian/ buster-backports main
+#deb-src http://ftp.jp.debian.org/debian/ buster-backports main
 
-deb http://ftp.jp.debian.org/debian/ jessie-updates main
-deb-src http://ftp.jp.debian.org/debian/ jessie-updates main
+deb http://ftp.jp.debian.org/debian/ buster-updates main
+deb-src http://ftp.jp.debian.org/debian/ buster-updates main
 
-deb http://security.debian.org jessie/updates main
-deb-src http://security.debian.org jessie/updates main
+deb http://security.debian.org buster/updates main
+deb-src http://security.debian.org buster/updates main
 
-deb http://ftp.plathome.co.jp/pub/OBSVX1/debian/jessie ./
+deb http://ftp.plathome.co.jp/pub/OBSVX1/debian/buster ./
