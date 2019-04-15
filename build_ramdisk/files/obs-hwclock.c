@@ -173,7 +173,7 @@ int chk_init(void)
 
 char* do_rawtime(void)
 {
-	static char buf[32];
+	static char buf[128];
 
 	struct tm rtc, *tm;
 	time_t sec;

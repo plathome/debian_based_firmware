@@ -37,6 +37,10 @@
 #include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <linux/i2c-dev.h>
+#include <linux/version.h>
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 19, 0)
+#include <i2c/smbus.h>
+#endif
 #include <fcntl.h>
 #include <signal.h>
 #include <string.h>

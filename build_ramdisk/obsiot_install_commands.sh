@@ -151,7 +151,7 @@ obsvx*)
 	BUILDDIR=/tmp/obstools.$$
 	LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
 
-	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -mstackrealign -fno-omit-frame-pointer -DCONFIG_OBSVX1"
+	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -li2c -O2 -mstackrealign -fno-omit-frame-pointer -DCONFIG_OBSVX1"
 
 	mkdir -p ${BUILDDIR}
 
