@@ -285,6 +285,20 @@ buster)
 		PATCHLEVEL=0
 		RAMDISK_SIZE=260
 	;;
+	obsbx1)
+		KERNEL=3.10.17
+		ISOFILE=debian-buster-DI-rc1-i386-DVD-1.iso
+		ARCH=i386
+		PATCHLEVEL=0
+		RAMDISK_SIZE=240
+	;;
+	obsbx1s)
+		KERNEL=3.10.98
+		ISOFILE=debian-buster-DI-rc1-i386-DVD-1.iso
+		ARCH=i386
+		PATCHLEVEL=0
+		RAMDISK_SIZE=240
+	;;
 	*)
 	;;
 	esac

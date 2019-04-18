@@ -1,4 +1,13 @@
-#!/bin/bash
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          disable-modem
+# Required-Start:    $local_fs $syslog $remote_fs
+# Required-Stop:     $local_fs $syslog $remote_fs
+# Default-Start:
+# Default-Stop:      0 6
+# Short-Description: disable-modem for OBSBX1
+# Description:       
+### END INIT INFO
 #
 # Copyright (c) 2013-2018 Plat'Home CO., LTD.
 # All rights reserved.
@@ -25,45 +34,37 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-#
-# check host machine
-#
-if ! grep -q "^buster" /etc/debian_version ; then
-#if ! grep -q "^10" /etc/debian_version ; then
-	echo "This machine is not Debian 10"
-	echo "Abort!!"
-	exit 1
-fi
+# Do NOT "set -e"
 
-#
-# add architecture
-#
-dpkg --add-architecture i386
-#dpkg --add-architecture armhf
-#dpkg --add-architecture armel
-apt update 
+# PATH should only include /usr/* if it runs after the mountnfs.sh script
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+DESC="disable modem for obsbx1"
+NAME=disable-modem
+SCRIPTNAME=/etc/init.d/$NAME
 
-#
-# host machine development tools
-#
-packages="build-essential u-boot-tools libncurses5-dev debootstrap qemu-user-static bc gcc-multilib xz-utils dosfstools libnl-3-dev libssl-dev libusb-dev libasound2-dev libi2c-dev libusb-1.0-0 libusb-1.0-0-dev pkg-config gcc-multilib g++-multilib flex bison libelf-dev rsync"
-apt -y install $packages
+# Read configuration variable file if it is present
+[ -r /etc/default/$NAME ] && . /etc/default/$NAME
 
-#
-# i386 development tools
-#
-packages="libnl-3-dev:i386 libssl-dev:i386 libusb-dev:i386 libnl-genl-3-dev:i386 libglib2.0-dev:i386 libbluetooth-dev:i386 libasound2-dev:i386 libusb-1.0-0-dev:i386 libi2c-dev:i386"
-apt -y install $packages
+# Load the VERBOSE setting and other rcS variables
+. /lib/init/vars.sh
 
-#
-# armel development tools
-#
-#packages="gcc-arm-linux-gnueabi zlib1g-dev:armel libusb-dev:armel "
-#apt -y install $packages
+# Define LSB log_* functions.
+# Depend on lsb-base (>= 3.0-6) to ensure that this file is present.
+. /lib/lsb/init-functions
 
-#
-# armhf development tools
-#
-#packages="gcc-arm-linux-gnueabihf zlib1g-dev:armhf libusb-dev:armhf "
-#apt -y install $packages
+VERBOSE=yes
+
+case "$1" in
+  start)
+	;;
+  stop)
+		if [ -e /dev/ttyMODEM0 -a -x /usr/sbin/atcmd ]; then
+			/usr/sbin/atcmd POFF
+		fi
+	;;
+  *)
+	echo "Usage: $SCRIPTNAME {stop}" >&2
+	exit 3
+	;;
+esac
 
