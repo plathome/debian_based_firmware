@@ -106,8 +106,8 @@ obsbx*)
 	$CC -o ${BUILDDIR}/wav-play ${FILESDIR}/wav-play.c $_CFLAGS
 
 	echo "OBSIOT-POWER"
-echo "CFLAG=${CFLAGS}"
-	$CC -o ${BUILDDIR}/obsiot-power ${FILESDIR}/obsiot-power.c $CFLAGS -li2c
+	[ "$DIST" == "buster" ] && CFLAGS="$CFLAGS -li2c"
+	$CC -o ${BUILDDIR}/obsiot-power ${FILESDIR}/obsiot-power.c $CFLAGS
 
 	echo;echo;echo
 	(cd ${BUILDDIR}; ls -l wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock bluetooth_rfkill_event brcm_patchram_plus wav-play obsiot-power)
@@ -152,7 +152,8 @@ obsvx*)
 	BUILDDIR=/tmp/obstools.$$
 	LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
 
-	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -li2c -O2 -mstackrealign -fno-omit-frame-pointer -DCONFIG_OBSVX1"
+	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -mstackrealign -fno-omit-frame-pointer -DCONFIG_OBSVX1"
+	[ "$DIST" == "buster" ] && CFLAGS="$CFLAGS -li2c"
 
 	mkdir -p ${BUILDDIR}
 
