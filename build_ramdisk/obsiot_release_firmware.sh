@@ -76,7 +76,14 @@ obsbx*)
 obsvx*)
 	echo "8821AE"
 	if [ -d ${FILESDIR}/rtl8821ae ]; then
-		[ "$DIST" == "stretch" -a "$TARGET" != "obsvx2" ] && COMPRESS_XZ="COMPRESS_XZ=y"
+		if [ "$DIST" == "stretch" ]; then
+			case $TARGET in
+			obsvx*) ;;
+			*)
+				COMPRESS_XZ="COMPRESS_XZ=y"
+				;;
+			esac
+		fi
 		(cd ${FILESDIR}/rtl8821ae; \
 			mkdir -p ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/kernel/drivers/net/wireless/realtek;	\
 			make all install KSRC=${LINUX_SRC} KVER=${KERNEL} MODDESTDIR=${MOUNTDIR}/lib/modules/${KERNEL}/kernel/drivers/net/wireless/realtek MOUNTDIR=${MOUNTDIR} ${COMPRESS_XZ} USER_EXTRA_CFLAGS="-Wno-error=date-time -fno-pic -Wno-pointer-sign")
