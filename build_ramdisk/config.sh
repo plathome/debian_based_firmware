@@ -208,10 +208,11 @@ jessie)
 	esac
 ;;
 stretch)
-	KERNEL=4.9.82
+	KERNEL=4.9.168
 	case ${TARGET} in
 	obsvx1)
-		ISOFILE=debian-9.3.0-amd64-DVD-1.iso
+		KERNEL=4.19.13
+		ISOFILE=debian-9.5.0-amd64-DVD-1.iso
 		PATCHLEVEL=0
 		RAMDISK_SIZE=220
 	;;

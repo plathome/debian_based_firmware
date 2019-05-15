@@ -75,18 +75,18 @@ obsbx*)
 	;;
 obsvx*)
 	echo "8821AE"
+	case ${KERNEL} in
+	4.19.*)
+		LOCAL_VER="-cip1-rt1"
+		;;
+	*) ;;
+	esac
 	if [ -d ${FILESDIR}/rtl8821ae ]; then
-		if [ "$DIST" == "stretch" ]; then
-			case $TARGET in
-			obsvx*) ;;
-			*)
-				COMPRESS_XZ="COMPRESS_XZ=y"
-				;;
-			esac
-		fi
+		if [ "$KERNEL" != "4.19.13" ]; then
 		(cd ${FILESDIR}/rtl8821ae; \
 			mkdir -p ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/kernel/drivers/net/wireless/realtek;	\
 			make all install KSRC=${LINUX_SRC} KVER=${KERNEL} MODDESTDIR=${MOUNTDIR}/lib/modules/${KERNEL}/kernel/drivers/net/wireless/realtek MOUNTDIR=${MOUNTDIR} ${COMPRESS_XZ} USER_EXTRA_CFLAGS="-Wno-error=date-time -fno-pic -Wno-pointer-sign")
+		fi
 	fi
 	;;
 *)
@@ -99,14 +99,7 @@ if [ -d ${FILESDIR}/firmware-${TARGET} ]; then
 	cp -a ${FILESDIR}/firmware-${TARGET}/* ${MOUNTDIR}/lib/firmware
 fi
 
-case $TARGET in
-	obsbx*)
 	depmod -ae -b ${MOUNTDIR} -F ${MOUNTDIR}/boot/System.map ${KERNEL}${LOCAL_VER}
-	;;
-	*)
-	depmod -ae -b ${MOUNTDIR} -F ${MOUNTDIR}/boot/System.map ${KERNEL}
-	;;
-esac
 
 if [ ! -d ${RELEASEDIR} ]; then
 	mkdir -p ${RELEASEDIR}
