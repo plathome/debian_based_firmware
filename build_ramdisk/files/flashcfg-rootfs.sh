@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 #
 # Copyright (c) 2013-2018 Plat'Home CO., LTD.
 # All rights reserved.
@@ -149,7 +149,8 @@ firmware)
 		fi
 
 		if [ -f ${FIRM_FILE}/modules.tgz ]; then
-			${TEST} tar xfzp ${FIRM_FILE}/modules.tgz -C /lib
+			CPATH="/lib"; [ "$MODEL" == "obsbx1" ] && CPATH="/"
+			${TEST} tar xfzp ${FIRM_FILE}/modules.tgz -C ${CPATH}
 		fi
 
 		if [ -f ${FIRM_FILE}/System.map ]; then

@@ -208,8 +208,7 @@ jessie)
 	esac
 ;;
 stretch)
-#	KERNEL=4.9.168
-	KERNEL=4.19.13
+	KERNEL=4.9.168
 	case ${TARGET} in
 	obsvx1)
 		ISOFILE=debian-9.5.0-amd64-DVD-1.iso
