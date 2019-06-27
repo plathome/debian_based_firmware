@@ -130,6 +130,8 @@ set_time_s710(){
 
 case "$1" in
   start)
+	dpkg-reconfigure openssh-server
+
 	MODEM=`/usr/sbin/obsiot-modem.sh`
 	case $MODEM in
 	U200E|UM04)

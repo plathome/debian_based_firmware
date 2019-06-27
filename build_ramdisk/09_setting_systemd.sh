@@ -30,7 +30,8 @@
 case $DIST in
 jessie)
 	echo ${DISTDIR}
-	chroot ${DISTDIR} /usr/bin/apt-get remove --purge --auto-remove -y systemd
+	chroot ${DISTDIR} /usr/bin/apt remove --purge --auto-remove -y systemd
+#	chroot ${DISTDIR} /usr/bin/apt-get remove --purge --auto-remove -y systemd
 	echo -e 'Package: systemd\nPin: origin ""\nPin-Priority: -1' > ${DISTDIR}/etc/apt/preferences.d/systemd
 	echo -e '\n\nPackage: *systemd*\nPin: origin ""\nPin-Priority: -1' >> ${DISTDIR}/etc/apt/preferences.d/systemd
 	buf="\n\nPackage: systemd:$ARCH\nPin: origin ""\nPin-Priority: -1"

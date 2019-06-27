@@ -273,24 +273,24 @@ stretch)
 	esac
 ;;
 buster)
-	KERNEL=4.19.28
+	KERNEL=4.19.52
 	case ${TARGET} in
 	obsvx1)
-		ISOFILE=debian-buster-DI-rc1-amd64-DVD-1.iso
+		ISOFILE=debian-buster-DI-rc2-amd64-DVD-1.iso
 		PATCHLEVEL=0
 		RAMDISK_SIZE=260
 	;;
 	obsvx2)
-		ISOFILE=debian-buster-DI-rc1-amd64-DVD-1.iso
+		ISOFILE=debian-buster-DI-rc2-amd64-DVD-1.iso
 		PATCHLEVEL=0
 		RAMDISK_SIZE=260
 	;;
-	obsbx*)
-		KERNEL=3.10.17
-		ISOFILE=debian-buster-DI-rc1-i386-DVD-1.iso
+	obsbx1s)
+		KERNEL=3.10.98
+		ISOFILE=debian-buster-DI-rc2-i386-DVD-1.iso
 		ARCH=i386
 		PATCHLEVEL=0
-		RAMDISK_SIZE=240
+		RAMDISK_SIZE=260
 	;;
 	*)
 	;;

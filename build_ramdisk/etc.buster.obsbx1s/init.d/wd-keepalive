@@ -1,9 +1,9 @@
 #! /bin/sh
 ### BEGIN INIT INFO
 # Provides:          wd-keepalive
-# Required-Start:    openblocks-setup
+# Required-Start:    udev
 # Required-Stop:     umountfs
-# Default-Start:
+# Default-Start:     S
 # Default-Stop:      0 6
 # Short-Description: wd-keepalive daemon for OBSBX1
 # Description:       
