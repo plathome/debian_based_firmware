@@ -1,9 +1,9 @@
 #! /bin/sh
 ### BEGIN INIT INFO
 # Provides:          wd-keepalive
-# Required-Start:    udev
-# Required-Stop:     umountfs
-# Default-Start:     S
+# Required-Start:    $local_fs $syslog $remote_fs nitz
+# Required-Stop:     $local_fs $syslog $remote_fs
+# Default-Start:     2 3 4 5
 # Default-Stop:      0 6
 # Short-Description: wd-keepalive daemon for OBSBX1
 # Description:       
