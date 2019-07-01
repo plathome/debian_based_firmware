@@ -134,6 +134,10 @@ buster)
 		INCLUDE="openssh-server,xz-utils,parted,insserv,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200,initscripts,gnupg,strace,wget"
 		EXCLUDE="nano"
 		;;
+	obsgem*)
+		INCLUDE="openssh-server,xz-utils,parted,insserv,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200,initscripts,gnupg,strace,wget"
+		EXCLUDE="nano"
+		;;
 	esac
 	;;
 esac

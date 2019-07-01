@@ -32,6 +32,9 @@ if [ "$CROSS" == "true" ]; then
 else
 	KERN_COMPILE_OPTS="ARCH=$KERN_ARCH"
 fi
+case $TARGET in
+obsgem1) KERN_COMPILE_OPTS=" $KERN_COMPILE_OPTS INSTALL_MOD_STRIP=1" ;;
+esac
 
 _RAMDISK_IMG=${DISTDIR}/../${RAMDISK_IMG}
 
@@ -89,15 +92,28 @@ obsvx*)
 		fi
 	fi
 	;;
+obsgem1)
+	LOCAL_VER="-qcomlt-arm64"
+	;;
 *)
 	;;
 esac
 rm -f ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/source ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/build
 
-if [ -d ${FILESDIR}/firmware-${TARGET} ]; then
-	mkdir -p ${MOUNTDIR}/lib/firmware
-	cp -a ${FILESDIR}/firmware-${TARGET}/* ${MOUNTDIR}/lib/firmware
-fi
+case $TARGET in
+obsgem1)
+	if [ -d ${FILESDIR}/firmware-${TARGET}-${KERNEL} ]; then
+		mkdir -p ${MOUNTDIR}/lib/firmware
+		cp -a ${FILESDIR}/firmware-${TARGET}-${KERNEL}/* ${MOUNTDIR}/lib/firmware
+	fi
+	;;
+*)
+	if [ -d ${FILESDIR}/firmware-${TARGET} ]; then
+		mkdir -p ${MOUNTDIR}/lib/firmware
+		cp -a ${FILESDIR}/firmware-${TARGET}/* ${MOUNTDIR}/lib/firmware
+	fi
+	;;
+esac
 
 	depmod -ae -b ${MOUNTDIR} -F ${MOUNTDIR}/boot/System.map ${KERNEL}${LOCAL_VER}
 
@@ -105,7 +121,7 @@ if [ ! -d ${RELEASEDIR} ]; then
 	mkdir -p ${RELEASEDIR}
 fi
 
-if [ "$TARGET" == "obsvx2" ]; then
+if [ "$TARGET" == "obsvx2" -o "$TARGET" == "obsgem1" ]; then
 	# kernel modules and firmware
 	(cd ${MOUNTDIR}/lib; tar cfzp ${RELEASEDIR}/modules.tgz firmware modules)
 elif [ "$TARGET" == "obsbx1s" ]; then
@@ -154,6 +170,48 @@ obsvx2)
 
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/bzImage ${RELEASEDIR}/obstools.tgz ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/modules.tgz ${RELEASEDIR}/System.map)
+	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
+	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
+	;;
+obsgem1)
+	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
+	${COMP} -${COMP_LVL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/initrd.${COMP_EXT}
+	mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \
+		-A arm64 -O linux -T kernel -C none -a 0x8008000 -e 0x8008000 \
+		-d ${RELEASEDIR}/Image.gz \
+		${RELEASEDIR}/uImage.${TARGET}
+	mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \
+		-A arm64 -T ramdisk -C gzip \
+		-d ${RELEASEDIR}/initrd.${COMP_EXT} \
+		${RELEASEDIR}/uInitrd.${TARGET}
+	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
+	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-obsiot.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/${MAKE_IMAGE} ${RELEASEDIR}/initrd.${COMP_EXT} dummy ${FILESDIR}/flashcfg.sh ${RELEASEDIR}/MD5.${TARGET} dummy)
+	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
+	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
+
+	# obs tools
+	USRSBIN=${DISTDIR}/usr/sbin
+	OBSTOOLS="${USRSBIN}/wd-keepalive ${USRSBIN}/obs-util ${USRSBIN}/kosanu ${USRSBIN}/runled ${USRSBIN}/pshd ${USRSBIN}/atcmd ${USRSBIN}/obs-hwclock ${USRSBIN}/wav-play ${USRSBIN}/obsiot-power"
+	ETCINITD=${DISTDIR}/etc/init.d
+	OBSSCRIPTS="${ETCINITD}/obsiot-power"
+	WORK=/tmp/_tmpfs.$$
+	mkdir -p ${WORK}/usr/sbin
+	mkdir -p ${WORK}/etc/init.d
+	cp -f ${OBSTOOLS} ${WORK}/usr/sbin
+	cp -f ${OBSSCRIPTS} ${WORK}/etc/init.d
+	(cd ${WORK}; tar cfzp ${RELEASEDIR}/obstools.tgz .)
+	rm -rf ${WORK}
+
+	# Linux kernel
+	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
+
+	# Debian rootfs
+	mount -o loop ${_RAMDISK_IMG} ${MOUNTDIR}
+	(cd ${MOUNTDIR}; tar cfzp ${RELEASEDIR}/${TARGET}-rootfs.tgz .)
+	umount ${MOUNTDIR}
+
+	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
+	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/${MAKE_IMAGE} ${RELEASEDIR}/obstools.tgz ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/modules.tgz ${RELEASEDIR}/System.map)
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;

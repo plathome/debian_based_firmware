@@ -145,6 +145,7 @@ int read_gpio(int reg, unsigned char *val)
 	if((fd = open_i2c()) < 0)
 		return -1;
 
+#if defined(CONFIG_OBSVX1)
 	if((*val = i2c_smbus_read_byte_data(fd, reg)) == -1){
 		close(fd);
 		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
@@ -152,6 +153,22 @@ int read_gpio(int reg, unsigned char *val)
 		closelog();
 		return -1;
 	}
+#else
+	if(write(fd, &reg, 1) < 0){
+		close(fd);
+		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
+		syslog(LOG_ERR, "%d: %s\n", __LINE__, strerror(errno));
+		closelog();
+		return -1;
+	}
+	if(read(fd, val, 1) < 0){
+		close(fd);
+		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
+		syslog(LOG_ERR, "%d: %s\n", __LINE__, strerror(errno));
+		closelog();
+		return -1;
+	}
+#endif
 	close(fd);
 
 	return 0;
@@ -160,10 +177,14 @@ int read_gpio(int reg, unsigned char *val)
 int write_gpio(int reg, unsigned char val)
 {
 	int fd;
+#if ! defined(CONFIG_OBSVX1)
+	unsigned char buf[2];
+#endif
 
 	if((fd = open_i2c()) < 0)
 		return -1;
 
+#if defined(CONFIG_OBSVX1)
 	if(i2c_smbus_write_byte_data(fd, reg, val) == -1){
 		close(fd);
 		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
@@ -171,6 +192,17 @@ int write_gpio(int reg, unsigned char val)
 		closelog();
 		return -1;
 	}
+#else
+	buf[0] = reg;
+	buf[1] = val;
+	if(write(fd, buf, 2) < 0){
+		close(fd);
+		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
+		syslog(LOG_ERR, "%d: %s\n", __LINE__, strerror(errno));
+		closelog();
+		return -1;
+	}
+#endif
 	close(fd);
 
 	return 0;
@@ -180,10 +212,14 @@ int chk_voltage(void)
 {
 	int fd;
 	unsigned char val;
+#if ! defined(CONFIG_OBSVX1)
+	unsigned char reg = INPUT;
+#endif
 
 	if((fd = open_i2c()) < 0)
 		return -1;
 
+#if defined(CONFIG_OBSVX1)
 	if((val = i2c_smbus_read_byte_data(fd, INPUT)) == -1){
 		close(fd);
 		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
@@ -191,6 +227,22 @@ int chk_voltage(void)
 		closelog();
 		return -1;
 	}
+#else
+	if(write(fd, &reg, 1) < 0){
+		close(fd);
+		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
+		syslog(LOG_ERR, "%d: %s\n", __LINE__, strerror(errno));
+		closelog();
+		return -1;
+	}
+	if(read(fd, &val, 1) < 0){
+		close(fd);
+		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
+		syslog(LOG_ERR, "%d: %s\n", __LINE__, strerror(errno));
+		closelog();
+		return -1;
+	}
+#endif
 	close(fd);
 
 	return (int)(val & 0x01);
@@ -199,10 +251,14 @@ int chk_voltage(void)
 int chg_charging(unsigned char val)
 {
 	int fd;
+#if ! defined(CONFIG_OBSVX1)
+	unsigned char buf[2];
+#endif
 
 	if((fd = open_i2c()) < 0)
 		return -1;
 
+#if defined(CONFIG_OBSVX1)
 	if(i2c_smbus_write_byte_data(fd, OUTPUT, val) == -1){
 		close(fd);
 		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
@@ -210,6 +266,17 @@ int chg_charging(unsigned char val)
 		closelog();
 		return -1;
 	}
+#else
+	buf[0] = OUTPUT;
+	buf[1] = val;
+	if(write(fd, buf, 2) < 0){
+		close(fd);
+		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
+		syslog(LOG_ERR, "%d: %s\n", __LINE__, strerror(errno));
+		closelog();
+		return -1;
+	}
+#endif
 	close(fd);
 
 	return 0;
@@ -219,10 +286,14 @@ int init_gpio(void)
 {
 	int fd;
 	unsigned char val = 0;
+#if ! defined(CONFIG_OBSVX1)
+	unsigned char buf[2];
+#endif
 
 	if((fd = open_i2c()) < 0)
 		return -1;
 
+#if defined(CONFIG_OBSVX1)
 	if(i2c_smbus_write_byte_data(fd, CONFIG, INIT_BAT) == -1){
 		close(fd);
 		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
@@ -230,6 +301,18 @@ int init_gpio(void)
 		closelog();
 		return -1;
 	}
+#else
+	buf[0] = CONFIG;
+	buf[1] = INIT_BAT;
+	if(write(fd, buf, 2) < 0){
+		close(fd);
+		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
+		syslog(LOG_ERR, "%d: %s\n", __LINE__, strerror(errno));
+		closelog();
+		return -1;
+	}
+#endif
+#if defined(CONFIG_OBSVX1)
 	if((val = i2c_smbus_read_byte_data(fd, CONFIG)) == -1){
 		close(fd);
 		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
@@ -237,6 +320,22 @@ int init_gpio(void)
 		closelog();
 		return -1;
 	}
+#else
+	if(write(fd, buf, 1) < 0){
+		close(fd);
+		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
+		syslog(LOG_ERR, "%d: %s\n", __LINE__, strerror(errno));
+		closelog();
+		return -1;
+	}
+	if(read(fd, &val, 1) < 0){
+		close(fd);
+		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
+		syslog(LOG_ERR, "%d: %s\n", __LINE__, strerror(errno));
+		closelog();
+		return -1;
+	}
+#endif
 	close(fd);
 
 	printf("init config: %02x\n", val);
@@ -247,10 +346,14 @@ int get_power_status(void)
 {
 	int fd;
 	int val;
+#if ! defined(CONFIG_OBSVX1)
+	unsigned char reg = INPUT;
+#endif
 
 	if((fd = open_i2c()) < 0)
 		return -1;
 
+#if defined(CONFIG_OBSVX1)
 	if((val = i2c_smbus_read_byte_data(fd, INPUT)) == -1){
 		close(fd);
 		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
@@ -258,6 +361,22 @@ int get_power_status(void)
 		closelog();
 		return -1;
 	}
+#else
+	if(write(fd, &reg, 1) < 0){
+		close(fd);
+		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
+		syslog(LOG_ERR, "%d: %s\n", __LINE__, strerror(errno));
+		closelog();
+		return -1;
+	}
+	if(read(fd, &val, 1) < 0){
+		close(fd);
+		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
+		syslog(LOG_ERR, "%d: %s\n", __LINE__, strerror(errno));
+		closelog();
+		return -1;
+	}
+#endif
 	close(fd);
 
 	if(val & 0x01){

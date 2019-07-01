@@ -27,7 +27,7 @@ configure)
 			rm -f /etc/MD5.*
 			rm -f /etc/obstools*
 			rm -f /etc/modules.tgz
-			rm -f /etc/obsvx2-rootfs* /etc/obsbx1s-rootfs*
+			rm -f /etc/obsvx2-rootfs* /etc/obsbx1s-rootfs* /etc/obsgem1-rootfs*
 			if [ -d /etc/grub.cfg ]; then
 				rm -rf /etc/grub.cfg
 			fi

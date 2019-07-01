@@ -48,6 +48,8 @@ void die(int);
 #define PID_FILE	"/var/run/pshd.pid"
 #if defined(CONFIG_OBSVX1)
 #define INITSW		"/sys/class/gpio/gpio345/value"
+#elif defined(CONFIG_OBSGEM1)
+#define INITSW     "/sys/class/gpio/gpio76/value"
 #else
 #define INITSW		"/sys/class/gpio/gpio14/value"
 #endif

@@ -52,7 +52,7 @@ if [ "$DIST" == "stretch" ]; then
 fi
 
 case ${TARGET} in
-obsbx*|obsvx*)
+obsbx*|obsvx*|obsgem*)
 	if [ "$DIST" != "buster" ]; then
 		chmod 755 ${DISTDIR}/etc/init.d/bluetooth
 		chroot ${DISTDIR} /sbin/insserv -rf bluetooth
@@ -90,6 +90,17 @@ obsbx*|obsvx*)
 esac
 
 case ${TARGET} in
+obsgem1)
+	chmod 755 ${DISTDIR}/etc/init.d/openblocks-setup
+	chroot ${DISTDIR} /sbin/insserv -rf openblocks-setup
+	chroot ${DISTDIR} /sbin/insserv openblocks-setup
+	chmod 755 ${DISTDIR}/etc/init.d/runled
+	chroot ${DISTDIR} /sbin/insserv -rf runled
+	chroot ${DISTDIR} /sbin/insserv runled
+	chmod 755 ${DISTDIR}/etc/init.d/pshd
+	chroot ${DISTDIR} /sbin/insserv -rf pshd
+	chroot ${DISTDIR} /sbin/insserv pshd
+	;;
 obs*)
 	chmod 755 ${DISTDIR}/etc/init.d/openblocks-setup
 	chroot ${DISTDIR} /sbin/insserv -rf openblocks-setup

@@ -66,6 +66,31 @@ obsvx*)
 	echo 361 > $GPIOPATH/unexport
 	echo 362 > $GPIOPATH/unexport
 	;;
+obsgem*)
+	[ ! -e $GPIOPATH/gpio72 ] && echo 72 > $GPIOPATH/export
+	[ ! -e $GPIOPATH/gpio73 ] && echo 73 > $GPIOPATH/export
+	[ ! -e $GPIOPATH/gpio74 ] && echo 74 > $GPIOPATH/export
+	[ ! -e $GPIOPATH/gpio75 ] && echo 75 > $GPIOPATH/export
+
+	echo in > $GPIOPATH/gpio72/direction
+	echo in > $GPIOPATH/gpio73/direction
+	echo in > $GPIOPATH/gpio74/direction
+	echo in > $GPIOPATH/gpio75/direction
+	echo 1 > $GPIOPATH/gpio72/active_low
+	echo 1 > $GPIOPATH/gpio73/active_low
+	echo 1 > $GPIOPATH/gpio74/active_low
+	echo 0 > $GPIOPATH/gpio75/active_low
+
+	id0=`cat $GPIOPATH/gpio72/value`
+	id1=`cat $GPIOPATH/gpio73/value`
+	id2=`cat $GPIOPATH/gpio74/value`
+	id3=`cat $GPIOPATH/gpio75/value`
+
+	echo 72 > $GPIOPATH/unexport
+	echo 73 > $GPIOPATH/unexport
+	echo 74 > $GPIOPATH/unexport
+	echo 75 > $GPIOPATH/unexport
+	;;
 *)
 	id0="F"
 	id1="F"
@@ -197,6 +222,49 @@ elif [ "$MODEL" == "obsbx1" ]; then
 		;;
 	*)
 		echo "ERROR ($dipsw)"
+		exit 8
+		;;
+	esac
+elif [ "$MODEL" == "obsgem1" ]; then
+	case "$id3$id2$id1$id0" in
+	0111)			# EX1 none or BX0
+		echo "none"
+		exit 0
+		;;
+	0101)			# EX1 UM04-KO
+		echo "UM04"
+		exit 2
+		;;
+	0011)			# EX1 KYM11/12
+		echo "KYM11"
+		exit 4
+		;;
+	0001)			# EX1 U200/U270
+		echo "U200E"
+		exit 6
+		;;
+	0010)			# BX3 U200/U270
+		echo "U200"
+		exit 5
+		;;
+	0000)			# BX1 EHS6
+		echo "EHS6"
+		exit 7
+		;;
+	0100)			# BX3 U200/U270
+		echo "ERROR ($id3$id2$id1$id0)"
+		exit 8
+		;;
+	0110)
+		echo "S710"
+		exit 10
+		;;
+	1011)
+		echo "S710E"
+		exit 9
+		;;
+	*)
+		echo "ERROR ($id3$id2$id1$id0)"
 		exit 8
 		;;
 	esac

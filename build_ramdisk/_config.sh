@@ -41,6 +41,9 @@ ISOFILEDIR=${WRKDIR}/isofiles
 EXTRADEBDIR=${WRKDIR}/extradebs/${DIST}
 
 ETCDIR=${PWD}/etc.${DIST}
+TOOLDIR=${WRKDIR}/tool
+SKALESDIR=${TOOLDIR}/skales
+
 case $TARGET in
 bpv4*)
 	RELEASEDIR=${WRKDIR}/release/${TARGET}/${DIST}/${KERNEL}-${PATCHLEVEL}
@@ -105,6 +108,14 @@ powerpc)
 	MAKE_IMAGE=uImage
 	QEMU_BIN=qemu-ppc-static
 	ABI=""
+;;
+arm64)
+	CROSS_COMPILE=aarch64-linux-gnu-
+	CC=${CROSS_COMPILE}gcc
+	STRIP=${CROSS_COMPILE}strip
+	KERN_ARCH=arm64
+	MAKE_IMAGE=Image.gz
+	QEMU_BIN=qemu-aarch64-static
 ;;
 *)
 	CC=gcc

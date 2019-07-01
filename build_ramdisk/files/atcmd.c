@@ -41,8 +41,13 @@
 
 #define OBSVX1_MODEM "/usr/sbin/obsvx1-modem"
 #define DEFAULT_MODEM "/dev/ttyMODEM0"
+#if defined(CONFIG_OBSGEM1)
+#define POWERSW "/sys/class/gpio/gpio96/value"
+#define RESETSW "/sys/class/gpio/gpio95/value"
+#else
 #define POWERSW "/sys/class/gpio/gpio165/value"
 #define RESETSW "/sys/class/gpio/gpio15/value"
+#endif
 #define POWERSW_U200 "/sys/class/gpio/gpio200/value"
 #define RESETSW_U200 "/sys/class/gpio/gpio202/value"
 #define LED_R "/sys/class/gpio/gpio47/value"

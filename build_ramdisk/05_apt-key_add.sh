@@ -28,7 +28,7 @@
 . `dirname $0`/config.sh
 
 case $DIST in
-stretch)
+stretch|buster)
 	keyfile="public_20171002.key"
 	;;
 *)
