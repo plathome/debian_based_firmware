@@ -66,6 +66,7 @@ obsbx*)
 		fi
 	fi
 
+	apt-get -y install libi2c-dev:i386
 	echo "WD-KEEPALIVE"
 	$CC -o ${BUILDDIR}/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
 
@@ -157,6 +158,7 @@ obsvx*)
 
 	mkdir -p ${BUILDDIR}
 
+	apt-get -y install libi2c-dev
 	echo "WD-KEEPALIVE"
 	$CC -o ${BUILDDIR}/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
 
@@ -230,6 +232,7 @@ obsgem1)
 
 	mkdir -p ${BUILDDIR}
 
+	apt-get -y install libi2c-dev:arm64
 	echo "WD-KEEPALIVE"
 	$CC -o ${BUILDDIR}/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
 
