@@ -46,7 +46,7 @@ apt update
 #
 # host machine development tools
 #
-packages="build-essential libncurses5-dev debootstrap qemu-user-static bc gcc-multilib xz-utils dosfstools libnl-3-dev libssl-dev libusb-dev libasound2-dev libi2c-dev libusb-1.0-0 libusb-1.0-0-dev pkg-config gcc-multilib g++-multilib flex bison libelf-dev rsync"
+packages="build-essential libncurses5-dev debootstrap qemu-user-static bc gcc-multilib xz-utils dosfstools libnl-3-dev libssl-dev libusb-dev libasound2-dev libi2c-dev libusb-1.0-0 libusb-1.0-0-dev pkg-config gcc-multilib g++-multilib flex bison libelf-dev rsync wget"
 apt -y install $packages
 
 #
