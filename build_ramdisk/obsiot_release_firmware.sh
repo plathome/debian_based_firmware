@@ -246,7 +246,7 @@ obsbx1s)
 	ETCINITD=${DISTDIR}/etc/init.d
 	OBSSCRIPTS="${ETCINITD}/obsiot-power ${ETCINITD}/nitz"
 	ETCUDEVRULES=${DISTDIR}/etc/udev/rules.d
-	OBSUDEVRULES="${ETCUDEVRULES}/50-obsbx1-symlink-ttyMODEM.rules"
+	OBSUDEVRULES="${ETCUDEVRULES}/50-obsbx1-symlink-ttyMODEM.rules ${ETCUDEVRULES}/40-rename-ttyrs485.rules "
 	WORK=/tmp/_tmpfs.$$
 	mkdir -p ${WORK}/usr/sbin
 	mkdir -p ${WORK}/etc/init.d
