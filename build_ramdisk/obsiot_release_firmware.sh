@@ -77,7 +77,6 @@ obsbx*)
 	mkdir -p ${MOUNTDIR}/factory
 	;;
 obsvx*)
-	echo "8821AE"
 	case ${KERNEL} in
 #	4.19.*)
 #		LOCAL_VER="-cip1-rt1"
@@ -86,6 +85,7 @@ obsvx*)
 	esac
 	if [ -d ${FILESDIR}/rtl8821ae ]; then
 		if [ "$KERNEL" != "4.19.37" ]; then
+		echo "8821AE"
 		(cd ${FILESDIR}/rtl8821ae; \
 			mkdir -p ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/kernel/drivers/net/wireless/realtek;	\
 			make all install KSRC=${LINUX_SRC} KVER=${KERNEL} MODDESTDIR=${MOUNTDIR}/lib/modules/${KERNEL}/kernel/drivers/net/wireless/realtek MOUNTDIR=${MOUNTDIR} ${COMPRESS_XZ} USER_EXTRA_CFLAGS="-Wno-error=date-time -fno-pic -Wno-pointer-sign")
