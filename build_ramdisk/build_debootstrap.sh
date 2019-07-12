@@ -126,12 +126,20 @@ stretch)
 	;;
 buster)
 	case $TARGET in
-	obsvx*)
+	obsvx1)
 		INCLUDE="openssh-server,xz-utils,parted,insserv,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200,initscripts,gnupg,strace,wget"
 		EXCLUDE="nano"
 		;;
-	obsbx*)
+	obsvx2)
+		INCLUDE="openssh-server,xz-utils,parted,insserv,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200,initscripts,gnupg,strace,wget,apparmor"
+		EXCLUDE="nano"
+		;;
+	obsbx1)
 		INCLUDE="openssh-server,xz-utils,parted,insserv,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200,initscripts,gnupg,strace,wget"
+		EXCLUDE="nano"
+		;;
+	obsbx1s)
+		INCLUDE="openssh-server,xz-utils,parted,insserv,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200,initscripts,gnupg,strace,wget,apparmor"
 		EXCLUDE="nano"
 		;;
 	obsgem*)

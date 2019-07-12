@@ -57,6 +57,8 @@ obsbx*|obsvx*|obsgem*)
 		chmod 755 ${DISTDIR}/etc/init.d/bluetooth
 		chroot ${DISTDIR} /sbin/insserv -rf bluetooth
 		chroot ${DISTDIR} /sbin/insserv bluetooth
+	else
+		chroot ${DISTDIR} /sbin/insserv -rf apparmor
 	fi
 	chmod 755 ${DISTDIR}/etc/init.d/nitz
 	chroot ${DISTDIR} /sbin/insserv -rf nitz
