@@ -176,14 +176,14 @@ obsvx2)
 obsgem1)
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
 	${COMP} -${COMP_LVL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/initrd.${COMP_EXT}
-	mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \
-		-A arm64 -O linux -T kernel -C none -a 0x8008000 -e 0x8008000 \
-		-d ${RELEASEDIR}/Image.gz \
-		${RELEASEDIR}/uImage.${TARGET}
-	mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \
-		-A arm64 -T ramdisk -C gzip \
-		-d ${RELEASEDIR}/initrd.${COMP_EXT} \
-		${RELEASEDIR}/uInitrd.${TARGET}
+#	mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \
+#		-A arm64 -O linux -T kernel -C none -a 0x8008000 -e 0x8008000 \
+#		-d ${RELEASEDIR}/Image.gz \
+#		${RELEASEDIR}/uImage.${TARGET}
+#	mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \
+#		-A arm64 -T ramdisk -C gzip \
+#		-d ${RELEASEDIR}/initrd.${COMP_EXT} \
+#		${RELEASEDIR}/uInitrd.${TARGET}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-obsiot.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/${MAKE_IMAGE} ${RELEASEDIR}/initrd.${COMP_EXT} dummy ${FILESDIR}/flashcfg.sh ${RELEASEDIR}/MD5.${TARGET} dummy)
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}

@@ -297,7 +297,7 @@ buster)
 		DTBFILE=qcom/apq8016-sbc.dtb
 		ISOFILE=debian-10.0.0-arm64-DVD-1.iso
 		DEFCONFIG=obsgem1_defconfig
-		RAMDISK_SIZE=200
+		RAMDISK_SIZE=260
 		PATCHLEVEL=0
 		ARCH=arm64
 		COMP_LVL=9

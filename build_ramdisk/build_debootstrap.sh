@@ -143,7 +143,7 @@ buster)
 		EXCLUDE="nano"
 		;;
 	obsgem*)
-		INCLUDE="openssh-server,xz-utils,parted,insserv,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200,initscripts,gnupg,strace,wget"
+		INCLUDE="openssh-server,xz-utils,parted,insserv,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200,initscripts,gnupg,strace,wget,apparmor"
 		EXCLUDE="nano"
 		;;
 	esac
