@@ -48,8 +48,13 @@
 #define POWERSW "/sys/class/gpio/gpio165/value"
 #define RESETSW "/sys/class/gpio/gpio15/value"
 #endif
+#if defined(CONFIG_OBSGEM1)
+#define POWERSW_U200 "/sys/class/gpio/gpio488/value"
+#define RESETSW_U200 "/sys/class/gpio/gpio490/value"
+#else
 #define POWERSW_U200 "/sys/class/gpio/gpio200/value"
 #define RESETSW_U200 "/sys/class/gpio/gpio202/value"
+#endif
 #define LED_R "/sys/class/gpio/gpio47/value"
 #define LED_G "/sys/class/gpio/gpio48/value"
 #define LED_B "/sys/class/gpio/gpio49/value"
