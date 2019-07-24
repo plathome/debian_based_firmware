@@ -175,7 +175,7 @@ obsvx2)
 	;;
 obsgem1)
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
-	${COMP} -${COMP_LVL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/initrd.${COMP_EXT}
+#	${COMP} -${COMP_LVL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/initrd.${COMP_EXT}
 #	mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \
 #		-A arm64 -O linux -T kernel -C none -a 0x8008000 -e 0x8008000 \
 #		-d ${RELEASEDIR}/Image.gz \

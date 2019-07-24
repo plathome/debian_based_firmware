@@ -1143,7 +1143,7 @@ int main(int ac, char *av[])
 				}
 				else if(strncmp(U200E, MNAME, sizeof(U200E)) == 0){
 //					set_power_u200(0, POWERSW_U200);
-					send_atcmd(fd, AT_AT, buf, 0);
+					send_atcmd(fd, AT_AT, buf, 10);
 					send_atcmd(fd, AT_POFF_U200, buf, 100);
 				}
 				else if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
@@ -1250,6 +1250,7 @@ int main(int ac, char *av[])
 			}
 			else if(strncmp(U200, MNAME, sizeof(U200)) == 0
 					|| strncmp(U200E, MNAME, sizeof(U200E)) == 0){
+//				set_power_u200(0, RESETSW_U200);
 				send_atcmd(fd, AT_AT, buf, 0);
 				send_atcmd(fd, AT_PRST_U200, buf, 0);
 			}
