@@ -290,10 +290,18 @@ buster)
 		ISOFILE=debian-10.0.0-i386-DVD-1.iso
 		ARCH=i386
 		PATCHLEVEL=0
-		RAMDISK_SIZE=260
+		RAMDISK_SIZE=240
+	;;
+	obsbx1)
+		KERNEL=3.10.17
+		ISOFILE=debian-10.0.0-i386-DVD-1.iso
+		ARCH=i386
+		PATCHLEVEL=0
+		RAMDISK_SIZE=240
 	;;
 	obsgem*)
-		KERNEL=4.14.96
+#		KERNEL=4.14.96
+		KERNEL=4.19.58
 		DTBFILE=qcom/apq8016-sbc.dtb
 		ISOFILE=debian-10.0.0-arm64-DVD-1.iso
 		DEFCONFIG=obsgem1_defconfig

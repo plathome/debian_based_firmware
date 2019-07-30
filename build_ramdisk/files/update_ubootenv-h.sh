@@ -86,7 +86,7 @@ obsiot_env(){
 usage(){
 	echo "Update uboot environment for OpenBlocks IoT"
 	echo
-	echo "usage: $(basename $0) [-d]"
+	echo "usage: $(basename $0) [-a]"
 	echo
 	echo "	-a	OpenBlocks IoT default environment"
 	echo "	-h	This messages"

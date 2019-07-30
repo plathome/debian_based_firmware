@@ -93,7 +93,7 @@ obsvx*)
 	fi
 	;;
 obsgem1)
-	LOCAL_VER="-qcomlt-arm64"
+#	LOCAL_VER="-qcomlt-arm64"
 	;;
 *)
 	;;
@@ -184,10 +184,10 @@ obsgem1)
 #		-A arm64 -T ramdisk -C gzip \
 #		-d ${RELEASEDIR}/initrd.${COMP_EXT} \
 #		${RELEASEDIR}/uInitrd.${TARGET}
-	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
-	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-obsiot.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/${MAKE_IMAGE} ${RELEASEDIR}/initrd.${COMP_EXT} dummy ${FILESDIR}/flashcfg.sh ${RELEASEDIR}/MD5.${TARGET} dummy)
-	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
-	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
+#	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
+#	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-obsiot.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/${MAKE_IMAGE} ${RELEASEDIR}/initrd.${COMP_EXT} dummy ${FILESDIR}/flashcfg.sh ${RELEASEDIR}/MD5.${TARGET} dummy)
+#	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
+#	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 
 	# obs tools
 	USRSBIN=${DISTDIR}/usr/sbin
