@@ -67,29 +67,35 @@ obsvx*)
 	echo 362 > $GPIOPATH/unexport
 	;;
 obsgem*)
-	[ ! -e $GPIOPATH/gpio72 ] && echo 72 > $GPIOPATH/export
-	[ ! -e $GPIOPATH/gpio73 ] && echo 73 > $GPIOPATH/export
-	[ ! -e $GPIOPATH/gpio74 ] && echo 74 > $GPIOPATH/export
-	[ ! -e $GPIOPATH/gpio75 ] && echo 75 > $GPIOPATH/export
+	[ `uname -r | grep "^4\.19"` ] && I2CBASE=366
+	D1=$((${I2CBASE}+72))
+	D2=$((${I2CBASE}+73))
+	D3=$((${I2CBASE}+74))
+	D4=$((${I2CBASE}+75))
+	
+	[ ! -e $GPIOPATH/gpio${D1} ] && echo ${D1} > $GPIOPATH/export
+	[ ! -e $GPIOPATH/gpio${D2} ] && echo ${D2} > $GPIOPATH/export
+	[ ! -e $GPIOPATH/gpio${D3} ] && echo ${D3} > $GPIOPATH/export
+	[ ! -e $GPIOPATH/gpio${D4} ] && echo ${D4} > $GPIOPATH/export
 
-	echo in > $GPIOPATH/gpio72/direction
-	echo in > $GPIOPATH/gpio73/direction
-	echo in > $GPIOPATH/gpio74/direction
-	echo in > $GPIOPATH/gpio75/direction
-	echo 1 > $GPIOPATH/gpio72/active_low
-	echo 1 > $GPIOPATH/gpio73/active_low
-	echo 1 > $GPIOPATH/gpio74/active_low
-	echo 0 > $GPIOPATH/gpio75/active_low
+	echo in > $GPIOPATH/gpio${D1}/direction
+	echo in > $GPIOPATH/gpio${D2}/direction
+	echo in > $GPIOPATH/gpio${D3}/direction
+	echo in > $GPIOPATH/gpio${D4}/direction
+	echo 1 > $GPIOPATH/gpio${D1}/active_low
+	echo 1 > $GPIOPATH/gpio${D2}/active_low
+	echo 1 > $GPIOPATH/gpio${D3}/active_low
+	echo 0 > $GPIOPATH/gpio${D4}/active_low
 
-	id0=`cat $GPIOPATH/gpio72/value`
-	id1=`cat $GPIOPATH/gpio73/value`
-	id2=`cat $GPIOPATH/gpio74/value`
-	id3=`cat $GPIOPATH/gpio75/value`
+	id0=`cat $GPIOPATH/gpio${D1}/value`
+	id1=`cat $GPIOPATH/gpio${D2}/value`
+	id2=`cat $GPIOPATH/gpio${D3}/value`
+	id3=`cat $GPIOPATH/gpio${D4}/value`
 
-	echo 72 > $GPIOPATH/unexport
-	echo 73 > $GPIOPATH/unexport
-	echo 74 > $GPIOPATH/unexport
-	echo 75 > $GPIOPATH/unexport
+	echo ${D1} > $GPIOPATH/unexport
+	echo ${D2} > $GPIOPATH/unexport
+	echo ${D3} > $GPIOPATH/unexport
+	echo ${D4} > $GPIOPATH/unexport
 	;;
 *)
 	id0="F"

@@ -43,6 +43,13 @@ NAME=nitz
 SCRIPTNAME=/etc/init.d/$NAME
 GPIOPATH="/sys/class/gpio"
 ATCMD="/usr/sbin/atcmd -d /dev/ttyMODEM0"
+if [ `unmae -r | grep "^4\.19"` ]; then
+	CPUBASE=390
+	I2CBASE=366
+else
+	CPUBASE=0
+	I2CBASE=488
+fi
 
 # Read configuration variable file if it is present
 [ -r /etc/default/openblocks ] && . /etc/default/openblocks
@@ -133,8 +140,9 @@ case "$1" in
 	dpkg-reconfigure openssh-server
 
 	MODEM=`/usr/sbin/obsiot-modem.sh`
-	POW="488"
-	RST="490"
+	RED=$((${CPUBASE}+98))
+	POW=${I2CBASE}
+	RST=$((${I2CBASE}+2))
 	case $MODEM in
 	U200E|UM04)
 		echo ${POW} > $GPIOPATH/export	# 3G modem power
@@ -155,16 +163,16 @@ case "$1" in
 		fi
 		;;
 	EHS6|S710)
-		POW="96"
-		RST="95"
+		POW="$((${CPUBASE}+96))"
+		RST="$((${CPUBASE}+95))"
 		echo ${POW} > $GPIOPATH/export	# 3G modem power
 		echo low > $GPIOPATH/gpio${POW}/direction
 		echo ${RST} > $GPIOPATH/export	# 3G reset
 		echo low > $GPIOPATH/gpio${RST}/direction
 		;;
 	U200)
-		POW="96"
-		RST="95"
+		POW="$((${CPUBASE}+96))"
+		RST="$((${CPUBASE}+95))"
 		echo ${POW} > $GPIOPATH/export	# 3G modem power
 		echo high > $GPIOPATH/gpio${POW}/direction
 		echo ${RST} > $GPIOPATH/export	# 3G reset
@@ -175,14 +183,18 @@ case "$1" in
 	esac
 
 	# set LED, INIT
-	echo 98 > $GPIOPATH/export	# LED red
-	echo out > $GPIOPATH/gpio98/direction
-	echo 99 > $GPIOPATH/export	# LED green
-	echo out > $GPIOPATH/gpio99/direction
-	echo 100 > $GPIOPATH/export	# LED blue
-	echo out > $GPIOPATH/gpio100/direction
-	echo 76 > $GPIOPATH/export	# INIT SW
-	echo both > $GPIOPATH/gpio76/edge
+	RED=$((${CPUBASE}+98))
+	echo ${RED} > $GPIOPATH/export	# LED red
+	echo out > $GPIOPATH/gpio${RED}/direction
+	GRE=$((${CPUBASE}+99))
+	echo ${GRE} > $GPIOPATH/export	# LED green
+	echo out > $GPIOPATH/gpio${GRE}/direction
+	BLU=$((${CPUBASE}+100))
+	echo ${BLU} > $GPIOPATH/export	# LED blue
+	echo out > $GPIOPATH/gpio${BLU}/direction
+	INI=$((${CPUBASE}+76))
+	echo ${INI} > $GPIOPATH/export	# INIT SW
+	echo both > $GPIOPATH/gpio${INI}/edge
 
 	# check init sw
 	grep -q 'noflashcfg=1' /proc/cmdline
