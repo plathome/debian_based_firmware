@@ -93,7 +93,9 @@ obsvx*)
 	fi
 	;;
 obsgem1)
-#	LOCAL_VER="-qcomlt-arm64"
+	if [ "$KERNEL" == "4.14.96" ]; then
+		LOCAL_VER="-qcomlt-arm64"
+	fi
 	;;
 *)
 	;;

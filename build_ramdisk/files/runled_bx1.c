@@ -1,4 +1,4 @@
-//#define DEBUG
+#define DEBUG
 /*	$ssdlinux: runled_bx1.c,v 1.17 2014/01/07 07:19:06 yamagata Exp $	*/
 /*
  * Copyright (c) 2008-2018 Plat'Home CO., LTD.
@@ -38,6 +38,7 @@
 #include <time.h>
 #include <errno.h>
 #include <syslog.h>
+#include <linux/version.h>
 
 #define PID_FILE "/var/run/segled.pid"
 
@@ -46,9 +47,15 @@
 #define SEGLED_DEV_G	"/sys/class/gpio/gpio343/value"
 #define SEGLED_DEV_B	"/sys/class/gpio/gpio344/value"
 #elif defined(CONFIG_OBSGEM1)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 19, 0)
+#define SEGLED_DEV_R   "/sys/class/gpio/gpio488/value"
+#define SEGLED_DEV_G   "/sys/class/gpio/gpio489/value"
+#define SEGLED_DEV_B   "/sys/class/gpio/gpio490/value"
+#else
 #define SEGLED_DEV_R   "/sys/class/gpio/gpio98/value"
 #define SEGLED_DEV_G   "/sys/class/gpio/gpio99/value"
 #define SEGLED_DEV_B   "/sys/class/gpio/gpio100/value"
+#endif
 #else
 #define SEGLED_DEV_R	"/sys/class/gpio/gpio47/value"
 #define SEGLED_DEV_G	"/sys/class/gpio/gpio48/value"

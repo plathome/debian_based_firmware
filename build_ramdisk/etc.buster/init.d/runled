@@ -62,6 +62,8 @@ elif [ "$MODEL" = "obsbx1" -o "$MODEL" = "obsbx1s" ]; then
 	echo "300\n5000\n2" > /tmp/.runled
 elif [ "$MODEL" = "obsvx1" -o "$MODEL" = "obsvx2" ]; then
 	echo "300\n3000\n2\n0" > /tmp/.runled
+elif [ "$MODEL" = "obsgem1" ]; then
+	echo "300\n3000\n2\n0" > /tmp/.runled
 else
 	DAEMON_ARGS=""
 fi

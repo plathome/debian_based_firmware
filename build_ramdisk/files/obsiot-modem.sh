@@ -67,11 +67,11 @@ obsvx*)
 	echo 362 > $GPIOPATH/unexport
 	;;
 obsgem*)
-	[ `uname -r | grep "^4\.19"` ] && I2CBASE=366
-	D1=$((${I2CBASE}+72))
-	D2=$((${I2CBASE}+73))
-	D3=$((${I2CBASE}+74))
-	D4=$((${I2CBASE}+75))
+	[ `uname -r | grep "^4\.19"` ] && CPUBASE=390
+	D1=$((${CPUBASE}+72))
+	D2=$((${CPUBASE}+73))
+	D3=$((${CPUBASE}+74))
+	D4=$((${CPUBASE}+75))
 	
 	[ ! -e $GPIOPATH/gpio${D1} ] && echo ${D1} > $GPIOPATH/export
 	[ ! -e $GPIOPATH/gpio${D2} ] && echo ${D2} > $GPIOPATH/export

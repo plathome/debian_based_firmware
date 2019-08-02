@@ -39,6 +39,7 @@
 #include <string.h>
 #include <sys/epoll.h>
 #include <errno.h>
+#include <linux/version.h>
 
 #if 0
 void donothing(int);
@@ -49,7 +50,11 @@ void die(int);
 #if defined(CONFIG_OBSVX1)
 #define INITSW		"/sys/class/gpio/gpio345/value"
 #elif defined(CONFIG_OBSGEM1)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 19, 0)
+#define INITSW     "/sys/class/gpio/gpio466/value"
+#else
 #define INITSW     "/sys/class/gpio/gpio76/value"
+#endif
 #else
 #define INITSW		"/sys/class/gpio/gpio14/value"
 #endif

@@ -43,7 +43,7 @@ NAME=nitz
 SCRIPTNAME=/etc/init.d/$NAME
 GPIOPATH="/sys/class/gpio"
 ATCMD="/usr/sbin/atcmd -d /dev/ttyMODEM0"
-if [ `unmae -r | grep "^4\.19"` ]; then
+if [ `uname -r | grep "^4\.19"` ]; then
 	CPUBASE=390
 	I2CBASE=366
 else
