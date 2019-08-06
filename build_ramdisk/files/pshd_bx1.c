@@ -34,12 +34,12 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <limits.h>
 #include <time.h>
 #include <signal.h>
 #include <string.h>
 #include <sys/epoll.h>
 #include <errno.h>
-#include <linux/version.h>
 
 #if 0
 void donothing(int);
@@ -50,11 +50,7 @@ void die(int);
 #if defined(CONFIG_OBSVX1)
 #define INITSW		"/sys/class/gpio/gpio345/value"
 #elif defined(CONFIG_OBSGEM1)
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 19, 0)
 #define INITSW     "/sys/class/gpio/gpio466/value"
-#else
-#define INITSW     "/sys/class/gpio/gpio76/value"
-#endif
 #else
 #define INITSW		"/sys/class/gpio/gpio14/value"
 #endif
@@ -64,9 +60,22 @@ void die(int);
 #define RED		1
 #define YELLOW	3
 
+#if defined(CONFIG_OBSVX1)
+#define SEGLED_DEV_R	"/sys/class/gpio/gpio342/value"
+#define SEGLED_DEV_G	"/sys/class/gpio/gpio343/value"
+#define SEGLED_DEV_B	"/sys/class/gpio/gpio344/value"
+#elif defined(CONFIG_OBSGEM1)
+#define SEGLED_R 98
+#define SEGLED_G 99
+#define SEGLED_B 100
+#define SEGLED_DEV_R   "/sys/class/gpio/gpio%d/value"
+#define SEGLED_DEV_G   "/sys/class/gpio/gpio%d/value"
+#define SEGLED_DEV_B   "/sys/class/gpio/gpio%d/value"
+#else
 #define SEGLED_DEV_R	"/sys/class/gpio/gpio47/value"
 #define SEGLED_DEV_G	"/sys/class/gpio/gpio48/value"
 #define SEGLED_DEV_B	"/sys/class/gpio/gpio49/value"
+#endif
 
 #ifdef DEBUG
 #define D(...) {printf("%d:", __LINE__); printf(__VA_ARGS__);}
@@ -75,24 +84,43 @@ void die(int);
 #endif
 
 static int flag = 1;	// exit() flag
+#if defined(CONFIG_OBSGEM1)
+static int cpugpio = 390;
+#endif
 
 void setLED(char* b, char* g, char* r)
 {
 	int fd;
+#if defined(CONFIG_OBSGEM1)
+	char buf[256];
 
-	if ((fd = open(SEGLED_DEV_R, O_RDWR)) < 0) {
+	sprintf(buf, SEGLED_DEV_R, cpugpio+SEGLED_R);
+#else
+	strcpy(buf, SEGLED_DEV_R);
+#endif
+	if ((fd = open(buf, O_RDWR)) < 0) {
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		exit(-1);
 	}
 	write(fd, r, 1);
 	close(fd);
-	if ((fd = open(SEGLED_DEV_G, O_RDWR)) < 0) {
+#if defined(CONFIG_OBSGEM1)
+	sprintf(buf, SEGLED_DEV_G, cpugpio+SEGLED_G);
+#else
+	strcpy(buf, SEGLED_DEV_G);
+#endif
+	if ((fd = open(buf, O_RDWR)) < 0) {
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		exit(-1);
 	}
 	write(fd, g, 1);
 	close(fd);
-	if ((fd = open(SEGLED_DEV_B, O_RDWR)) < 0) {
+#if defined(CONFIG_OBSGEM1)
+	sprintf(buf, SEGLED_DEV_B, cpugpio+SEGLED_B);
+#else
+	strcpy(buf, SEGLED_DEV_B);
+#endif
+	if ((fd = open(buf, O_RDWR)) < 0) {
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		exit(-1);
 	}
@@ -235,7 +263,11 @@ void watch_pushsw(void)
 	close(epfd);
 }
 
+#if defined(CONFIG_OBSGEM1)
+int main(int ac, char* av[])
+#else
 int main(void)
+#endif
 {
 	int pid, fd;
 
@@ -243,6 +275,15 @@ int main(void)
 		fprintf(stderr, "must run super user\n");
 		return 1;
 	}
+#if defined(CONFIG_OBSGEM1)
+	if(ac != 2){
+		cpugpio = (int)strtol(av[1], NULL, 10);
+		if(!cpugpio || cpugpio == LONG_MAX || cpugpio == LONG_MIN){
+			printf("%d: parameter error\n", __LINE__);
+			return 1;
+		}
+	}
+#endif
 
 	if((pid = fork())){
 		/* parent */

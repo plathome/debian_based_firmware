@@ -63,6 +63,7 @@ elif [ "$MODEL" = "obsbx1" -o "$MODEL" = "obsbx1s" ]; then
 elif [ "$MODEL" = "obsvx1" -o "$MODEL" = "obsvx2" ]; then
 	echo "300\n3000\n2\n0" > /tmp/.runled
 elif [ "$MODEL" = "obsgem1" ]; then
+	[ `uname -r | grep "^4\.19"` ] && DAEMON_ARGS="390"
 	echo "300\n3000\n2\n0" > /tmp/.runled
 else
 	DAEMON_ARGS=""

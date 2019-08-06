@@ -140,7 +140,6 @@ case "$1" in
 	dpkg-reconfigure openssh-server
 
 	MODEM=`/usr/sbin/obsiot-modem.sh`
-	RED=$((${CPUBASE}+98))
 	POW=${I2CBASE}
 	RST=$((${I2CBASE}+2))
 	case $MODEM in
