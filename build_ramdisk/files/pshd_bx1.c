@@ -91,8 +91,8 @@ static int cpugpio = 390;
 void setLED(char* b, char* g, char* r)
 {
 	int fd;
-#if defined(CONFIG_OBSGEM1)
 	char buf[256];
+#if defined(CONFIG_OBSGEM1)
 
 	sprintf(buf, SEGLED_DEV_R, cpugpio+SEGLED_R);
 #else

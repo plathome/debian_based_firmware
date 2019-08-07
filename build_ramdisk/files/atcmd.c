@@ -181,8 +181,8 @@ int wait_device(int mode)
 int set_power(char *val)
 {
 	int fd;
-#if defined(CONFIG_OBSGEM1)
 	char buf[256];
+#if defined(CONFIG_OBSGEM1)
 
 	sprintf(buf, POWERSW, cpugpio+PWR_CPU);
 #else
@@ -249,6 +249,7 @@ int set_power_kym11(int val)
 	system("/usr/sbin/obsvx1-modem power low");
 #else
 	int fd;
+	char buf[256];
 
 	if(val == 1 && access(MODEM, F_OK) == 0){
 		/* already Power On */
@@ -260,7 +261,6 @@ int set_power_kym11(int val)
 	}
 
 #if defined(CONFIG_OBSGEM1)
-	char buf[256];
 
 	sprintf(buf, POWERSW, i2cgpio+PWR_GPIO);
 #else
@@ -1203,8 +1203,6 @@ int main(int ac, char *av[])
 					|| strncmp(S710, MNAME, sizeof(S710)) == 0){
 				if(access(MODEM, F_OK) == 0){
 #if defined(CONFIG_OBSGEM1)
-						char buf[256];
-
 						sprintf(buf, RESETSW, cpugpio+RST_CPU);
 #else
 						strcpy(buf, RESETSW);
@@ -1218,8 +1216,6 @@ int main(int ac, char *av[])
 			}
 			else if(strncmp(U200, MNAME, sizeof(U200)) == 0){
 #if defined(CONFIG_OBSGEM1)
-					char buf[256];
-
 					sprintf(buf, RESETSW, cpugpio+RST_CPU);
 #else
 					strcpy(buf, RESETSW);
@@ -1228,8 +1224,6 @@ int main(int ac, char *av[])
 			}
 			else if(strncmp(U200E, MNAME, sizeof(U200E)) == 0){
 #if defined(CONFIG_OBSGEM1)
-					char buf[256];
-
 					sprintf(buf, RESETSW_U200, cpugpio+RST_GPIO);
 #else
 					strcpy(buf, RESETSW_U200);
@@ -1240,8 +1234,6 @@ int main(int ac, char *av[])
 				if(access(MODEM, F_OK) == 0){
 					end_modem(&fd);
 #if defined(CONFIG_OBSGEM1)
-					char buf[256];
-
 					sprintf(buf, RESETSW_U200, cpugpio+RST_GPIO);
 #else
 					strcpy(buf, RESETSW_U200);
@@ -1256,8 +1248,6 @@ int main(int ac, char *av[])
 			else if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
 				if(access(MODEM, F_OK) == 0){
 #if defined(CONFIG_OBSGEM1)
-					char buf[256];
-
 					sprintf(buf, RESETSW_U200, cpugpio+RST_GPIO);
 #else
 					strcpy(buf, RESETSW_U200);
@@ -1272,8 +1262,6 @@ int main(int ac, char *av[])
 			else if(strncmp(S710E, MNAME, sizeof(S710E)) == 0){
 				if(access(MODEM, F_OK) == 0){
 #if defined(CONFIG_OBSGEM1)
-					char buf[256];
-
 					sprintf(buf, RESETSW_U200, cpugpio+RST_GPIO);
 #else
 					strcpy(buf, RESETSW_U200);

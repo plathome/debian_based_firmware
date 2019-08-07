@@ -300,8 +300,8 @@ buster)
 		RAMDISK_SIZE=240
 	;;
 	obsgem*)
-		KERNEL=4.14.96
-#		KERNEL=4.19.60
+#		KERNEL=4.14.96
+		KERNEL=4.19.60
 		DTBFILE=qcom/apq8016-sbc.dtb
 		ISOFILE=debian-10.0.0-arm64-DVD-1.iso
 		DEFCONFIG=obsgem1_defconfig
