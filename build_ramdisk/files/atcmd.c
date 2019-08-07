@@ -183,7 +183,6 @@ int set_power(char *val)
 	int fd;
 	char buf[256];
 #if defined(CONFIG_OBSGEM1)
-
 	sprintf(buf, POWERSW, cpugpio+PWR_CPU);
 #else
 	strcpy(buf, POWERSW);
@@ -209,6 +208,7 @@ int set_power_u200(int val, char *gpio_pin)
 	system("/usr/sbin/obsvx1-modem power high");
 #else
 	int fd;
+	char buf[256];
 
 	if(val == 1 && access(MODEM, F_OK) == 0){
 		/* already Power On */
@@ -219,7 +219,12 @@ int set_power_u200(int val, char *gpio_pin)
 		return 0;
 	}
 
-	if((fd = open(gpio_pin, O_RDWR)) == -1){
+#if defined(CONFIG_OBSGEM1)
+	sprintf(buf, POWERSW, i2cgpio+PWR_GPIO);
+#else
+	strcpy(buf, gpio_pin);
+#endif
+	if((fd = open(buf, O_RDWR)) == -1){
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		return -1;
 	}
@@ -1224,7 +1229,7 @@ int main(int ac, char *av[])
 			}
 			else if(strncmp(U200E, MNAME, sizeof(U200E)) == 0){
 #if defined(CONFIG_OBSGEM1)
-					sprintf(buf, RESETSW_U200, cpugpio+RST_GPIO);
+					sprintf(buf, RESETSW_U200, i2cgpio+RST_GPIO);
 #else
 					strcpy(buf, RESETSW_U200);
 #endif
@@ -1234,7 +1239,7 @@ int main(int ac, char *av[])
 				if(access(MODEM, F_OK) == 0){
 					end_modem(&fd);
 #if defined(CONFIG_OBSGEM1)
-					sprintf(buf, RESETSW_U200, cpugpio+RST_GPIO);
+					sprintf(buf, RESETSW_U200, i2cgpio+RST_GPIO);
 #else
 					strcpy(buf, RESETSW_U200);
 #endif
@@ -1248,7 +1253,7 @@ int main(int ac, char *av[])
 			else if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
 				if(access(MODEM, F_OK) == 0){
 #if defined(CONFIG_OBSGEM1)
-					sprintf(buf, RESETSW_U200, cpugpio+RST_GPIO);
+					sprintf(buf, RESETSW_U200, i2cgpio+RST_GPIO);
 #else
 					strcpy(buf, RESETSW_U200);
 #endif
@@ -1262,7 +1267,7 @@ int main(int ac, char *av[])
 			else if(strncmp(S710E, MNAME, sizeof(S710E)) == 0){
 				if(access(MODEM, F_OK) == 0){
 #if defined(CONFIG_OBSGEM1)
-					sprintf(buf, RESETSW_U200, cpugpio+RST_GPIO);
+					sprintf(buf, RESETSW_U200, i2cgpio+RST_GPIO);
 #else
 					strcpy(buf, RESETSW_U200);
 #endif

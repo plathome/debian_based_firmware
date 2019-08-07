@@ -1,3 +1,4 @@
+//#define DEBUG
 /*	$ssdlinux: pshd_bx1.c,v 0.01 2014/01/07 07:19:59 yamagata Exp $	*/
 /*
  * Copyright (c) 2009-2018 Plat'Home CO., LTD.
@@ -50,7 +51,8 @@ void die(int);
 #if defined(CONFIG_OBSVX1)
 #define INITSW		"/sys/class/gpio/gpio345/value"
 #elif defined(CONFIG_OBSGEM1)
-#define INITSW     "/sys/class/gpio/gpio466/value"
+#define INIT_OFF 76
+#define INITSW     "/sys/class/gpio/gpio%d/value"
 #else
 #define INITSW		"/sys/class/gpio/gpio14/value"
 #endif
@@ -85,7 +87,7 @@ void die(int);
 
 static int flag = 1;	// exit() flag
 #if defined(CONFIG_OBSGEM1)
-static int cpugpio = 390;
+static int cpugpio = 0;
 #endif
 
 void setLED(char* b, char* g, char* r)
@@ -200,13 +202,19 @@ void watch_pushsw(void)
 {
 	struct epoll_event ev;
 	int fd, epfd, val, ret;
+	char buf[256];
 
 	if((epfd = epoll_create(1)) == -1){
-//D("%d\n", __LINE__);
+D("%d\n", __LINE__);
 		return;
 	}
-	if((fd = open(INITSW, O_RDWR | O_NONBLOCK)) == -1){
-//D("%d\n", __LINE__);
+#if defined(CONFIG_OBSGEM1)
+	sprintf(buf, INITSW, cpugpio+INIT_OFF);
+#else
+	strcpy(buf, INITSW);
+#endif
+	if((fd = open(buf, O_RDWR | O_NONBLOCK)) == -1){
+D("%d\n", __LINE__);
 		close(epfd);
 		return;
 	}
@@ -216,30 +224,30 @@ void watch_pushsw(void)
 	ev.data.fd = fd;
 
 	if(epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &ev) == -1){
-//D("%d\n", __LINE__);
+D("%d\n", __LINE__);
 		return;
 	}
 	while(flag){
-//D("%d\n", __LINE__);
+D("%d\n", __LINE__);
 		ret = getINITSW(epfd, fd, -1, &val);
-//D("ret=%d val=%d\n", ret, val);
+D("ret=%d val=%d\n", ret, val);
 		if(ret == 0){
 			continue;
 		}
 		else if(ret == 1 && val == 0){
 			ret = getINITSW(epfd, fd, REBOOT, &val);
-//D("ret=%d val=%d\n", ret, val);
+D("ret=%d val=%d\n", ret, val);
 			if(ret == 1 || ret == -1){
-//D("ret=%d\n", ret);
+D("ret=%d\n", ret);
 				continue;
 			}
 			//kill_runled();
 			//setLED("0", "1", "1");
-//D("%d\n", __LINE__);
+D("%d\n", __LINE__);
 			ret = getINITSW(epfd, fd, HALT, &val);
-//D("ret=%d val=%d\n", ret, val);
+D("ret=%d val=%d\n", ret, val);
 			if(ret == 1 && val == 1){
-//D("REBOOT!!\n");
+D("REBOOT!!\n");
 				system_exec();
 			}
 			else if(ret == 0){
@@ -248,14 +256,14 @@ void watch_pushsw(void)
 
 			val = 0;
 			do{
-//D("%d\n", __LINE__);
+D("%d\n", __LINE__);
 				ret = getINITSW(epfd, fd, 1000, &val);
-//D("ret=%d val=%d\n", ret, val);
+D("ret=%d val=%d\n", ret, val);
 				if(ret == -1){
 					break;
 				}
 			} while(!ret);
-//D("HALT!!\n");
+D("HALT!!\n");
 			system_exec();
 		}
 	}
@@ -276,7 +284,7 @@ int main(void)
 		return 1;
 	}
 #if defined(CONFIG_OBSGEM1)
-	if(ac != 2){
+	if(ac == 2){
 		cpugpio = (int)strtol(av[1], NULL, 10);
 		if(!cpugpio || cpugpio == LONG_MAX || cpugpio == LONG_MIN){
 			printf("%d: parameter error\n", __LINE__);
