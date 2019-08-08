@@ -5,7 +5,7 @@
 # * /usr/sbin/flashcfg
 
 # BEGIN: don't edit
-MODEL="obsvx1"
+MODEL="obsvx2"
 
 FIRM_DIR="BOOT"
 SAVE_DIR="BOOT"
