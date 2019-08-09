@@ -273,7 +273,7 @@ stretch)
 	esac
 ;;
 buster)
-	KERNEL=4.19.37
+	KERNEL=4.19.60
 	case ${TARGET} in
 	obsvx1)
 		ISOFILE=debian-10.0.0-amd64-DVD-1.iso
@@ -300,8 +300,7 @@ buster)
 		RAMDISK_SIZE=240
 	;;
 	obsgem*)
-		KERNEL=4.14.96
-#		KERNEL=4.19.60
+#		KERNEL=4.14.96
 		DTBFILE=qcom/apq8016-sbc.dtb
 		ISOFILE=debian-10.0.0-arm64-DVD-1.iso
 		DEFCONFIG=obsgem1_defconfig
