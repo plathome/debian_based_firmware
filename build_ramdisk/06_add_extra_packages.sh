@@ -49,4 +49,9 @@ if [ "$DIST" == "buster" ]; then
 	chroot ${DISTDIR} insserv -r rng-tools
 	chroot ${DISTDIR} insserv -r hostapd
 	chroot ${DISTDIR} systemctl disable hostapd
+
+	if [ "$TARGET" == "obsbx1s" -o "$TARGET" == "obsbx1" ]; then
+		chroot ${DISTDIR} update-alternatives --set iptables /usr/sbin/iptables-legacy
+		chroot ${DISTDIR} update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+	fi
 fi
