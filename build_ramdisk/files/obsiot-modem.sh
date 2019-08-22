@@ -67,35 +67,29 @@ obsvx*)
 	echo 362 > $GPIOPATH/unexport
 	;;
 obsgem*)
-	[ `uname -r | grep "^4\.19"` ] && CPUBASE=390
-	D1=$((${CPUBASE}+72))
-	D2=$((${CPUBASE}+73))
-	D3=$((${CPUBASE}+74))
-	D4=$((${CPUBASE}+75))
-	
-	[ ! -e $GPIOPATH/gpio${D1} ] && echo ${D1} > $GPIOPATH/export
-	[ ! -e $GPIOPATH/gpio${D2} ] && echo ${D2} > $GPIOPATH/export
-	[ ! -e $GPIOPATH/gpio${D3} ] && echo ${D3} > $GPIOPATH/export
-	[ ! -e $GPIOPATH/gpio${D4} ] && echo ${D4} > $GPIOPATH/export
+	[ ! -e $GPIOPATH/gpio462 ] && echo 462 > $GPIOPATH/export
+	[ ! -e $GPIOPATH/gpio463 ] && echo 463 > $GPIOPATH/export
+	[ ! -e $GPIOPATH/gpio464 ] && echo 464 > $GPIOPATH/export
+	[ ! -e $GPIOPATH/gpio465 ] && echo 465 > $GPIOPATH/export
 
-	echo in > $GPIOPATH/gpio${D1}/direction
-	echo in > $GPIOPATH/gpio${D2}/direction
-	echo in > $GPIOPATH/gpio${D3}/direction
-	echo in > $GPIOPATH/gpio${D4}/direction
-	echo 1 > $GPIOPATH/gpio${D1}/active_low
-	echo 1 > $GPIOPATH/gpio${D2}/active_low
-	echo 1 > $GPIOPATH/gpio${D3}/active_low
-	echo 0 > $GPIOPATH/gpio${D4}/active_low
+	echo in > $GPIOPATH/gpio462/direction
+	echo in > $GPIOPATH/gpio463/direction
+	echo in > $GPIOPATH/gpio464/direction
+	echo in > $GPIOPATH/gpio465/direction
+	echo 1 > $GPIOPATH/gpio462/active_low
+	echo 1 > $GPIOPATH/gpio463/active_low
+	echo 1 > $GPIOPATH/gpio464/active_low
+	echo 0 > $GPIOPATH/gpio465/active_low
 
-	id0=`cat $GPIOPATH/gpio${D1}/value`
-	id1=`cat $GPIOPATH/gpio${D2}/value`
-	id2=`cat $GPIOPATH/gpio${D3}/value`
-	id3=`cat $GPIOPATH/gpio${D4}/value`
+	id0=`cat $GPIOPATH/gpio462/value`
+	id1=`cat $GPIOPATH/gpio463/value`
+	id2=`cat $GPIOPATH/gpio464/value`
+	id3=`cat $GPIOPATH/gpio465/value`
 
-	echo ${D1} > $GPIOPATH/unexport
-	echo ${D2} > $GPIOPATH/unexport
-	echo ${D3} > $GPIOPATH/unexport
-	echo ${D4} > $GPIOPATH/unexport
+	echo 462 > $GPIOPATH/unexport
+	echo 463 > $GPIOPATH/unexport
+	echo 464 > $GPIOPATH/unexport
+	echo 465 > $GPIOPATH/unexport
 	;;
 *)
 	id0="F"

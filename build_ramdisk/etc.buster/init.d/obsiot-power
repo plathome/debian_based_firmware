@@ -41,7 +41,11 @@ PATH=/sbin:/usr/sbin:/bin:/usr/bin
 DESC="battery monitaring daemon for obsiot series"
 NAME=obsiot-power
 DAEMON=/usr/sbin/$NAME
-DAEMON_ARGS="-i 60 -t 300 -C /sbin/halt"
+[ -f /etc/default/openblocks ] && . /etc/default/openblocks
+case $MODEL in
+obsvx*) DAEMON_ARGS="-i 60 -t 300 -C /sbin/poweroff" ;;
+*) DAEMON_ARGS="-i 60 -t 300 -C /sbin/halt" ;;
+esac
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 
@@ -60,18 +64,21 @@ SCRIPTNAME=/etc/init.d/$NAME
 
 VERBOSE=yes
 
-[ -f /etc/default/openblocks ] && . /etc/default/openblocks
-
 case $MODEL in
 obsvx*)
 	POWER_USB=366
 	POWER_AC=367
 	POWER_DC=365
 	;;
-obsbx1)
+obsbx*)
 	POWER_USB=40
 	POWER_AC=41
 	POWER_DC=42
+	;;
+obsgem*)
+	POWER_USB=500
+	POWER_AC=503
+	POWER_DC=504
 	;;
 *)
 	exit 1

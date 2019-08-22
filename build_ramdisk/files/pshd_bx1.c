@@ -1,4 +1,3 @@
-//#define DEBUG
 /*	$ssdlinux: pshd_bx1.c,v 0.01 2014/01/07 07:19:59 yamagata Exp $	*/
 /*
  * Copyright (c) 2009-2018 Plat'Home CO., LTD.
@@ -35,12 +34,12 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <limits.h>
 #include <time.h>
 #include <signal.h>
 #include <string.h>
 #include <sys/epoll.h>
 #include <errno.h>
+#include <linux/version.h>
 
 #if 0
 void donothing(int);
@@ -51,8 +50,7 @@ void die(int);
 #if defined(CONFIG_OBSVX1)
 #define INITSW		"/sys/class/gpio/gpio345/value"
 #elif defined(CONFIG_OBSGEM1)
-#define INIT_OFF 76
-#define INITSW     "/sys/class/gpio/gpio%d/value"
+#define INITSW     "/sys/class/gpio/gpio466/value"
 #else
 #define INITSW		"/sys/class/gpio/gpio14/value"
 #endif
@@ -62,18 +60,7 @@ void die(int);
 #define RED		1
 #define YELLOW	3
 
-#if defined(CONFIG_OBSVX1)
-#define SEGLED_DEV_R	"/sys/class/gpio/gpio342/value"
-#define SEGLED_DEV_G	"/sys/class/gpio/gpio343/value"
-#define SEGLED_DEV_B	"/sys/class/gpio/gpio344/value"
-#elif defined(CONFIG_OBSGEM1)
-#define SEGLED_R 98
-#define SEGLED_G 99
-#define SEGLED_B 100
-#define SEGLED_DEV_R   "/sys/class/gpio/gpio%d/value"
-#define SEGLED_DEV_G   "/sys/class/gpio/gpio%d/value"
-#define SEGLED_DEV_B   "/sys/class/gpio/gpio%d/value"
-#else
+#if 0
 #define SEGLED_DEV_R	"/sys/class/gpio/gpio47/value"
 #define SEGLED_DEV_G	"/sys/class/gpio/gpio48/value"
 #define SEGLED_DEV_B	"/sys/class/gpio/gpio49/value"
@@ -86,49 +73,32 @@ void die(int);
 #endif
 
 static int flag = 1;	// exit() flag
-#if defined(CONFIG_OBSGEM1)
-static int cpugpio = 0;
-#endif
 
+#if 0
 void setLED(char* b, char* g, char* r)
 {
 	int fd;
-	char buf[256];
-#if defined(CONFIG_OBSGEM1)
 
-	sprintf(buf, SEGLED_DEV_R, cpugpio+SEGLED_R);
-#else
-	strcpy(buf, SEGLED_DEV_R);
-#endif
-	if ((fd = open(buf, O_RDWR)) < 0) {
+	if ((fd = open(SEGLED_DEV_R, O_RDWR)) < 0) {
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		exit(-1);
 	}
 	write(fd, r, 1);
 	close(fd);
-#if defined(CONFIG_OBSGEM1)
-	sprintf(buf, SEGLED_DEV_G, cpugpio+SEGLED_G);
-#else
-	strcpy(buf, SEGLED_DEV_G);
-#endif
-	if ((fd = open(buf, O_RDWR)) < 0) {
+	if ((fd = open(SEGLED_DEV_G, O_RDWR)) < 0) {
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		exit(-1);
 	}
 	write(fd, g, 1);
 	close(fd);
-#if defined(CONFIG_OBSGEM1)
-	sprintf(buf, SEGLED_DEV_B, cpugpio+SEGLED_B);
-#else
-	strcpy(buf, SEGLED_DEV_B);
-#endif
-	if ((fd = open(buf, O_RDWR)) < 0) {
+	if ((fd = open(SEGLED_DEV_B, O_RDWR)) < 0) {
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		exit(-1);
 	}
 	write(fd, b, 1);
 	close(fd);
 }
+#endif
 
 void kill_runled(void)
 {
@@ -202,19 +172,13 @@ void watch_pushsw(void)
 {
 	struct epoll_event ev;
 	int fd, epfd, val, ret;
-	char buf[256];
 
 	if((epfd = epoll_create(1)) == -1){
-D("%d\n", __LINE__);
+//D("%d\n", __LINE__);
 		return;
 	}
-#if defined(CONFIG_OBSGEM1)
-	sprintf(buf, INITSW, cpugpio+INIT_OFF);
-#else
-	strcpy(buf, INITSW);
-#endif
-	if((fd = open(buf, O_RDWR | O_NONBLOCK)) == -1){
-D("%d\n", __LINE__);
+	if((fd = open(INITSW, O_RDWR | O_NONBLOCK)) == -1){
+//D("%d\n", __LINE__);
 		close(epfd);
 		return;
 	}
@@ -224,30 +188,30 @@ D("%d\n", __LINE__);
 	ev.data.fd = fd;
 
 	if(epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &ev) == -1){
-D("%d\n", __LINE__);
+//D("%d\n", __LINE__);
 		return;
 	}
 	while(flag){
-D("%d\n", __LINE__);
+//D("%d\n", __LINE__);
 		ret = getINITSW(epfd, fd, -1, &val);
-D("ret=%d val=%d\n", ret, val);
+//D("ret=%d val=%d\n", ret, val);
 		if(ret == 0){
 			continue;
 		}
 		else if(ret == 1 && val == 0){
 			ret = getINITSW(epfd, fd, REBOOT, &val);
-D("ret=%d val=%d\n", ret, val);
+//D("ret=%d val=%d\n", ret, val);
 			if(ret == 1 || ret == -1){
-D("ret=%d\n", ret);
+//D("ret=%d\n", ret);
 				continue;
 			}
 			//kill_runled();
 			//setLED("0", "1", "1");
-D("%d\n", __LINE__);
+//D("%d\n", __LINE__);
 			ret = getINITSW(epfd, fd, HALT, &val);
-D("ret=%d val=%d\n", ret, val);
+//D("ret=%d val=%d\n", ret, val);
 			if(ret == 1 && val == 1){
-D("REBOOT!!\n");
+//D("REBOOT!!\n");
 				system_exec();
 			}
 			else if(ret == 0){
@@ -256,14 +220,14 @@ D("REBOOT!!\n");
 
 			val = 0;
 			do{
-D("%d\n", __LINE__);
+//D("%d\n", __LINE__);
 				ret = getINITSW(epfd, fd, 1000, &val);
-D("ret=%d val=%d\n", ret, val);
+//D("ret=%d val=%d\n", ret, val);
 				if(ret == -1){
 					break;
 				}
 			} while(!ret);
-D("HALT!!\n");
+//D("HALT!!\n");
 			system_exec();
 		}
 	}
@@ -271,11 +235,7 @@ D("HALT!!\n");
 	close(epfd);
 }
 
-#if defined(CONFIG_OBSGEM1)
-int main(int ac, char* av[])
-#else
 int main(void)
-#endif
 {
 	int pid, fd;
 
@@ -283,15 +243,6 @@ int main(void)
 		fprintf(stderr, "must run super user\n");
 		return 1;
 	}
-#if defined(CONFIG_OBSGEM1)
-	if(ac == 2){
-		cpugpio = (int)strtol(av[1], NULL, 10);
-		if(!cpugpio || cpugpio == LONG_MAX || cpugpio == LONG_MIN){
-			printf("%d: parameter error\n", __LINE__);
-			return 1;
-		}
-	}
-#endif
 
 	if((pid = fork())){
 		/* parent */

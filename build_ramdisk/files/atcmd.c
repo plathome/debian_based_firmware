@@ -42,23 +42,22 @@
 #define OBSVX1_MODEM "/usr/sbin/obsvx1-modem"
 #define DEFAULT_MODEM "/dev/ttyMODEM0"
 #if defined(CONFIG_OBSGEM1)
-#define PWR_CPU 96
-#define RST_CPU 95
-#define POWERSW "/sys/class/gpio/gpio%d/value"
-#define RESETSW "/sys/class/gpio/gpio%d/value"
+#define POWERSW "/sys/class/gpio/gpio96/value"
+#define RESETSW "/sys/class/gpio/gpio95/value"
 #else
 #define POWERSW "/sys/class/gpio/gpio165/value"
 #define RESETSW "/sys/class/gpio/gpio15/value"
 #endif
 #if defined(CONFIG_OBSGEM1)
-#define PWR_GPIO 0
-#define RST_GPIO 2
-#define POWERSW_U200 "/sys/class/gpio/gpio%d/value"
-#define RESETSW_U200 "/sys/class/gpio/gpio%d/value"
+#define POWERSW_U200 "/sys/class/gpio/gpio488/value"
+#define RESETSW_U200 "/sys/class/gpio/gpio490/value"
 #else
 #define POWERSW_U200 "/sys/class/gpio/gpio200/value"
 #define RESETSW_U200 "/sys/class/gpio/gpio202/value"
 #endif
+#define LED_R "/sys/class/gpio/gpio47/value"
+#define LED_G "/sys/class/gpio/gpio48/value"
+#define LED_B "/sys/class/gpio/gpio49/value"
 #define TIMEOUT 10
 #define BUFSZ 2048
 
@@ -117,10 +116,6 @@
 #define EXIST 0
 #define NOEXIST -1
 
-#if defined(CONFIG_OBSGEM1)
-static int cpugpio = 390;
-static int i2cgpio = 366;
-#endif
 static struct termios old;
 static char MODEM[32];
 static char MNAME[16];
@@ -181,13 +176,8 @@ int wait_device(int mode)
 int set_power(char *val)
 {
 	int fd;
-	char buf[256];
-#if defined(CONFIG_OBSGEM1)
-	sprintf(buf, POWERSW, cpugpio+PWR_CPU);
-#else
-	strcpy(buf, POWERSW);
-#endif
-	if((fd = open(buf, O_RDWR)) == -1){
+
+	if((fd = open(POWERSW, O_RDWR)) == -1){
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		return -1;
 	}
@@ -208,7 +198,6 @@ int set_power_u200(int val, char *gpio_pin)
 	system("/usr/sbin/obsvx1-modem power high");
 #else
 	int fd;
-	char buf[256];
 
 	if(val == 1 && access(MODEM, F_OK) == 0){
 		/* already Power On */
@@ -219,12 +208,7 @@ int set_power_u200(int val, char *gpio_pin)
 		return 0;
 	}
 
-#if defined(CONFIG_OBSGEM1)
-	sprintf(buf, POWERSW, i2cgpio+PWR_GPIO);
-#else
-	strcpy(buf, gpio_pin);
-#endif
-	if((fd = open(buf, O_RDWR)) == -1){
+	if((fd = open(gpio_pin, O_RDWR)) == -1){
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		return -1;
 	}
@@ -254,7 +238,6 @@ int set_power_kym11(int val)
 	system("/usr/sbin/obsvx1-modem power low");
 #else
 	int fd;
-	char buf[256];
 
 	if(val == 1 && access(MODEM, F_OK) == 0){
 		/* already Power On */
@@ -265,13 +248,7 @@ int set_power_kym11(int val)
 		return 0;
 	}
 
-#if defined(CONFIG_OBSGEM1)
-
-	sprintf(buf, POWERSW, i2cgpio+PWR_GPIO);
-#else
-	strcpy(buf, POWERSW);
-#endif
-	if((fd = open(buf, O_RDWR)) == -1){
+	if((fd = open(POWERSW_U200, O_RDWR)) == -1){
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		return -1;
 	}
@@ -337,7 +314,8 @@ int set_power_s710(int val, char *gpio_pin)
 int set_reset(char *gpio_reset)
 {
 	int fd;
-	if((fd = open(RESETSW, O_RDWR)) == -1){
+
+	if((fd = open(gpio_reset, O_RDWR)) == -1){
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		return -1;
 	}
@@ -1074,22 +1052,6 @@ int main(int ac, char *av[])
 		memcpy(MODEM, DEFAULT_MODEM, sizeof(DEFAULT_MODEM));
 		i = 1;
 	}
-#if defined(CONFIG_OBSGEM1)
-	if((fp = popen("uname -r", "r")) == NULL){
-		printf("%d: uname command error\n", __LINE__);
-		return 1;
-	}
-	fgets(buf, BUFSZ-1, fp);
-	fclose(fp);
-	if(strstr(buf, "4.19")){
-		cpugpio = 390;
-		i2cgpio = 366;
-	}
-	else{
-		cpugpio = 0;
-		i2cgpio = 488;
-	}
-#endif
 
 	if((fp = popen("/usr/sbin/obsiot-modem.sh", "r")) == NULL){
 		printf("%d: %s\n", __LINE__, strerror(errno));
@@ -1207,12 +1169,7 @@ int main(int ac, char *av[])
 			if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0
 					|| strncmp(S710, MNAME, sizeof(S710)) == 0){
 				if(access(MODEM, F_OK) == 0){
-#if defined(CONFIG_OBSGEM1)
-						sprintf(buf, RESETSW, cpugpio+RST_CPU);
-#else
-						strcpy(buf, RESETSW);
-#endif
-					set_reset(buf);
+					set_reset(RESETSW);
 				}
 				else{
 					printf("%d: Can not Reset at the power off.\n", __LINE__);
@@ -1220,30 +1177,15 @@ int main(int ac, char *av[])
 				}
 			}
 			else if(strncmp(U200, MNAME, sizeof(U200)) == 0){
-#if defined(CONFIG_OBSGEM1)
-					sprintf(buf, RESETSW, cpugpio+RST_CPU);
-#else
-					strcpy(buf, RESETSW);
-#endif
-				set_reset(buf);
+				set_reset(RESETSW);
 			}
 			else if(strncmp(U200E, MNAME, sizeof(U200E)) == 0){
-#if defined(CONFIG_OBSGEM1)
-					sprintf(buf, RESETSW_U200, i2cgpio+RST_GPIO);
-#else
-					strcpy(buf, RESETSW_U200);
-#endif
-				set_reset_u200(buf);
+				set_reset_u200(RESETSW_U200);
 			}
 			else if(strncmp(KYM11, MNAME, sizeof(KYM11)) == 0){
 				if(access(MODEM, F_OK) == 0){
 					end_modem(&fd);
-#if defined(CONFIG_OBSGEM1)
-					sprintf(buf, RESETSW_U200, i2cgpio+RST_GPIO);
-#else
-					strcpy(buf, RESETSW_U200);
-#endif
-					set_reset_kym11(buf);
+					set_reset_kym11(RESETSW_U200);
 				}
 				else{
 					printf("%d: Can not Reset at the power off.\n", __LINE__);
@@ -1252,12 +1194,7 @@ int main(int ac, char *av[])
 			}
 			else if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
 				if(access(MODEM, F_OK) == 0){
-#if defined(CONFIG_OBSGEM1)
-					sprintf(buf, RESETSW_U200, i2cgpio+RST_GPIO);
-#else
-					strcpy(buf, RESETSW_U200);
-#endif
-					set_reset_u200(buf);
+					set_reset_u200(RESETSW_U200);
 				}
 				else{
 					printf("%d: Can not Reset at the power off.\n", __LINE__);
@@ -1266,12 +1203,7 @@ int main(int ac, char *av[])
 			}
 			else if(strncmp(S710E, MNAME, sizeof(S710E)) == 0){
 				if(access(MODEM, F_OK) == 0){
-#if defined(CONFIG_OBSGEM1)
-					sprintf(buf, RESETSW_U200, i2cgpio+RST_GPIO);
-#else
-					strcpy(buf, RESETSW_U200);
-#endif
-					set_reset_u200(buf);
+					set_reset_u200(RESETSW_U200);
 				}
 				else{
 					printf("%d: Can not Reset at the power off.\n", __LINE__);

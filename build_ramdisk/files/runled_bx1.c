@@ -1,4 +1,4 @@
-#define DEBUG
+//#define DEBUG
 /*	$ssdlinux: runled_bx1.c,v 1.17 2014/01/07 07:19:06 yamagata Exp $	*/
 /*
  * Copyright (c) 2008-2018 Plat'Home CO., LTD.
@@ -46,12 +46,9 @@
 #define SEGLED_DEV_G	"/sys/class/gpio/gpio343/value"
 #define SEGLED_DEV_B	"/sys/class/gpio/gpio344/value"
 #elif defined(CONFIG_OBSGEM1)
-#define SEGLED_R 98
-#define SEGLED_G 99
-#define SEGLED_B 100
-#define SEGLED_DEV_R   "/sys/class/gpio/gpio%d/value"
-#define SEGLED_DEV_G   "/sys/class/gpio/gpio%d/value"
-#define SEGLED_DEV_B   "/sys/class/gpio/gpio%d/value"
+#define SEGLED_DEV_R   "/sys/class/gpio/gpio488/value"
+#define SEGLED_DEV_G   "/sys/class/gpio/gpio489/value"
+#define SEGLED_DEV_B   "/sys/class/gpio/gpio490/value"
 #else
 #define SEGLED_DEV_R	"/sys/class/gpio/gpio47/value"
 #define SEGLED_DEV_G	"/sys/class/gpio/gpio48/value"
@@ -78,9 +75,6 @@ static int led_down       = SPEED_DEFAULT;
 static int led_up_color   = LED_BLACK;
 static int led_down_color = LED_BLACK;
 static int forever = 1;
-#if defined(CONFIG_OBSGEM1)
-static int cpugpio = 0;
-#endif
 
 #if 0
 void donothing(int i){}
@@ -155,36 +149,20 @@ ERROR:
 void set_color(char* b, char* g, char* r)
 {
 	int fd;
-	char buf[256];
-#if defined(CONFIG_OBSGEM1)
 
-	sprintf(buf, SEGLED_DEV_R, cpugpio+SEGLED_R);
-#else
-	strcpy(buf, SEGLED_DEV_R);
-#endif
-	if ((fd = open(buf, O_RDWR)) < 0) {
+	if ((fd = open(SEGLED_DEV_R, O_RDWR)) < 0) {
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		exit(-1);
 	}
 	write(fd, r, 1);
 	close(fd);
-#if defined(CONFIG_OBSGEM1)
-	sprintf(buf, SEGLED_DEV_G, cpugpio+SEGLED_G);
-#else
-	strcpy(buf, SEGLED_DEV_G);
-#endif
-	if ((fd = open(buf, O_RDWR)) < 0) {
+	if ((fd = open(SEGLED_DEV_G, O_RDWR)) < 0) {
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		exit(-1);
 	}
 	write(fd, g, 1);
 	close(fd);
-#if defined(CONFIG_OBSGEM1)
-	sprintf(buf, SEGLED_DEV_B, cpugpio+SEGLED_B);
-#else
-	strcpy(buf, SEGLED_DEV_B);
-#endif
-	if ((fd = open(buf, O_RDWR)) < 0) {
+	if ((fd = open(SEGLED_DEV_B, O_RDWR)) < 0) {
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		exit(-1);
 	}
@@ -274,11 +252,7 @@ void dancer(void)
 }
 
 int
-#if defined(CONFIG_OBSGEM1)
-main(int ac, char* av[])
-#else
 main(void)
-#endif
 {
 	int fd;
 	int pid;
@@ -287,15 +261,6 @@ main(void)
 		fprintf(stderr, "must be super user\n");
 		return 1;
 	}
-#if defined(CONFIG_OBSGEM1)
-	if(ac == 2){
-		cpugpio = (int)strtol(av[1], NULL, 10);
-		if(cpugpio == LONG_MAX || cpugpio == LONG_MIN){
-			printf("%d: parameter error\n", __LINE__);
-			return 1;
-		}
-	}
-#endif
 
 	if ((pid = fork())) {
 		/* parent */

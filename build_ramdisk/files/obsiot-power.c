@@ -76,12 +76,9 @@ enum{
 #define POWER_AC	"/sys/class/gpio/gpio41/value"
 #define POWER_DC	"/sys/class/gpio/gpio42/value"
 #elif defined(CONFIG_OBSGEM1)
-#define OFF_USB 113
-#define OFF_AC 110
-#define OFF_DC 114
-#define POWER_USB	"/sys/class/gpio/gpio%d/value"
-#define POWER_AC	"/sys/class/gpio/gpio%d/value"
-#define POWER_DC	"/sys/class/gpio/gpio%d/value"
+#define POWER_USB	"/sys/class/gpio/gpio503/value"
+#define POWER_AC	"/sys/class/gpio/gpio500/value"
+#define POWER_DC	"/sys/class/gpio/gpio504/value"
 #endif
 
 int chg_charging(unsigned char);

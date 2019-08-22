@@ -51,9 +51,9 @@ obsvx*)
 	DCPOW=365
 	;;
 obsgem*)
-	USBPOW=113
-	ACPOW=110
-	DCPOW=114
+	USBPOW=503
+	ACPOW=500
+	DCPOW=504
 	;;
 *)
 	USBPOW=40
