@@ -1,8 +1,0 @@
-Package: __PACKAGE__
-Version: __VERSION__
-Maintainer: Plat'Home CO.,LTD. <support@plathome.co.jp>
-Architecture: __ARCH__
-Depends: kernel-image
-section: utils
-priority: important
-Description: __DESCRIPTION__

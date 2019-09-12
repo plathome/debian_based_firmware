@@ -30,8 +30,7 @@
 
 case $TARGET in
 obsvx2)
-#	pkglist="atcmd flashcfg obs-util obs-hwclock obsiot-power pshd runled wd-keepalive"
-	pkglist="runled"
+	pkglist="atcmd flashcfg obs_util obs_hwclock obsiot_power pshd runled wd_keepalive"
 	;;
 *)
 	exit 1 ;;
@@ -40,12 +39,13 @@ esac
 # dummy package: kernel-image
 for pkg in $pkglist; do
 	eval version='$'${pkg}_ver
+	pkg=${pkg//_/-}
 	(cd ${PWD}/obstool-image; rm -f dummy-${pkg}-${version}.deb)
 	(cd ${PWD}/obstool-image; ./mkdummy.sh ${pkg} ${version} ${ARCH} ${TARGET})
 
-	cp -f ${PWD}/obstool-image/dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb ${DISTDIR}/
-	chroot ${DISTDIR} dpkg -r kernel-image
-	chroot ${DISTDIR} dpkg -i /dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb
-	rm -f ${DISTDIR}/dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb
-	rm -f ${PWD}/kernel-image/dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb
+	cp -f ${PWD}/obstool-image/dummy-${pkg}-${version}.deb ${DISTDIR}/
+	chroot ${DISTDIR} dpkg -r ${pkg}
+	chroot ${DISTDIR} dpkg -i /dummy-${pkg}-${version}.deb
+	rm -f ${DISTDIR}/dummy-${pkg}-${version}.deb
+	rm -f ${PWD}/obstool-image/dummy-${pkg}-${version}.deb
 done

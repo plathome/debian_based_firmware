@@ -40,19 +40,23 @@ ARCH=$3
 MODEL=$4
 
 pkgdir=dummy-${PACKAGE}-${VERSION}
-description="${PACKAGE} for Openblocks family"
+DESCRIPTION="${PACKAGE} for Openblocks family"
+DEPENDS="kernel-image-${MODEL}"
 
 rm -rf  $pkgdir
 mkdir -p $pkgdir
-(cd template-${PACKAGE};tar --exclude=CVS -cf - .) | tar -xvf - -C $pkgdir/
+(cd template;tar --exclude=CVS -cf - .) | tar -xvf - -C $pkgdir/
 
 mkdir -p $pkgdir/etc
 sed -e "s|__VERSION__|$VERSION|" \
     -e "s|__ARCH__|$ARCH|" \
     -e "s|__PACKAGE__|$PACKAGE|" \
+    -e "s|__DEPENDS__|$DEPENDS|" \
     -e "s|__DESCRIPTION__|$DESCRIPTION|" \
 	< $pkgdir/DEBIAN/control > /tmp/control.new
 mv -f /tmp/control.new $pkgdir/DEBIAN/control
+
+cat $pkgdir/DEBIAN/control
 
 rm -rf ${pkgdir}.deb
 
