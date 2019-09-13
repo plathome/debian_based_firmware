@@ -1,0 +1,13 @@
+[Unit]
+Description=Status indicator daemon for Openblocks family
+After=nitz.service
+
+[Service]
+ExecStart=/usr/sbin/runled
+ExecStartPre=/usr/bin/echo "300\n3000\n2\n0" > /tmp/.runled
+Restart=always
+Type=forking
+PIDFile=/var/run/segled.pid
+
+[Install]
+WantedBy=multi-user.target

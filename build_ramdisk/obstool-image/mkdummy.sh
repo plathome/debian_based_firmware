@@ -56,8 +56,6 @@ sed -e "s|__VERSION__|$VERSION|" \
 	< $pkgdir/DEBIAN/control > /tmp/control.new
 mv -f /tmp/control.new $pkgdir/DEBIAN/control
 
-cat $pkgdir/DEBIAN/control
-
 rm -rf ${pkgdir}.deb
 
 dpkg-deb --build $pkgdir

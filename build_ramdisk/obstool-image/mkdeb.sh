@@ -27,9 +27,9 @@
 
 if [ "$#" -ne "4" ] ; then
 	echo
-	echo "usage: $0 [VERSION] [ARCH] [MODEL] [uImage.initrd]"
+	echo "usage: $0 [VERSION] [ARCH] [MODEL] [PACKAGE]"
 	echo
-	echo "ex) $0 1.0.0-0 armhf obsax3 uImage.initrd.obsax3"
+	echo "ex) $0 1 amd64 obsvx2 runled
 	echo
 	exit 1
 fi
@@ -37,27 +37,20 @@ fi
 VERSION=$1
 ARCH=$2
 MODEL=$3
-FIRM=$4
-FIRM_DIR=$(dirname $FIRM)
+PACKAGE=$4
 
-pkgdir=kernel-image-${VERSION}-${MODEL}
+pkgdir=${PACKAGE}-${VERSION}-${MODEL}
 
 rm -rf  $pkgdir
 mkdir -p $pkgdir
 (cd template;tar --exclude=CVS -cf - .) | tar -xvf - -C $pkgdir/
 
-echo $VERSION > $pkgdir/etc/openblocks-release
 sed -e "s|__VERSION__|$VERSION|" \
     -e "s|__ARCH__|$ARCH|" \
-    -e "s|__PACKAGE__|kernel-image|" \
+    -e "s|__PACKAGE__|$PACKAGE|" \
+    -e "s|__DEPENDS__|$DEPENDS|" \
+    -e "s|__DESCRIPTION__|$DESCRIPTION|" \
 	< $pkgdir/DEBIAN/control > /tmp/control.new
-case $MODEL in
-obsa*)
-	echo "Depends: uboot-image" >> /tmp/control.new
-	;;
-*)
-	;;
-esac
 mv -f /tmp/control.new $pkgdir/DEBIAN/control
 
 cp -vf $FIRM $pkgdir/etc/uImage.initrd
