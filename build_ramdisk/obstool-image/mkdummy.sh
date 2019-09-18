@@ -27,17 +27,17 @@
 
 if [ "$#" -ne "4" ] ; then
 	echo
-	echo "usage: $0 [PACKAGE] [VERSION] [ARCH] [MODEL]"
+	echo "usage: $0 [VERSION] [ARCH] [MODEL] [PACKAGE]"
 	echo
-	echo "ex) $0 runled 1 amd64 obsvx2"
+	echo "ex) $0 runled 1 amd64 obsvx2 runled"
 	echo
 	exit 1
 fi
 
-PACKAGE=$1
-VERSION=$2
-ARCH=$3
-MODEL=$4
+VERSION=$1
+ARCH=$2
+MODEL=$3
+PACKAGE=$4
 
 pkgdir=dummy-${PACKAGE}-${VERSION}
 DESCRIPTION="${PACKAGE} for Openblocks family"
@@ -45,7 +45,7 @@ DEPENDS="kernel-image-${MODEL}"
 
 rm -rf  $pkgdir
 mkdir -p $pkgdir
-(cd template;tar --exclude=CVS -cf - .) | tar -xvf - -C $pkgdir/
+(cd template-${PACKAGE};tar --exclude=CVS -cf - .) | tar -xvf - -C $pkgdir/
 
 mkdir -p $pkgdir/etc
 sed -e "s|__VERSION__|$VERSION|" \

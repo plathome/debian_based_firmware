@@ -29,7 +29,7 @@ if [ "$#" -ne "4" ] ; then
 	echo
 	echo "usage: $0 [VERSION] [ARCH] [MODEL] [PACKAGE]"
 	echo
-	echo "ex) $0 1 amd64 obsvx2 runled
+	echo "ex) $0 1 amd64 obsvx2 runled"
 	echo
 	exit 1
 fi
@@ -38,12 +38,13 @@ VERSION=$1
 ARCH=$2
 MODEL=$3
 PACKAGE=$4
+DESCRIPTION="${PACKAGE} for OpenBlocks family"
 
 pkgdir=${PACKAGE}-${VERSION}-${MODEL}
 
 rm -rf  $pkgdir
 mkdir -p $pkgdir
-(cd template;tar --exclude=CVS -cf - .) | tar -xvf - -C $pkgdir/
+(cd template-${PACKAGE};tar --exclude=CVS -cf - .) | tar -xvf - -C $pkgdir/
 
 sed -e "s|__VERSION__|$VERSION|" \
     -e "s|__ARCH__|$ARCH|" \
@@ -53,13 +54,9 @@ sed -e "s|__VERSION__|$VERSION|" \
 	< $pkgdir/DEBIAN/control > /tmp/control.new
 mv -f /tmp/control.new $pkgdir/DEBIAN/control
 
-cp -vf $FIRM $pkgdir/etc/uImage.initrd
-
 rm -rf ${pkgdir}.deb
 
 dpkg-deb --build $pkgdir
-
-[ "$FIRM_DIR" != "." ] && mv -fv $pkgdir.deb $FIRM_DIR/
 
 rm -rf $pkgdir
 
