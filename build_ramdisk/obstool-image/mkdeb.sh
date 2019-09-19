@@ -25,9 +25,9 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-if [ "$#" -ne "4" ] ; then
+if [ "$#" -ne "5" ] ; then
 	echo
-	echo "usage: $0 [VERSION] [ARCH] [MODEL] [PACKAGE]"
+	echo "usage: $0 [VERSION] [ARCH] [MODEL] [FILE] [RELEASE PATH]"
 	echo
 	echo "ex) $0 1 amd64 obsvx2 runled"
 	echo
@@ -37,8 +37,9 @@ fi
 VERSION=$1
 ARCH=$2
 MODEL=$3
-PACKAGE=$4
-DESCRIPTION="${PACKAGE} for OpenBlocks family"
+FILE=$4
+REL_DIR=$5
+PACKAGE=$(basename $FILE)
 
 pkgdir=${PACKAGE}-${VERSION}-${MODEL}
 
@@ -48,15 +49,17 @@ mkdir -p $pkgdir
 
 sed -e "s|__VERSION__|$VERSION|" \
     -e "s|__ARCH__|$ARCH|" \
-    -e "s|__PACKAGE__|$PACKAGE|" \
     -e "s|__DEPENDS__|$DEPENDS|" \
-    -e "s|__DESCRIPTION__|$DESCRIPTION|" \
 	< $pkgdir/DEBIAN/control > /tmp/control.new
 mv -f /tmp/control.new $pkgdir/DEBIAN/control
+
+cp -vf $FILE $pkgdir/usr/sbin/runled
 
 rm -rf ${pkgdir}.deb
 
 dpkg-deb --build $pkgdir
+
+[ -d "$REL_DIR" ] && mv -fv $pkgdir.deb $REL_DIR/
 
 rm -rf $pkgdir
 

@@ -9,6 +9,8 @@
 
 case "$1" in
 configure)
+	[ -f /.chroot ] && exit 0
+	systemctl is-active runled && systemctl restart runled
 	;;
 abort-upgrade|abort-remove|abort-deconfigure)
 	;;
