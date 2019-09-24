@@ -25,9 +25,9 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-if [ "$#" -ne "5" ] ; then
+if [ "$#" -ne "6" ] ; then
 	echo
-	echo "usage: $0 [VERSION] [ARCH] [MODEL] [FILE] [RELEASE PATH]"
+	echo "usage: $0 [VERSION] [ARCH] [MODEL] [PACKAGE] [RELEASE PATH] [DEPENDS]"
 	echo
 	echo "ex) $0 1 amd64 obsvx2 runled"
 	echo
@@ -37,9 +37,9 @@ fi
 VERSION=$1
 ARCH=$2
 MODEL=$3
-FILE=$4
+PACKAGE=$4
 REL_DIR=$5
-PACKAGE=$(basename $FILE)
+DEPENDS=$6
 
 pkgdir=${PACKAGE}-${VERSION}-${MODEL}
 
@@ -52,8 +52,6 @@ sed -e "s|__VERSION__|$VERSION|" \
     -e "s|__DEPENDS__|$DEPENDS|" \
 	< $pkgdir/DEBIAN/control > /tmp/control.new
 mv -f /tmp/control.new $pkgdir/DEBIAN/control
-
-cp -vf $FILE $pkgdir/usr/sbin/runled
 
 rm -rf ${pkgdir}.deb
 

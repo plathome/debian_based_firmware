@@ -1,0 +1,8 @@
+Section: utils
+Priority: important
+Maintainer: Plat'Home CO.,LTD. <support@plathome.co.jp>
+Version: __VERSION__
+Package: wd-keepalive
+Architecture: __ARCH__
+Depends: __DEPENDS__
+Description: watchdog timer daemon for Openblocks family

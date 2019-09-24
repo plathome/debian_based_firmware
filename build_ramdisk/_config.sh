@@ -43,6 +43,7 @@ EXTRADEBDIR=${WRKDIR}/extradebs/${DIST}
 ETCDIR=${PWD}/etc.${DIST}
 TOOLDIR=${WRKDIR}/tool
 SKALESDIR=${TOOLDIR}/skales
+OBSTOOLDIR=${WRKDIR}/build_ramdisk/obstool-image
 
 case $TARGET in
 bpv4*)

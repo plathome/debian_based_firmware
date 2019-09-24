@@ -159,20 +159,22 @@ obsvx*)
 	mkdir -p ${BUILDDIR}
 
 	apt-get -y install libi2c-dev
-	echo "WD-KEEPALIVE"
-	$CC -o ${BUILDDIR}/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
+	if [ "$DIST" != "buster" ]; then
+		echo "WD-KEEPALIVE"
+		$CC -o ${BUILDDIR}/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
 
-	echo "OBS-UTIL"
-	$CC -o ${BUILDDIR}/obs-util ${FILESDIR}/obs-util.c $CFLAGS
+		echo "OBS-UTIL"
+		$CC -o ${BUILDDIR}/obs-util ${FILESDIR}/obs-util.c $CFLAGS
 
-	echo "KOSANU"
-	$CC -o ${BUILDDIR}/kosanu ${FILESDIR}/kosanu.c $CFLAGS
+		echo "KOSANU"
+		$CC -o ${BUILDDIR}/kosanu ${FILESDIR}/kosanu.c $CFLAGS
 
-	echo "RUNLED"
-	$CC -o ${BUILDDIR}/runled ${FILESDIR}/runled_bx1.c $CFLAGS
+		echo "RUNLED"
+		$CC -o ${BUILDDIR}/runled ${FILESDIR}/runled_bx1.c $CFLAGS
 
-	echo "PSHD"
-	$CC -o ${BUILDDIR}/pshd ${FILESDIR}/pshd_bx1.c $CFLAGS
+		echo "PSHD"
+		$CC -o ${BUILDDIR}/pshd ${FILESDIR}/pshd_bx1.c $CFLAGS
+	fi
 
 	echo "ATCMD"
 	$CC -o ${BUILDDIR}/atcmd ${FILESDIR}/atcmd.c $CFLAGS
@@ -199,9 +201,14 @@ obsvx*)
 	$CC -o ${BUILDDIR}/obsiot-power ${FILESDIR}/obsiot-power.c $CFLAGS
 
 	echo;echo;echo
-	(cd ${BUILDDIR}; ls -l wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wav-play obsvx1-modem obsvx1-gpio obsiot-power)
+	if [ "$DIST" == "buster" ]; then
+		OBSTOOLLIST="atcmd hub-ctrl obs-hwclock wav-play obsvx1-modem obsvx1-gpio obsiot-power"
+	else
+		OBSTOOLLIST="wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wave-play obsvx1-modem obsvx1-gpio obsiot-power"
+	fi
+	(cd ${BUILDDIR}; ls -l ${OBSTOOLLIST})
 
-	for cmd in wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wav-play obsvx1-modem obsvx1-gpio obsiot-power; do
+	for cmd in ${OBSTOOLLIST}; do
 		(cd ${BUILDDIR}; install -c -o root -g root -m 555 $cmd ${DISTDIR}/usr/sbin/$cmd)
 		$STRIP ${DISTDIR}/usr/sbin/$cmd
 	done
