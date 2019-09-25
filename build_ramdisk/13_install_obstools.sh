@@ -33,13 +33,11 @@ obsvx2)
 #	pkglist="atcmd flashcfg obs_util obs_hwclock obsiot_power pshd runled wd_keepalive"
 	pkglist="obs_util pshd runled wd_keepalive"
 	;;
-*)
-	exit 1 ;;
+*) exit 1 ;;
 esac
 
-apt-get -y install libi2c-dev
-
 LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
+apt-get -y install libi2c-dev
 
 case $TARGET in
 obsvx*)
@@ -54,6 +52,9 @@ obsgem*)
 *) exit 1 ;;
 esac
 
+#
+# program
+#
 echo "WD-KEEPALIVE"
 $CC -o ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
 echo "OBS-UTIL"
@@ -67,11 +68,34 @@ $CC -o ${OBSTOOLDIR}/template-pshd/usr/sbin/pshd ${FILESDIR}/pshd_bx1.c $CFLAGS
 for pkg in $pkglist; do
 	eval version='$'${pkg}_ver
 	pkg=${pkg//_/-}
-	pkgfile=${pkg}-${version}-${TARGET}.deb
+	pkgfile=${pkg}-${version}-${ARCH}.deb
 	rm -f ${RELEASEDIR}/${pkgfile}
-	(cd ${OBSTOOLDIR}/; ./mkdeb.sh ${version} ${ARCH} ${TARGET} ${pkg} ${RELEASEDIR} "")
+	(cd ${OBSTOOLDIR}/; ./mkdeb.sh ${version} ${ARCH} ${pkg} ${RELEASEDIR} "")
 	cp -f ${RELEASEDIR}/${pkgfile} ${DISTDIR}/
 	chroot ${DISTDIR} dpkg -r ${pkg}
 	chroot ${DISTDIR} dpkg -i ${pkgfile}
+	chroot ${DISTDIR} ln -sf /lib/systemd/system/${pkg}.service /etc/systemd/system/multi-user.target.wants/${pkg}.service
+	rm -f ${DISTDIR}/${pkgfile}
+done
+
+pkglist="setup_gpio"
+
+#
+# script
+#
+echo "SETUP-GPIO"
+cp -f ${FILESDIR}/setup-gpio.sh ${OBSTOOLDIR}/template-setup-gpio/usr/sbin/
+chmod 555 ${OBSTOOLDIR}/template-setup-gpio/usr/sbin/setup-gpio.sh
+
+for pkg in $pkglist; do
+	eval version='$'${pkg}_ver
+	pkg=${pkg//_/-}
+	pkgfile=${pkg}-${version}-all.deb
+	rm -f ${RELEASEDIR}/${pkgfile}
+	(cd ${OBSTOOLDIR}/; ./mkdeb.sh ${version} "all" ${pkg} ${RELEASEDIR} "")
+	cp -f ${RELEASEDIR}/${pkgfile} ${DISTDIR}/
+	chroot ${DISTDIR} dpkg -r ${pkg}
+	chroot ${DISTDIR} dpkg -i ${pkgfile}
+	chroot ${DISTDIR} ln -sf /lib/systemd/system/${pkg}.service /etc/systemd/system/multi-user.target.wants/${pkg}.service
 	rm -f ${DISTDIR}/${pkgfile}
 done

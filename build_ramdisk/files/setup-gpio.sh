@@ -1,4 +1,13 @@
-#!/bin/bash
+#! /bin/bash
+### BEGIN INIT INFO
+# Provides:          nitz
+# Required-Start:    $local_fs $syslog $remote_fs
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: get NITZ for OBS IoT
+# Description:       
+### END INIT INFO
 #
 # Copyright (c) 2013-2018 Plat'Home CO., LTD.
 # All rights reserved.
@@ -25,38 +34,26 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-if [ "$#" -ne "5" ] ; then
-	echo
-	echo "usage: $0 [VERSION] [ARCH] [PACKAGE] [RELEASE PATH] [DEPENDS]"
-	echo
-	echo "ex) $0 1 amd64 obsvx2 runled"
-	echo
-	exit 1
-fi
+[ -r /etc/default/openblocks ] && . /etc/default/openblocks
 
-VERSION=$1
-ARCH=$2
-PACKAGE=$3
-REL_DIR=$4
-DEPENDS=$5
+# initialize LED, INIT
+GPIOPATH="/sys/class/gpio"
+case $MODEL in
+obsvx*)
+	[ ! -d $GPIOPATH/gpio342 ] && echo 342 > $GPIOPATH/export; \
+		echo out > $GPIOPATH/gpio342/direction
+	[ ! -d $GPIOPATH/gpio343 ] && echo 343 > $GPIOPATH/export; \
+		echo out > $GPIOPATH/gpio343/direction
+	[ ! -d $GPIOPATH/gpio344 ] && echo 344 > $GPIOPATH/export; \
+		echo out > $GPIOPATH/gpio344/direction
+	[ ! -d $GPIOPATH/gpio345 ] && echo 345 > $GPIOPATH/export; \
+		echo both > $GPIOPATH/gpio345/edge
 
-pkgdir=${PACKAGE}-${VERSION}-${ARCH}
-
-rm -rf  $pkgdir
-mkdir -p $pkgdir
-(cd template-${PACKAGE};tar --exclude=CVS -cf - .) | tar -xvf - -C $pkgdir/
-
-sed -e "s|__VERSION__|$VERSION|" \
-    -e "s|__ARCH__|$ARCH|" \
-    -e "s|__DEPENDS__|$DEPENDS|" \
-	< $pkgdir/DEBIAN/control > /tmp/control.new
-mv -f /tmp/control.new $pkgdir/DEBIAN/control
-
-rm -rf ${pkgdir}.deb
-
-dpkg-deb --build $pkgdir
-
-[ -d "$REL_DIR" ] && mv -fv $pkgdir.deb $REL_DIR/
-
-rm -rf $pkgdir
-
+	;;
+obsbx*)
+	;;
+obsgem*)
+	;;
+*)
+	;;
+esac

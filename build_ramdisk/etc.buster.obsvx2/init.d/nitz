@@ -92,17 +92,6 @@ case "$1" in
 			dpkg-reconfigure openssh-server
 		fi
 	fi
-	# initialize LED, INIT
-	GPIOPATH="/sys/class/gpio"
-	echo 342 > $GPIOPATH/export	# LED red
-	[ -d $GPIOPATH/gpio342 ] && echo out > $GPIOPATH/gpio342/direction
-	echo 343 > $GPIOPATH/export	# LED green
-	[ -d $GPIOPATH/gpio343 ] && echo out > $GPIOPATH/gpio343/direction
-	echo 344 > $GPIOPATH/export	# LED blue
-	[ -d $GPIOPATH/gpio344 ] && echo out > $GPIOPATH/gpio344/direction
-	echo 345 > $GPIOPATH/export	# INIT SW
-	[ -d $GPIOPATH/gpio345 ] && echo both > $GPIOPATH/gpio345/edge
-
 	MODEM=`/usr/sbin/obsiot-modem.sh`
 	if [ "$MODEM" != "none" ]; then
 		obsvx1-modem init

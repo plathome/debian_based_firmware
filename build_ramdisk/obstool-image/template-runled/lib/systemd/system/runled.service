@@ -1,6 +1,6 @@
 [Unit]
 Description=Status indicator daemon for Openblocks family
-After=nitz.service
+After=setup-gpio.service
 
 [Service]
 ExecStart=/usr/sbin/runled

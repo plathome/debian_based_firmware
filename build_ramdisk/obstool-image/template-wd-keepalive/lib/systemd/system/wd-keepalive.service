@@ -2,7 +2,7 @@
 Description=Watchdog timer daemon for Openblocks family
 
 [Service]
-ExecStart=/usr/sbin/wd-keepalive
+ExecStart=/usr/sbin/wd-keepalive 30
 Restart=always
 Type=forking
 PIDFile=/var/run/wd-keepalive.pid

@@ -103,6 +103,11 @@ obsgem1)
 	chroot ${DISTDIR} /sbin/insserv -rf pshd
 	chroot ${DISTDIR} /sbin/insserv pshd
 	;;
+obsvx*)
+	chmod 755 ${DISTDIR}/etc/init.d/openblocks-setup
+	chroot ${DISTDIR} /sbin/insserv -rf openblocks-setup
+	chroot ${DISTDIR} /sbin/insserv openblocks-setup
+	;;
 obs*)
 	chmod 755 ${DISTDIR}/etc/init.d/openblocks-setup
 	chroot ${DISTDIR} /sbin/insserv -rf openblocks-setup
