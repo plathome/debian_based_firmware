@@ -4,7 +4,7 @@ After=setup-gpio.service
 
 [Service]
 ExecStart=/usr/sbin/runled
-ExecStartPre=/usr/bin/echo "300\n3000\n2\n0" > /tmp/.runled
+ExecStartPre=/usr/sbin/setup-runled.sh
 Restart=always
 Type=forking
 PIDFile=/var/run/segled.pid

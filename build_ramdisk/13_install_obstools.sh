@@ -31,7 +31,7 @@
 case $TARGET in
 obsvx2)
 #	pkglist="atcmd flashcfg obs_util obs_hwclock obsiot_power pshd runled wd_keepalive"
-	pkglist="obs_util pshd runled wd_keepalive"
+	pkglist="atcmd obs_util obs_hwclock pshd runled wd_keepalive"
 	;;
 *) exit 1 ;;
 esac
@@ -55,15 +55,23 @@ esac
 #
 # program
 #
-echo "WD-KEEPALIVE"
-$CC -o ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
+echo "ATCMD"
+$CC -o ${OBSTOOLDIR}/template-atcmd/usr/sbin/atcmd ${FILESDIR}/atcmd.c $CFLAGS
+echo "OBS-HWCLOCK"
+$CC -o ${OBSTOOLDIR}/template-obs-hwclock/usr/sbin/obs-hwclock ${FILESDIR}/obs-hwclock.c $CFLAGS
+cp -f ${FILESDIR}/hwclock.sh ${OBSTOOLDIR}/template-obs-hwclock/usr/local/sbin/hwclock
+chmod 555 ${OBSTOOLDIR}/template-obs-hwclock/usr/local/sbin/hwclock
 echo "OBS-UTIL"
 $CC -o ${OBSTOOLDIR}/template-obs-util/usr/sbin/obs-util ${FILESDIR}/obs-util.c $CFLAGS
 $CC -o ${OBSTOOLDIR}/template-obs-util/usr/sbin/kosanu ${FILESDIR}/kosanu.c $CFLAGS
 echo "RUNLED"
 $CC -o ${OBSTOOLDIR}/template-runled/usr/sbin/runled ${FILESDIR}/runled_bx1.c $CFLAGS
+cp -f ${FILESDIR}/setup-runled.sh ${OBSTOOLDIR}/template-runled/usr/sbin/
+chmod 555 ${OBSTOOLDIR}/template-runled/usr/sbin/setup-runled.sh
 echo "PSHD"
 $CC -o ${OBSTOOLDIR}/template-pshd/usr/sbin/pshd ${FILESDIR}/pshd_bx1.c $CFLAGS
+echo "WD-KEEPALIVE"
+$CC -o ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
 
 for pkg in $pkglist; do
 	eval version='$'${pkg}_ver

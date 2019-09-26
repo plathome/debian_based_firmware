@@ -1,0 +1,7 @@
+Section: utils
+Priority: important
+Maintainer: Plat'Home CO.,LTD. <support@plathome.co.jp>
+Version: __VERSION__
+Package: atcmd
+Architecture: __ARCH__
+Description: modem utility for Openblocks family

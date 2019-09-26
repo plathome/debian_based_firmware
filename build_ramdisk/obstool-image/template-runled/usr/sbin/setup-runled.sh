@@ -1,13 +1,4 @@
 #! /bin/bash
-### BEGIN INIT INFO
-# Provides:          setup-gpio
-# Required-Start:    $local_fs $syslog $remote_fs
-# Required-Stop:
-# Default-Start:     2 3 4 5
-# Default-Stop:
-# Short-Description: setup gpio for Openblocks family
-# Description:       
-### END INIT INFO
 #
 # Copyright (c) 2013-2018 Plat'Home CO., LTD.
 # All rights reserved.
@@ -36,23 +27,15 @@
 
 [ -r /etc/default/openblocks ] && . /etc/default/openblocks
 
-# initialize LED, INIT
-GPIOPATH="/sys/class/gpio"
-case $MODEL in
-obsvx*)
-	[ ! -d $GPIOPATH/gpio342 ] && echo 342 > $GPIOPATH/export; \
-		echo out > $GPIOPATH/gpio342/direction
-	[ ! -d $GPIOPATH/gpio343 ] && echo 343 > $GPIOPATH/export; \
-		echo out > $GPIOPATH/gpio343/direction
-	[ ! -d $GPIOPATH/gpio344 ] && echo 344 > $GPIOPATH/export; \
-		echo out > $GPIOPATH/gpio344/direction
-	[ ! -d $GPIOPATH/gpio345 ] && echo 345 > $GPIOPATH/export; \
-		echo both > $GPIOPATH/gpio345/edge
-	;;
-obsbx*)
-	;;
-obsgem*)
-	;;
-*)
-	;;
-esac
+## TODO : MODEL HANDLING?
+ledfile="/tmp/.runled"
+if [ ! -e "${ledfile}" ] ; then
+	{
+	cat <<!
+300
+3000
+2
+0
+!
+	} > $ledfile
+fi
