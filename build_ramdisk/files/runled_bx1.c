@@ -41,7 +41,7 @@
 
 #define PID_FILE "/var/run/segled.pid"
 
-#if defined(CONFIG_OBSVX1)
+#if defined(CONFIG_OBSVX1) || defined(CONFIG_OBSIX9)
 #define SEGLED_DEV_R	"/sys/class/gpio/gpio342/value"
 #define SEGLED_DEV_G	"/sys/class/gpio/gpio343/value"
 #define SEGLED_DEV_B	"/sys/class/gpio/gpio344/value"

@@ -69,7 +69,7 @@ int write_i2c(unsigned char i2cnum, unsigned char slave,
 								unsigned char addr, unsigned char data)
 {
 	int fd;
-#if !defined(CONFIG_OBSVX1)
+#if !defined(CONFIG_OBSVX1) && !defined(CONFIG_OBSIX9)
 	unsigned char buf[2];
 #endif
 	char devname[16];
@@ -86,7 +86,7 @@ int write_i2c(unsigned char i2cnum, unsigned char slave,
 		return 0x80000000 | errno;
 	}
 
-#if defined(CONFIG_OBSVX1)
+#if defined(CONFIG_OBSVX1) || defined(CONFIG_OBSIX9)
 	if(i2c_smbus_write_byte_data(fd, addr, data) < 0){
 		printf("ERR%d\n", __LINE__);
 		close(fd);
@@ -132,7 +132,7 @@ printf("%s\n", devname);
 		return 0x80000000 | errno;
 	}
 
-#if defined(CONFIG_OBSVX1)
+#if defined(CONFIG_OBSVX1) || defined(CONFIG_OBSIX9)
 	if((c = i2c_smbus_read_byte_data(fd, addr)) < 0){
 		printf("ERR%d\n", __LINE__);
 		close(fd);

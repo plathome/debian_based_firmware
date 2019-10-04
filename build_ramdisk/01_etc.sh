@@ -100,15 +100,12 @@ obsbx*|obsvx*|obsgem*)
 	esac
 	;;
 obsix*)
-	chmod 755 ${DISTDIR}/etc/init.d/instfirm
-	chroot ${DISTDIR} /sbin/insserv -rf instfirm
-	chroot ${DISTDIR} /sbin/insserv instfirm
-	chroot ${DISTDIR} /sbin/insserv -rf apparmor
+	chroot ${DISTDIR} /usr/bin/systemctl disable apparmor
 	;;
 *)	;;
 esac
 
-chroot ${DISTDIR} /sbin/insserv
+[ -f /sbin/insserv ] && chroot ${DISTDIR} /sbin/insserv
 
 touch ${DISTDIR}/etc/init.d/.legacy-bootordering
 

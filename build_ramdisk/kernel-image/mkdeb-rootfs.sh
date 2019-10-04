@@ -55,6 +55,9 @@ elif [ "$MODEL" == "obsbx1s" ]; then
 elif [ "$MODEL" == "obsgem1" ]; then
 	DESCRIPTION="Linux firmware for OpenBlocks IoT GEM1"
 	TARGET=$MODEL
+elif [ "$MODEL" == "obsix9" ]; then
+	DESCRIPTION="Linux firmware for OpenBlocks IX9"
+	TARGET=$MODEL
 else
 	echo
 	echo "$MODEL is not supported."

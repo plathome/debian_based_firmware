@@ -29,7 +29,7 @@
 
 GPIOPATH="/sys/class/gpio"
 case $MODEL in
-obsvx*)
+obsvx*|obsix9)
 	# runled
 	[ ! -d $GPIOPATH/gpio342 ] && echo 342 > $GPIOPATH/export; \
 		echo out > $GPIOPATH/gpio342/direction
