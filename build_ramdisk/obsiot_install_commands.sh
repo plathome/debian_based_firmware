@@ -45,6 +45,10 @@ bpv4*|obsmv4)
 		(cd ${BUILDDIR}; install -c -o root -g root -m 555 $cmd ${DISTDIR}/usr/sbin/$cmd)
 		$STRIP ${DISTDIR}/usr/sbin/$cmd
 	done
+#	cp ${FILESDIR}/hwclock.sh ${DISTDIR}/usr/local/sbin/hwclock
+#	chmod 555 ${DISTDIR}/usr/local/sbin/hwclock
+#	cp ${FILESDIR}/flashcfg.sh ${DISTDIR}/usr/sbin/flashcfg
+#	chmod 555 ${DISTDIR}/usr/sbin/flashcfg
 ;;
 obsbx*)
 	BUILDDIR=/tmp/obstools.$$
@@ -134,6 +138,10 @@ obsbx*)
 	chmod 555 ${DISTDIR}/usr/sbin/obsiot-modem.sh
 	cp ${FILESDIR}/obsiot-power.sh ${DISTDIR}/usr/sbin/obsiot-power.sh
 	chmod 555 ${DISTDIR}/usr/sbin/obsiot-power.sh
+	cp ${FILESDIR}/hwclock.sh ${DISTDIR}/usr/local/sbin/hwclock
+	chmod 555 ${DISTDIR}/usr/local/sbin/hwclock
+	cp ${FILESDIR}/flashcfg.sh ${DISTDIR}/usr/sbin/flashcfg
+	chmod 555 ${DISTDIR}/usr/sbin/flashcfg
 	cp ${FILESDIR}/retrieve_crashlog.sh ${DISTDIR}/usr/sbin/retrieve_crashlog.sh
 	chmod 555 ${DISTDIR}/usr/sbin/retrieve_crashlog.sh
 
@@ -180,6 +188,24 @@ obsvx*)
 
 		echo "OBS-HWCLOCK"
 		$CC -o ${BUILDDIR}/obs-hwclock ${FILESDIR}/obs-hwclock.c $CFLAGS
+
+		echo "OBSIOT-POWER"
+		$CC -o ${BUILDDIR}/obsiot-power ${FILESDIR}/obsiot-power.c $CFLAGS
+		cp ${FILESDIR}/obsiot-power.sh ${DISTDIR}/usr/sbin/obsiot-power.sh
+		chmod 555 ${DISTDIR}/usr/sbin/obsiot-power.sh
+
+		echo "WAV-PLAY"
+		_CFLAGS="$CFLAGS -lasound"
+		$CC -o ${BUILDDIR}/wav-play ${FILESDIR}/wav-play.c $_CFLAGS
+
+		echo "OBSVX1-MODEM"
+		$CC -o ${BUILDDIR}/obsvx1-modem ${FILESDIR}/obsvx1-modem.c $CFLAGS
+
+		echo "OBSVX1-GPIO"
+		$CC -o ${BUILDDIR}/obsvx1-gpio ${FILESDIR}/obsvx1-gpio.c $CFLAGS
+
+		cp ${FILESDIR}/obsiot-modem.sh ${DISTDIR}/usr/sbin/obsiot-modem.sh
+		chmod 555 ${DISTDIR}/usr/sbin/obsiot-modem.sh
 	fi
 
 	echo "HUB-CTRL"
@@ -187,22 +213,9 @@ obsvx*)
 	_CFLAGS="$CFLAGS -lusb "
 	$CC -o ${BUILDDIR}/hub-ctrl ${FILESDIR}/hub-ctrl.c $_CFLAGS
 
-	echo "WAV-PLAY"
-	_CFLAGS="$CFLAGS -lasound"
-	$CC -o ${BUILDDIR}/wav-play ${FILESDIR}/wav-play.c $_CFLAGS
-
-	echo "OBSVX1-MODEM"
-	$CC -o ${BUILDDIR}/obsvx1-modem ${FILESDIR}/obsvx1-modem.c $CFLAGS
-
-	echo "OBSVX1-GPIO"
-	$CC -o ${BUILDDIR}/obsvx1-gpio ${FILESDIR}/obsvx1-gpio.c $CFLAGS
-
-	echo "OBSIOT-POWER"
-	$CC -o ${BUILDDIR}/obsiot-power ${FILESDIR}/obsiot-power.c $CFLAGS
-
 	echo;echo;echo
 	if [ "$DIST" == "buster" ]; then
-		OBSTOOLLIST="atcmd hub-ctrl obs-hwclock wav-play obsvx1-modem obsvx1-gpio obsiot-power"
+		OBSTOOLLIST="hub-ctrl"
 	else
 		OBSTOOLLIST="wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wave-play obsvx1-modem obsvx1-gpio obsiot-power"
 	fi
@@ -215,91 +228,11 @@ obsvx*)
 
 	cp ${FILESDIR}/chksignal.sh ${DISTDIR}/usr/sbin/
 	chmod 555 ${DISTDIR}/usr/sbin/chksignal.sh
-	cp ${FILESDIR}/obsiot-modem.sh ${DISTDIR}/usr/sbin/obsiot-modem.sh
-	chmod 555 ${DISTDIR}/usr/sbin/obsiot-modem.sh
-	cp ${FILESDIR}/obsiot-power.sh ${DISTDIR}/usr/sbin/obsiot-power.sh
-	chmod 555 ${DISTDIR}/usr/sbin/obsiot-power.sh
+	cp ${FILESDIR}/install-firmware.sh ${DISTDIR}/usr/sbin/install-firmware.sh
+	chmod 555 ${DISTDIR}/usr/sbin/install-firmware.sh
+	cp ${FILESDIR}/flashcfg-rootfs.sh ${DISTDIR}/usr/sbin/flashcfg
+	chmod 555 ${DISTDIR}/usr/sbin/flashcfg
 
-	echo "CP2104-RS485"
-	(cd ${FILESDIR}/cp210xmanufacturing;make clean;make;				\
-		strip ${FILESDIR}/cp210xmanufacturing/Release/Linux/libcp210xmanufacturing.so.1.0
-		cp ${FILESDIR}/cp210xmanufacturing/Release/Linux/libcp210xmanufacturing.so.1.0 ${DISTDIR}/usr/lib/x86_64-linux-gnu/libcp210xmanufacturing.so;	\
-		cc -O2 -Wall -I./Release/Linux -I./Common -L./Release/Linux		\
-		-lcp210xmanufacturing -o cp2104-rs485 cp2104-rs485.c;			\
-		strip ${FILESDIR}/cp210xmanufacturing/cp2104-rs485
-		cp ${FILESDIR}/cp210xmanufacturing/cp2104-rs485 ${DISTDIR}/usr/sbin
-	)
-	chroot ${DISTDIR} ldconfig
-;;
-obix*)
-	BUILDDIR=/tmp/obstools.$$
-	LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
-
-	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -mstackrealign -fno-omit-frame-pointer -DCONFIG_OBSIX9"
-	[ "$DIST" == "buster" ] && CFLAGS="$CFLAGS -li2c"
-
-	mkdir -p ${BUILDDIR}
-
-	apt-get -y install libi2c-dev
-
-	echo "WD-KEEPALIVE"
-	$CC -o ${BUILDDIR}/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
-
-	echo "OBS-UTIL"
-	$CC -o ${BUILDDIR}/obs-util ${FILESDIR}/obs-util.c $CFLAGS
-
-	echo "KOSANU"
-	$CC -o ${BUILDDIR}/kosanu ${FILESDIR}/kosanu.c $CFLAGS
-
-	echo "RUNLED"
-	$CC -o ${BUILDDIR}/runled ${FILESDIR}/runled_bx1.c $CFLAGS
-
-	echo "PSHD"
-	$CC -o ${BUILDDIR}/pshd ${FILESDIR}/pshd_bx1.c $CFLAGS
-
-	echo "ATCMD"
-	$CC -o ${BUILDDIR}/atcmd ${FILESDIR}/atcmd.c $CFLAGS
-
-	echo "OBS-HWCLOCK"
-	$CC -o ${BUILDDIR}/obs-hwclock ${FILESDIR}/obs-hwclock.c $CFLAGS
-
-	echo "HUB-CTRL"
-	apt-get -y install libusb-dev
-	_CFLAGS="$CFLAGS -lusb "
-	$CC -o ${BUILDDIR}/hub-ctrl ${FILESDIR}/hub-ctrl.c $_CFLAGS
-
-	echo "WAV-PLAY"
-	_CFLAGS="$CFLAGS -lasound"
-	$CC -o ${BUILDDIR}/wav-play ${FILESDIR}/wav-play.c $_CFLAGS
-
-	echo "OBSVX1-MODEM"
-	$CC -o ${BUILDDIR}/obsvx1-modem ${FILESDIR}/obsvx1-modem.c $CFLAGS
-
-	echo "OBSVX1-GPIO"
-	$CC -o ${BUILDDIR}/obsvx1-gpio ${FILESDIR}/obsvx1-gpio.c $CFLAGS
-
-	echo "OBSIOT-POWER"
-	$CC -o ${BUILDDIR}/obsiot-power ${FILESDIR}/obsiot-power.c $CFLAGS
-
-	echo;echo;echo
-	if [ "$DIST" == "buster" ]; then
-		OBSTOOLLIST="atcmd hub-ctrl obs-hwclock wav-play obsvx1-modem obsvx1-gpio obsiot-power"
-	else
-		OBSTOOLLIST="wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wave-play obsvx1-modem obsvx1-gpio obsiot-power"
-	fi
-	(cd ${BUILDDIR}; ls -l ${OBSTOOLLIST})
-
-	for cmd in ${OBSTOOLLIST}; do
-		(cd ${BUILDDIR}; install -c -o root -g root -m 555 $cmd ${DISTDIR}/usr/sbin/$cmd)
-		$STRIP ${DISTDIR}/usr/sbin/$cmd
-	done
-
-	cp ${FILESDIR}/chksignal.sh ${DISTDIR}/usr/sbin/
-	chmod 555 ${DISTDIR}/usr/sbin/chksignal.sh
-	cp ${FILESDIR}/obsiot-modem.sh ${DISTDIR}/usr/sbin/obsiot-modem.sh
-	chmod 555 ${DISTDIR}/usr/sbin/obsiot-modem.sh
-	cp ${FILESDIR}/obsiot-power.sh ${DISTDIR}/usr/sbin/obsiot-power.sh
-	chmod 555 ${DISTDIR}/usr/sbin/obsiot-power.sh
 
 	echo "CP2104-RS485"
 	(cd ${FILESDIR}/cp210xmanufacturing;make clean;make;				\
@@ -364,36 +297,43 @@ obsgem1)
 		$STRIP ${DISTDIR}/usr/sbin/$cmd
 	done
 
-	cp ${FILESDIR}/chksignal.sh ${DISTDIR}/usr/sbin/
-	chmod 555 ${DISTDIR}/usr/sbin/chksignal.sh
 	cp ${FILESDIR}/obsiot-modem.sh ${DISTDIR}/usr/sbin/obsiot-modem.sh
 	chmod 555 ${DISTDIR}/usr/sbin/obsiot-modem.sh
 	cp ${FILESDIR}/obsiot-power.sh ${DISTDIR}/usr/sbin/obsiot-power.sh
 	chmod 555 ${DISTDIR}/usr/sbin/obsiot-power.sh
-
-;;
-*)
-;;
-esac
-
-case $TARGET in
-obsvx2)
-	cp ${FILESDIR}/flashcfg-rootfs.sh ${DISTDIR}/usr/sbin/flashcfg
-	chmod 555 ${DISTDIR}/usr/sbin/flashcfg
-	;;
-*)
+	cp ${FILESDIR}/hwclock.sh ${DISTDIR}/usr/local/sbin/hwclock
+	chmod 555 ${DISTDIR}/usr/local/sbin/hwclock
 	cp ${FILESDIR}/flashcfg.sh ${DISTDIR}/usr/sbin/flashcfg
 	chmod 555 ${DISTDIR}/usr/sbin/flashcfg
-	;;
-esac
 
-cp ${FILESDIR}/hwclock.sh ${DISTDIR}/usr/local/sbin/hwclock
-chmod 555 ${DISTDIR}/usr/local/sbin/hwclock
+;;
+obsix*)
+#	LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
 
-if [ "$TARGET" == "obsvx1" -o "$TARGET" == "obsvx2" ]; then
+#	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -mstackrealign -fno-omit-frame-pointer -li2c -DCONFIG_OBSIX9"
+
+#	echo "HUB-CTRL"
+#	apt-get -y install libusb-dev
+#	_CFLAGS="$CFLAGS -lusb "
+#	$CC -o ${BUILDDIR}/hub-ctrl ${FILESDIR}/hub-ctrl.c $_CFLAGS
+
+#	echo;echo;echo
+#	OBSTOOLLIST="hub-ctrl"
+#	(cd ${BUILDDIR}; ls -l ${OBSTOOLLIST})
+
+#	for cmd in ${OBSTOOLLIST}; do
+#		(cd ${BUILDDIR}; install -c -o root -g root -m 555 $cmd ${DISTDIR}/usr/sbin/$cmd)
+#		$STRIP ${DISTDIR}/usr/sbin/$cmd
+#	done
+
 	cp ${FILESDIR}/install-firmware.sh ${DISTDIR}/usr/sbin/install-firmware.sh
 	chmod 555 ${DISTDIR}/usr/sbin/install-firmware.sh
-fi
+#	cp ${FILESDIR}/flashcfg-rootfs.sh ${DISTDIR}/usr/sbin/flashcfg
+#	chmod 555 ${DISTDIR}/usr/sbin/flashcfg
+;;
+*)
+;;
+esac
 
 rm -rf ${BUILDDIR}
 

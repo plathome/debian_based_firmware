@@ -87,7 +87,6 @@ obsgem1)
 						--pagesize 2048 \
 						--base 0x80000000 \
 						--cmdline "root=/dev/mmcblk0p10 rw rootwait console=ttyMSM0,115200n8 noinitrd"
-#						--cmdline "root=/dev/disk/by-partlabel/rootfs rw rootwait console=ttyMSM0,115200n8 noinitrd"
 	${SKALESDIR}/mkbootimg	--kernel ${TMPDIR}/${MAKE_IMAGE}.dtb \
 						--ramdisk ${TMPDIR}/rd \
 						--output ${RELEASEDIR}/sdboot-obsgem1.img \

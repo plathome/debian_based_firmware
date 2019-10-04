@@ -1,0 +1,9 @@
+[Unit]
+Description=Restore factry image Openblocks family
+
+[Service]
+ExecStart=/usr/sbin/instfirm.sh
+Type=oneshot
+
+[Install]
+WantedBy=multi-user.target

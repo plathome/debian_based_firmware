@@ -1,13 +1,4 @@
 #! /bin/bash
-### BEGIN INIT INFO
-# Provides:          setup-gpio
-# Required-Start:    $local_fs $syslog $remote_fs
-# Required-Stop:
-# Default-Start:     2 3 4 5
-# Default-Stop:
-# Short-Description: setup gpio for Openblocks family
-# Description:       
-### END INIT INFO
 #
 # Copyright (c) 2013-2018 Plat'Home CO., LTD.
 # All rights reserved.
@@ -36,23 +27,41 @@
 
 [ -r /etc/default/openblocks ] && . /etc/default/openblocks
 
-# initialize LED, INIT
 GPIOPATH="/sys/class/gpio"
 case $MODEL in
 obsvx*)
+	# runled
 	[ ! -d $GPIOPATH/gpio342 ] && echo 342 > $GPIOPATH/export; \
 		echo out > $GPIOPATH/gpio342/direction
 	[ ! -d $GPIOPATH/gpio343 ] && echo 343 > $GPIOPATH/export; \
 		echo out > $GPIOPATH/gpio343/direction
 	[ ! -d $GPIOPATH/gpio344 ] && echo 344 > $GPIOPATH/export; \
 		echo out > $GPIOPATH/gpio344/direction
+
+	# pshd
 	[ ! -d $GPIOPATH/gpio345 ] && echo 345 > $GPIOPATH/export; \
 		echo both > $GPIOPATH/gpio345/edge
+
+	# obsiot-power
+	[ ! -d $GPIOPATH/gpio366 ] && echo 366 > $GPIOPATH/export
+	[ ! -d $GPIOPATH/gpio367 ] && echo 367 > $GPIOPATH/export
+	[ ! -d $GPIOPATH/gpio365 ] && echo 365 > $GPIOPATH/export
 	;;
 obsbx*)
+	# obsiot-power
+	[ ! -d $GPIOPATH/gpio40 ] && echo 40 > $GPIOPATH/export
+	[ ! -d $GPIOPATH/gpio41 ] && echo 41 > $GPIOPATH/export
+	[ ! -d $GPIOPATH/gpio42 ] && echo 42 > $GPIOPATH/export
 	;;
 obsgem*)
+	# obsiot-power
+	[ ! -d $GPIOPATH/gpio500 ] && echo 500 > $GPIOPATH/export
+	[ ! -d $GPIOPATH/gpio503 ] && echo 503 > $GPIOPATH/export
+	[ ! -d $GPIOPATH/gpio504 ] && echo 504 > $GPIOPATH/export
 	;;
 *)
+	exit 1
 	;;
 esac
+
+exit 0
