@@ -54,9 +54,9 @@ mv -f /tmp/control.new $pkgdir/DEBIAN/control
 
 rm -rf ${pkgdir}.deb
 
-dpkg-deb --build $pkgdir
+dpkg-deb --build ${pkgdir}
 
-[ -d "$REL_DIR" ] && mv -fv $pkgdir.deb $REL_DIR/
+mv -fv ${pkgdir}.deb ${REL_DIR}/
 
-rm -rf $pkgdir
+rm -rf ${pkgdir}
 

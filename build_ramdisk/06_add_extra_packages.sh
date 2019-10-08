@@ -46,7 +46,7 @@ if [ $? -eq 0 ]; then
 fi
 
 if [ "$DIST" == "buster" ]; then
-	chroot ${DISTDIR} systemctl disable rng-tools
+	chroot ${DISTDIR} systemctl disable rng-tools5
 	chroot ${DISTDIR} systemctl disable hostapd
 
 	if [ "$TARGET" == "obsbx1s" -o "$TARGET" == "obsbx1" ]; then

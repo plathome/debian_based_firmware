@@ -28,6 +28,8 @@
 . `dirname $0`/config.sh
 . `dirname $0`/_obstool_version.sh
 
+[ ! -d $RELEASEDIR ] && mkdir -p $RELEASEDIR
+
 case $TARGET in
 obsvx*)
 	pkglist="atcmd obs_util obs_hwclock obsiot_power obsvx1_modem obsvx1_gpio pshd runled wav_play wd_keepalive"
