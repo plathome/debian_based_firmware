@@ -1,0 +1,7 @@
+Section: utils
+Priority: important
+Maintainer: Plat'Home CO.,LTD. <support@plathome.co.jp>
+Version: __VERSION__
+Package: wav-play
+Architecture: __ARCH__
+Description: Simple wave file player for Openblocks family

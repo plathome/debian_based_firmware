@@ -29,7 +29,7 @@
 . `dirname $0`/config.sh
 
 DIST_LIST="(wheezy|jessie|stretch|buster)"
-TARGET_LIST="(obsgem1|obsvx1|obsvx2|obsmv4|bpv4|bpv4-h|bpv8|obsbx1|obsbx1s|obsa6|obsa7|obsax3|obs600)"
+TARGET_LIST="(obsix9|obsgem1|obsvx1|obsvx2|obsmv4|bpv4|bpv4-h|bpv8|obsbx1|obsbx1s|obsa6|obsa7|obsax3|obs600)"
 
 function _usage(){
 	echo
@@ -62,25 +62,14 @@ if ! (echo $_TARGET | grep -Eq "$TARGET_LIST") ; then
 fi
 
 case $_DIST in
-jessie)
-	if [ "$_TARGET" == "obsa6" ]; then
-		echo
-		echo "$_TARGET is never supported."
-		exit 1
-	elif [ "$_TARGET" == "obsgem1" ]; then
-		echo
-		echo "$_TARGET is not supported."
-		exit 1
-	fi
-	;;
-stretch)
+jessie|stretch)
 	case $_TARGET in
 	obs600|obsa6)
 		echo
 		echo "$_TARGET is never supported."
 		exit 1
 		;;
-	obsgem1)
+	obsgem1|obsix9)
 		echo
 		echo "$_TARGET is not supported."
 		exit 1

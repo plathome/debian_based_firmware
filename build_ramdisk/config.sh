@@ -313,6 +313,11 @@ buster)
 		UBOOT_VER=2019.01
 		UDEFCONFIG=obsgem1_defconfig
 	;;
+	obsix9)
+		ISOFILE=debian-10.0.0-amd64-DVD-1.iso
+		PATCHLEVEL=0
+		RAMDISK_SIZE=512
+	;;
 	*)
 	;;
 	esac

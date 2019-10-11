@@ -27,11 +27,11 @@
 
 #set -x
 
-if [ "$#" -ne "9" ] ; then
+if [ "$#" -ne "8" ] ; then
 	echo
-	echo "usage: $0 [VERSION] [ARCH] [MODEL] [bzImage] [obstools.tgz] [flashcfg] [MD5] [modules.tgz] [System.map]"
+	echo "usage: $0 [VERSION] [ARCH] [MODEL] [bzImage] [flashcfg] [MD5] [modules] [System.map]"
 	echo
-	echo "ex) $0 1.0.0-0 amd64 obsvx2 bzImage obstools.tgz flashcfg MD5.obsvx2 modules.tgz System.map"
+	echo "ex) $0 1.0.0-0 amd64 obsvx2 bzImage flashcfg MD5.obsvx2 modules.tgz System.map"
 	echo
 	exit 1
 fi
@@ -40,11 +40,10 @@ VERSION=$1
 ARCH=$2
 MODEL=$3
 FIRM=$4
-OBSTOOLS=$5
-FLASHCFG=$6
-MD5=$7
-MODULES=$8
-MAP=$9
+FLASHCFG=$5
+MD5=$6
+MODULES=$7
+MAP=$8
 FIRM_DIR=$(dirname $FIRM)
 
 if [ "$MODEL" == "obsvx2" ]; then
@@ -55,6 +54,9 @@ elif [ "$MODEL" == "obsbx1s" ]; then
 	TARGET=$MODEL
 elif [ "$MODEL" == "obsgem1" ]; then
 	DESCRIPTION="Linux firmware for OpenBlocks IoT GEM1"
+	TARGET=$MODEL
+elif [ "$MODEL" == "obsix9" ]; then
+	DESCRIPTION="Linux firmware for OpenBlocks IX9"
 	TARGET=$MODEL
 else
 	echo
@@ -78,7 +80,6 @@ sed -e "s|__VERSION__|$VERSION|" \
 mv -f /tmp/control.new $pkgdir/DEBIAN/control
 
 cp -f $FIRM $pkgdir/etc/
-cp -f $OBSTOOLS $pkgdir/etc/
 cp -f $FLASHCFG $pkgdir/etc/flashcfg.sh
 cp -f $MD5 $pkgdir/etc/
 cp -f $MODULES $pkgdir/etc/

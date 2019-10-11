@@ -1,0 +1,8 @@
+Section: utils
+Priority: important
+Maintainer: Plat'Home CO.,LTD. <support@plathome.co.jp>
+Version: __VERSION__
+Package: runled
+Architecture: __ARCH__
+Depends: __DEPENDS__
+Description: status indicator daemon for Openblocks family

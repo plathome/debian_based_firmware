@@ -42,7 +42,7 @@
 #include <errno.h>
 
 #define PID_FILE	"/var/run/wd-keepalive.pid"
-#if defined(CONFIG_OBSVX1)
+#if defined(CONFIG_OBSVX1) || defined(CONFIG_OBSIX9)
 #define INTERVAL	20
 #define WD_FILE		"/dev/watchdog0"
 #else

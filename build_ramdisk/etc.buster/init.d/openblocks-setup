@@ -60,57 +60,6 @@ CONFIG_POSTSCRIPT=post-init.sh
 MTREE_LIST="${MTREE_LIST:=/etc/mtree.list}"
 MTREE_DIRS="${MTREE_DIRS:=/var/log /var/run}"
 
-if [ "$MODEL" == "obsa6" -o "$MODEL" == "obsa7" ] ; then
-	extract_func=extract_mtd_a6
-else	# obsax3
-	extract_func=extract_mtd
-fi
-
-protect_mtd(){
-	local mtd=
-	for mtd in $MTD_FIRM_DEV $MTD_CONF_DEV $MTD_USER_DEV $MTD_OPT_DEV;do
-		[ -f /sys/devices/virtual/mtd/${mtd}/flags ] && \
-		echo "0x800" > /sys/devices/virtual/mtd/${mtd}/flags
-	done
-}
-
-extract_mtd_a6(){
-	local mtd=$1
-	local type=gzip
-	case $mtd in
-	${MTD_CONF_DEV}) cmdarg="-x"; desc="/etc config" ;;
-	${MTD_USER_DEV}) cmdarg="-X"; desc="userland" ;;
-	${MTD_OPT_DEV}) cmdarg="-J"; desc="optional" ;;
-	*) return 1;;
-	esac
-	echo -n "Extract $desc files from FlashROM($mtd)... "
-	if flashcfg-debian $cmdarg > /dev/null 2>&1 ; then
-		echo "done."
-	else
-		echo "fail(or empty)."
-	fi
-}
-
-extract_mtd(){
-	local mtd=$1
-	local type=gzip
-	local ODIR=${RW_DIR}
-	case $mtd in
-	${MTD_CONF_DEV}) desc="/etc config" ;;
-	${MTD_USER_DEV}) desc="userland" ;;
-	${MTD_OPT_DEV}) desc="optional"; type=lzma; ODIR=/ ;;
-	*) return 1;;
-	esac
-	echo -n "Extract $desc files from FlashROM($mtd)... "
-	# dont' use "tar -xpzf ...". because get bad return code.
-	if (dd if=/dev/$mtd|$type -d|tar -xpf - -C ${ODIR})  > /dev/null 2>&1; then
-		echo "done."
-	else
-		echo "fail(or empty)."
-	fi
-	return 0
-}
-
 restore_func(){
 WORK_DIR=/tmp/_tmpfs.$$
 
@@ -257,13 +206,8 @@ case "$1" in
 start)
 	mount -oremount,rw /
 	mount -t proc proc /proc
-	protect_mtd
 
 	depmod -a
-
-	if [ "$MODEL" == "obs600" ]; then
-		hwclock --rtc=/dev/rtc0 --hctosys
-	fi
 
 	FLG_INIT=false
 	FLG_FORCE_CONFIG=false
@@ -328,11 +272,7 @@ start)
 			echo "Don't extract files in FlashROM..."
 		else
 			case $MODEL in
-			obsa*|obs600)
-				$extract_func ${MTD_USER_DEV}
-				$extract_func ${MTD_CONF_DEV}
-			;;
-			obsbx*|obsvx1)
+			obsbx1|obsvx1)
 				restore_func
 			;;
 			esac
@@ -400,12 +340,6 @@ start)
 		esac
 	done
 
-	# extract Oracle Java
-	# /usr/lib/jre directory and /etc/profile.d/java.(sh|csh) file.
-	if [ ! -x /usr/lib/jre/bin/java ] ; then
-		[ -n "${MTD_OPT_DEV}" ] && $extract_func ${MTD_OPT_DEV}
-	fi
-
 	# for Measures to rename network interface
 	rm -f /etc/udev/rules.d/70-persistent-net.rules
 
@@ -437,7 +371,7 @@ start)
 	ln -sf /proc/mounts /etc/mtab
 
 	# S35390A INIT2 flag clear
-	if [ "$MODEL" == "obsbx1" -o "$MODEL" == "obsbx64" ]; then
+	if [ "$MODEL" == "obsbx1" ]; then
 		obs-hwclock --check
 		if [ $? == 0 ]; then
 			/usr/local/sbin/hwclock --clearint2
@@ -449,13 +383,6 @@ start)
 	mount -oremount,ro /
 ;;
 stop)
-	if [ "$MODEL" == "obsax3" ]; then
-		if [ -f /sys/devices/system/cpu/cpu1/online ]; then
-			echo
-			echo 0 > /sys/devices/system/cpu/cpu1/online
-			echo
-		fi
-	fi
 ;;
 esac
 

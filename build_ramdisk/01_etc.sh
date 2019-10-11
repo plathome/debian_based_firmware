@@ -57,84 +57,76 @@ obsbx*|obsvx*|obsgem*)
 		chmod 755 ${DISTDIR}/etc/init.d/bluetooth
 		chroot ${DISTDIR} /sbin/insserv -rf bluetooth
 		chroot ${DISTDIR} /sbin/insserv bluetooth
+		chmod 755 ${DISTDIR}/etc/init.d/nitz
+		chroot ${DISTDIR} /sbin/insserv -rf nitz
+		chroot ${DISTDIR} /sbin/insserv nitz
+		chmod 755 ${DISTDIR}/etc/init.d/obsiot-power
+		chroot ${DISTDIR} /sbin/insserv -rf obsiot-power
+		chroot ${DISTDIR} /sbin/insserv obsiot-power
+		chmod 755 ${DISTDIR}/etc/init.d/openblocks-setup
+		chroot ${DISTDIR} /sbin/insserv -rf openblocks-setup
+		chroot ${DISTDIR} /sbin/insserv openblocks-setup
+		chmod 755 ${DISTDIR}/etc/init.d/runled
+		chroot ${DISTDIR} /sbin/insserv -rf runled
+		chroot ${DISTDIR} /sbin/insserv runled
+		chmod 755 ${DISTDIR}/etc/init.d/pshd
+		chroot ${DISTDIR} /sbin/insserv -rf pshd
+		chroot ${DISTDIR} /sbin/insserv pshd
+		chmod 755 ${DISTDIR}/etc/init.d/wd-keepalive
+		chroot ${DISTDIR} /sbin/insserv -rf wd-keepalive
+		chroot ${DISTDIR} /sbin/insserv wd-keepalive
+
+		case $TARGET in
+		obsvx*)
+			chmod 755 ${DISTDIR}/etc/init.d/instfirm
+			chroot ${DISTDIR} /sbin/insserv -rf instfirm
+			chroot ${DISTDIR} /sbin/insserv instfirm
+			chmod 755 ${DISTDIR}/etc/init.d/disable-modem
+			chroot ${DISTDIR} /sbin/insserv -rf disable-modem
+			chroot ${DISTDIR} /sbin/insserv disable-modem
+			;;
+		obsbx1*)
+			chmod 755 ${DISTDIR}/etc/init.d/reset-smsc95xx
+			chroot ${DISTDIR} /sbin/insserv -rf reset-smsc95xx
+			chroot ${DISTDIR} /sbin/insserv reset-smsc95xx
+			chmod 755 ${DISTDIR}/etc/init.d/disable-modem
+			chroot ${DISTDIR} /sbin/insserv -rf disable-modem
+			chroot ${DISTDIR} /sbin/insserv disable-modem
+			;;
+		esac
 	else
-		chroot ${DISTDIR} /sbin/insserv -rf apparmor
+		case $TARGET in
+		obsvx1|obsbx1)
+			;;
+		*)
+			chroot ${DISTDIR} /usr/bin/systemctl disable apparmor
+			;;
+		esac
 	fi
-	chmod 755 ${DISTDIR}/etc/init.d/nitz
-	chroot ${DISTDIR} /sbin/insserv -rf nitz
-	chroot ${DISTDIR} /sbin/insserv nitz
-	chmod 755 ${DISTDIR}/etc/init.d/disable-modem
-	chroot ${DISTDIR} /sbin/insserv -rf disable-modem
-	chroot ${DISTDIR} /sbin/insserv disable-modem
-	chmod 755 ${DISTDIR}/etc/init.d/obsiot-power
-	chroot ${DISTDIR} /sbin/insserv -rf obsiot-power
-	chroot ${DISTDIR} /sbin/insserv obsiot-power
-	if [ ${ENA_BX1PM} == "true" ]; then
-		chmod 755 ${DISTDIR}/etc/init.d/enable-pm
-		chroot ${DISTDIR} /sbin/insserv -rf enable-pm
-		chroot ${DISTDIR} /sbin/insserv enable-pm
-	fi
-	case $TARGET in
-	obsvx*)
-		chmod 755 ${DISTDIR}/etc/init.d/instfirm
-		chroot ${DISTDIR} /sbin/insserv -rf instfirm
-		chroot ${DISTDIR} /sbin/insserv instfirm
-		;;
-	obsbx1*)
-		chmod 755 ${DISTDIR}/etc/init.d/reset-smsc95xx
-		chroot ${DISTDIR} /sbin/insserv -rf reset-smsc95xx
-		chroot ${DISTDIR} /sbin/insserv reset-smsc95xx
-		;;
-	esac
 	;;
-*)
+obsix*)
+	chroot ${DISTDIR} /usr/bin/systemctl disable apparmor
 	;;
+*)	;;
 esac
 
-case ${TARGET} in
-obsgem1)
-	chmod 755 ${DISTDIR}/etc/init.d/openblocks-setup
-	chroot ${DISTDIR} /sbin/insserv -rf openblocks-setup
-	chroot ${DISTDIR} /sbin/insserv openblocks-setup
-	chmod 755 ${DISTDIR}/etc/init.d/runled
-	chroot ${DISTDIR} /sbin/insserv -rf runled
-	chroot ${DISTDIR} /sbin/insserv runled
-	chmod 755 ${DISTDIR}/etc/init.d/pshd
-	chroot ${DISTDIR} /sbin/insserv -rf pshd
-	chroot ${DISTDIR} /sbin/insserv pshd
-	;;
-obs*)
-	chmod 755 ${DISTDIR}/etc/init.d/openblocks-setup
-	chroot ${DISTDIR} /sbin/insserv -rf openblocks-setup
-	chroot ${DISTDIR} /sbin/insserv openblocks-setup
-	chmod 755 ${DISTDIR}/etc/init.d/runled
-	chroot ${DISTDIR} /sbin/insserv -rf runled
-	chroot ${DISTDIR} /sbin/insserv runled
-	chmod 755 ${DISTDIR}/etc/init.d/pshd
-	chroot ${DISTDIR} /sbin/insserv -rf pshd
-	chroot ${DISTDIR} /sbin/insserv pshd
-	chmod 755 ${DISTDIR}/etc/init.d/wd-keepalive
-	chroot ${DISTDIR} /sbin/insserv -rf wd-keepalive
-	chroot ${DISTDIR} /sbin/insserv wd-keepalive
-	;;
-*)
-	;;
-esac
-
-chroot ${DISTDIR} /sbin/insserv
+[ -f /sbin/insserv ] && chroot ${DISTDIR} /sbin/insserv
 
 touch ${DISTDIR}/etc/init.d/.legacy-bootordering
 
 if [ -f ${DISTDIR}/etc/modules ]; then
-	if [ "$DIST" != "stretch" -a "$DIST" != "buster" ]; then
+	case $DIST in
+	squeeze|wheezy|jessie)
 		if grep -q "^ipv6" ${DISTDIR}/etc/modules; then
 			echo "/etc/modules: The line, ipv6, exists"
 		else
 			echo "ipv6" >> ${DISTDIR}/etc/modules
 		fi
-	fi
+		;;
+	esac
 
-	if [ "$TARGET" == "obsvx1" -o "$TARGET" == "obsvx2" ];then
+	case $TARGET in
+	obsvx*)
 		if grep -q "^rtl8821ae" ${DISTDIR}/etc/modules; then
 			echo "/etc/modules: The line, rtl8821ae, exists"
 		else
@@ -145,33 +137,29 @@ if [ -f ${DISTDIR}/etc/modules ]; then
 #		else
 #			echo "ath10k_pci" >> ${DISTDIR}/etc/modules
 #		fi
-	fi
-
-	if [ "$ENA_VIRT" == "true" ]; then
-		if grep -q "^kvm-intel" ${DISTDIR}/etc/modules; then
-			echo "/etc/modules: The line, kvm-intel, exists"
-		else
-			echo "kvm-intel" >> ${DISTDIR}/etc/modules
-		fi
-	fi
+		;;
+	esac
 fi
 
 case $DIST in
-jessie|stretch|buster)
+stretch|buster)
 	sed -e "s|^PermitRootLogin without-password|PermitRootLogin yes|" \
 		-e "s|^#PermitRootLogin prohibit-password|PermitRootLogin yes|" \
 		< ${DISTDIR}/etc/ssh/sshd_config > /tmp/sshd_config.new
 	mv -f /tmp/sshd_config.new ${DISTDIR}/etc/ssh/sshd_config
-	;;
-*)
-	;;
-esac
 
-if [ "$DIST" == "stretch" -o "$DIST" == "buster" ]; then
 	if [ ! -e "${DISTDIR}/etc/udev/rules.d/73-usb-net-by-mac.rules" ]; then
 		ln -s /dev/null ${DISTDIR}/etc/udev/rules.d/73-usb-net-by-mac.rules
 	fi
 	if [ ! -e "${DISTDIR}/etc/udev/rules.d/75-net-description.rules" ]; then
 		ln -s /dev/null ${DISTDIR}/etc/udev/rules.d/75-net-description.rules
 	fi
-fi
+	;;
+jessie)
+	sed -e "s|^PermitRootLogin without-password|PermitRootLogin yes|" \
+		-e "s|^#PermitRootLogin prohibit-password|PermitRootLogin yes|" \
+		< ${DISTDIR}/etc/ssh/sshd_config > /tmp/sshd_config.new
+	mv -f /tmp/sshd_config.new ${DISTDIR}/etc/ssh/sshd_config
+	;;
+*)	;;
+esac

@@ -1,0 +1,12 @@
+[Unit]
+Description=Battery monitaring daemon for Openblocks family
+After=setup-gpio.service
+
+[Service]
+ExecStart=/usr/sbin/obsiot-power
+Restart=always
+Type=forking
+PIDFile=/var/run/obsiot-power.pid
+
+[Install]
+WantedBy=multi-user.target

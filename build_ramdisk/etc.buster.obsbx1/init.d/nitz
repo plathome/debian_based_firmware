@@ -166,16 +166,6 @@ case "$1" in
 		;;
 	esac
 
-	# set LED, INIT
-	echo 47 > $GPIOPATH/export	# LED red
-	echo out > $GPIOPATH/gpio47/direction
-	echo 48 > $GPIOPATH/export	# LED green
-	echo out > $GPIOPATH/gpio48/direction
-	echo 49 > $GPIOPATH/export	# LED blue
-	echo out > $GPIOPATH/gpio49/direction
-	echo 14 > $GPIOPATH/export	# INIT SW
-	echo both > $GPIOPATH/gpio14/edge
-
 	# check init sw
 	grep -q 'noflashcfg=1' /proc/cmdline
 	if [ $? == 0 ]; then

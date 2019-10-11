@@ -42,7 +42,7 @@
 
 # define CORRECT_VALUE	0x9a
 
-#if defined(CONFIG_OBSVX1)
+#if defined(CONFIG_OBSVX1) || defined(CONFIG_OBSIX9)
 #define	I2C_DEV	"/dev/i2c-5"
 #else
 #define	I2C_DEV	"/dev/i2c-1"

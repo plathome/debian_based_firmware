@@ -41,6 +41,8 @@
 (cd ${DISTDIR}/dev/; rm -f sdd*; mknod sdd b 8 48)
 (cd ${DISTDIR}/dev/; for n in 1 2;do mknod sdd${n} b 8 $((48+${n}));done)
 
+case $TARGET in
+obsa*)
 (cd ${DISTDIR}/dev/; rm -f mtd0;  mknod mtd0 c 90 0)
 (cd ${DISTDIR}/dev/; rm -f mtd1;  mknod mtd1 c 90 2)
 (cd ${DISTDIR}/dev/; rm -f mtd2;  mknod mtd2 c 90 4)
@@ -48,3 +50,6 @@
 (cd ${DISTDIR}/dev/; rm -f mtd4;  mknod mtd4 c 90 8)
 (cd ${DISTDIR}/dev/; rm -f mtd5;  mknod mtd5 c 90 10)
 (cd ${DISTDIR}/dev/; rm -f mtd6;  mknod mtd6 c 90 12)
+	;;
+*)	;;
+esac

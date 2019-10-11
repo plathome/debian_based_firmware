@@ -33,9 +33,13 @@
 #include <errno.h>
 
 const char *path = "/usr/sbin/";
+#if defined(CONFIG_OBSIX9)
+const char *slave = "0xae";
+#else
 const char *slave = "0xa0";
+#endif
 const char *command = "kosanu";
-#if defined(CONFIG_OBSVX1)
+#if defined(CONFIG_OBSVX1) || defined(CONFIG_OBSIX9)
 const char *channel = "7";
 #else
 const char *channel = "1";

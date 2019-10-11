@@ -1,0 +1,13 @@
+[Unit]
+Description=Status indicator daemon for Openblocks family
+After=setup-gpio.service
+
+[Service]
+ExecStart=/usr/sbin/runled
+ExecStartPre=/usr/sbin/setup-runled.sh
+Restart=always
+Type=forking
+PIDFile=/var/run/segled.pid
+
+[Install]
+WantedBy=multi-user.target
