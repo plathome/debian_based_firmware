@@ -44,8 +44,11 @@ case $MODEL in
 obsvx*)
 	[ -z $target ] && target="obsvx1"
 	;;
+obsix*)
+	[ -z $target ] && target="obsix9"
+	;;
 *)
-	echo -e "This is not VX series"
+	echo -e "$MODEL is not supported"
 	echo
 	usage
 	exit 1
@@ -91,8 +94,14 @@ mount ${dist}p1 /mnt || exit 1
 ( cd /media; tar cfpm - . | tar xfpm - -C /mnt )
 cp /mnt/EFI/boot/bootx64.conf-obsiot /mnt/EFI/boot/bootx64.conf
 cp /mnt/SFR/${target}-bzImage /mnt/bzImage
-if [ "$target" == "obsvx1" ]; then
-	cp /mnt/SFR/obsvx1-initrd.gz /mnt/initrd.gz
+if [ "$target" == "obsvx1" -o "$target" == "obsix9" ]; then
+	if [ -f /mnt/SFR/${target}-initrd.gz ]; then
+		cp /mnt/SFR/${target}-initrd.gz /mnt/initrd.gz
+	else
+		echo
+		echo "/mnt/SFR/${target}-initrd.gz is no found."
+		echo
+	fi
 fi
 sync
 umount /mnt
