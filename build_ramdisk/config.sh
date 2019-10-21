@@ -316,7 +316,11 @@ buster)
 	obsix9)
 		ISOFILE=debian-10.0.0-amd64-DVD-1.iso
 		PATCHLEVEL=0
-		RAMDISK_SIZE=2048
+	;;
+	obsix9r)
+		ISOFILE=debian-10.0.0-amd64-DVD-1.iso
+		PATCHLEVEL=0
+		RAMDISK_SIZE=300
 	;;
 	*)
 	;;

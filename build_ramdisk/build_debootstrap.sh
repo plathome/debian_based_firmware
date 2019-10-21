@@ -146,7 +146,7 @@ buster)
 		INCLUDE="openssh-server,xz-utils,parted,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200,initscripts,gnupg,strace,wget,apparmor"
 		EXCLUDE="nano"
 		;;
-	obsix9)
+	obsix*)
 		INCLUDE="openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,libusb-1.0-0,libnl-route-3-200,gnupg,strace,wget,apparmor"
 		EXCLUDE="nano"
 		;;

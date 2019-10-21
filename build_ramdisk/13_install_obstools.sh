@@ -42,7 +42,7 @@ obsvx*)
 obsbx*)
 	pkglist="atcmd obs_util obs_hwclock obsiot_power pshd runled wav_play wd_keepalive"
 	;;
-obsix9)
+obsix*)
 	pkglist="obs_util obs_hwclock pshd runled wav_play wd_keepalive"
 	;;
 *) exit 1 ;;
