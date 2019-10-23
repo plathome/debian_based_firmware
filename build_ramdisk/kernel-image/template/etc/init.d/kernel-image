@@ -34,6 +34,7 @@ set -e
 
 case "$1" in
 start)
+	[ ! $(echo "$MODEL" | grep "obsa") ] && exit
 	_ver=$(dd if=/dev/${MTD_FIRM_DEV:-mtd0}ro bs=1 count=32 skip=32 2> /dev/null)
 	ver=$(echo $_ver)
 	
@@ -46,11 +47,11 @@ start)
 		$debug flashcfg -y -f /etc/uImage.initrd
 		$debug reboot
 	fi
-        ;;
-	stop)
 	;;
-	*)
-		echo "Usage: /etc/init.d/$NAME {start|stop}" >&2
+stop)
+	;;
+*)
+	echo "Usage: /etc/init.d/$NAME {start|stop}" >&2
 	exit 1
 	;;
 esac
