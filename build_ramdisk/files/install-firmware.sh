@@ -98,9 +98,13 @@ if [ "$target" == "obsvx1" -o "$target" == "obsix9" ]; then
 	if [ -f /mnt/SFR/${target}-initrd.gz ]; then
 		cp /mnt/SFR/${target}-initrd.gz /mnt/initrd.gz
 	else
-		echo
-		echo "/mnt/SFR/${target}-initrd.gz is no found."
-		echo
+		if [ -f /mnt/SFR/${target}r-initrd.gz ]; then
+			cp /mnt/SFR/${target}r-initrd.gz /mnt/initrd.gz
+		else
+			echo
+			echo "/mnt/SFR/${target}-initrd.gz is no found."
+			echo
+		fi
 	fi
 fi
 sync
