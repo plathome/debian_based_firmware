@@ -10,7 +10,11 @@
 case "$1" in
 configure)
 	[ -f /.chroot ] && exit 0
-	systemctl is-active pshd && systemctl restart pshd
+	if systemctl is-active pshd; then
+		systemctl restart pshd
+	else
+		systemctl enable pshd && systemctl start pshd
+	fi
 	;;
 abort-upgrade|abort-remove|abort-deconfigure)
 	;;

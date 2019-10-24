@@ -10,7 +10,11 @@
 case "$1" in
 configure)
 	[ -f /.chroot ] && exit 0
-	systemctl is-active wd-keepalive && systemctl restart wd-keepalive
+	if systemctl is-active wd-keepalive; then
+		 systemctl restart wd-keepalive
+	else
+		 systemctl enable wd-keepalive && systemctl start wd-keepalive
+	fi
 	;;
 abort-upgrade|abort-remove|abort-deconfigure)
 	;;
