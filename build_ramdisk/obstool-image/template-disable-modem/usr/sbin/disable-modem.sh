@@ -1,14 +1,4 @@
 #! /bin/sh
-### BEGIN INIT INFO
-# Provides:          disable-modem
-# Required-Start:    $local_fs $syslog $remote_fs
-# Required-Stop:     $local_fs $syslog $remote_fs
-# Default-Start:
-# Default-Stop:      0 6
-# Short-Description: disable-modem for OBSBX1
-# Description:       
-### END INIT INFO
-#
 # Copyright (c) 2013-2018 Plat'Home CO., LTD.
 # All rights reserved.
 #
@@ -33,14 +23,6 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 #
-
-# Do NOT "set -e"
-
-# PATH should only include /usr/* if it runs after the mountnfs.sh script
-PATH=/sbin:/usr/sbin:/bin:/usr/bin
-DESC="disable modem for obsbx1"
-NAME=disable-modem
-SCRIPTNAME=/etc/init.d/$NAME
 
 # Read configuration variable file if it is present
 [ -r /etc/default/$NAME ] && . /etc/default/$NAME

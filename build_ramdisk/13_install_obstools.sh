@@ -37,10 +37,10 @@ esac
 
 case $TARGET in
 obsvx*)
-	pkglist="atcmd obs_util obs_hwclock obsiot_power obsvx1_modem obsvx1_gpio pshd runled wav_play wd_keepalive"
+	pkglist="atcmd disable_modem nitz obs_util obs_hwclock obsiot_power obsvx1_modem obsvx1_gpio pshd runled wav_play wd_keepalive"
 	;;
 obsbx*)
-	pkglist="atcmd obs_util obs_hwclock obsiot_power pshd runled wav_play wd_keepalive"
+	pkglist="atcmd disable_modem nitz obs_util obs_hwclock obsiot_power pshd runled wav_play wd_keepalive"
 	;;
 obsix*)
 	pkglist="obs_util obs_hwclock pshd runled wav_play wd_keepalive"

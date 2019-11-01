@@ -147,7 +147,7 @@ void usage(char *fname)
 
 int wait_device(int mode)
 {
-#define RETRY 200		// 20 sec
+#define RETRY 300		// 30 sec
 	struct timespec req, rem;
 	struct stat sta;
 	int i;
