@@ -104,6 +104,10 @@ obsbx*|obsvx*)
 	$STRIP ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/obsiot-power
 	cp -f ${FILESDIR}/obsiot-power.sh ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/
 	chmod 555 ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/obsiot-power.sh
+
+	echo "NITZ"
+	cp -f ${FILESDIR}/nitz.sh ${OBSTOOLDIR}/template-nitz/usr/sbin/
+	chmod 555 ${OBSTOOLDIR}/template-nitz/usr/sbin/nitz.sh
 	;;
 esac
 
@@ -150,11 +154,11 @@ for pkg in $pkglist; do
 	rm -f ${DISTDIR}/${pkgfile}
 done
 
-pkglist="flashcfg setup_gpio"
-
 #
 # all
 #
+pkglist="flashcfg setup_gpio"
+
 echo "SETUP-GPIO"
 cp -f ${FILESDIR}/setup-gpio.sh ${OBSTOOLDIR}/template-setup-gpio/usr/sbin/
 chmod 555 ${OBSTOOLDIR}/template-setup-gpio/usr/sbin/setup-gpio.sh
