@@ -35,7 +35,7 @@ set_time_ehs6(){
 	echo -n "nitz: 3G modem power on : "
 	$ATCMD PON
 	if [ ! -e /dev/ttyMODEM0 ]; then
-		echo "fail"
+		echo "$LINENO: fail"
 		exit 1
 	fi
 	echo "done"
@@ -44,7 +44,7 @@ set_time_ehs6(){
 	# check SIM card
 	val=`$ATCMD CCID`
 	if [ $? == 255 ]; then
-		echo "fail"
+		echo "$LINENO: fail"
 #		$ATCMD POFF
 		exit 1
 	fi
@@ -53,7 +53,7 @@ set_time_ehs6(){
 	echo -n "nitz: time synchronization : "
 	val=`$ATCMD SIND`
 	if [ $? == 255 ]; then
-		echo "fail"
+		echo "$LINENO: fail"
 #		$ATCMD POFF
 		exit 1
 	fi
@@ -71,7 +71,7 @@ set_time_u200(){
 	echo -n "nitz: 3G modem power on : "
 	$ATCMD PON
 	if [ ! -e /dev/ttyMODEM0 ]; then
-		echo "fail"
+		echo "$LINENO: fail"
 		exit 1
 	fi
 	echo "done"
@@ -81,7 +81,7 @@ set_time_u200(){
 	sleep 2
 	val=`$ATCMD CCID`
 	if [ $? == 255 ]; then
-		echo "fail"
+		echo "$LINENO: fail"
 #		$ATCMD POFF
 		exit 1
 	fi
@@ -90,7 +90,7 @@ set_time_u200(){
 	echo -n "nitz: time synchronization : "
 	val=`$ATCMD CCLK`
 	if [ $? == 255 ]; then
-		echo "fail"
+		echo "$LINENO: fail"
 #		$ATCMD POFF
 		exit 1
 	fi
@@ -111,62 +111,6 @@ set_time_s710(){
 	echo "done"
 }
 
-MODEM=`/usr/sbin/obsiot-modem.sh`
-if [ "$MODEL" == "obsvx1" ]; then
-	# initialize LED, INIT
-	GPIOPATH="/sys/class/gpio"
-	echo 342 > $GPIOPATH/export	# LED red
-	[ -d $GPIOPATH/gpio342 ] && echo out > $GPIOPATH/gpio342/direction
-	echo 343 > $GPIOPATH/export	# LED green
-	[ -d $GPIOPATH/gpio343 ] && echo out > $GPIOPATH/gpio343/direction
-	echo 344 > $GPIOPATH/export	# LED blue
-	[ -d $GPIOPATH/gpio344 ] && echo out > $GPIOPATH/gpio344/direction
-	echo 345 > $GPIOPATH/export	# INIT SW
-	[ -d $GPIOPATH/gpio345 ] && echo both > $GPIOPATH/gpio345/edge
-
-	if [ "$MODEM" != "none" ]; then
-		obsvx1-modem init
-		[ "$MODEM" == "S710E" ] && obsvx1-modem power low
-		atcmd PON
-	fi
-elif [ "$MODEL" == "obsbx1" ]; then
-	case $MODEM in
-	U200E|UM04)
-		echo 200 > $GPIOPATH/export	# 3G modem power
-		echo high > $GPIOPATH/gpio200/direction
-		echo 202 > $GPIOPATH/export	# 3G reset
-		echo high > $GPIOPATH/gpio202/direction
-		;;
-	KYM11|S710E)
-		echo 202 > $GPIOPATH/export	# 3G reset
-		echo high > $GPIOPATH/gpio202/direction
-		echo 200 > $GPIOPATH/export	# 3G modem power
-		echo low > $GPIOPATH/gpio200/direction
-		if [ ! -e /dev/ttyMODEM0 ]; then
-			echo 1 > $GPIOPATH/gpio200/value
-			sleep 4
-			echo 0 > $GPIOPATH/gpio200/value
-			sleep 20
-		fi
-		;;
-	EHS6|S710)
-		echo 165 > $GPIOPATH/export	# 3G modem power
-		echo low > $GPIOPATH/gpio165/direction
-		echo 15 > $GPIOPATH/export	# 3G reset
-		echo low > $GPIOPATH/gpio15/direction
-		;;
-	U200)
-		echo 165 > $GPIOPATH/export	# 3G modem power
-		echo high > $GPIOPATH/gpio165/direction
-		echo 15 > $GPIOPATH/export	# 3G reset
-		echo low > $GPIOPATH/gpio15/direction
-		;;
-	*)
-		;;
-	esac
-	rfkill unblock bluetooth
-fi
-
 # check init sw
 grep -q 'noflashcfg=1' /proc/cmdline
 if [ $? == 0 ]; then
@@ -174,6 +118,7 @@ if [ $? == 0 ]; then
 	exit 0
 fi
 
+MODEM=`/usr/sbin/obsiot-modem.sh`
 case $MODEM in
 EHS6)
 	set_time_ehs6
@@ -188,8 +133,9 @@ U200E|KYM11|UM04|S710E|none)
 	echo "nitz: skipped time synchronization"
 	;;
 *)
-	echo "fail"
+	echo "$LINENO: fail"
 	exit 1
+	;;
 esac
 
 exit 0

@@ -37,10 +37,10 @@ esac
 
 case $TARGET in
 obsvx*)
-	pkglist="atcmd disable_modem nitz obs_util obs_hwclock obsiot_power obsvx1_modem obsvx1_gpio pshd runled wav_play wd_keepalive"
+	pkglist="atcmd disable_modem obs_util obs_hwclock obsiot_power obsvx1_modem obsvx1_gpio pshd runled wav_play wd_keepalive"
 	;;
 obsbx*)
-	pkglist="atcmd disable_modem nitz obs_util obs_hwclock obsiot_power pshd runled wav_play wd_keepalive"
+	pkglist="atcmd disable_modem obs_util obs_hwclock obsiot_power pshd runled wav_play wd_keepalive"
 	;;
 obsix*)
 	pkglist="obs_util obs_hwclock pshd runled wav_play wd_keepalive"
@@ -105,9 +105,6 @@ obsbx*|obsvx*)
 	cp -f ${FILESDIR}/obsiot-power.sh ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/
 	chmod 555 ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/obsiot-power.sh
 
-	echo "NITZ"
-	cp -f ${FILESDIR}/nitz.sh ${OBSTOOLDIR}/template-nitz/usr/sbin/
-	chmod 555 ${OBSTOOLDIR}/template-nitz/usr/sbin/nitz.sh
 	;;
 esac
 
@@ -157,23 +154,33 @@ done
 #
 # all
 #
-pkglist="flashcfg setup_gpio"
+pkglist="flashcfg setup_gpio nitz"
 
 echo "SETUP-GPIO"
 cp -f ${FILESDIR}/setup-gpio.sh ${OBSTOOLDIR}/template-setup-gpio/usr/sbin/
 chmod 555 ${OBSTOOLDIR}/template-setup-gpio/usr/sbin/setup-gpio.sh
 
-echo "FLASHCFG"
 case $TARGET in
 obsvx*|obsix*)
+	echo "FLASHCFG"
 	cp -f ${FILESDIR}/flashcfg-rootfs.sh ${OBSTOOLDIR}/template-flashcfg/usr/sbin/flashcfg
 	chmod 555 ${OBSTOOLDIR}/template-flashcfg/usr/sbin/flashcfg
 	cp -f ${FILESDIR}/instfirm.sh ${OBSTOOLDIR}/template-flashcfg/usr/sbin/
 	chmod 555 ${OBSTOOLDIR}/template-flashcfg/usr/sbin/instfirm.sh
 	;;
 obsbx*)
+	echo "FLASHCFG"
 	cp -f ${FILESDIR}/flashcfg.sh ${OBSTOOLDIR}/template-flashcfg/usr/sbin/flashcfg
 	chmod 555 ${OBSTOOLDIR}/template-flashcfg/usr/sbin/flashcfg
+	;;
+esac
+
+
+case $TARGET in
+obsvx*|obsbx*)
+	echo "NITZ"
+	cp -f ${FILESDIR}/nitz.sh ${OBSTOOLDIR}/template-nitz/usr/sbin/
+	chmod 555 ${OBSTOOLDIR}/template-nitz/usr/sbin/nitz.sh
 	;;
 esac
 
