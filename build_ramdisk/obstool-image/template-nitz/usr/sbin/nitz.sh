@@ -118,6 +118,13 @@ if [ $? == 0 ]; then
 	exit 0
 fi
 
+MODEM=`/usr/sbin/obsiot-modem.sh`
+
+if [ "$MODEM" != "none" ]; then
+	obsvx1-modem init
+	[ "$MODEM" == "S710" ] && obsvx1-modem power low
+	atcmd PON
+fi
 case $MODEM in
 EHS6)
 	set_time_ehs6
@@ -125,7 +132,7 @@ EHS6)
 U200|S710)
 	set_time_u200
 	;;
-S710E)
+S710)
 	set_time_s710
 	;;
 U200E|KYM11|UM04|S710E|none)
@@ -134,6 +141,7 @@ U200E|KYM11|UM04|S710E|none)
 *)
 	echo "$LINENO: fail"
 	exit 1
+	;;
 esac
 
 exit 0

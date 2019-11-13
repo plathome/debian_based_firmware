@@ -64,4 +64,6 @@ obsgem*)
 	;;
 esac
 
+dpkg-reconfigure openssh-server
+
 exit 0

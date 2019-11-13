@@ -6,7 +6,7 @@ After=setup-gpio.service
 ExecStart=/usr/sbin/obsiot-power
 Restart=always
 Type=forking
-PIDFile=/var/run/obsiot-power.pid
+PIDFile=/run/obsiot-power.pid
 
 [Install]
 WantedBy=multi-user.target

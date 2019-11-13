@@ -7,7 +7,7 @@ ExecStart=/usr/sbin/runled
 ExecStartPre=/usr/sbin/setup-runled.sh
 Restart=always
 Type=forking
-PIDFile=/var/run/segled.pid
+PIDFile=/run/segled.pid
 
 [Install]
 WantedBy=multi-user.target

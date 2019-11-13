@@ -10,11 +10,7 @@
 case "$1" in
 configure)
 	[ -f /.chroot ] && exit 0
-	if systemctl is-active instfirm; then
-		systemctl restart instfirm
-	else
-		systemctl enable instfirm && systemctl start instfirm
-	fi
+	systemctl enable disable-modem
 	;;
 abort-upgrade|abort-remove|abort-deconfigure)
 	;;
