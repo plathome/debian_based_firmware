@@ -82,6 +82,10 @@ obsbx*|obsvx*)
 	echo "NITZ"
 	cp -f ${FILESDIR}/nitz.sh ${OBSTOOLDIR}/template-nitz/usr/sbin/
 	chmod 555 ${OBSTOOLDIR}/template-nitz/usr/sbin/nitz.sh
+
+	echo "DISABLE-MODEM"
+	cp -f ${FILESDIR}/disable-modem.sh ${OBSTOOLDIR}/template-disable-modem/usr/sbin/
+	chmod 555 ${OBSTOOLDIR}/template-disable-modem/usr/sbin/disable-modem.sh
 	;;
 esac
 
