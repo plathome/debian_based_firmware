@@ -95,6 +95,7 @@ obsbx*|obsvx*|obsgem*)
 			;;
 		esac
 	else
+		chroot ${DISTDIR} /usr/bin/systemctl enable acpid
 		case $TARGET in
 		obsvx1|obsbx1)
 			;;
@@ -106,6 +107,7 @@ obsbx*|obsvx*|obsgem*)
 	;;
 obsix*)
 	chroot ${DISTDIR} /usr/bin/systemctl disable apparmor
+	chroot ${DISTDIR} /usr/bin/systemctl enable acpid
 	;;
 *)	;;
 esac
