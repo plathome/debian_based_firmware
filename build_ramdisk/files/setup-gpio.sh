@@ -64,6 +64,7 @@ obsgem*)
 	;;
 esac
 
+export DEBIAN_FRONTEND=noninteractive
 dpkg-reconfigure openssh-server
 
 exit 0
