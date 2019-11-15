@@ -2,8 +2,11 @@
 Description=Poweroff Modem when restarting for OpenBlocks family
 
 [Service]
-ExecStart=/usr/sbin/disable-modem.sh
+ExecStop=/usr/sbin/disable-modem.sh
 Type=oneshot
+KillMode=none
+TimeoutSec=5min
+RemainAfterExit=true
 
 [Install]
-WantedBy=reboot.target
+WantedBy=multi-user.target
