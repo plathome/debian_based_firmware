@@ -32,13 +32,11 @@ set -e
 #debug=echo
 
 MODESTR="instfirm=debian"
+RECOVERY="recoverymodel"
 
 grep -qv $MODESTR /proc/cmdline && exit
 
-#
 # replace MODEL name
-#
-RECOVERY="recoverymodel"
 ary=(`cat /proc/cmdline`)
 for i in `seq 1 ${#ary[@]}`
 do

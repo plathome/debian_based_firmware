@@ -3,3 +3,10 @@
 
 # BEGIN: don't edit
 MODEL="obsix9"
+
+FIRM_DIR="BOOT"
+SAVE_DIR="BOOT"
+
+# Set noatime option, when using SSD.
+NOATIME=false
+

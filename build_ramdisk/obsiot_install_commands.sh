@@ -232,8 +232,10 @@ obsvx*)
 	chmod 555 ${DISTDIR}/usr/sbin/chksignal.sh
 	cp ${FILESDIR}/install-firmware.sh ${DISTDIR}/usr/sbin/install-firmware.sh
 	chmod 555 ${DISTDIR}/usr/sbin/install-firmware.sh
-	cp ${FILESDIR}/flashcfg-rootfs.sh ${DISTDIR}/usr/sbin/flashcfg
-	chmod 555 ${DISTDIR}/usr/sbin/flashcfg
+#	cp ${FILESDIR}/flashcfg-rootfs.sh ${DISTDIR}/usr/sbin/flashcfg
+#	chmod 555 ${DISTDIR}/usr/sbin/flashcfg
+	cp ${FILESDIR}/bin/resize ${DISTDIR}/usr/bin/
+	chmod 555 ${DISTDIR}/usr/bin/resize
 
 
 	echo "CP2104-RS485"
@@ -314,24 +316,26 @@ obsix*)
 
 #	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -mstackrealign -fno-omit-frame-pointer -li2c -DCONFIG_OBSIX9"
 
-#	echo "HUB-CTRL"
-#	apt-get -y install libusb-dev
-#	_CFLAGS="$CFLAGS -lusb "
-#	$CC -o ${BUILDDIR}/hub-ctrl ${FILESDIR}/hub-ctrl.c $_CFLAGS
+	echo "HUB-CTRL"
+	apt-get -y install libusb-dev
+	_CFLAGS="$CFLAGS -lusb "
+	$CC -o ${BUILDDIR}/hub-ctrl ${FILESDIR}/hub-ctrl.c $_CFLAGS
 
-#	echo;echo;echo
-#	OBSTOOLLIST="hub-ctrl"
-#	(cd ${BUILDDIR}; ls -l ${OBSTOOLLIST})
+	echo;echo;echo
+	OBSTOOLLIST="hub-ctrl"
+	(cd ${BUILDDIR}; ls -l ${OBSTOOLLIST})
 
-#	for cmd in ${OBSTOOLLIST}; do
-#		(cd ${BUILDDIR}; install -c -o root -g root -m 555 $cmd ${DISTDIR}/usr/sbin/$cmd)
-#		$STRIP ${DISTDIR}/usr/sbin/$cmd
-#	done
+	for cmd in ${OBSTOOLLIST}; do
+		(cd ${BUILDDIR}; install -c -o root -g root -m 555 $cmd ${DISTDIR}/usr/sbin/$cmd)
+		$STRIP ${DISTDIR}/usr/sbin/$cmd
+	done
 
 	cp ${FILESDIR}/install-firmware.sh ${DISTDIR}/usr/sbin/install-firmware.sh
 	chmod 555 ${DISTDIR}/usr/sbin/install-firmware.sh
 #	cp ${FILESDIR}/flashcfg-rootfs.sh ${DISTDIR}/usr/sbin/flashcfg
 #	chmod 555 ${DISTDIR}/usr/sbin/flashcfg
+	cp ${FILESDIR}/bin/resize ${DISTDIR}/usr/bin/
+	chmod 555 ${DISTDIR}/usr/bin/resize
 ;;
 *)
 ;;

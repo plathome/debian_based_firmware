@@ -169,17 +169,24 @@ cp -f ${FILESDIR}/setup-gpio.sh ${OBSTOOLDIR}/template-setup-gpio/usr/sbin/
 chmod 555 ${OBSTOOLDIR}/template-setup-gpio/usr/sbin/setup-gpio.sh
 
 case $TARGET in
-obsvx*|obsix*)
+obsvx*)
 	echo "FLASHCFG"
-	cp -f ${FILESDIR}/flashcfg-rootfs.sh ${OBSTOOLDIR}/template-flashcfg/usr/sbin/flashcfg
-	chmod 555 ${OBSTOOLDIR}/template-flashcfg/usr/sbin/flashcfg
-	cp -f ${FILESDIR}/instfirm.sh ${OBSTOOLDIR}/template-flashcfg/usr/sbin/
-	chmod 555 ${OBSTOOLDIR}/template-flashcfg/usr/sbin/instfirm.sh
+	cp -f ${FILESDIR}/flashcfg-rootfs.sh ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg
+	chmod 555 ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg
+	cp -f ${FILESDIR}/instfirm.sh ${OBSTOOLDIR}/template-instfirm/usr/sbin/
+	chmod 555 ${OBSTOOLDIR}/template-instfirm/usr/sbin/instfirm.sh
+	;;
+obsix*)
+	echo "FLASHCFG"
+	cp -f ${FILESDIR}/flashcfg-rootfs.sh ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg
+	chmod 555 ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg
+	cp -f ${FILESDIR}/instfirm-obsix9.sh ${OBSTOOLDIR}/template-instfirm/usr/sbin/instfirm.sh
+	chmod 555 ${OBSTOOLDIR}/template-instfirm/usr/sbin/instfirm.sh
 	;;
 obsbx*)
 	echo "FLASHCFG"
-	cp -f ${FILESDIR}/flashcfg.sh ${OBSTOOLDIR}/template-flashcfg/usr/sbin/flashcfg
-	chmod 555 ${OBSTOOLDIR}/template-flashcfg/usr/sbin/flashcfg
+	cp -f ${FILESDIR}/flashcfg.sh ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg
+	chmod 555 ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg
 	;;
 esac
 

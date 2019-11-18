@@ -35,6 +35,22 @@ MODESTR="instfirm=debian"
 
 grep -qv $MODESTR /proc/cmdline && exit
 
+#
+# replace MODEL name
+#
+RECOVERY="recoverymodel"
+ary=(`cat /proc/cmdline`)
+for i in `seq 1 ${#ary[@]}`
+do
+	case ${ary[$i]} in
+	${RECOVERY}*)
+		IFS='='
+		set -- ${ary[$i]}
+		MODEL=$2
+		;;
+	esac
+done
+
 BOOT=`findfs LABEL=${FIRM_DIR} 2> /dev/null`
 if [ -z "$BOOT" ]; then
 	echo "Boot partition is not found."
