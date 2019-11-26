@@ -312,9 +312,11 @@ obsgem1)
 
 	;;
 obsix*)
-#	LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
+	BUILDDIR=/tmp/obstools.$$
+	LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
 
-#	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -mstackrealign -fno-omit-frame-pointer -li2c -DCONFIG_OBSIX9"
+	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -mstackrealign -fno-omit-frame-pointer -li2c -DCONFIG_OBSIX9"
+	mkdir -p ${BUILDDIR}
 
 	echo "HUB-CTRL"
 	apt-get -y install libusb-dev
