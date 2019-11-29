@@ -45,6 +45,9 @@ obsbx*)
 obsix*)
 	pkglist="obs_util obs_hwclock pshd runled wav_play wd_keepalive"
 	;;
+obsgem*)
+	pkglist="atcmd disable_modem nitz obs_util obs_hwclock obsiot_power pshd runled wav_play"
+	;;
 *) exit 1 ;;
 esac
 
@@ -72,7 +75,7 @@ esac
 #
 
 case $TARGET in
-obsbx*|obsvx*)
+obsbx*|obsvx*|obsgem*)
 	echo "ATCMD"
 	$CC -o ${OBSTOOLDIR}/template-atcmd/usr/sbin/atcmd ${FILESDIR}/atcmd.c $CFLAGS
 	$STRIP ${OBSTOOLDIR}/template-atcmd/usr/sbin/atcmd
@@ -90,7 +93,7 @@ obsbx*|obsvx*)
 esac
 
 case $TARGET in
-obsbx*|obsvx*)
+obsbx*|obsvx*|obsgem*)
 	echo "OBS-HWCLOCK"
 	$CC -o ${OBSTOOLDIR}/template-obs-hwclock/usr/sbin/obs-hwclock ${FILESDIR}/obs-hwclock.c $CFLAGS
 	$STRIP ${OBSTOOLDIR}/template-obs-hwclock/usr/sbin/obs-hwclock
@@ -106,7 +109,7 @@ $CC -o ${OBSTOOLDIR}/template-obs-util/usr/sbin/kosanu ${FILESDIR}/kosanu.c $CFL
 $STRIP ${OBSTOOLDIR}/template-obs-util/usr/sbin/kosanu
 
 case $TARGET in
-obsbx*|obsvx*)
+obsbx*|obsvx*|obsgem*)
 	echo "OBSIOT-POWER"
 	$CC -o ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/obsiot-power ${FILESDIR}/obsiot-power.c $CFLAGS
 	$STRIP ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/obsiot-power
@@ -143,9 +146,13 @@ _CFLAGS="$CFLAGS -lasound"
 $CC -o ${OBSTOOLDIR}/template-wav-play/usr/sbin/wav-play ${FILESDIR}/wav-play.c $_CFLAGS
 $STRIP ${OBSTOOLDIR}/template-wav-play/usr/sbin/wav-play
 
-echo "WD-KEEPALIVE"
-$CC -o ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
-$STRIP ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/wd-keepalive
+case $TARGET in
+obsix*|obsvx*|obsbx*)
+	echo "WD-KEEPALIVE"
+	$CC -o ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
+	$STRIP ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/wd-keepalive
+	;;
+esac
 
 for pkg in $pkglist; do
 	eval version='$'${pkg}_ver
