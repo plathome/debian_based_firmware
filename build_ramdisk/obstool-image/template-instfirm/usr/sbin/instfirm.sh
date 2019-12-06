@@ -31,17 +31,19 @@ set -e
 
 #debug=echo
 
-MODESTR="recoverymodel"
+MODESTR="instfirm=debian"
+
 grep -qv $MODESTR /proc/cmdline && exit
 
 #
 # replace MODEL name
 #
+RECOVERY="recoverymodel"
 ary=(`cat /proc/cmdline`)
 for i in `seq 1 ${#ary[@]}`
 do
 	case ${ary[$i]} in
-	${MODESTR}*)
+	${RECOVERY}*)
 		IFS='='
 		set -- ${ary[$i]}
 		MODEL=$2
@@ -49,40 +51,48 @@ do
 	esac
 done
 
-[ "$MODEL" != "obsix9" && "$MODEL" != "obsix9r" ] && exit 1
-
 BOOT=`findfs LABEL=${FIRM_DIR} 2> /dev/null`
 if [ -z "$BOOT" ]; then
 	echo "Boot partition is not found."
 	exit 1
 fi
 
-# format rootfs partition
-wipefs -a ${BOOT}
-mkfs.ext4 ${BOOT}
+# format partition
+if [ -e ${BOOT/%?/}2 ]; then
+	wipefs -a ${BOOT/%?/}2
+	mkfs.ext4 -U e8c3e922-b1f5-43a2-a026-6a14f01197f6 ${BOOT/%?/}2
+fi
 
-mount /dev/mmcblk0p1 /media || exit 1
-# copy kernel image
-cp /media/SFR/openblocks-release /media/openblocks-release
-# copy ramdisk image
-if [ "$MODEL" == "obsix9r" ]; then
-	cp /media/SFR/obsix9r-bzImage /media/bzImage
+mount $BOOT /media || exit 1
+cp /media/SFR/${MODEL}-bzImage /media/bzImage
+if [ "$MODEL" == "obsvx1" ]; then
+	cp /media/SFR/obsvx1-initrd.gz /media/initrd.gz
+	e2label ${BOOT/%?/}2 DEBIAN
+elif [ "$MODEL" == "obsix9r" ]; then
 	cp /media/SFR/obsix9r-initrd.gz /media/initrd.gz
-	e2label /dev/mmcblk0p2 DEBIAN
-	cp /media/EFI/boot/bootx64.conf-obsix9r /media/EFI/boot/bootx64.conf
-else
-	cp /media/SFR/obsix9-bzImage /media/bzImage
-	cp /media/EFI/boot/bootx64.conf-obsix9 /media/EFI/boot/bootx64.conf
-	mount ${BOOT} /mnt || exit 1
-	tar xfzp /media/SFR/obsix9-rootfs.tgz -C /mnt
+fi
+cp /media/SFR/openblocks-release /media/openblocks-release
+case $MODEL in
+obsvx*)
+	cp /media/EFI/boot/bootx64.conf-obsiot /media/EFI/boot/bootx64.conf
+	;;
+obsix*)
+	cp /media/EFI/boot/bootx64.conf-${MODEL} /media/EFI/boot/bootx64.conf
+	;;
+esac
+if [ -f /media/SFR/${MODEL}-rootfs.tgz ]; then
+	mount ${BOOT/%?/}2 /mnt || exit 1
+	tar xfzp /media/SFR/${MODEL}-rootfs.tgz -C /mnt
 	depmod -ae -b /mnt -F /mnt/boot/System.map `cat /mnt/etc/openblocks-release | cut -d - -f1`
-	if [ -f /media/SFR/obsix9_userland.tgz ]; then
-		tar xfzp /media/SFR/${MODEL}_userland.tgz -C /mnt
-	fi
 	sync
 	umount /mnt
 fi
-
+if [ -f /media/SFR/${MODEL}_userland.tgz ]; then
+	mount ${BOOT/%?/}2 /mnt || exit 1
+	tar xfzp /media/SFR/${MODEL}_userland.tgz -C /mnt
+	sync
+	umount /mnt
+fi
 rm -f /media/etc.tgz /media/userland.tgz
 sync
 umount /media

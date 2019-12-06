@@ -38,7 +38,7 @@ _HOLD2
 	chroot ${DISTDIR} /bin/bash /tmp/hold.$$
 	rm -f ${DISTDIR}/tmp/hold.$$
 	;;
-stretch|buster)
+stretch)
 	cat > ${DISTDIR}/tmp/hold.$$ <<_HOLD3
 	echo kmod hold | dpkg --set-selections
 	echo libkmod2 hold | dpkg --set-selections
