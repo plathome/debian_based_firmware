@@ -518,19 +518,13 @@ static bool _rtl8723be_phy_bb8723b_config_parafile(struct ieee80211_hw *hw)
 	bool rtstatus;
 
 	/* switch ant to BT */
-	if (rtlpriv->rtlhal.interface == INTF_USB){
-		pr_info("**** %s: reg 0x948 0x0\n", __func__);
+	if (rtlpriv->rtlhal.interface == INTF_USB)
 		rtl_write_dword(rtlpriv, 0x948, 0x0);
-	}
 	else {
-		if (rtlpriv->btcoexist.btc_info.single_ant_path == 0){
-			pr_info("**** %s: single_ant_path %d, reg 0x948 0x280\n", __func__, rtlpriv->btcoexist.btc_info.single_ant_path);
+		if (rtlpriv->btcoexist.btc_info.single_ant_path == 0)
 			rtl_write_dword(rtlpriv, 0x948, 0x280);
-		}
-		else {
-			pr_info("**** %s: single_ant_path %d, reg 0x948 0x0\n", __func__, rtlpriv->btcoexist.btc_info.single_ant_path);
+		else
 			rtl_write_dword(rtlpriv, 0x948, 0x0);
-		}
 	}
 
 	rtstatus = _rtl8723be_phy_config_bb_with_headerfile(hw,

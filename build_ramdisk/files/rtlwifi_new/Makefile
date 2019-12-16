@@ -125,3 +125,4 @@ clean:
 	@rm -fr Module.symvers
 	@rm -fr Module.markers
 	@rm -fr modules.order rtl8*/modules.order bt*/modules.order
+	@rm -fr ./backup_drivers.tar

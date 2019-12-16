@@ -241,6 +241,7 @@ static struct rtl_hal_ops rtl8192de_hal_ops = {
 	.led_control = rtl92de_led_control,
 	.set_desc = rtl92de_set_desc,
 	.get_desc = rtl92de_get_desc,
+	.is_tx_desc_closed = rtl92de_is_tx_desc_closed,
 	.tx_polling = rtl92de_tx_polling,
 	.enable_hw_sec = rtl92de_enable_hw_security_config,
 	.set_key = rtl92de_set_key,
@@ -276,6 +277,8 @@ static const struct rtl_hal_cfg rtl92de_hal_cfg = {
 	.maps[MAC_RCR_ACRC32] = RCR_ACRC32,
 	.maps[MAC_RCR_ACF] = RCR_ACF,
 	.maps[MAC_RCR_AAP] = RCR_AAP,
+	.maps[MAC_HIMR] = REG_HIMR,
+	.maps[MAC_HIMRE] = REG_HIMRE,
 
 	.maps[EFUSE_TEST] = REG_EFUSE_TEST,
 	.maps[EFUSE_CTRL] = REG_EFUSE_CTRL,

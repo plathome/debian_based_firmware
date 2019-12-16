@@ -3291,6 +3291,7 @@ void rtl8821ae_read_eeprom_info(struct ieee80211_hw *hw)
 
 	tmp_u1b = rtl_read_byte(rtlpriv, REG_9346CR);
 	if (tmp_u1b & BIT(4)) {
+		pr_info("Boot from EEPROM, REG_9346CR = 0x%x\n", tmp_u1b);
 		RT_TRACE(rtlpriv, COMP_INIT, DBG_DMESG, "Boot from EEPROM\n");
 		rtlefuse->epromtype = EEPROM_93C46;
 	} else {
@@ -3448,6 +3449,7 @@ static u8 _rtl8821ae_mrate_idx_to_arfr_id(
 			ret = 6;
 		else
 			ret = 7;
+		break;
 	case RATR_INX_WIRELESS_AC_5N:
 		if (rtlphy->rf_type == RF_1T1R)
 			ret = 10;
