@@ -58,6 +58,9 @@ obsbx*)
 
 	mkdir -p ${BUILDDIR}
 
+	echo "MMC-UTILS"
+	(cd ${FILESDIR}/mmc-utils;make clean;CFLAGS="$CFLAGS -m32" LDFLAGS="-m32" CC=gcc make;prefix=${DISTDIR}/usr make install)
+
 	echo "HOSTAPD"
 	if [ ${DIST} == "wheezy" ]; then
 		if [ -d ${FILESDIR}/hostapd ]; then
@@ -168,6 +171,9 @@ obsvx*)
 
 	mkdir -p ${BUILDDIR}
 
+	echo "MMC-UTILS"
+	(cd ${FILESDIR}/mmc-utils;make clean;CC=gcc make;prefix=${DISTDIR}/usr make install)
+
 	apt-get -y install libi2c-dev
 	if [ "$DIST" != "buster" ]; then
 	echo "WD-KEEPALIVE"
@@ -257,6 +263,9 @@ obsgem1)
 
 	mkdir -p ${BUILDDIR}
 
+	echo "MMC-UTILS"
+	(cd ${FILESDIR}/mmc-utils;make clean;CC=gcc make;prefix=${DISTDIR}/usr make install)
+
 	apt-get -y install libi2c-dev:arm64
 	echo "WD-KEEPALIVE"
 	$CC -o ${BUILDDIR}/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
@@ -317,6 +326,9 @@ obsix*)
 
 	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -mstackrealign -fno-omit-frame-pointer -li2c -DCONFIG_OBSIX9"
 	mkdir -p ${BUILDDIR}
+
+	echo "MMC-UTILS"
+	(cd ${FILESDIR}/mmc-utils;make clean;CC=gcc make;prefix=${DISTDIR}/usr make install)
 
 	echo "HUB-CTRL"
 	apt-get -y install libusb-dev

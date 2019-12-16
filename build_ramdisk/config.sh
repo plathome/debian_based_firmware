@@ -273,36 +273,35 @@ stretch)
 	esac
 ;;
 buster)
-	KERNEL=4.19.60
+	KERNEL=4.19.85
 	case ${TARGET} in
 	obsvx1)
-		ISOFILE=debian-10.0.0-amd64-DVD-1.iso
+		ISOFILE=debian-10.2.0-amd64-DVD-1.iso
 		PATCHLEVEL=0
 		RAMDISK_SIZE=260
 	;;
 	obsvx2)
-		ISOFILE=debian-10.0.0-amd64-DVD-1.iso
+		ISOFILE=debian-10.2.0-amd64-DVD-1.iso
 		PATCHLEVEL=0
 		RAMDISK_SIZE=260
 	;;
 	obsbx1s)
 		KERNEL=3.10.98
-		ISOFILE=debian-10.0.0-i386-DVD-1.iso
+		ISOFILE=debian-10.2.0-i386-DVD-1.iso
 		ARCH=i386
 		PATCHLEVEL=0
 		RAMDISK_SIZE=240
 	;;
 	obsbx1)
 		KERNEL=3.10.17
-		ISOFILE=debian-10.0.0-i386-DVD-1.iso
+		ISOFILE=debian-10.2.0-i386-DVD-1.iso
 		ARCH=i386
 		PATCHLEVEL=0
 		RAMDISK_SIZE=240
 	;;
 	obsgem*)
-#		KERNEL=4.14.96
 		DTBFILE=qcom/apq8016-sbc.dtb
-		ISOFILE=debian-10.0.0-arm64-DVD-1.iso
+		ISOFILE=debian-10.2.0-arm64-DVD-1.iso
 		DEFCONFIG=obsgem1_defconfig
 		RAMDISK_SIZE=260
 		PATCHLEVEL=0
@@ -313,13 +312,8 @@ buster)
 		UBOOT_VER=2019.01
 		UDEFCONFIG=obsgem1_defconfig
 	;;
-	obsix9)
-		ISOFILE=debian-10.0.0-amd64-DVD-1.iso
-		PATCHLEVEL=0
-		RAMDISK_SIZE=300
-	;;
-	obsix9r)
-		ISOFILE=debian-10.0.0-amd64-DVD-1.iso
+	obsix*)
+		ISOFILE=debian-10.2.0-amd64-DVD-1.iso
 		PATCHLEVEL=0
 		RAMDISK_SIZE=300
 	;;
