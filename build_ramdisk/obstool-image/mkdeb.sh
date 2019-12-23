@@ -58,5 +58,6 @@ dpkg-deb --build ${pkgdir}
 
 mv -fv ${pkgdir}.deb ${REL_DIR}/
 
+[ -e template-${PACKAGE}/usr ] && rm -rf template-${PACKAGE}/usr
 rm -rf ${pkgdir}
 

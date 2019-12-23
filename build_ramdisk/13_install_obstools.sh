@@ -77,16 +77,19 @@ esac
 case $TARGET in
 obsbx*|obsvx*|obsgem*)
 	echo "ATCMD"
+	mkdir -p ${OBSTOOLDIR}/template-atcmd/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-atcmd/usr/sbin/atcmd ${FILESDIR}/atcmd.c $CFLAGS
 	$STRIP ${OBSTOOLDIR}/template-atcmd/usr/sbin/atcmd
 	cp -f ${FILESDIR}/obsiot-modem.sh ${OBSTOOLDIR}/template-atcmd/usr/sbin/obsiot-modem.sh
 	chmod 555 ${OBSTOOLDIR}/template-atcmd/usr/sbin/obsiot-modem.sh
 
 	echo "NITZ"
+	mkdir -p ${OBSTOOLDIR}/template-nitz/usr/sbin/
 	cp -f ${FILESDIR}/nitz.sh ${OBSTOOLDIR}/template-nitz/usr/sbin/
 	chmod 555 ${OBSTOOLDIR}/template-nitz/usr/sbin/nitz.sh
 
 	echo "DISABLE-MODEM"
+	mkdir -p ${OBSTOOLDIR}/template-disable-modem/usr/sbin/
 	cp -f ${FILESDIR}/disable-modem.sh ${OBSTOOLDIR}/template-disable-modem/usr/sbin/
 	chmod 555 ${OBSTOOLDIR}/template-disable-modem/usr/sbin/disable-modem.sh
 	;;
@@ -95,14 +98,17 @@ esac
 case $TARGET in
 obsbx*|obsvx*|obsgem*)
 	echo "OBS-HWCLOCK"
+	mkdir -p ${OBSTOOLDIR}/template-obs-hwclock/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-obs-hwclock/usr/sbin/obs-hwclock ${FILESDIR}/obs-hwclock.c $CFLAGS
 	$STRIP ${OBSTOOLDIR}/template-obs-hwclock/usr/sbin/obs-hwclock
+	mkdir -p ${OBSTOOLDIR}/template-obs-hwclock/usr/local/sbin/
 	cp -f ${FILESDIR}/hwclock.sh ${OBSTOOLDIR}/template-obs-hwclock/usr/local/sbin/hwclock
 	chmod 555 ${OBSTOOLDIR}/template-obs-hwclock/usr/local/sbin/hwclock
 	;;
 esac
 
 echo "OBS-UTIL"
+mkdir -p ${OBSTOOLDIR}/template-obs-util/usr/sbin/
 $CC -o ${OBSTOOLDIR}/template-obs-util/usr/sbin/obs-util ${FILESDIR}/obs-util.c $CFLAGS
 $STRIP ${OBSTOOLDIR}/template-obs-util/usr/sbin/obs-util
 $CC -o ${OBSTOOLDIR}/template-obs-util/usr/sbin/kosanu ${FILESDIR}/kosanu.c $CFLAGS
@@ -111,6 +117,7 @@ $STRIP ${OBSTOOLDIR}/template-obs-util/usr/sbin/kosanu
 case $TARGET in
 obsbx*|obsvx*|obsgem*)
 	echo "OBSIOT-POWER"
+	mkdir -p ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/obsiot-power ${FILESDIR}/obsiot-power.c $CFLAGS
 	$STRIP ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/obsiot-power
 	cp -f ${FILESDIR}/obsiot-power.sh ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/
@@ -122,33 +129,39 @@ esac
 case $TARGET in
 obsvx*)
 	echo "OBSVX1-MODEM"
+	mkdir -p ${OBSTOOLDIR}/template-obsvx1-modem/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-obsvx1-modem/usr/sbin/obsvx1-modem ${FILESDIR}/obsvx1-modem.c $CFLAGS
 	$STRIP ${OBSTOOLDIR}/template-obsvx1-modem/usr/sbin/obsvx1-modem
 
 	echo "OBSVX1-GPIO"
+	mkdir -p ${OBSTOOLDIR}/template-obsvx1-gpio/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-obsvx1-gpio/usr/sbin/obsvx1-gpio ${FILESDIR}/obsvx1-gpio.c $CFLAGS
 	$STRIP ${OBSTOOLDIR}/template-obsvx1-gpio/usr/sbin/obsvx1-gpio
 	;;
 esac
 
 echo "RUNLED"
+mkdir -p ${OBSTOOLDIR}/template-runled/usr/sbin/
 $CC -o ${OBSTOOLDIR}/template-runled/usr/sbin/runled ${FILESDIR}/runled_bx1.c $CFLAGS
 $STRIP ${OBSTOOLDIR}/template-runled/usr/sbin/runled
 cp -f ${FILESDIR}/setup-runled.sh ${OBSTOOLDIR}/template-runled/usr/sbin/
 chmod 555 ${OBSTOOLDIR}/template-runled/usr/sbin/setup-runled.sh
 
 echo "PSHD"
+mkdir -p ${OBSTOOLDIR}/template-pshd/usr/sbin/
 $CC -o ${OBSTOOLDIR}/template-pshd/usr/sbin/pshd ${FILESDIR}/pshd_bx1.c $CFLAGS
 $STRIP ${OBSTOOLDIR}/template-pshd/usr/sbin/pshd
 
 echo "WAV-PLAY"
 _CFLAGS="$CFLAGS -lasound"
+mkdir -p ${OBSTOOLDIR}/template-wav-play/usr/sbin/
 $CC -o ${OBSTOOLDIR}/template-wav-play/usr/sbin/wav-play ${FILESDIR}/wav-play.c $_CFLAGS
 $STRIP ${OBSTOOLDIR}/template-wav-play/usr/sbin/wav-play
 
 case $TARGET in
 obsix*|obsvx*|obsbx*)
 	echo "WD-KEEPALIVE"
+	mkdir -p ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
 	$STRIP ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/wd-keepalive
 	;;
@@ -172,12 +185,14 @@ done
 pkglist="instfirm setup_gpio"
 
 echo "SETUP-GPIO"
+mkdir -p ${OBSTOOLDIR}/template-setup-gpio/usr/sbin/
 cp -f ${FILESDIR}/setup-gpio.sh ${OBSTOOLDIR}/template-setup-gpio/usr/sbin/
 chmod 555 ${OBSTOOLDIR}/template-setup-gpio/usr/sbin/setup-gpio.sh
 
 case $TARGET in
 obsvx*|obsix*)
 	echo "FLASHCFG"
+	mkdir -p ${OBSTOOLDIR}/template-instfirm/usr/sbin/
 	cp -f ${FILESDIR}/flashcfg-rootfs.sh ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg
 	chmod 555 ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg
 	cp -f ${FILESDIR}/instfirm.sh ${OBSTOOLDIR}/template-instfirm/usr/sbin/
@@ -185,6 +200,7 @@ obsvx*|obsix*)
 	;;
 obsbx*)
 	echo "FLASHCFG"
+	mkdir -p ${OBSTOOLDIR}/template-instfirm/usr/sbin/
 	cp -f ${FILESDIR}/flashcfg.sh ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg
 	chmod 555 ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg
 	;;
