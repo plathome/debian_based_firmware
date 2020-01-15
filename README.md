@@ -14,20 +14,26 @@ OpenBlocksのファームウェアは、機種(Aファミリ, IoTファミリ, 6
 
 機種|Debian|TARGET|DIST|ARCH|ファームウェアを作成するホストのOS
 ---|---|---|---|---|---
+IXR|10|obsix9|buster|amd64|Debian GNU/Linux 10/amd64
+IXR|10|obsix9r|buster|amd64|Debian GNU/Linux 10/amd64
+AX3|9|obsax3|stretch|armhf|Debian GNU/Linux 9/amd64
 AX3|8|obsax3|jessie|armhf|Debian GNU/Linux 8/amd64
 AX3|7|obsax3|wheezy|armhf|Debian GNU/Linux 8/amd64
+A7|9|obsa7|stretch|armel|Debian GNU/Linux 9/amd64
 A7|8|obsa7|jessie|armel|Debian GNU/Linux 8/amd64
 A7|7|obsa7|wheezy|armel|Debian GNU/Linux 8/amd64
 A6|7|obsa6|wheezy|armel|Debian GNU/Linux 8/amd64
 600|7|obs600|wheezy|powerpc|Debian GNU/Linux 8/amd64
+BXn|9|obsbx1s|stretch|i386|Debian GNU/Linux 9/amd64
 BXn|8|obsbx1|jessie|i386|Debian GNU/Linux 8/amd64
 BXn|7|obsbx1|wheezy|i386|Debian GNU/Linux 8/amd64
 EX1|8|obsbx1|jessie|i386|Debian GNU/Linux 8/amd64
 EX1|7|obsbx1|wheezy|i386|Debian GNU/Linux 8/amd64
+VX2|10|obsvx2|buster|amd64|Debian GNU/Linux 10/amd64
 VX2|9|obsvx2|stretch|amd64|Debian GNU/Linux 9/amd64
 VX1|8|obsvx1|jessie|amd64|Debian GNU/Linux 8/amd64
 
-BXn: BX0, BX1, BX3, BX5
+BXn: BX0, BX1, BX1S, BX3, BX5
 
 項目TARGETとDISTは、ファームウェアを作成するときに実行するシェルスクリプトに指定する文字列です。後節で参照します。
 
@@ -51,7 +57,7 @@ BXn: BX0, BX1, BX3, BX5
 Gitリポジトリを取得します。
 
 ```
-$ git clone git://github.com/plathome/debian_based_firmware.git
+$ git clone https://github.com/plathome/debian_based_firmware.git
 ```
 
 以下では、ディレクトリdebian_based_firmwareに移動したものとして説明します。
@@ -90,18 +96,25 @@ $ git checkout -b ブランチ名 タグ名
 
 ファームウェアの作成に必要なパッケージをインストールします。
 
-作成するホストのOSが、Debian GNU/Linux 8/amd64の場合。
+* 作成するホストのOSが、Debian GNU/Linux 8/amd64の場合。
 
 ```
 # cd build_ramdisk
 # ./build_crossenv.sh
 ```
 
-作成するホストのOSが、Debian GNU/Linux 9/amd64の場合。
+* 作成するホストのOSが、Debian GNU/Linux 9/amd64の場合。
 
 ```
 # cd build_ramdisk
 # ./build_crossenv-stretch.sh
+```
+
+* 作成するホストのOSが、Debian GNU/Linux 10/amd64の場合。
+
+```
+# cd build_ramdisk
+# ./build_crossenv-buster.sh
 ```
 
 ## 3.4. カーネルソース
