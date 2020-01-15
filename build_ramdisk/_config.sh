@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2013-2018 Plat'Home CO., LTD.
+# Copyright (c) 2013-2020 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without

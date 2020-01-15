@@ -1,6 +1,6 @@
 /*  $ssdlinux: wdt-keep.c,v 0.01 2014/01/07 07:19:59 yamagata Exp $ */
 /*
- * Copyright (c) 2009-2018 Plat'Home CO., LTD.
+ * Copyright (c) 2009-2020 Plat'Home CO., LTD.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
