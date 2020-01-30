@@ -78,7 +78,7 @@ function _get_md5() {
 		obj="bzImage"
 	elif [ $1 == "ramdisk" ]; then
 		case $MODEL in
-		obsbx1|obsvx1)
+		obsbx1|obsvx1|obsix9)
 			if [ -e "${FIRM_FILE}/initrd.gz" ]; then
 				obj="initrd.gz"
 			else
@@ -158,7 +158,7 @@ case $MODEL in
 obsa*)
 	echo "usage: $(basename $0) [-f file] [-u list] [-bBeEpsSTly]"
 	;;
-obsbx1|bpv*|obsvx1)
+obsbx1|bpv*|obsvx1|obsix9)
 	echo "usage: $(basename $0) [-f directory] [-u list] [-bBeEpsSTly]"
 	;;
 *)
@@ -173,7 +173,7 @@ case $MODEL in
 obsa*)
 	echo "    -f file Save firmware file to FlashROM."
 	;;
-obsbx1|bpv*|obsvx1)
+obsbx1|bpv*|obsvx1|obsix9)
 	echo "    -f directory Save firmware directory to FlashROM."
 	;;
 *)
@@ -356,7 +356,7 @@ obsax3|obs600)
 obsmv4)
 	GETOPTS_ARG="f:u:bBlhy"
 	;;
-bpv4*|bpv8|obsvx1)
+bpv4*|bpv8|obsvx1|obsix9)
 	GETOPTS_ARG="f:u:bBeEsSlhy"
 	;;
 obsbx1)
@@ -371,7 +371,7 @@ while getopts $GETOPTS_ARG OPT;do
 	case $OPT in
 	c)
 		case $MODEL in
-		obsbx1|bpv*|obsvx1)
+		obsbx1|bpv*|obsvx1|obsix9)
 			RUN=rootcfg; ROOT_TARGET=$2
 			;;
 		*)
@@ -393,7 +393,7 @@ while getopts $GETOPTS_ARG OPT;do
 			exit 1
 		fi
 		case $MODEL in
-		bpv4*|bpv8|obsbx1|obsvx1)
+		bpv4*|bpv8|obsbx1|obsvx1|obsix9)
 			RUN=save_direct_etc
 			;;
 		*)
@@ -411,7 +411,7 @@ while getopts $GETOPTS_ARG OPT;do
 			exit 1
 		fi
 		case $MODEL in
-		bpv4*|bpv8|obsbx1|obsvx1)
+		bpv4*|bpv8|obsbx1|obsvx1|obsix9)
 			RUN=save_direct_user
 			;;
 		*)
@@ -453,7 +453,7 @@ show)
 save_direct_etc)
 	_yesno "Overwrites the current data."
 	mkdir -p ${WORK_DIR}
-	if [ "$MODEL" == "obsvx1" ]; then
+	if [ "$MODEL" == "obsvx1" -o "$MODEL" == "obsix9" ]; then
 		mount `findfs LABEL=${SAVE_DIR}` ${WORK_DIR}
 	else
 		mount ${SAVE_DIR} ${WORK_DIR}
@@ -474,7 +474,7 @@ save_direct_etc)
 save_direct_user)
 	_yesno "Overwrites the current data."
 	mkdir -p ${WORK_DIR}
-	if [ "$MODEL" == "obsvx1" ]; then
+	if [ "$MODEL" == "obsvx1" -o "$MODEL" == "obsix9" ]; then
 		mount `findfs LABEL=${SAVE_DIR}` ${WORK_DIR}
 	else
 		mount ${SAVE_DIR} ${WORK_DIR}
@@ -529,11 +529,11 @@ save)
 ;;
 delete)
 	case $MODEL in
-	bpv4*|bpv8|obsbx1|obsvx1)
+	bpv4*|bpv8|obsbx1|obsvx1|obsix9)
 		_yesno "Erase userarea)."
 
 		mkdir -p ${WORK_DIR}
-		if [ "$MODEL" == "obsvx1" ]; then
+		if [ "$MODEL" == "obsvx1" -o "$MODEL" == "obsix9" ]; then
 			mount `findfs LABEL=${SAVE_DIR}` ${WORK_DIR}
 		else
 			mount ${SAVE_DIR} ${WORK_DIR}
@@ -561,7 +561,7 @@ firmware)
 	case $MODEL in
 	bpv4*|bpv8)
 		mkdir -p ${WORK_DIR}
-		if [ "$MODEL" == "obsvx1" ]; then
+		if [ "$MODEL" == "obsvx1" -o "$MODEL" == "obsix9" ]; then
 			mount `findfs LABEL=${FIRM_DIR}` ${WORK_DIR}
 		else
 			mount ${FIRM_DIR} ${WORK_DIR}
@@ -577,7 +577,7 @@ firmware)
 		umount ${WORK_DIR}
 		rm -rf ${WORK_DIR}
 	;;
-	obsbx1|obsvx1)
+	obsbx1|obsvx1|obsix9)
 		if [ -e "${FIRM_FILE}/initrd.gz" ]; then
 			RAMDISK="initrd.gz"
 #			_RAMDISK="ramdisk-wheezy.obsbx1.img.gz"
@@ -607,7 +607,7 @@ firmware)
 		fi
 
 		mkdir -p ${WORK_DIR}
-		if [ "$MODEL" == "obsvx1" ]; then
+		if [ "$MODEL" == "obsvx1" -o "$MODEL" == "obsix9" ]; then
 			mount `findfs LABEL=${FIRM_DIR}` ${WORK_DIR}
 		else
 			mount ${FIRM_DIR} ${WORK_DIR}
