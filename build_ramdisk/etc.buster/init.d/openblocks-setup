@@ -64,8 +64,10 @@ restore_func(){
 WORK_DIR=/tmp/_tmpfs.$$
 
 	mkdir -p ${WORK_DIR}
-	if [ "$MODEL" == "obsvx1" -o "$MODEL" == "obsix9" ]; then
+	if [ "$MODEL" == "obsvx1" ]; then
 		mount `findfs LABEL=${SAVE_DIR}` ${WORK_DIR} -r
+	elif [ "$MODEL" == "obsix9" ]; then
+		mount `findfs PARTLABEL=${SAVE_DIR}` ${WORK_DIR} -r
 	else
 		mount ${SAVE_DIR} ${WORK_DIR} -r
 	fi

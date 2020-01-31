@@ -453,8 +453,10 @@ show)
 save_direct_etc)
 	_yesno "Overwrites the current data."
 	mkdir -p ${WORK_DIR}
-	if [ "$MODEL" == "obsvx1" -o "$MODEL" == "obsix9" ]; then
+	if [ "$MODEL" == "obsvx1" ]; then
 		mount `findfs LABEL=${SAVE_DIR}` ${WORK_DIR}
+	elif [ "$MODEL" == "obsix9" ]; then
+		mount `findfs PARTLABEL=${SAVE_DIR}` ${WORK_DIR}
 	else
 		mount ${SAVE_DIR} ${WORK_DIR}
 	fi
