@@ -192,8 +192,10 @@ chmod 555 ${OBSTOOLDIR}/template-setup-gpio/usr/sbin/setup-gpio.sh
 case $TARGET in
 obsvx*|obsix*)
 	echo "FLASHCFG"
+	FLASHCFG=flashcfg-rootfs.sh
+	[ "$TARGET" == "obsvx1" -o "$TARGET" == "obsix9r" ] && FLASHCFG=flashcfg.sh
 	mkdir -p ${OBSTOOLDIR}/template-instfirm/usr/sbin/
-	cp -f ${FILESDIR}/flashcfg-rootfs.sh ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg
+	cp -f ${FILESDIR}/${FLASHCFG} ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg
 	chmod 555 ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg
 	cp -f ${FILESDIR}/instfirm.sh ${OBSTOOLDIR}/template-instfirm/usr/sbin/
 	chmod 555 ${OBSTOOLDIR}/template-instfirm/usr/sbin/instfirm.sh

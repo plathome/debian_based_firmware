@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 #
 # Copyright (c) 2013-2020 Plat'Home CO., LTD.
 # All rights reserved.

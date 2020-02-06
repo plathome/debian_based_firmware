@@ -69,7 +69,7 @@ obsbx*)
 	;;
 obsvx*)
 	if [ -d ${FILESDIR}/rtl8821ae ]; then
-#		if [ "$KERNEL" != "4.19.60" ]; then
+#		if [ "$KERNEL" != "4.19.85" ]; then
 		echo "8821AE"
 		(cd ${FILESDIR}/rtl8821ae; \
 			mkdir -p ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/kernel/drivers/net/wireless/realtek;	\

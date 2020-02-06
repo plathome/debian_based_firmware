@@ -14,8 +14,8 @@ OpenBlocksのファームウェアは、機種(Aファミリ, IoTファミリ, 6
 
 機種|Debian|TARGET|DIST|ARCH|ファームウェアを作成するホストのOS
 ---|---|---|---|---|---
-IXR|10|obsix9|buster|amd64|Debian GNU/Linux 10/amd64
-IXR|10|obsix9r|buster|amd64|Debian GNU/Linux 10/amd64
+IX9|10|obsix9|buster|amd64|Debian GNU/Linux 10/amd64
+IX9|10|obsix9r|buster|amd64|Debian GNU/Linux 10/amd64
 AX3|9|obsax3|stretch|armhf|Debian GNU/Linux 9/amd64
 AX3|8|obsax3|jessie|armhf|Debian GNU/Linux 8/amd64
 AX3|7|obsax3|wheezy|armhf|Debian GNU/Linux 8/amd64

@@ -66,6 +66,8 @@ WORK_DIR=/tmp/_tmpfs.$$
 	mkdir -p ${WORK_DIR}
 	if [ "$MODEL" == "obsvx1" ]; then
 		mount `findfs LABEL=${SAVE_DIR}` ${WORK_DIR} -r
+	elif [ "$MODEL" == "obsix9" ]; then
+		mount `findfs PARTLABEL=${SAVE_DIR}` ${WORK_DIR} -r
 	else
 		mount ${SAVE_DIR} ${WORK_DIR} -r
 	fi
@@ -272,7 +274,7 @@ start)
 			echo "Don't extract files in FlashROM..."
 		else
 			case $MODEL in
-			obsbx1|obsvx1)
+			obsbx1|obsvx1|obsix9)
 				restore_func
 			;;
 			esac
@@ -308,10 +310,10 @@ start)
 
 	# extract CONFIG_FILE and execute CONFIG_SCRIPT
 	if [ -n "$confdev" ] ; then
-		[ "$MODEL" == "obsvx1" ] && /etc/init.d/dbus start
+		[ "$MODEL" == "obsvx1" -o "$MODEL" == "obsix9" ] && /etc/init.d/dbus start
 		if_exists_extract_config_file
 		if_exists_execute_config_script
-		[ "$MODEL" == "obsvx1" ] && /etc/init.d/dbus stop
+		[ "$MODEL" == "obsvx1" -o "$MODEL" == "obsix9" ] && /etc/init.d/dbus stop
 	fi
 
 	# if using DEBIAN storage, /tmp directory mount under storage.
@@ -332,7 +334,7 @@ start)
 		*)
 			if [ "$unionfs" == "aufs" ]; then
 				xino_opt="xino=/.aufs.xino.$dir,trunc_xino,"
-				[ "$MODEL" == "obsvx1" ] && xino_opt+="acl,"
+				[ "$MODEL" == "obsvx1" -o "$MODEL" == "obsix9" ] && xino_opt+="acl,"
 			fi
 			mount -n -t ${union_fs} \
 				-o ${xino_opt}dirs=${RW_DIR}/$dir=rw:/$dir=ro ${union_fs} /$dir
