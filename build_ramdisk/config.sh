@@ -282,7 +282,7 @@ buster)
 	;;
 	obsvx2)
 		ISOFILE=debian-10.2.0-amd64-DVD-1.iso
-		PATCHLEVEL=1
+		PATCHLEVEL=0
 		RAMDISK_SIZE=260
 	;;
 	obsbx1s)
