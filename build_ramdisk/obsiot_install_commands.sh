@@ -236,8 +236,8 @@ obsvx*)
 
 	cp ${FILESDIR}/chksignal.sh ${DISTDIR}/usr/sbin/
 	chmod 555 ${DISTDIR}/usr/sbin/chksignal.sh
-	cp ${FILESDIR}/install-firmware.sh ${DISTDIR}/usr/sbin/install-firmware.sh
-	chmod 555 ${DISTDIR}/usr/sbin/install-firmware.sh
+#	cp ${FILESDIR}/install-firmware.sh ${DISTDIR}/usr/sbin/install-firmware.sh
+#	chmod 555 ${DISTDIR}/usr/sbin/install-firmware.sh
 #	cp ${FILESDIR}/flashcfg-rootfs.sh ${DISTDIR}/usr/sbin/flashcfg
 #	chmod 555 ${DISTDIR}/usr/sbin/flashcfg
 	cp ${FILESDIR}/bin/resize ${DISTDIR}/usr/bin/
@@ -344,8 +344,8 @@ obsix*)
 		$STRIP ${DISTDIR}/usr/sbin/$cmd
 	done
 
-	cp ${FILESDIR}/install-firmware.sh ${DISTDIR}/usr/sbin/install-firmware.sh
-	chmod 555 ${DISTDIR}/usr/sbin/install-firmware.sh
+#	cp ${FILESDIR}/install-firmware.sh ${DISTDIR}/usr/sbin/install-firmware.sh
+#	chmod 555 ${DISTDIR}/usr/sbin/install-firmware.sh
 #	cp ${FILESDIR}/flashcfg-rootfs.sh ${DISTDIR}/usr/sbin/flashcfg
 #	chmod 555 ${DISTDIR}/usr/sbin/flashcfg
 	cp ${FILESDIR}/bin/resize ${DISTDIR}/usr/bin/

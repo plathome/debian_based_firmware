@@ -152,7 +152,7 @@ function _umount_wrkdir() {
 
 function _usage() {
 	echo
-	echo "Archiving userland files to FlashROM and some configuration."
+	echo "Archiving userland files to eMMC and some configuration."
 	echo
 case $MODEL in
 obsa*)
@@ -172,18 +172,23 @@ esac
 case $MODEL in
 obsa*)
 	echo "    -f file Save firmware file to FlashROM."
-	;;
-obsbx1|bpv*|obsvx1|obsix9)
-	echo "    -f directory Save firmware directory to FlashROM."
-	;;
-*)
-	;;
-esac
 	echo "    -s      Save config to FlashROM (${MTD_CONF_DEV})."
 	echo "    -S      Save userland and config to FlashROM (${MTD_USER_DEV})."
 	echo "            '-s' will run concurrently."
 	echo "    -e      Erase FlashROM (header only)."
 	echo "    -E      Erase FlashROM (all clear)."
+	;;
+obsbx1|bpv*|obsvx1|obsix9)
+	echo "    -f directory Save firmware directory to eMMC."
+	echo "    -s      Save config to eMMC (${MTD_CONF_DEV})."
+	echo "    -S      Save userland and config to eMMC (${MTD_USER_DEV})."
+	echo "            '-s' will run concurrently."
+	echo "    -e      Erase eMMC (header only)."
+	echo "    -E      Erase eMMC (all clear)."
+	;;
+*)
+	;;
+esac
 	echo "    -l      Show last save size."
 	echo "    -y      Assume yes for save and erase."
 #	echo "    -t      Test read and write in coredump save area."
@@ -456,7 +461,7 @@ save_direct_etc)
 	if [ "$MODEL" == "obsvx1" ]; then
 		mount `findfs LABEL=${SAVE_DIR}` ${WORK_DIR}
 	elif [ "$MODEL" == "obsix9" ]; then
-		mount `findfs PARTLABEL=${SAVE_DIR}` ${WORK_DIR}
+		mount `findfs LABEL=${SAVE_DIR}` ${WORK_DIR}
 	else
 		mount ${SAVE_DIR} ${WORK_DIR}
 	fi
@@ -464,7 +469,7 @@ save_direct_etc)
 	echo -n "Archiving /etc config files... "
 	if (cd ${RW_DIR};tar -X /etc/exclude.list -cpzf ${WORK_DIR}/etc.tgz etc/); then
 		SAVE_FILE_SIZE=$(ls -s ${WORK_DIR}/etc.tgz | mawk '{print $1}')
-		echo "done (Approximately $((SAVE_FILE_SIZE/1024)) MBytes)"
+		echo "done (Approximately $SAVE_FILE_SIZE KBytes)"
 		USED_CONF=${SAVE_FILE_SIZE}
 		_save_size_rec
 	else
@@ -476,7 +481,9 @@ save_direct_etc)
 save_direct_user)
 	_yesno "Overwrites the current data."
 	mkdir -p ${WORK_DIR}
-	if [ "$MODEL" == "obsvx1" -o "$MODEL" == "obsix9" ]; then
+	if [ "$MODEL" == "obsvx1" ]; then
+		mount `findfs LABEL=${SAVE_DIR}` ${WORK_DIR}
+	elif [ "$MODEL" == "obsix9" ]; then
 		mount `findfs LABEL=${SAVE_DIR}` ${WORK_DIR}
 	else
 		mount ${SAVE_DIR} ${WORK_DIR}
@@ -485,7 +492,7 @@ save_direct_user)
 	echo -n "Archiving userland files... "
 	if (cd ${RW_DIR};tar -X /etc/exclude.list --exclude etc --exclude tmp -cpzf ${WORK_DIR}/userland.tgz .); then
 		SAVE_FILE_SIZE=$(ls -s ${WORK_DIR}/userland.tgz | mawk '{print $1}')
-		echo "done (Approximately $((SAVE_FILE_SIZE/1024)) MBytes)"
+		echo "done (Approximately $SAVE_FILE_SIZE KBytes)"
 		USED_USER=${SAVE_FILE_SIZE}
 		_save_size_rec
 	else
@@ -493,7 +500,7 @@ save_direct_user)
 	fi
 	if (cd ${RW_DIR};tar -X /etc/exclude.list -cpzf ${WORK_DIR}/etc.tgz etc/); then
 		SAVE_FILE_SIZE=$(ls -s ${WORK_DIR}/etc.tgz | mawk '{print $1}')
-		echo "done (Approximately $((SAVE_FILE_SIZE/1024)) MBytes)"
+		echo "done (Approximately $SAVE_FILE_SIZE KBytes)"
 		USED_CONF=${SAVE_FILE_SIZE}
 		_save_size_rec
 	else
@@ -503,7 +510,7 @@ save_direct_user)
 	rm -rf ${WORK_DIR}
 ;;
 save)
-	_yesno "FlashROM overwrites the current data."
+	_yesno "FlashROM(or eMMC) overwrites the current data."
 
 	mkdir -p ${WORK_DIR}
 	[ "${ROM_SIZE}" -eq 0 ] && ROM_SIZE=$((512*1024))
@@ -535,7 +542,9 @@ delete)
 		_yesno "Erase userarea)."
 
 		mkdir -p ${WORK_DIR}
-		if [ "$MODEL" == "obsvx1" -o "$MODEL" == "obsix9" ]; then
+		if [ "$MODEL" == "obsvx1" ]; then
+			mount `findfs LABEL=${SAVE_DIR}` ${WORK_DIR}
+		elif [ "$MODEL" == "obsix9" ]; then
 			mount `findfs LABEL=${SAVE_DIR}` ${WORK_DIR}
 		else
 			mount ${SAVE_DIR} ${WORK_DIR}
@@ -563,8 +572,10 @@ firmware)
 	case $MODEL in
 	bpv4*|bpv8)
 		mkdir -p ${WORK_DIR}
-		if [ "$MODEL" == "obsvx1" -o "$MODEL" == "obsix9" ]; then
+		if [ "$MODEL" == "obsvx1" ]; then
 			mount `findfs LABEL=${FIRM_DIR}` ${WORK_DIR}
+		elif [ "$MODEL" == "obsix9" ]; then
+			mount `findfs LABEL=${SAVE_DIR}` ${WORK_DIR}
 		else
 			mount ${FIRM_DIR} ${WORK_DIR}
 		fi
@@ -609,8 +620,10 @@ firmware)
 		fi
 
 		mkdir -p ${WORK_DIR}
-		if [ "$MODEL" == "obsvx1" -o "$MODEL" == "obsix9" ]; then
+		if [ "$MODEL" == "obsvx1" ]; then
 			mount `findfs LABEL=${FIRM_DIR}` ${WORK_DIR}
+		elif [ "$MODEL" == "obsix9" ]; then
+			mount `findfs LABEL=${SAVE_DIR}` ${WORK_DIR}
 		else
 			mount ${FIRM_DIR} ${WORK_DIR}
 		fi

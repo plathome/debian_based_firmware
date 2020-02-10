@@ -67,7 +67,7 @@ WORK_DIR=/tmp/_tmpfs.$$
 	if [ "$MODEL" == "obsvx1" ]; then
 		mount `findfs LABEL=${SAVE_DIR}` ${WORK_DIR} -r
 	elif [ "$MODEL" == "obsix9" ]; then
-		mount `findfs PARTLABEL=${SAVE_DIR}` ${WORK_DIR} -r
+		mount `findfs LABEL=${SAVE_DIR}` ${WORK_DIR} -r
 	else
 		mount ${SAVE_DIR} ${WORK_DIR} -r
 	fi
@@ -382,7 +382,7 @@ start)
 		fi
 	fi
 	umount /proc
-	mount -oremount,ro /
+	mount -oremount,ro / > /dev/null 2>&1
 ;;
 stop)
 ;;

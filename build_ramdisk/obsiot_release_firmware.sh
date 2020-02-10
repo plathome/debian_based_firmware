@@ -27,6 +27,10 @@
 
 . `dirname $0`/config.sh
 
+get_kern_ver(){
+	echo $(echo "$KERNEL" | (IFS=. read -r major minor micro; printf "%2d%02d%02d" ${major:-0} ${minor:-0} ${micro:-0}))
+}
+
 if [ "$CROSS" == "true" ]; then
 	KERN_COMPILE_OPTS="ARCH=$KERN_ARCH CROSS_COMPILE=${CROSS_COMPILE=}"
 else
@@ -69,12 +73,12 @@ obsbx*)
 	;;
 obsvx*)
 	if [ -d ${FILESDIR}/rtl8821ae ]; then
-#		if [ "$KERNEL" != "4.19.85" ]; then
+		if [ `get_kern_ver` -le 41985 ]; then
 		echo "8821AE"
 		(cd ${FILESDIR}/rtl8821ae; \
 			mkdir -p ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/kernel/drivers/net/wireless/realtek;	\
 			make all install KSRC=${LINUX_SRC} KVER=${KERNEL} MODDESTDIR=${MOUNTDIR}/lib/modules/${KERNEL}/kernel/drivers/net/wireless/realtek MOUNTDIR=${MOUNTDIR} ${COMPRESS_XZ} USER_EXTRA_CFLAGS="-Wno-error=date-time -fno-pic -Wno-pointer-sign")
-#		fi
+		fi
 	fi
 	;;
 obsgem1)

@@ -28,7 +28,7 @@
 atcmd_ver=1
 disable_modem_ver=1
 hub_ctrl_ver=1
-instfirm_ver=1
+instfirm_ver=2
 nitz_ver=1
 obs_util_ver=1
 obs_hwclock_ver=1
