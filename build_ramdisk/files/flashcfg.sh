@@ -572,10 +572,8 @@ firmware)
 	case $MODEL in
 	bpv4*|bpv8)
 		mkdir -p ${WORK_DIR}
-		if [ "$MODEL" == "obsvx1" ]; then
+		if [ "$MODEL" == "obsvx1" -o "$MODEL" == "obsix9" ]; then
 			mount `findfs LABEL=${FIRM_DIR}` ${WORK_DIR}
-		elif [ "$MODEL" == "obsix9" ]; then
-			mount `findfs LABEL=${SAVE_DIR}` ${WORK_DIR}
 		else
 			mount ${FIRM_DIR} ${WORK_DIR}
 		fi
@@ -620,10 +618,8 @@ firmware)
 		fi
 
 		mkdir -p ${WORK_DIR}
-		if [ "$MODEL" == "obsvx1" ]; then
+		if [ "$MODEL" == "obsvx1" -o "$MODEL" == "obsix9" ]; then
 			mount `findfs LABEL=${FIRM_DIR}` ${WORK_DIR}
-		elif [ "$MODEL" == "obsix9" ]; then
-			mount `findfs LABEL=${SAVE_DIR}` ${WORK_DIR}
 		else
 			mount ${FIRM_DIR} ${WORK_DIR}
 		fi
