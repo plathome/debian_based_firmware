@@ -498,6 +498,7 @@ save_direct_user)
 	else
 		echo "fail"
 	fi
+	echo -n "Archiving /etc config files... "
 	if (cd ${RW_DIR};tar -X /etc/exclude.list -cpzf ${WORK_DIR}/etc.tgz etc/); then
 		SAVE_FILE_SIZE=$(ls -s ${WORK_DIR}/etc.tgz | mawk '{print $1}')
 		echo "done (Approximately $SAVE_FILE_SIZE KBytes)"
