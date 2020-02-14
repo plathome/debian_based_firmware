@@ -28,8 +28,16 @@
 . `dirname $0`/config.sh
 
 pw='$1$afC9J.v6$Dkq.k8sVRq7n0Py5eWWAp1'
+pw_new='$6$Eq7045XjAMxZ3AQo$N471tuPsYCcOJuCEduSo7fv8WyOp96qBwg6dRA7aJtapVoFIc0uiWmQD5Ibs9l4RPsa3R6VrenJnogxp5n9Il.'
 
-chroot ${DISTDIR} /usr/sbin/usermod -p $pw root
+case $TARGET in
+obsix9r)
+	chroot ${DISTDIR} /usr/sbin/usermod -p $pw_new root
+	;;
+*)
+	chroot ${DISTDIR} /usr/sbin/usermod -p $pw root
+esac
+
 # add "dialout" for tty device
 chroot ${DISTDIR} /usr/sbin/adduser root dialout
 
