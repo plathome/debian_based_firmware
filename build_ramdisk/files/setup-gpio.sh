@@ -48,12 +48,36 @@ obsvx*|obsix9)
 	[ ! -d $GPIOPATH/gpio365 ] && echo 365 > $GPIOPATH/export
 	;;
 obsbx*)
+	# runled
+	[ ! -d $GPIOPATH/gpio47 ] && echo 47 > $GPIOPATH/export; \
+		echo out > $GPIOPATH/gpio47/direction
+	[ ! -d $GPIOPATH/gpio48 ] && echo 48 > $GPIOPATH/export; \
+		echo out > $GPIOPATH/gpio48/direction
+	[ ! -d $GPIOPATH/gpio49 ] && echo 49 > $GPIOPATH/export; \
+		echo out > $GPIOPATH/gpio49/direction
+
+	# pshd
+	[ ! -d $GPIOPATH/gpio14 ] && echo 14 > $GPIOPATH/export; \
+		echo both > $GPIOPATH/gpio14/edge
+
 	# obsiot-power
 	[ ! -d $GPIOPATH/gpio40 ] && echo 40 > $GPIOPATH/export
 	[ ! -d $GPIOPATH/gpio41 ] && echo 41 > $GPIOPATH/export
 	[ ! -d $GPIOPATH/gpio42 ] && echo 42 > $GPIOPATH/export
 	;;
 obsgem*)
+	# runled
+	[ ! -d $GPIOPATH/gpio488 ] && echo 488 > $GPIOPATH/export; \
+		echo out > $GPIOPATH/gpio488/direction
+	[ ! -d $GPIOPATH/gpio489 ] && echo 489 > $GPIOPATH/export; \
+		echo out > $GPIOPATH/gpio489/direction
+	[ ! -d $GPIOPATH/gpio490 ] && echo 490 > $GPIOPATH/export; \
+		echo out > $GPIOPATH/gpio490/direction
+
+	# pshd
+	[ ! -d $GPIOPATH/gpio466 ] && echo 466 > $GPIOPATH/export; \
+		echo both > $GPIOPATH/gpio466/edge
+
 	# obsiot-power
 	[ ! -d $GPIOPATH/gpio500 ] && echo 500 > $GPIOPATH/export
 	[ ! -d $GPIOPATH/gpio503 ] && echo 503 > $GPIOPATH/export

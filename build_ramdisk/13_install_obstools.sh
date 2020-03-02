@@ -217,6 +217,7 @@ for pkg in $pkglist; do
 	cp -f ${RELEASEDIR}/${pkgfile} ${DISTDIR}/
 	chroot ${DISTDIR} dpkg -r ${pkg}
 	chroot ${DISTDIR} dpkg -i ${pkgfile}
-	chroot ${DISTDIR} ln -sf /lib/systemd/system/${pkg}.service /etc/systemd/system/multi-user.target.wants/${pkg}.service
+	[ -f /lib/systemd/system/${pkg}.service ] && \
+		chroot ${DISTDIR} ln -sf /lib/systemd/system/${pkg}.service /etc/systemd/system/multi-user.target.wants/${pkg}.service
 	rm -f ${DISTDIR}/${pkgfile}
 done

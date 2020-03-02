@@ -51,6 +51,7 @@ NAME="openblocks-setup"
 echo -e "\033[0m"
 
 RW_DIR="${RW_DIR:=/.rw}"
+RO_DIR="${RO_DIR:=/.ro}"
 RW_CF_LABEL="${RW_CF_LABEL:=DEBIAN}"
 CONFIG_LABEL="${CONFIG_LABEL:=DEB_CONFIG}"
 CONFIG_DEV_MTPT="${CONFIG_DEV_MTPT:=/mnt}"
@@ -213,6 +214,7 @@ start)
 
 	FLG_INIT=false
 	FLG_FORCE_CONFIG=false
+	FLG_3LAYER_MODE=false
 
 	rwdev_fs=ext3
 	union_fs=unionfs
@@ -265,7 +267,28 @@ start)
 	fi
 
 
-	if [ -z "$rwdev" ] || [ "${FLG_INIT}" == "true" ]; then
+	# check 3layer mode
+	mount -o ro -t $rwdev_fs $rwdev ${RW_DIR}
+	[ -e "${RW_DIR}/DEBIAN" ] && FLG_3LAYER_MODE=true; mkdir -p ${RO_DIR}
+	umount ${RW_DIR}
+
+	if [ -n "$rwdev" ] && [ "$FLG_3LAYER_MODE" == "true" ]; then
+		mount -o ro -t $rwdev_fs $rwdev ${RO_DIR}
+		mount -t tmpfs -o size=${RW_TMPFS_SIZE} tmpfs ${RW_DIR}
+		rwdev=""
+
+		if [ "${FLG_INIT}" == "true" ] ; then
+			echo "Running by default configuration..."
+		elif [ "${FLG_FORCE_CONFIG}" == "true" ] ; then
+			echo "Don't extract files in FlashROM..."
+		else
+			case $MODEL in
+			obsbx1|obsvx1|obsix9)
+				restore_func
+			;;
+			esac
+		fi
+	elif [ -z "$rwdev" ] || [ "${FLG_INIT}" == "true" ]; then
 		mount -t tmpfs -o size=${RW_TMPFS_SIZE} tmpfs ${RW_DIR}
 
 		if [ "${FLG_INIT}" == "true" ] ; then
@@ -328,16 +351,26 @@ start)
 		case $union_fs in
 		overlay)
 			mkdir -p ${RW_DIR}/work/$dir
+			if [ "$FLG_3LAYER_MODE" == "true" ] ; then
+				mount -n -t ${union_fs} \
+					-o lowerdir=$dir:${RO_DIR}/$dir,upperdir=${RW_DIR}/$dir,workdir=${RW_DIR}/work/$dir ${union_fs} /$dir
+			else
 			mount -n -t ${union_fs} \
 				-o lowerdir=$dir,upperdir=${RW_DIR}/$dir,workdir=${RW_DIR}/work/$dir ${union_fs} /$dir
+			fi
 		;;
 		*)
 			if [ "$unionfs" == "aufs" ]; then
 				xino_opt="xino=/.aufs.xino.$dir,trunc_xino,"
 				[ "$MODEL" == "obsvx1" -o "$MODEL" == "obsix9" ] && xino_opt+="acl,"
 			fi
+			if [ "$FLG_3LAYER_MODE" == "true" ] ; then
+				mount -n -t ${union_fs} \
+					-o ${xino_opt}dirs=${RW_DIR}/$dir=rw:${RO_DIR}/$dir:/$dir=ro ${union_fs} /$dir
+			else
 			mount -n -t ${union_fs} \
 				-o ${xino_opt}dirs=${RW_DIR}/$dir=rw:/$dir=ro ${union_fs} /$dir
+			fi
 		;;
 		esac
 	done
