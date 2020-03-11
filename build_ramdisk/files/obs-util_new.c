@@ -30,21 +30,33 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <string.h>
+#include <linux/i2c-dev.h>
+#include <linux/version.h>
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 19, 0)
+#include <i2c/smbus.h>
+#endif
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/ioctl.h>
 #include <getopt.h>
+#include <time.h>
 #include <errno.h>
 
+#define DEVNAME "/dev/i2c"
 #define POLY 0x1021 
-#include BSIZ 32
+#define BSIZ 32
 #if defined(CONFIG_OBSVX1) || defined(CONFIG_OBSIX9)
-include CHANNEL 7
+#define CHANNEL 7
 #else
-include CHANNEL 1
+#define CHANNEL 1
 #endif
 #if defined(CONFIG_OBSIX9)
-const char *slave = "0xae";
+const unsigned char slave = 0xae >> 1;
 #else
-const char *slave = "0xa0";
+const unsigned char slave = 0xa0 >> 1;
 #endif
 
 /* some variables used in getopt (3) */
@@ -126,9 +138,6 @@ unsigned char read_i2c(unsigned char i2cnum, unsigned char slave, unsigned char 
 	char devname[16];
 
 	sprintf(devname, "%s-%d", DEVNAME, i2cnum);
-#ifdef DEBUG
-printf("%s\n", devname);
-#endif
 	if((fd = open(devname, O_RDWR)) < 0){
 		printf("ERR%d\n", __LINE__);
 		return -1;
@@ -163,7 +172,7 @@ printf("%s\n", devname);
 	return 0;
 }
 
-int read_modem(char* fname, unsigned char* data)
+int read_modem(int i2cnum, char* fname, unsigned char* data)
 {
 	FILE *fp;
 
@@ -181,47 +190,66 @@ int read_modem(char* fname, unsigned char* data)
 	return 0;
 }
 
-int write_modem(char* fname, unsigned char* data)
+int write_modem(int i2cnum, char* fname, unsigned char* data)
 {
-#include SZ 32;
 	union CRC16{
 		unsigned short s;
 		unsigned char c[2];
 	};
+	union MODEM{
+		unsigned long l;
+		unsigned char c[3];
+	};
 	union CRC16 crc16;
 	FILE *fp;
-	char buf[SZ];
+	char buf[7];
+	char head = 0xfe;
+	union MODEM modem;
+	int i;
 
 	if((fp = fopen(fname, "r")) == NULL){
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		return -1;
 	}
 
-	memset(buf, data, BSIZ);
-	if(fread(buf, SZ-1, 1, fp) != 1){
+	memset(buf, 0x0, sizeof(buf));
+	if(fread(buf, sizeof(buf)-1, 1, fp) != 1){
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		fclose(fp);
 		return -1;
 	}
-	sprintf(&buf[16], "%x%x%x", data[0], data[1], data[2]);
+	fclose(fp);
 
-	/* CRC16 */
-	crc16.s = CRC16_CCITT(&data[16], 14, 0xffff);
-	data[30] = crc16.c[0];
-	data[31] = crc16.c[1];
-
-	for(i=0; i<BSIZ; i++){
-		if(write_i2c(i2cnum, slave, i, buf[i]) == -1){
+	modem.l = strtol(buf, NULL, 16);
+	for(i=0; i<3; i++){
+		if(write_i2c(i2cnum, slave, i+16, modem.c[i]) == -1){
 			printf("%d: %s\n", __LINE__, strerror(errno));
 			fclose(fp);
 			return -1;
 		}
 	}
-	fclose(fp);
+
+	/* CRC16 */
+	crc16.s = CRC16_CCITT(modem.c, 3, 0xffff);
+	for(i=0; i<2; i++){
+		if(write_i2c(i2cnum, slave, i+30, crc16.c[i]) == -1){
+			printf("%d: %s\n", __LINE__, strerror(errno));
+			fclose(fp);
+			return -1;
+		}
+	}
+
+	if(data[0] != 0xfe){
+		if(write_i2c(i2cnum, slave, 0, head) == -1){
+			printf("%d: %s\n", __LINE__, strerror(errno));
+			fclose(fp);
+			return -1;
+		}
+	}
 	return 0;
 }
 
-int read_serial(char* fname, unsigned char* data)
+int read_serial(int i2cnum, char* fname, unsigned char* data)
 {
 	FILE *fp;
 
@@ -243,35 +271,50 @@ int read_serial(char* fname, unsigned char* data)
 	return 0;
 }
 
-int write_serial(char* fname, unsigned char* data)
+int write_serial(int i2cnum, char* fname, unsigned char* data)
 {
-#include SZ 32;
-	FILE *fp;
+#define SZ 9
 	char buf[SZ];
+	int i;
+	int fd;
 
-	if((fp = fopen(fname, "r")) == NULL){
+	if((fd = open(fname, O_RDONLY)) == -1){
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		return -1;
 	}
 
-	memset(buf, data, BSIZ);
-	if(fread(buf, SZ-1, 1, fp) != 1){
+	memset(buf, 0x0, SZ);
+	if(read(fd, buf, SZ-1) == -1){
 		printf("%d: %s\n", __LINE__, strerror(errno));
-		fclose(fp);
+		close(fd);
 		return -1;
 	}
-	sprintf(buf, "%c%X%c%d%d%d%d%d",
-		data[0], data[1], data[2], data[3],
-		data[4], data[5], data[6], data[7]);
+	close(fd);
 
-	for(i=0; i<BSIZ; i++){
-		if(write_i2c(i2cnum, slave, i, buf[i]) == -1){
+	data[1] = buf[0];
+	if(buf[1] < '9')
+		data[2] = buf[1]-0x30;
+	else
+		data[2] = buf[1]-0x47;
+	data[3] = buf[2];
+	data[4] = buf[3]-0x30;
+	data[5] = buf[4]-0x30;
+	data[6] = buf[5]-0x30;
+	data[7] = buf[6]-0x30;
+	data[8] = buf[7]-0x30;
+#if 0
+	printf("serial=%c%X%c%d%d%d%d%d\n",
+		buf[0], buf[1], buf[2], buf[3]-0x30,
+		buf[4]-0x30, buf[5]-0x30, buf[6]-0x30, buf[7]-0x30);
+#else
+	for(i=1; i<9; i++){
+		if(write_i2c(i2cnum, slave, i, data[i]) == -1){
 			printf("%d: %s\n", __LINE__, strerror(errno));
-			fclose(fp);
+			close(fd);
 			return -1;
 		}
 	}
-	fclose(fp);
+#endif
 	return 0;
 }
 
@@ -292,20 +335,29 @@ int write_serial(char* fname, unsigned char* data)
 int main(int ac, char* av[])
 {
 	int i;
-	char buf[512];
+	char buf[2];
 	unsigned char data[BSIZ];
 	unsigned char c;
 	int access=0;
 	int modem=0;
 	int i2cnum=CHANNEL;
 
+	if(ac == 1)
+		return 0;
+
 	while((i=getopt(ac, av, "wm0123456789abcdef")) != -1){
 		switch(i){
 		case 'w':
 			access = 1;
+#ifdef DEBUG
+printf("%s\n", access ? "write" : "read");
+#endif
 			break;
 		case 'm':
 			modem = 1;
+#ifdef DEBUG
+printf("%s\n", modem ? "modem" : "serial");
+#endif
 			break;
 		case '0':
 		case '1':
@@ -323,15 +375,28 @@ int main(int ac, char* av[])
 		case 'd':
 		case 'e':
 		case 'f':
-			i2cnum = strtol(optarg, NULL, 16);
+			buf[0] = i; buf[1] = 0;
+			i2cnum = strtol(buf, NULL, 16);
+#ifdef DEBUG
+printf("%d\n", i2cnum);
+#endif
 			break;
 		default:
-			printf("%s: -%s parameter error¥n", __LINE__, i);
+			printf("ERR%d\n", __LINE__);
 			exit(1);
 			break;
 		}
 	}
+	ac -= optind;
+	av += optind;
+	if(ac != 1){
+		printf("ERR%d\n", __LINE__);
+		exit(1);
+	}
 
+#ifdef DEBUG
+printf("%s-%d %x\n", DEVNAME, i2cnum, slave);
+#endif
 	memset(data, 0x0, BSIZ);
 	for(i=0; i<BSIZ; i++){
 		if(read_i2c(i2cnum, slave, i, &c) == -1){
@@ -339,28 +404,46 @@ int main(int ac, char* av[])
 		}
 		data[i] = c;
 	}
-	if(data[0] < 0xfe){
+#ifdef DEBUG
+printf("ac=%d av0=%s\n", ac, av[0]);
+if(data[1] == 0xf){
+	printf("%c%X%c%d%d%d%d%d\n",
+		data[1]+0x37, data[2], data[3]+0x37, data[4],
+		data[5], data[6], data[7], data[8]);
+}
+else{
+	printf("%c%X%c%d%d%d%d%d\n",
+		data[1], data[2], data[3], data[4],
+		data[5], data[6], data[7], data[8]);
+}
+printf("%02x %02x%02x %02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x %02x%02x\n",
+data[16], data[17], data[18], data[19],
+data[20], data[21], data[22], data[23],
+data[24], data[25], data[26], data[27],
+data[28], data[29], data[30], data[31]); 
+#endif
+	if(data[0] > 0x01){
 		printf("%d: invalid offset value\n", __LINE__);
 		exit(1);
 	}
 
 	if(modem){
 		if(access){
-			if(write_modem(av[1], data) == -1)
+			if(write_modem(i2cnum, av[0], data) == -1)
 				return -1;
 		}
 		else{
-			if(read_modem(av[1], data) == -1)
+			if(read_modem(i2cnum, av[0], data) == -1)
 				return -1;
 		}
 	}
 	else{
 		if(access){
-			if(write_serial(av[1], data) == -1)
+			if(write_serial(i2cnum, av[0], data) == -1)
 				return -1;
 		}
 		else{
-			if(read_serial(av[1], data) == -1)
+			if(read_serial(i2cnum, av[0], data) == -1)
 				return -1;
 		}
 	}
