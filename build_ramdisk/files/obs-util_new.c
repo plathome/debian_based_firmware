@@ -1,4 +1,4 @@
-#define DEBUG 1
+//#define DEBUG 1
 /*	$ssdlinux: obs-util.c,v 1.17 2014/01/07 07:19:06 yamagata Exp $	*/
 /*
  * Copyright (c) 2008-2020 Plat'Home CO., LTD.
@@ -58,6 +58,15 @@ const unsigned char slave = 0xae >> 1;
 #else
 const unsigned char slave = 0xa0 >> 1;
 #endif
+
+union CRC16{
+	unsigned short s;
+	unsigned char c[2];
+};
+union MODEM{
+	unsigned long l;
+	unsigned char c[3];
+};
 
 /* some variables used in getopt (3) */
 extern char *optarg;
@@ -175,6 +184,16 @@ unsigned char read_i2c(unsigned char i2cnum, unsigned char slave, unsigned char 
 int read_modem(int i2cnum, char* fname, unsigned char* data)
 {
 	FILE *fp;
+	union CRC16 crc16;
+	unsigned short s;
+
+	crc16.c[0] = data[30];
+	crc16.c[1] = data[31];
+	s = CRC16_CCITT(&data[16], 3, 0xffff);
+	if(crc16.s != s){
+		printf("%d: ERROR %04x%04x\n", __LINE__, s, crc16.s);
+		return -1;
+	}
 
 	if(data[0] != 0xfe){
 		printf("%d: invalid offset value\n", __LINE__);
@@ -184,7 +203,7 @@ int read_modem(int i2cnum, char* fname, unsigned char* data)
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		return -1;
 	}
-	fprintf(fp, "%x%x%x\n", data[16], data[17], data[18]);
+	fprintf(fp, "%02x%02x%02x\n", data[16], data[17], data[18]);
 	fclose(fp);
 
 	return 0;
@@ -192,19 +211,11 @@ int read_modem(int i2cnum, char* fname, unsigned char* data)
 
 int write_modem(int i2cnum, char* fname, unsigned char* data)
 {
-	union CRC16{
-		unsigned short s;
-		unsigned char c[2];
-	};
-	union MODEM{
-		unsigned long l;
-		unsigned char c[3];
-	};
 	union CRC16 crc16;
+	union MODEM modem;
 	FILE *fp;
 	char buf[7];
 	char head = 0xfe;
-	union MODEM modem;
 	int i;
 
 	if((fp = fopen(fname, "r")) == NULL){
@@ -422,7 +433,7 @@ data[20], data[21], data[22], data[23],
 data[24], data[25], data[26], data[27],
 data[28], data[29], data[30], data[31]); 
 #endif
-	if(data[0] > 0x01){
+	if(data[0] < 0xfe){
 		printf("%d: invalid offset value\n", __LINE__);
 		exit(1);
 	}
