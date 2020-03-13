@@ -25,6 +25,117 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
+function _call_obsutil() {
+	TMP=/tmp/tmp.$$
+	/usr/sbin/obs-util -m $TMP
+	if [ ! -f $TMP ]; then
+		exit
+	fi
+	IFS=$'\n'
+	LIST=(`cat $TMP | fold -w2`)
+	case ${LIST[0]} in
+	01|02)
+		if [ "$1" != "obsbx1" ]; then
+			echo "ERROR${LINENO}"
+			exit
+		fi
+		;;
+	03)
+		if [ "$1" != "obsvx1" ]; then
+			echo "ERROR${LINENO}"
+			exit
+		fi
+		;;
+	esac
+
+	case ${LIST[0]} in
+	01)
+		case "${LIST[1]}${LIST[2]}" in
+		0101)
+			echo "EHS6"
+			exit 7
+			;;
+		0201|0202|0203|0204)
+			echo "U200"
+			exit 5
+			;;
+		0501)
+			echo "S710"
+			exit 9
+			;;
+		FFFF)
+			echo "none"
+			exit 0
+			;;
+		*)
+			echo "ERROR${LINENO} (${LIST[0]}${LIST[1]}${LIST[2]})"
+			exit 8
+			;;
+		esac
+		;;
+	02)
+		case "${LIST[1]}${LIST[2]}" in
+		0201|0202|0203|0204)
+			echo "U200E"
+			exit 6
+			;;
+		0301)
+			echo "KYM11"
+			exit 4
+			;;
+		0401)
+			echo "UM04"
+			exit 2
+			;;
+		0501)
+			echo "S710E"
+			exit 9
+			;;
+		FFFF)
+			echo "none"
+			exit 0
+			;;
+		*)
+			echo "ERROR${LINENO} (${LIST[0]}${LIST[1]}${LIST[2]})"
+			exit 8
+			;;
+		esac
+		;;
+	03)
+		case "${LIST[1]}${LIST[2]}" in
+		0201|0202|0203|0204)
+			echo "U200E"
+			exit 6
+			;;
+		0301)
+			echo "KYM11"
+			exit 4
+			;;
+		0401)
+			echo "UM04"
+			exit 2
+			;;
+		0501)
+			echo "S710E"
+			exit 9
+			;;
+		FFFF)
+			echo "none"
+			exit 0
+			;;
+		*)
+			echo "ERROR${LINENO} (${LIST[0]}${LIST[1]}${LIST[2]})"
+			exit 8
+			;;
+		esac
+		;;
+	*)
+		echo "ERROR${LINENO} (${LIST[0]}${LIST[1]}${LIST[2]})"
+		exit 8
+		;;
+	esac
+}
+
 GPIOPATH=/sys/class/gpio
 
 [ -f /etc/default/openblocks ] && . /etc/default/openblocks
@@ -122,9 +233,9 @@ if [ "$MODEL" == "obsvx1" -o "$MODEL" == "obsvx2" ]; then
 		echo "U200"
 		exit 5
 		;;
-	111)			# BX1 EHS6
-		echo "EHS6"
-		exit 7
+	111)
+		_call_obsutil "obsvx1"
+		exit 10
 		;;
 	011)			# BX3 U200/U270
 		echo "ERROR ($id2$id1$id0)"
@@ -219,6 +330,10 @@ elif [ "$MODEL" == "obsbx1" ]; then
 	18)
 		echo "S710"
 		exit 9
+		;;
+	68)
+		_call_obsutil "obsbx1"
+		exit 10
 		;;
 	*)
 		echo "ERROR ($dipsw)"

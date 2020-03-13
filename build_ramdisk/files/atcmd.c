@@ -112,6 +112,8 @@
 #define UM04 "UM04\n"
 #define S710 "S710\n"
 #define S710E "S710E\n"
+#define NONE "none\n"
+#define BLANK "blank\n"
 
 #define EXIST 0
 #define NOEXIST -1
@@ -1059,6 +1061,12 @@ int main(int ac, char *av[])
 	}
 	fgets(MNAME, sizeof(MNAME)-1, fp);
 	pclose(fp);
+
+	if(strncmp(NONE, MNAME, sizeof(NONE)) == 0 ||
+		strncmp(BLANK, MNAME, sizeof(BLANK)) == 0){
+		printf("%d: modem is nothing.\n", __LINE__);
+		return -1;
+	}
 
 	while(i < ac){
 		if(strncmp(CMD_PON, av[i], sizeof(CMD_PON)) == 0){
