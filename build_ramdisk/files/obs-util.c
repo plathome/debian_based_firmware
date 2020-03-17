@@ -359,7 +359,7 @@ int write_serial(int i2cnum, char* fname, unsigned char* data)
 	}
 
 	/* write headder */
-	if(data[16] == 0xff){
+	if(data[0] < 0xfe){
 		if(write_i2c(i2cnum, slave, 0, head) == -1){
 			printf("%d: %s\n", __LINE__, strerror(errno));
 			return -1;
