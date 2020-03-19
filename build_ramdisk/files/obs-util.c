@@ -344,7 +344,7 @@ int write_serial(int i2cnum, char* fname, unsigned char* data)
 	if(buf[1] <= '9')
 		data[2] = buf[1]-0x30;
 	else
-		data[2] = buf[1]-0x47;
+		data[2] = buf[1]-0x37;
 	data[3] = buf[2];
 	data[4] = buf[3]-0x30;
 	data[5] = buf[4]-0x30;
