@@ -10,13 +10,22 @@ ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="u-blox
 # VX / KYM
 ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="ACM Communication Class Interface" , ATTRS{bInterfaceNumber}=="02", SYMLINK+="ttyMODEM0"
 
-# VX / SIM7100
-ACTION=="add", KERNEL=="ttyUSB*", KERNELS=="1-2:1.*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="02", SYMLINK+="ttyMODEM0"
-ACTION=="add", KERNEL=="ttyUSB*", KERNELS=="1-2:1.*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="ff" , ATTRS{bInterfaceNumber}=="00", SYMLINK+="ttyMODEM1"
-ACTION=="add", KERNEL=="ttyUSB*", KERNELS=="1-2:1.*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="01", SYMLINK+="ttyMODEM2"
-ACTION=="add", KERNEL=="ttyUSB*", KERNELS=="1-2:1.*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="03", SYMLINK+="ttyMODEM3"
-ACTION=="add", KERNEL=="ttyUSB*", KERNELS=="1-2:1.*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="04", SYMLINK+="ttyMODEM4"
-
 # VX / TOBY & UM04
 ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="CDC Abstract Control Model (ACM)" , ATTRS{bInterfaceNumber}=="02", SYMLINK+="ttyMODEM0"
 ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="CDC Abstract Control Model (ACM)" , ATTRS{bInterfaceNumber}=="04", SYMLINK+="ttyMODEM1"
+
+# Modem env setting / EC25 & SIM7100
+KERNELS=="1-2", SUBSYSTEMS=="usb", ATTRS{product}=="Android" , ENV{local_product}="Quectel_Modem"
+KERNELS=="1-2", SUBSYSTEMS=="usb", ATTRS{product}=="SimTech, Incorporated" , ENV{local_product}="Simcom_Modem"
+
+# VX / EC25
+ACTION=="add", ENV{local_product}=="Quectel_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="ff" , ATTRS{bInterfaceNumber}=="00", SYMLINK+="ttyMODEM2"
+ACTION=="add", ENV{local_product}=="Quectel_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="01", SYMLINK+="ttyMODEM3"
+ACTION=="add", ENV{local_product}=="Quectel_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="02", SYMLINK+="ttyMODEM0"
+ACTION=="add", ENV{local_product}=="Quectel_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="03", SYMLINK+="ttyMODEM1"
+# VX / SIM7100
+ACTION=="add", ENV{local_product}=="Simcom_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="02", SYMLINK+="ttyMODEM0"
+ACTION=="add", ENV{local_product}=="Simcom_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="ff" , ATTRS{bInterfaceNumber}=="00", SYMLINK+="ttyMODEM1"
+ACTION=="add", ENV{local_product}=="Simcom_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="01", SYMLINK+="ttyMODEM2"
+ACTION=="add", ENV{local_product}=="Simcom_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="03", SYMLINK+="ttyMODEM3"
+ACTION=="add", ENV{local_product}=="Simcom_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="04", SYMLINK+="ttyMODEM4"
