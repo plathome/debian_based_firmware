@@ -92,7 +92,7 @@ function _call_obsutil() {
 			exit 9
 			;;
 		0601)
-			echo "EC45"
+			echo "EC25"
 			exit 10
 			;;
 		FFFF|ffff)
@@ -124,7 +124,7 @@ function _call_obsutil() {
 			exit 9
 			;;
 		0601)
-			echo "EC45"
+			echo "EC25"
 			exit 10
 			;;
 		FFFF|ffff)
