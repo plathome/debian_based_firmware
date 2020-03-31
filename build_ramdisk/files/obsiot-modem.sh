@@ -63,7 +63,7 @@ function _call_obsutil() {
 			echo "S710"
 			exit 9
 			;;
-		FFFF)
+		FFFF|ffff)
 			echo "none"
 			exit 0
 			;;
@@ -95,7 +95,7 @@ function _call_obsutil() {
 			echo "EC45"
 			exit 10
 			;;
-		FFFF)
+		FFFF|ffff)
 			echo "none"
 			exit 0
 			;;
@@ -127,7 +127,7 @@ function _call_obsutil() {
 			echo "EC45"
 			exit 10
 			;;
-		FFFF)
+		FFFF|ffff)
 			echo "none"
 			exit 0
 			;;
