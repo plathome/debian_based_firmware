@@ -441,7 +441,7 @@ printf("%d\n", i2cnum);
 	}
 	ac -= optind;
 	av += optind;
-	if(ac != 1){
+	if(ac != 1){	/* param num error */
 		printf("ERR%d\n", __LINE__);
 		exit(1);
 	}

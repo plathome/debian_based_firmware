@@ -91,6 +91,7 @@
 #define AT_CCID_K "at$19?\r\n"
 #define AT_CCID_U "at*kiccid\r\n"
 #define AT_CCID_S "at+ciccid\r\n"
+#define AT_CCID_Q "at+qccid\r\n"
 #define AT_CSQ "at+csq\r\n"
 #define AT_CSQ_K "at$30=0\r\n"
 #define AT_CSQ_U "at*dlante\r\n"
@@ -112,6 +113,8 @@
 #define UM04 "UM04\n"
 #define S710 "S710\n"
 #define S710E "S710E\n"
+#define EC25 "EC25\n"
+#define EC25E "EC25E\n"
 #define NONE "none\n"
 #define BLANK "blank\n"
 
@@ -871,6 +874,18 @@ int get_ati(char *buf)
 			}
 		}
 	}
+	else if((p1 = strstr(buf, "Quectel")) != NULL){
+		if((p1 = strstr(buf, "EC25")) != NULL){
+			if((p1 = strstr(buf, "Revision")) != NULL){
+				if((p2 = strchr(p1, '\n')) == NULL){
+					return -1;
+				}
+				*p2 = 0x0;
+				printf("Quectel EC25 %s\n", p1);
+				return 0;
+			}
+		}
+	}
 	printf("%s\n", buf);
 
 	return -1;
@@ -1409,6 +1424,14 @@ int main(int ac, char *av[])
 					return -1;
 				}
 			}
+			else if(strncmp(EC25, MNAME, sizeof(EC25)) == 0
+				|| strncmp(EC25E, MNAME, sizeof(EC25E)) == 0){
+				send_atcmd(fd, AT_AT, buf, 0);
+				send_atcmd(fd, AT_CCID_Q, buf, 100);
+				if(get_ccid(buf, 2)){
+					return -1;
+				}
+			}
 		}
 		else if(strncmp(CMD_ATI, av[i], sizeof(CMD_ATI)) == 0){
 			if(fd == 0 && init_modem(&fd)){
@@ -1417,7 +1440,9 @@ int main(int ac, char *av[])
 			}
 			if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0
 						|| strncmp(U200E, MNAME, sizeof(U200E)) == 0
-						|| strncmp(U200, MNAME, sizeof(U200)) == 0){
+						|| strncmp(U200, MNAME, sizeof(U200)) == 0
+						|| strncmp(EC25, MNAME, sizeof(EC25)) == 0
+						|| strncmp(EC25E, MNAME, sizeof(EC25E)) == 0){
 				send_atcmd(fd, AT_ATI, buf, 100);
 				if(get_ati(buf)){
 					ret = -1;
@@ -1479,7 +1504,9 @@ int main(int ac, char *av[])
 			if(strncmp(U200E, MNAME, sizeof(U200E)) == 0
 						|| strncmp(U200, MNAME, sizeof(U200)) == 0
 						|| strncmp(S710, MNAME, sizeof(S710)) == 0
-						|| strncmp(S710E, MNAME, sizeof(S710E)) == 0){
+						|| strncmp(S710E, MNAME, sizeof(S710E)) == 0
+						|| strncmp(EC25, MNAME, sizeof(EC25)) == 0
+						|| strncmp(EC25E, MNAME, sizeof(EC25E)) == 0){
 				if(av[i+1] == NULL || (av[i+1] != NULL && av[i+1][0] != '0' && av[i+1][0] != '1')){
 					send_atcmd(fd, AT_AT, buf, 0);
 					send_atcmd(fd, AT_CTZU2, buf, 100);
@@ -1571,7 +1598,9 @@ int main(int ac, char *av[])
 					break;
 				}
 			}
-			else if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
+			else if(strncmp(UM04, MNAME, sizeof(UM04)) == 0
+							|| strncmp(EC25, MNAME, sizeof(EC25)) == 0
+							|| strncmp(EC25E, MNAME, sizeof(EC25E)) == 0){
 				for(j=0; j<6; j++){
 					send_atcmd(fd, AT_AT, buf, 0);
 					send_atcmd(fd, AT_CCLK, buf, 200);
@@ -1606,7 +1635,9 @@ int main(int ac, char *av[])
 			if(strncmp(EHS6, MNAME, sizeof(EHS6)) == 0
 						|| strncmp(U200E, MNAME, sizeof(U200E)) == 0
 						|| strncmp(U200, MNAME, sizeof(U200)) == 0
-						|| strncmp(UM04, MNAME, sizeof(UM04)) == 0){
+						|| strncmp(UM04, MNAME, sizeof(UM04)) == 0
+						|| strncmp(EC25, MNAME, sizeof(EC25)) == 0
+						|| strncmp(EC25E, MNAME, sizeof(EC25E)) == 0){
 				send_atcmd(fd, AT_AT, buf, 100);
 				send_atcmd(fd, AT_CGSN, buf, 100);
 				if(get_cgsn(buf)){
