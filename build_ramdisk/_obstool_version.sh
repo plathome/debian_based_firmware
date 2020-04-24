@@ -25,12 +25,12 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-atcmd_ver=2
+atcmd_ver=3
 disable_modem_ver=1
 hub_ctrl_ver=1
 instfirm_ver=2
 nitz_ver=1
-obs_util_ver=1
+obs_util_ver=2
 obs_hwclock_ver=1
 obsiot_power_ver=1
 obsvx1_gpio_ver=1

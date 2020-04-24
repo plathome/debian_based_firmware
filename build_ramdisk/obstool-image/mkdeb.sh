@@ -59,5 +59,6 @@ dpkg-deb --build ${pkgdir}
 mv -fv ${pkgdir}.deb ${REL_DIR}/
 
 [ -e template-${PACKAGE}/usr ] && rm -rf template-${PACKAGE}/usr
+[ -e template-atcmd/etc ] && rm -rf template-atcmd/etc
 rm -rf ${pkgdir}
 

@@ -81,6 +81,8 @@ obsbx*|obsvx*|obsgem*)
 	$CC -o ${OBSTOOLDIR}/template-atcmd/usr/sbin/atcmd ${FILESDIR}/atcmd.c $CFLAGS
 	$STRIP ${OBSTOOLDIR}/template-atcmd/usr/sbin/atcmd
 	cp -f ${FILESDIR}/obsiot-modem.sh ${OBSTOOLDIR}/template-atcmd/usr/sbin/obsiot-modem.sh
+	mkdir -p ${OBSTOOLDIR}/template-atcmd/etc/udev/rules.d/
+	cp -a ${ETCDIR_ADD}/udev/rules.d/5[0-9]-* ${OBSTOOLDIR}/template-atcmd/etc/udev/rules.d/
 	chmod 555 ${OBSTOOLDIR}/template-atcmd/usr/sbin/obsiot-modem.sh
 
 	echo "NITZ"
