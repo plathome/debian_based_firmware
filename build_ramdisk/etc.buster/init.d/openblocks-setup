@@ -222,7 +222,9 @@ start)
 	# execute watchdog timer daemon before DEB_CONFIG
 	case "$MODEL" in
 	obsbx1)
-		/etc/init.d/wd-keepalive start
+		if ! grep -q "^10" /etc/debian_version ; then
+			/etc/init.d/wd-keepalive start
+		fi
 		;;
 	*)
 		;;
@@ -268,9 +270,11 @@ start)
 
 
 	# check 3layer mode
-	mount -o ro -t $rwdev_fs $rwdev ${RW_DIR}
-	[ -e "${RW_DIR}/DEBIAN" ] && FLG_3LAYER_MODE=true; mkdir -p ${RO_DIR}
-	umount ${RW_DIR}
+	if [ -n "$rwdev" ]; then
+		mount -o ro -t $rwdev_fs $rwdev ${RW_DIR}
+		[ -e "${RW_DIR}/DEBIAN" ] && FLG_3LAYER_MODE=true; mkdir -p ${RO_DIR}
+		umount ${RW_DIR}
+	fi
 
 	if [ -n "$rwdev" ] && [ "$FLG_3LAYER_MODE" == "true" ]; then
 		mount -o ro -t $rwdev_fs $rwdev ${RO_DIR}
