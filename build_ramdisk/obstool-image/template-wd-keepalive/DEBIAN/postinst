@@ -10,6 +10,7 @@
 case "$1" in
 configure)
 	[ -f /.chroot ] && exit 0
+	[ "$MODEL" == "obsbx1" ] && exit 0
 	if systemctl is-active wd-keepalive; then
 		 systemctl restart wd-keepalive
 	else

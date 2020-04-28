@@ -222,9 +222,9 @@ start)
 	# execute watchdog timer daemon before DEB_CONFIG
 	case "$MODEL" in
 	obsbx1)
-		if ! grep -q "^10" /etc/debian_version ; then
+#		if ! grep -q "^10" /etc/debian_version ; then
 			/etc/init.d/wd-keepalive start
-		fi
+#		fi
 		;;
 	*)
 		;;
