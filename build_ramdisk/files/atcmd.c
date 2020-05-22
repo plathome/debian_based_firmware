@@ -79,10 +79,12 @@
 #define AT_POFF_U200 "at+cpwroff\r\n"
 #define AT_POFF_UM04 "at*dpwroff\r\n"
 #define AT_POFF_S710 "at+cpof\r\n"
+#define AT_POFF_EC25 "at+qpowd\r\n"
 #define AT_PRST_U200 "at+cfun=15\r\n"
 #define AT_PRST_K "at$40=0\r\n"
 #define AT_PRST_UM04 "at*dhwrst\r\n"
 #define AT_PRST_S710 "at+creset\r\n"
+#define AT_PRST_EC25 "at+cfun=1,1\r\n"
 #define AT_SMONI "at^smoni\r\n"
 #define AT_SIND "at^sind?\r\n"
 #define AT_CCLK "at+cclk?\r\n"
@@ -1107,6 +1109,9 @@ int main(int ac, char *av[])
 				else if(strncmp(S710, MNAME, sizeof(S710)) == 0){
 					set_power_s710(1, POWERSW);
 				}
+				else if(strncmp(EC25, MNAME, sizeof(EC25)) == 0){
+					set_power_u200(1, POWERSW_U200);
+				}
 
 				if(wait_device(EXIST)){
 					printf("%d: Can not Power ON!\n", __LINE__);
@@ -1128,6 +1133,9 @@ int main(int ac, char *av[])
 				}
 				else if(strncmp(S710, MNAME, sizeof(S710)) == 0
 					|| strncmp(S710E, MNAME, sizeof(S710E)) == 0){
+					sleep(12);
+				}
+				else if(strncmp(EC25, MNAME, sizeof(EC25)) == 0){
 					sleep(12);
 				}
 			}
@@ -1179,6 +1187,9 @@ int main(int ac, char *av[])
 					|| strncmp(S710E, MNAME, sizeof(S710E)) == 0){
 					send_atcmd(fd, AT_POFF_S710, buf, 100);
 				}
+				else if(strncmp(EC25, MNAME, sizeof(EC25)) == 0){
+					send_atcmd(fd, AT_POFF_EC25, buf, 100);
+				}
 			}
 			end_modem(&fd);
 			if(wait_device(NOEXIST)){
@@ -1225,6 +1236,15 @@ int main(int ac, char *av[])
 				}
 			}
 			else if(strncmp(S710E, MNAME, sizeof(S710E)) == 0){
+				if(access(MODEM, F_OK) == 0){
+					set_reset_u200(RESETSW_U200);
+				}
+				else{
+					printf("%d: Can not Reset at the power off.\n", __LINE__);
+					return -1;
+				}
+			}
+			else if(strncmp(EC25, MNAME, sizeof(EC25)) == 0){
 				if(access(MODEM, F_OK) == 0){
 					set_reset_u200(RESETSW_U200);
 				}
@@ -1290,6 +1310,10 @@ int main(int ac, char *av[])
 				send_atcmd(fd, AT_AT, buf, 0);
 				send_atcmd(fd, AT_PRST_S710, buf, 100);
 			}
+			else if(strncmp(EC25, MNAME, sizeof(EC25)) == 0){
+				send_atcmd(fd, AT_AT, buf, 0);
+				send_atcmd(fd, AT_PRST_EC25, buf, 100);
+			}
 			end_modem(&fd);
 #if !defined(CONFIG_OBSVX1)
 			if(access(MODEM, F_OK) == 0){
@@ -1319,6 +1343,9 @@ int main(int ac, char *av[])
 			else if(strncmp(S710E, MNAME, sizeof(S710E)) == 0
 					|| strncmp(S710, MNAME, sizeof(S710)) == 0){
 				sleep(6);
+			}
+			else if(strncmp(EC25, MNAME, sizeof(EC25)) == 0){
+				sleep(11);
 			}
 		}
 		else if(strncmp(CMD_SMONI, av[i], sizeof(CMD_SMONI)) == 0){
@@ -1366,7 +1393,8 @@ int main(int ac, char *av[])
 			else if(strncmp(U200E, MNAME, sizeof(U200E)) == 0
 						|| strncmp(U200, MNAME, sizeof(U200)) == 0
 						|| strncmp(S710, MNAME, sizeof(S710)) == 0
-						|| strncmp(S710E, MNAME, sizeof(S710E)) == 0){
+						|| strncmp(S710E, MNAME, sizeof(S710E)) == 0
+						|| strncmp(EC25, MNAME, sizeof(EC25)) == 0){
 				send_atcmd(fd, AT_AT, buf, 0);
 				send_atcmd(fd, AT_CSQ, buf, 200);
 				if(get_quality(buf)){
