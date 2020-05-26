@@ -318,6 +318,54 @@ int set_power_s710(int val, char *gpio_pin)
 	return 0;
 }
 
+int set_power_ec25(int val, char *gpio_pin)
+{
+#if defined(CONFIG_OBSVX1)
+	system("/usr/sbin/obsvx1-modem power low");
+	sleep(1);
+	system("/usr/sbin/obsvx1-modem power high");
+	sleep(1);
+	system("/usr/sbin/obsvx1-modem power low");
+#else
+	int fd;
+
+	if(val == 1 && access(MODEM, F_OK) == 0){
+		/* already Power On */
+		return 0;
+	}
+	else if(val == 0 && access(MODEM, F_OK) == -1){
+		/* already Power Off */
+		return 0;
+	}
+
+	if((fd = open(gpio_pin, O_RDWR)) == -1){
+		printf("%d: %s\n", __LINE__, strerror(errno));
+		return -1;
+	}
+
+	if(write(fd, "0", 1) == -1){
+		printf("%d: %s\n", __LINE__, strerror(errno));
+		close(fd);
+		return -1;
+	}
+	sleep(1);
+	if(write(fd, "1", 1) == -1){
+		printf("%d: %s\n", __LINE__, strerror(errno));
+		close(fd);
+		return -1;
+	}
+	sleep(1);
+	if(write(fd, "0", 1) == -1){
+		printf("%d: %s\n", __LINE__, strerror(errno));
+		close(fd);
+		return -1;
+	}
+	close(fd);
+#endif
+
+	return 0;
+}
+
 int set_reset(char *gpio_reset)
 {
 	int fd;
@@ -1110,7 +1158,7 @@ int main(int ac, char *av[])
 					set_power_s710(1, POWERSW);
 				}
 				else if(strncmp(EC25, MNAME, sizeof(EC25)) == 0){
-					set_power_u200(1, POWERSW_U200);
+					set_power_ec25(1, POWERSW_U200);
 				}
 
 				if(wait_device(EXIST)){

@@ -126,9 +126,15 @@ if [ "$MODEM" != "none" -a "$MODEL" == "obsvx1" ]; then
 	atcmd PON
 elif [ "$MODEL" == "obsbx1" ]; then
 	case $MODEM in
-	U200E|UM04|EC25)
+	U200E|UM04)
 		echo 200 > $GPIOPATH/export	# 3G modem power
 		echo high > $GPIOPATH/gpio200/direction
+		echo 202 > $GPIOPATH/export	# 3G reset
+		echo high > $GPIOPATH/gpio202/direction
+		;;
+	EC25)
+		echo 200 > $GPIOPATH/export	# 3G modem power
+		echo low > $GPIOPATH/gpio200/direction
 		echo 202 > $GPIOPATH/export	# 3G reset
 		echo high > $GPIOPATH/gpio202/direction
 		;;
