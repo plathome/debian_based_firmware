@@ -120,10 +120,7 @@ fi
 
 MODEM=`/usr/sbin/obsiot-modem.sh`
 
-if [ "$MODEM" != "none" ]; then
-	case $MODEL in
-	obsvx*) obsvx1-modem init ;;
-	esac
+if [ "$MODEM" != "none" -a \( "$MODEL" == "obsvx1" -o "$MODEL" == "obsvx2" \) ]; then
 	[ "$MODEM" == "S710" ] && obsvx1-modem power low
 	atcmd PON
 elif [ "$MODEL" == "obsbx1" ]; then
@@ -136,7 +133,9 @@ elif [ "$MODEL" == "obsbx1" ]; then
 		;;
 	EC25)
 		echo 200 > $GPIOPATH/export	# 3G modem power
-		echo low > $GPIOPATH/gpio200/direction
+		echo high > $GPIOPATH/gpio200/direction
+		sleep 0.5
+		echo 0 > $GPIOPATH/gpio200/value
 		echo 202 > $GPIOPATH/export	# 3G reset
 		echo high > $GPIOPATH/gpio202/direction
 		;;
