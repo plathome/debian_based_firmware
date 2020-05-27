@@ -133,11 +133,10 @@ elif [ "$MODEL" == "obsbx1" ]; then
 		;;
 	EC25)
 		echo 200 > $GPIOPATH/export	# 3G modem power
-		echo high > $GPIOPATH/gpio200/direction
-		sleep 0.5
-		echo 0 > $GPIOPATH/gpio200/value
+		echo out > $GPIOPATH/gpio200/direction
 		echo 202 > $GPIOPATH/export	# 3G reset
 		echo high > $GPIOPATH/gpio202/direction
+		atcmd PON
 		;;
 	KYM11|S710E)
 		echo 202 > $GPIOPATH/export	# 3G reset
