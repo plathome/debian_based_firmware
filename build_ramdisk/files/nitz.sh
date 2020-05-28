@@ -123,6 +123,7 @@ MODEM=`/usr/sbin/obsiot-modem.sh`
 if [ "$MODEM" != "none" -a \( "$MODEL" == "obsvx1" -o "$MODEL" == "obsvx2" \) ]; then
 	obsvx1-modem init
 	[ "$MODEM" == "S710" ] && obsvx1-modem power low
+	[ "$MODEM" == "EC25" ] && obsvx1-modem areaind low
 	atcmd PON
 elif [ "$MODEL" == "obsbx1" ]; then
 	case $MODEM in

@@ -60,7 +60,8 @@
 #define I2C_NAME "/dev/i2c-5"
 #define SLAVE 0x20
 #define INIT_MODEM0	0x70
-#define INIT_MODEM1	0xef
+//#define INIT_MODEM1	0xef
+#define INIT_MODEM1	0xee
 
 #define POWER "power"
 #define RESET1 "reset1"
@@ -114,12 +115,12 @@ void usage(char *fname)
 	printf("reset2 [high|low]: change high/low reset of module2\n");
 	printf("usbrst [high|low]: change high/low reset of usb hub\n");
 	printf("esim   [high|low]: change high/low enable of eSIM\n");
+	printf("areaind[high|low]: area ind\n");
 	printf("init             : initialize gpio\n");
 	printf("raw              : read raw data (DEBUG)\n");
 #if 0
-	printf("\nfor KYM1x\n");
 	printf("uartini          : initialize uart\n");
-	printf("areaind          : area ind\n");
+	printf("\nfor KYM1x\n");
 	printf("pshhold          : psh hold\n");
 	printf("rstchk           : rst chk\n");
 	printf("ri               : ri\n");
@@ -358,10 +359,19 @@ int main(int ac, char *av[])
 				return -1;
 		}
 	}
+	else if(strncmp(AREAIND, av[1], strlen(AREAIND)) == 0){
+		if(ac == 2){
+			if((ret = read_register(INPUT1, M_AREAIND)) == -1)
+				return -1;
+			printf("%s\n", ret ? "high" : "low");
+		}
+		else{
+			if((ret = write_register(OUTPUT1, av[2], M_AREAIND)) == -1)
+				return -1;
+		}
+	}
 #if 0
 	else if(strncmp(UARTINI, av[1], strlen(UARTINI)) == 0){
-	}
-	else if(strncmp(AREAIND, av[1], strlen(AREAIND)) == 0){
 	}
 	else if(strncmp(PSHOLD, av[1], strlen(PSHOLD)) == 0){
 	}
