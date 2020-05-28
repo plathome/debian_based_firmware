@@ -121,6 +121,7 @@ fi
 MODEM=`/usr/sbin/obsiot-modem.sh`
 
 if [ "$MODEM" != "none" -a \( "$MODEL" == "obsvx1" -o "$MODEL" == "obsvx2" \) ]; then
+	obsvx1-modem init
 	[ "$MODEM" == "S710" ] && obsvx1-modem power low
 	atcmd PON
 elif [ "$MODEL" == "obsbx1" ]; then
