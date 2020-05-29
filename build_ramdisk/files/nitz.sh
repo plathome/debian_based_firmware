@@ -124,6 +124,7 @@ if [ "$MODEM" != "none" -a \( "$MODEL" == "obsvx1" -o "$MODEL" == "obsvx2" \) ];
 	obsvx1-modem init
 	[ "$MODEM" == "S710" ] && obsvx1-modem power low
 	atcmd PON
+	[ "$MODEM" == "EC25" ] && obsvx1-modem power low
 elif [ "$MODEL" == "obsbx1" ]; then
 	case $MODEM in
 	U200E|UM04)
