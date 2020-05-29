@@ -296,7 +296,7 @@ buster)
 		KERNEL=3.10.17
 		ISOFILE=debian-10.2.0-i386-DVD-1.iso
 		ARCH=i386
-		PATCHLEVEL=0
+		PATCHLEVEL=300
 		RAMDISK_SIZE=240
 	;;
 	obsgem*)
