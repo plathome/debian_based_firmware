@@ -54,3 +54,18 @@ if [ "$DIST" == "buster" ]; then
 		chroot ${DISTDIR} update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
 	fi
 fi
+
+#
+# install wireless-regdb package
+#
+case $TARGET in
+obsvx*)
+	if [ "$DIST" == "buster" ]; then
+		mkdir -p ${DISTDIR}/usr/lib/crda/pubkeys
+		cp ${FILESDIR}/wireless-regdb/regulatory.bin ${DISTDIR}/usr/lib/crda
+		cp ${FILESDIR}/wireless-regdb/sforshee.key.pub.pem ${DISTDIR}/usr/lib/crda/pubkeys
+	fi
+	;;
+*)
+	;;
+esac
