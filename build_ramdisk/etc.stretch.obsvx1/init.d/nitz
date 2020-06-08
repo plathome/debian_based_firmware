@@ -104,6 +104,7 @@ case "$1" in
 			obsvx1-modem init
 			[ "$MODEM" == "S710E" ] && obsvx1-modem power low
 			atcmd PON
+			[ "$MODEM" == "EC25" ] && obsvx1-modem power low
 		fi
 	fi
 	;;
