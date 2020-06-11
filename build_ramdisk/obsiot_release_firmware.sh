@@ -137,6 +137,29 @@ obsvx1)
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
 obsvx2)
+	case $DIST in
+	stretch)
+		# obs tools
+		USRSBIN=${DISTDIR}/usr/sbin
+		OBSTOOLS="${USRSBIN}/wd-keepalive ${USRSBIN}/obs-util ${USRSBIN}/kosanu ${USRSBIN}/runled ${USRSBIN}/pshd ${USRSBIN}/atcmd ${USRSBIN}/hub-ctrl ${USRSBIN}/wav-play ${USRSBIN}/obsiot-power ${USRSBIN}/obsvx1-modem ${USRSBIN}/obsvx1-gpio"
+		ETCINITD=${DISTDIR}/etc/init.d
+		OBSSCRIPTS="${ETCINITD}/obsiot-power ${ETCINITD}/nitz"
+		ETCUDEVRULES=${DISTDIR}/etc/udev/rules.d
+		OBSUDEVRULES="${ETCUDEVRULES}/50-obsbx1-symlink-ttyMODEM.rules ${ETCUDEVRULES}/40-rename-ttyrs485.rules "
+		WORK=/tmp/_tmpfs.$$
+		mkdir -p ${WORK}/usr/sbin
+		mkdir -p ${WORK}/etc/init.d
+		mkdir -p ${WORK}/etc/udev/rules.d
+		cp -f ${OBSTOOLS} ${WORK}/usr/sbin
+		cp -f ${OBSSCRIPTS} ${WORK}/etc/init.d
+		cp -f ${OBSUDEVRULES} ${WORK}/etc/udev/rules.d
+		(cd ${WORK}; tar cfzp ${RELEASEDIR}/obstools.tgz .)
+		rm -rf ${WORK}
+		;;
+	*)
+		;;
+	esac
+
 	# Linux kernel
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/bzImage ${RELEASEDIR}
 
@@ -204,6 +227,29 @@ obsbx1)
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 ;;
 obsbx1s)
+	case $DIST in
+	stretch)
+		# obs tools
+		USRSBIN=${DISTDIR}/usr/sbin
+		OBSTOOLS="${USRSBIN}/wd-keepalive ${USRSBIN}/obs-util ${USRSBIN}/kosanu ${USRSBIN}/runled ${USRSBIN}/pshd ${USRSBIN}/atcmd ${USRSBIN}/wav-play ${USRSBIN}/obsiot-power"
+		ETCINITD=${DISTDIR}/etc/init.d
+		OBSSCRIPTS="${ETCINITD}/obsiot-power ${ETCINITD}/nitz"
+		ETCUDEVRULES=${DISTDIR}/etc/udev/rules.d
+		OBSUDEVRULES="${ETCUDEVRULES}/50-obsbx1-symlink-ttyMODEM.rules ${ETCUDEVRULES}/40-rename-ttyrs485.rules "
+		WORK=/tmp/_tmpfs.$$
+		mkdir -p ${WORK}/usr/sbin
+		mkdir -p ${WORK}/etc/init.d
+		mkdir -p ${WORK}/etc/udev/rules.d
+		cp -f ${OBSTOOLS} ${WORK}/usr/sbin
+		cp -f ${OBSSCRIPTS} ${WORK}/etc/init.d
+		cp -f ${OBSUDEVRULES} ${WORK}/etc/udev/rules.d
+		(cd ${WORK}; tar cfzp ${RELEASEDIR}/obstools.tgz .)
+		rm -rf ${WORK}
+		;;
+	*)
+		;;
+	esac
+
 	# Linux kernel
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
 

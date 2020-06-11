@@ -271,7 +271,7 @@ case "$1" in
 	U200|S710)
 		set_time_u200
 		;;
-	U200E|KYM11|UM04|S710E|none)
+	U200E|KYM11|UM04|S710E|EC25|none)
 		echo "nitz: skipped time synchronization"
 		# S35390A INIT2 flag clear
 		obs-hwclock --check

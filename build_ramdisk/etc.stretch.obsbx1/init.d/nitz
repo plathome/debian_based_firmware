@@ -128,8 +128,82 @@ set_time_s710(){
 	echo "done"
 }
 
+# merge from /var/lib/dpkg/info/openssh-server.postinst
+# get_config_option, host_keys_required, create_key, create_keys
+sshd_get_config_option() {
+	option="$1"
+
+	[ -f /etc/ssh/sshd_config ] || return
+
+	# TODO: actually only one '=' allowed after option
+	perl -lne 's/\s+/ /g; print if s/^\s*'"$option"'[[:space:]=]+//i' \
+	   /etc/ssh/sshd_config
+}
+
+sshd_host_keys_required() {
+	hostkeys="$(sshd_get_config_option HostKey)"
+	if [ "$hostkeys" ]; then
+		echo "$hostkeys"
+	else
+		# No HostKey directives at all, so the server picks some
+		# defaults depending on the setting of Protocol.
+		protocol="$(sshd_get_config_option Protocol)"
+		[ "$protocol" ] || protocol=1,2
+		if echo "$protocol" | grep 1 >/dev/null; then
+			echo /etc/ssh/ssh_host_key
+		fi
+		if echo "$protocol" | grep 2 >/dev/null; then
+			echo /etc/ssh/ssh_host_rsa_key
+			echo /etc/ssh/ssh_host_dsa_key
+			echo /etc/ssh/ssh_host_ecdsa_key
+			echo /etc/ssh/ssh_host_ed25519_key
+		fi
+	fi
+}
+
+sshd_create_key() {
+	msg="$1"
+	shift
+	hostkeys="$1"
+	shift
+	file="$1"
+	shift
+
+	if echo "$hostkeys" | grep -x "$file" >/dev/null && \
+	   [ ! -f "$file" ] ; then
+		echo -n $msg
+		ssh-keygen -q -f "$file" -N '' "$@" -A
+		echo
+		if type restorecon >/dev/null 2>&1; then
+			restorecon "$file.pub"
+		fi
+	fi
+}
+
+
+sshd_create_keys() {
+	hostkeys="$(sshd_host_keys_required)"
+
+	sshd_create_key "Creating SSH1 key; this may take some time ..." \
+		"$hostkeys" /etc/ssh/ssh_host_key -t rsa1
+
+	sshd_create_key "Creating SSH2 RSA key; this may take some time ..." \
+		"$hostkeys" /etc/ssh/ssh_host_rsa_key -t rsa
+	sshd_create_key "Creating SSH2 DSA key; this may take some time ..." \
+		"$hostkeys" /etc/ssh/ssh_host_dsa_key -t dsa
+	sshd_create_key "Creating SSH2 ECDSA key; this may take some time ..." \
+		"$hostkeys" /etc/ssh/ssh_host_ecdsa_key -t ecdsa
+	sshd_create_key "Creating SSH2 Ed25519 key; this may take some time ..." \
+		"$hostkeys" /etc/ssh/ssh_host_ed25519_key -t ed25519
+}
+
 case "$1" in
   start)
+	if [ "$MODEL" == "obsbx1s" ]; then
+		if [ -x /usr/sbin/sshd ] ; then
+			sshd_create_keys
+		fi
+	fi
 	MODEM=`/usr/sbin/obsiot-modem.sh`
 	case $MODEM in
 	U200E|UM04)
@@ -137,6 +211,13 @@ case "$1" in
 		echo high > $GPIOPATH/gpio200/direction
 		echo 202 > $GPIOPATH/export	# 3G reset
 		echo high > $GPIOPATH/gpio202/direction
+		;;
+	EC25)
+		echo 200 > $GPIOPATH/export	# 3G modem power
+		echo low > $GPIOPATH/gpio200/direction
+		echo 202 > $GPIOPATH/export	# 3G reset
+		echo high > $GPIOPATH/gpio202/direction
+		atcmd PON
 		;;
 	KYM11|S710E)
 		echo 202 > $GPIOPATH/export	# 3G reset
@@ -190,16 +271,26 @@ case "$1" in
 	U200|S710)
 		set_time_u200
 		;;
-	S710E)
-		set_time_s710
-		;;
-	U200E|KYM11|UM04|S710E|none)
+	U200E|KYM11|UM04|S710E|EC25|none)
 		echo "nitz: skipped time synchronization"
+		# S35390A INIT2 flag clear
+		obs-hwclock --check
+		if [ $? == 0 ]; then
+			/usr/local/sbin/hwclock --clearint2
+			date -s "`/usr/local/sbin/hwclock --hctosys`"
+			/usr/local/sbin/hwclock --status
+		fi
 		;;
 	*)
 		echo "fail"
 		exit 1
 	esac
+
+	if [ "$VERBOSE" != no ]; then
+		hwclock --hctosys > /dev/null 2>&1
+	else
+		hwclock --hctosys
+	fi
 
 	rfkill unblock bluetooth
 	exit 0

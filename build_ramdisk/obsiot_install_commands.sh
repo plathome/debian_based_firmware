@@ -74,7 +74,7 @@ obsbx*)
 	fi
 
 	if [ "$DIST" != "buster" ]; then
-		apt-get -y install libi2c-dev:i386
+		apt-get -y install libi2c-dev
 		echo "WD-KEEPALIVE"
 		$CC -o ${BUILDDIR}/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
 
@@ -130,9 +130,17 @@ obsbx*)
 	$CC -o ${BUILDDIR}/bluetooth_rfkill_event ${FILESDIR}/bluetooth_rfkill_event.c $_CFLAGS
 
 	echo;echo;echo
-	(cd ${BUILDDIR}; ls -l hub-ctrl bluetooth_rfkill_event brcm_patchram_plus)
+	case $DIST in
+	stretch)
+		OBSTOOLLIST="wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util wav-play obsiot-power bluetooth_rfkill_event brcm_patchram_plus"
+		;;
+	*)
+		OBSTOOLLIST="hub-ctrl bluetooth_rfkill_event brcm_patchram_plus"
+		;;
+	esac
+	(cd ${BUILDDIR}; ls -l ${OBSTOOLLIST})
 
-	for cmd in hub-ctrl bluetooth_rfkill_event brcm_patchram_plus; do
+	for cmd in ${OBSTOOLLIST}; do
 		(cd ${BUILDDIR}; install -c -o root -g root -m 555 $cmd ${DISTDIR}/usr/sbin/$cmd)
 		$STRIP ${DISTDIR}/usr/sbin/$cmd
 	done
@@ -140,6 +148,7 @@ obsbx*)
 		(cd ${FILESDIR}; install -c -o root -g root -m 555 $cmd ${DISTDIR}/usr/sbin/$cmd)
 		$STRIP ${DISTDIR}/usr/sbin/$cmd
 	done
+
 	(cd ${DISTDIR}/usr/sbin; ln -sf fw_printenv fw_setenv)
 	cp ${FILESDIR}/fw_env.config ${DISTDIR}/etc/
 	cp ${FILESDIR}/chksignal.sh ${DISTDIR}/usr/sbin/
@@ -225,7 +234,7 @@ obsvx*)
 	if [ "$DIST" == "buster" ]; then
 		OBSTOOLLIST="hub-ctrl"
 	else
-		OBSTOOLLIST="wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wave-play obsvx1-modem obsvx1-gpio obsiot-power"
+		OBSTOOLLIST="wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wav-play obsvx1-modem obsvx1-gpio obsiot-power"
 	fi
 	(cd ${BUILDDIR}; ls -l ${OBSTOOLLIST})
 
