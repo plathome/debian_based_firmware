@@ -28,7 +28,7 @@
 . `dirname $0`/config.sh
 
 get_kern_ver(){
-	echo $(echo "$KERNEL" | (IFS=. read -r major minor micro; printf "%2d%02d%02d" ${major:-0} ${minor:-0} ${micro:-0}))
+	echo $(echo "$KERNEL" | (IFS=. read -r major minor micro; printf "%2d%02d%03d" ${major:-0} ${minor:-0} ${micro:-0}))
 }
 
 if [ "$CROSS" == "true" ]; then
@@ -73,7 +73,7 @@ obsbx*)
 	;;
 obsvx*)
 	if [ -d ${FILESDIR}/rtl8821ae ]; then
-		if [ `get_kern_ver` -lt 41985 ]; then
+		if [ `get_kern_ver` -lt 419085 ]; then
 		echo "8821AE"
 		(cd ${FILESDIR}/rtl8821ae; \
 			mkdir -p ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/kernel/drivers/net/wireless/realtek;	\
