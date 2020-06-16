@@ -199,11 +199,6 @@ sshd_create_keys() {
 
 case "$1" in
   start)
-	if [ "$MODEL" == "obsbx1s" ]; then
-		if [ -x /usr/sbin/sshd ] ; then
-			sshd_create_keys
-		fi
-	fi
 	MODEM=`/usr/sbin/obsiot-modem.sh`
 	case $MODEM in
 	U200E|UM04)
