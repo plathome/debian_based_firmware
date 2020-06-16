@@ -127,7 +127,7 @@ static struct termios old;
 static char MODEM[32];
 static char MNAME[16];
 
-int set_reset_u200(char *, int);
+int set_reset_u200(char *);
 
 void usage(char *fname)
 {
@@ -389,11 +389,11 @@ int set_reset(char *gpio_reset)
 	return 0;
 }
 
-int set_reset_u200(char *gpio_pin, int sec)
+int set_reset_u200(char *gpio_pin)
 {
 #if defined(CONFIG_OBSVX1)
 	system("/usr/sbin/obsvx1-modem reset1 low");
-	sleep(sec);
+	sleep(3);
 	system("/usr/sbin/obsvx1-modem reset1 high");
 #else
 	int fd;
@@ -407,7 +407,7 @@ int set_reset_u200(char *gpio_pin, int sec)
 		close(fd);
 		return -1;
 	}
-	sleep(sec);
+	sleep(3);
 	if(write(fd, "1", 1) == -1){
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		close(fd);
@@ -1262,7 +1262,7 @@ int main(int ac, char *av[])
 				set_reset(RESETSW);
 			}
 			else if(strncmp(U200E, MNAME, sizeof(U200E)) == 0){
-				set_reset_u200(RESETSW_U200, 3);
+				set_reset_u200(RESETSW_U200);
 			}
 			else if(strncmp(KYM11, MNAME, sizeof(KYM11)) == 0){
 				if(access(MODEM, F_OK) == 0){
@@ -1276,7 +1276,7 @@ int main(int ac, char *av[])
 			}
 			else if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
 				if(access(MODEM, F_OK) == 0){
-					set_reset_u200(RESETSW_U200, 3);
+					set_reset_u200(RESETSW_U200);
 				}
 				else{
 					printf("%d: Can not Reset at the power off.\n", __LINE__);
@@ -1285,7 +1285,7 @@ int main(int ac, char *av[])
 			}
 			else if(strncmp(S710E, MNAME, sizeof(S710E)) == 0){
 				if(access(MODEM, F_OK) == 0){
-					set_reset_u200(RESETSW_U200, 3);
+					set_reset_u200(RESETSW_U200);
 				}
 				else{
 					printf("%d: Can not Reset at the power off.\n", __LINE__);
@@ -1294,7 +1294,7 @@ int main(int ac, char *av[])
 			}
 			else if(strncmp(EC25, MNAME, sizeof(EC25)) == 0){
 				if(access(MODEM, F_OK) == 0){
-					set_reset_u200(RESETSW_U200, 1);
+					set_reset_u200(RESETSW_U200);
 				}
 				else{
 					printf("%d: Can not Reset at the power off.\n", __LINE__);
