@@ -3,7 +3,7 @@
 # Provides:          reset-usb
 # Required-Start:    $local_fs $syslog $remote_fs
 # Required-Stop:     $local_fs $syslog $remote_fs
-# Default-Start:
+# Default-Start:     2 3 4 5
 # Default-Stop:      0 6
 # Short-Description: reset-usb for OBSVX1
 # Description:       
@@ -38,7 +38,7 @@
 
 # PATH should only include /usr/* if it runs after the mountnfs.sh script
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
-DESC="reset usb for obsbx1"
+DESC="reset usb for obsvx1"
 NAME=reset-usb
 SCRIPTNAME=/etc/init.d/$NAME
 

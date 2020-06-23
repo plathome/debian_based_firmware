@@ -132,7 +132,7 @@ obsbx*)
 	echo;echo;echo
 	case $DIST in
 	stretch)
-		OBSTOOLLIST="wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util wav-play obsiot-power bluetooth_rfkill_event brcm_patchram_plus"
+		OBSTOOLLIST="wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wav-play obsiot-power bluetooth_rfkill_event brcm_patchram_plus"
 		;;
 	*)
 		OBSTOOLLIST="hub-ctrl bluetooth_rfkill_event brcm_patchram_plus"

@@ -141,11 +141,11 @@ obsvx2)
 	stretch)
 		# obs tools
 		USRSBIN=${DISTDIR}/usr/sbin
-		OBSTOOLS="${USRSBIN}/wd-keepalive ${USRSBIN}/obs-util ${USRSBIN}/kosanu ${USRSBIN}/runled ${USRSBIN}/pshd ${USRSBIN}/atcmd ${USRSBIN}/hub-ctrl ${USRSBIN}/wav-play ${USRSBIN}/obsiot-power ${USRSBIN}/obsvx1-modem ${USRSBIN}/obsvx1-gpio"
+		OBSTOOLS="${USRSBIN}/wd-keepalive ${USRSBIN}/obs-util ${USRSBIN}/kosanu ${USRSBIN}/runled ${USRSBIN}/pshd ${USRSBIN}/atcmd ${USRSBIN}/obs-hwclock ${USRSBIN}/wav-play ${USRSBIN}/obsiot-power ${USRSBIN}/obsvx1-modem ${USRSBIN}/obsvx1-gpio"
 		ETCINITD=${DISTDIR}/etc/init.d
-		OBSSCRIPTS="${ETCINITD}/obsiot-power ${ETCINITD}/nitz"
+		OBSSCRIPTS="${ETCINITD}/obsiot-power ${ETCINITD}/nitz ${ETCINITD}/disable-modem"
 		ETCUDEVRULES=${DISTDIR}/etc/udev/rules.d
-		OBSUDEVRULES="${ETCUDEVRULES}/50-obsbx1-symlink-ttyMODEM.rules ${ETCUDEVRULES}/40-rename-ttyrs485.rules "
+		OBSUDEVRULES="${ETCUDEVRULES}/50-obsvx1-symlink-ttyMODEM.rules ${ETCUDEVRULES}/40-rename-ttyrs485.rules "
 		WORK=/tmp/_tmpfs.$$
 		mkdir -p ${WORK}/usr/sbin
 		mkdir -p ${WORK}/etc/init.d
@@ -169,9 +169,16 @@ obsvx2)
 	umount ${MOUNTDIR}
 
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
-	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/bzImage ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/modules.tgz ${RELEASEDIR}/System.map)
+	case $DIST in
+	stretch)
+		(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs-stretch.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/bzImage ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/modules.tgz ${RELEASEDIR}/obstools.tgz ${RELEASEDIR}/System.map)
+		;;
+	*)
+		(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/bzImage ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/modules.tgz ${RELEASEDIR}/System.map)
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
+		;;
+	esac
 	;;
 obsgem1)
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
@@ -198,7 +205,14 @@ obsgem1)
 	umount ${MOUNTDIR}
 
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
+	case $DIST in
+	stretch)
+	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs-stretch.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/${MAKE_IMAGE} ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/modules.tgz ${RELEASEDIR}/obstools.tgz ${RELEASEDIR}/System.map)
+		;;
+	*)
 	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/${MAKE_IMAGE} ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/modules.tgz ${RELEASEDIR}/System.map)
+		;;
+	esac
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
@@ -231,16 +245,20 @@ obsbx1s)
 	stretch)
 		# obs tools
 		USRSBIN=${DISTDIR}/usr/sbin
-		OBSTOOLS="${USRSBIN}/wd-keepalive ${USRSBIN}/obs-util ${USRSBIN}/kosanu ${USRSBIN}/runled ${USRSBIN}/pshd ${USRSBIN}/atcmd ${USRSBIN}/wav-play ${USRSBIN}/obsiot-power"
+		USRLOCALSBIN=${DISTDIR}/usr/local/sbin
+		OBSTOOLS="${USRSBIN}/wd-keepalive ${USRSBIN}/obs-util ${USRSBIN}/kosanu ${USRSBIN}/runled ${USRSBIN}/pshd ${USRSBIN}/atcmd ${USRSBIN}/obs-hwclock ${USRSBIN}/wav-play ${USRSBIN}/obsiot-power ${USRSBIN}/obsiot-modem.sh ${USRSBIN}/obsiot-power.sh ${USRSBIN}/flashcfg"
+		OBSTOOLSLOCAL="${USRLOCALSBIN}/hwclock"
 		ETCINITD=${DISTDIR}/etc/init.d
-		OBSSCRIPTS="${ETCINITD}/obsiot-power ${ETCINITD}/nitz"
+		OBSSCRIPTS="${ETCINITD}/obsiot-power ${ETCINITD}/nitz ${ETCINITD}/disable-modem"
 		ETCUDEVRULES=${DISTDIR}/etc/udev/rules.d
 		OBSUDEVRULES="${ETCUDEVRULES}/50-obsbx1-symlink-ttyMODEM.rules ${ETCUDEVRULES}/40-rename-ttyrs485.rules "
 		WORK=/tmp/_tmpfs.$$
 		mkdir -p ${WORK}/usr/sbin
+		mkdir -p ${WORK}/usr/local/sbin
 		mkdir -p ${WORK}/etc/init.d
 		mkdir -p ${WORK}/etc/udev/rules.d
 		cp -f ${OBSTOOLS} ${WORK}/usr/sbin
+		cp -f ${OBSTOOLSLOCAL} ${WORK}/usr/local/sbin
 		cp -f ${OBSSCRIPTS} ${WORK}/etc/init.d
 		cp -f ${OBSUDEVRULES} ${WORK}/etc/udev/rules.d
 		(cd ${WORK}; tar cfzp ${RELEASEDIR}/obstools.tgz .)
@@ -262,7 +280,14 @@ obsbx1s)
 	cp -f ${FILESDIR}/update_ubootenv-${DIST}.sh ${RELEASEDIR}/update_ubootenv.sh
 
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
+	case $DIST in
+	stretch)
+	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs-stretch.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/bzImage ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/modules.tgz ${RELEASEDIR}/obstools.tgz ${RELEASEDIR}/System.map)
+		;;
+	*)
 	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/bzImage ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/modules.tgz ${RELEASEDIR}/System.map)
+		;;
+	esac
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;

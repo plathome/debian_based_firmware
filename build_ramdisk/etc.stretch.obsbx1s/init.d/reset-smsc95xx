@@ -3,7 +3,7 @@
 # Provides:          reset-smsc95xx
 # Required-Start:
 # Required-Stop:     $network
-# Default-Start:
+# Default-Start:     2 3 4 5
 # Default-Stop:      6
 # Short-Description: reset-smsc95xx for OBSBX0
 # Description:       

@@ -3,7 +3,7 @@
 # Provides:          disable-modem
 # Required-Start:    $local_fs $syslog $remote_fs
 # Required-Stop:     $local_fs $syslog $remote_fs
-# Default-Start:
+# Default-Start:     2 3 4 5
 # Default-Stop:      0 6
 # Short-Description: disable-modem for OBSBX1
 # Description:       
