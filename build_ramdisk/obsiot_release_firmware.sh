@@ -141,7 +141,7 @@ obsvx2)
 	stretch)
 		# obs tools
 		USRSBIN=${DISTDIR}/usr/sbin
-		OBSTOOLS="${USRSBIN}/wd-keepalive ${USRSBIN}/obs-util ${USRSBIN}/kosanu ${USRSBIN}/runled ${USRSBIN}/pshd ${USRSBIN}/atcmd ${USRSBIN}/obs-hwclock ${USRSBIN}/wav-play ${USRSBIN}/obsiot-power ${USRSBIN}/obsvx1-modem ${USRSBIN}/obsvx1-gpio"
+		OBSTOOLS="${USRSBIN}/wd-keepalive ${USRSBIN}/obs-util ${USRSBIN}/kosanu ${USRSBIN}/runled ${USRSBIN}/pshd ${USRSBIN}/atcmd ${USRSBIN}/obs-hwclock ${USRSBIN}/wav-play ${USRSBIN}/obsiot-power ${USRSBIN}/obsiot-modem.sh ${USRSBIN}/obsvx1-modem ${USRSBIN}/obsvx1-gpio"
 		ETCINITD=${DISTDIR}/etc/init.d
 		OBSSCRIPTS="${ETCINITD}/obsiot-power ${ETCINITD}/nitz ${ETCINITD}/disable-modem"
 		ETCUDEVRULES=${DISTDIR}/etc/udev/rules.d
