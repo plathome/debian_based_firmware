@@ -88,7 +88,7 @@ obsbx*|obsvx*|obsgem*)
 		obsbx1*)
 			chmod 755 ${DISTDIR}/etc/init.d/reset-smsc95xx
 			chroot ${DISTDIR} /sbin/insserv -rf reset-smsc95xx
-			chroot ${DISTDIR} /sbin/insserv reset-smsc95xx
+#			chroot ${DISTDIR} /sbin/insserv reset-smsc95xx
 			chmod 755 ${DISTDIR}/etc/init.d/disable-modem
 			chroot ${DISTDIR} /sbin/insserv -rf disable-modem
 			chroot ${DISTDIR} /sbin/insserv disable-modem
