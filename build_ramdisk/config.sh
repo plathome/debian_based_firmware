@@ -217,7 +217,7 @@ stretch)
 	;;
 	obsvx2)
 		ISOFILE=debian-9.5.0-amd64-DVD-1.iso
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		RAMDISK_SIZE=200
 	;;
 	obsbx1s)
