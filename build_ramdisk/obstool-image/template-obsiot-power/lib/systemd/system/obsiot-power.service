@@ -3,7 +3,7 @@ Description=Battery monitaring daemon for Openblocks family
 After=setup-gpio.service
 
 [Service]
-ExecStart=/usr/sbin/obsiot-power
+ExecStart=/usr/sbin/obsiot-power -i 60 -t 300 -C /sbin/poweroff
 Restart=always
 Type=forking
 PIDFile=/run/obsiot-power.pid

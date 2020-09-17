@@ -39,14 +39,14 @@ fi
 #
 dpkg --add-architecture i386
 dpkg --add-architecture arm64
-#dpkg --add-architecture armhf
+dpkg --add-architecture armhf
 #dpkg --add-architecture armel
 apt update 
 
 #
 # host machine development tools
 #
-packages="build-essential libncurses5-dev debootstrap qemu-user-static bc gcc-multilib xz-utils dosfstools libnl-3-dev libssl-dev libusb-dev libasound2-dev libi2c-dev libusb-1.0-0 libusb-1.0-0-dev pkg-config gcc-multilib g++-multilib flex bison libelf-dev rsync wget libfdt-dev simg2img"
+packages="build-essential libncurses5-dev debootstrap qemu-user-static bc gcc-multilib xz-utils dosfstools libnl-3-dev libssl-dev libusb-dev libasound2-dev libi2c-dev libusb-1.0-0 libusb-1.0-0-dev pkg-config gcc-multilib g++-multilib flex bison libelf-dev rsync wget libfdt-dev simg2img lzop"
 apt -y install $packages
 
 #
@@ -64,8 +64,8 @@ apt -y install $packages
 #
 # armhf development tools
 #
-#packages="gcc-arm-linux-gnueabihf zlib1g-dev:armhf libusb-dev:armhf "
-#apt -y install $packages
+packages="gcc-arm-linux-gnueabihf zlib1g-dev:armhf libusb-dev:armhf "
+apt -y install $packages
  
 #
 # arm64 development tools

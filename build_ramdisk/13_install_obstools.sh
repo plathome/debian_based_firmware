@@ -36,7 +36,10 @@ esac
 [ ! -d $RELEASEDIR ] && mkdir -p $RELEASEDIR
 
 case $TARGET in
-obsvx*)
+obsvx1)
+	pkglist="atcmd disable_modem nitz obs_util obs_hwclock obsvx1_modem obsvx1_gpio pshd runled wav_play wd_keepalive"
+	;;
+obsvx2)
 	pkglist="atcmd disable_modem nitz obs_util obs_hwclock obsiot_power obsvx1_modem obsvx1_gpio pshd runled wav_play wd_keepalive"
 	;;
 obsbx*)
