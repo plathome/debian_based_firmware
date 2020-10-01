@@ -48,6 +48,9 @@ obsix*)
 obsgem*)
 	pkglist="atcmd disable_modem nitz obs_util obs_hwclock obsiot_power pshd runled wav_play"
 	;;
+obsa16)
+	pkglist="atcmd disable_modem nitz obs_util obs_hwclock obsiot_power pshd runled wav_play"
+	;;
 *) exit 1 ;;
 esac
 
@@ -64,6 +67,9 @@ obsbx*)
 obsgem*)
 	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -fno-omit-frame-pointer -DCONFIG_OBSGEM1"
 	;;
+obsa16)
+	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -fno-omit-frame-pointer -DCONFIG_OBSGEM1"
+	;;
 obsix*)
 	CFLAGS="-Wall -I/usr/${KERN_ARCH}-linux-gnu${ABI}/include -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -li2c -O2 -mstackrealign -fno-omit-frame-pointer -DCONFIG_OBSIX9"
 	;;
@@ -75,7 +81,7 @@ esac
 #
 
 case $TARGET in
-obsbx*|obsvx*|obsgem*)
+obsbx*|obsvx*|obsgem*|obsa16)
 	echo "ATCMD"
 	mkdir -p ${OBSTOOLDIR}/template-atcmd/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-atcmd/usr/sbin/atcmd ${FILESDIR}/atcmd.c $CFLAGS
@@ -98,7 +104,7 @@ obsbx*|obsvx*|obsgem*)
 esac
 
 case $TARGET in
-obsbx*|obsvx*|obsgem*)
+obsbx*|obsvx*|obsgem*|obsa16)
 	echo "OBS-HWCLOCK"
 	mkdir -p ${OBSTOOLDIR}/template-obs-hwclock/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-obs-hwclock/usr/sbin/obs-hwclock ${FILESDIR}/obs-hwclock.c $CFLAGS
@@ -117,7 +123,7 @@ $CC -o ${OBSTOOLDIR}/template-obs-util/usr/sbin/kosanu ${FILESDIR}/kosanu.c $CFL
 $STRIP ${OBSTOOLDIR}/template-obs-util/usr/sbin/kosanu
 
 case $TARGET in
-obsbx*|obsvx*|obsgem*)
+obsbx*|obsvx*|obsgem*|obsa16)
 	echo "OBSIOT-POWER"
 	mkdir -p ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/obsiot-power ${FILESDIR}/obsiot-power.c $CFLAGS

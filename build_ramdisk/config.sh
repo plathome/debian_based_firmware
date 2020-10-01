@@ -312,6 +312,15 @@ buster)
 		UBOOT_VER=2019.01
 		UDEFCONFIG=obsgem1_defconfig
 	;;
+	obsa16)
+		ISOFILE=debian-10.2.0-arm64-DVD-1.iso
+		RAMDISK_SIZE=300
+		PATCHLEVEL=0
+		ARCH=arm64
+		COMP_LVL=9
+		COMP=gzip
+		COMP_EXT=gz
+	;;
 	obsix9)
 		ISOFILE=debian-10.2.0-amd64-DVD-1.iso
 		PATCHLEVEL=1
