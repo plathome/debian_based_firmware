@@ -113,6 +113,7 @@ obsbx*)
 		cp ${FILESDIR}/retrieve_crashlog.sh ${DISTDIR}/usr/sbin/retrieve_crashlog.sh
 		chmod 555 ${DISTDIR}/usr/sbin/retrieve_crashlog.sh
 	fi
+
 	echo "BRCM_PATCHRAM_PLUS"
 	$CC -o ${BUILDDIR}/brcm_patchram_plus ${FILESDIR}/brcm_patchram_plus.c $CFLAGS
 
@@ -225,6 +226,9 @@ obsvx*)
 		chmod 555 ${DISTDIR}/usr/sbin/obsiot-modem.sh
 	fi
 
+	echo "BRCM_PATCHRAM_PLUS"
+	$CC -o ${BUILDDIR}/brcm_patchram_plus ${FILESDIR}/brcm_patchram_plus.c $CFLAGS
+
 	echo "HUB-CTRL"
 	apt-get -y install libusb-dev
 	_CFLAGS="$CFLAGS -lusb "
@@ -232,7 +236,7 @@ obsvx*)
 
 	echo;echo;echo
 	if [ "$DIST" == "buster" ]; then
-		OBSTOOLLIST="hub-ctrl"
+		OBSTOOLLIST="hub-ctrl brcm_patchram_plus"
 	else
 		OBSTOOLLIST="wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wav-play obsvx1-modem obsvx1-gpio obsiot-power"
 	fi
