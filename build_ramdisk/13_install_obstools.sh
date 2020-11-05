@@ -187,7 +187,14 @@ done
 #
 # all
 #
-pkglist="instfirm setup_gpio"
+case $TARGET in
+obsvx*|obsix*)
+	pkglist="instfirm setup_gpio"
+	;;
+*)
+	pkglist="setup_gpio"
+	;;
+esac
 
 echo "SETUP-GPIO"
 mkdir -p ${OBSTOOLDIR}/template-setup-gpio/usr/sbin/
