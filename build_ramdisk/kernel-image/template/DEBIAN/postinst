@@ -46,9 +46,11 @@ configure)
 	if [ -e /etc/rc2.d/S02power-saving.sh ]; then
 		/sbin/insserv -rf power-saving.sh
 	fi
-	if [ ! -e /etc/rc2.d/S02disable-modem ]; then
-		/sbin/insserv -rf disable-modem
-		/sbin/insserv disable-modem
+	if grep -q "^9" /etc/debian_version ; then
+		if [ ! -e /etc/rc2.d/S02disable-modem ]; then
+			/sbin/insserv -rf disable-modem
+			/sbin/insserv disable-modem
+		fi
 	fi
 
 	if [ -e /etc/udev/rules.d/50-obsvx1-symlink-ttyMODEM.rules -o \
