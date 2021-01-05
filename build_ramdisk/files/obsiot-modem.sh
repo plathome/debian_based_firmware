@@ -142,6 +142,7 @@ function _call_obsutil() {
 		exit 8
 		;;
 	esac
+	rm -f $TMP
 }
 
 GPIOPATH=/sys/class/gpio
