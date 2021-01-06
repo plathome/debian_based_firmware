@@ -357,7 +357,7 @@ start)
 			mkdir -p ${RW_DIR}/work/$dir
 			if [ "$FLG_3LAYER_MODE" == "true" ] ; then
 				mount -n -t ${union_fs} \
-					-o lowerdir=$dir:${RO_DIR}/$dir,upperdir=${RW_DIR}/$dir,workdir=${RW_DIR}/work/$dir ${union_fs} /$dir
+					-o lowerdir=${RO_DIR}/$dir:$dir,upperdir=${RW_DIR}/$dir,workdir=${RW_DIR}/work/$dir ${union_fs} /$dir
 			else
 			mount -n -t ${union_fs} \
 				-o lowerdir=$dir,upperdir=${RW_DIR}/$dir,workdir=${RW_DIR}/work/$dir ${union_fs} /$dir
