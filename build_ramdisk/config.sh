@@ -216,8 +216,9 @@ stretch)
 		RAMDISK_SIZE=220
 	;;
 	obsvx2)
+		KERNEL=4.9.228
 		ISOFILE=debian-9.5.0-amd64-DVD-1.iso
-		PATCHLEVEL=1
+		PATCHLEVEL=0
 		RAMDISK_SIZE=200
 	;;
 	obsbx1s)
