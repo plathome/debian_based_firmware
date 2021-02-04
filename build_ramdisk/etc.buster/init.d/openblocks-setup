@@ -53,6 +53,7 @@ echo -e "\033[0m"
 RW_DIR="${RW_DIR:=/.rw}"
 RO_DIR="${RO_DIR:=/.ro}"
 RW_CF_LABEL="${RW_CF_LABEL:=DEBIAN}"
+RO_CF_LABEL="${RO_CF_LABEL:=ROBIAN}"
 CONFIG_LABEL="${CONFIG_LABEL:=DEB_CONFIG}"
 CONFIG_DEV_MTPT="${CONFIG_DEV_MTPT:=/mnt}"
 CONFIG_FILE=userland.tgz
@@ -65,9 +66,7 @@ restore_func(){
 WORK_DIR=/tmp/_tmpfs.$$
 
 	mkdir -p ${WORK_DIR}
-	if [ "$MODEL" == "obsvx1" ]; then
-		mount `findfs LABEL=${SAVE_DIR}` ${WORK_DIR} -r
-	elif [ "$MODEL" == "obsix9" ]; then
+	if [ "$MODEL" == "obsvx1" ] || [ "$MODEL" == "obsix9" ] || [ "$MODEL" == "obsa16" ]; then
 		mount `findfs LABEL=${SAVE_DIR}` ${WORK_DIR} -r
 	else
 		mount ${SAVE_DIR} ${WORK_DIR} -r
@@ -216,7 +215,6 @@ start)
 	FLG_FORCE_CONFIG=false
 	FLG_3LAYER_MODE=false
 
-	rwdev_fs=ext3
 	union_fs=unionfs
 
 	# execute watchdog timer daemon before DEB_CONFIG
@@ -242,7 +240,11 @@ start)
 
 	# check cf with LABEL=${RW_CF_LABEL}
 	rwdev=`findfs LABEL=${RW_CF_LABEL} 2> /dev/null`
-	grep -q 'noeasyblocks=1' /proc/cmdline && rwdev=""
+	rodev=`findfs LABEL=${RO_CF_LABEL} 2> /dev/null`
+	if grep -q 'noeasyblocks=1' /proc/cmdline ; then
+		rwdev=""
+		rodev=""
+	fi
 
 
 	# check aufs support
@@ -254,32 +256,40 @@ start)
 
 
 	mkdir -p ${RW_DIR}
+	[ -n rodev ] && mkdir -p ${RO_DIR}
 
 	# for easyblocks check
-	if [ -n "$rwdev" ] ; then
+	# 3layer mode
+	if [ -n "$rodev" ] ; then
+		fsck -C -a $rodev 2> /dev/null
+		mount -o ro $rodev ${RO_DIR}
+		[ -e "${RO_DIR}/etc/easyblocks" ] && FLG_INIT=false
+		umount ${RO_DIR}
+	# 2layer mode
+	elif [ -n "$rwdev" ] ; then
 		fsck -C -a $rwdev 2> /dev/null
-		k1="Filesystem features"
-		k2="(extent|flex_bg|huge_file|uninit_bg|dir_nlink|extra_isize)"
-		if dumpe2fs -h $rwdev | grep "$k1" | grep -q -E "$k2" ; then
-			rwdev_fs=ext4
-		fi
-		mount -o ro -t $rwdev_fs $rwdev ${RW_DIR}
+		mount -o ro $rwdev ${RW_DIR}
 		[ -e "${RW_DIR}/etc/easyblocks" ] && FLG_INIT=false
 		umount ${RW_DIR}
 	fi
 
 
 	# check 3layer mode
-	if [ -n "$rwdev" ]; then
-		mount -o ro -t $rwdev_fs $rwdev ${RW_DIR}
-		[ -e "${RW_DIR}/DEBIAN" ] && FLG_3LAYER_MODE=true; mkdir -p ${RO_DIR}
-		umount ${RW_DIR}
+	if [ -n "$rodev" ]; then
+		mount -o ro $rodev ${RO_DIR}
+		[ -e "${RO_DIR}/DEBIAN" ] && FLG_3LAYER_MODE=true; mkdir -p ${RO_DIR}
+		umount ${RO_DIR}
 	fi
 
-	if [ -n "$rwdev" ] && [ "$FLG_3LAYER_MODE" == "true" ]; then
-		mount -o ro -t $rwdev_fs $rwdev ${RO_DIR}
-		mount -t tmpfs -o size=${RW_TMPFS_SIZE} tmpfs ${RW_DIR}
-		rwdev=""
+	# 3layer mode
+	if [ "$FLG_3LAYER_MODE" == "true" ]; then
+		if [ -n "$rwdev" ]; then
+			mount $rwdev ${RW_DIR}
+		else
+			mount -t tmpfs -o size=${RW_TMPFS_SIZE} tmpfs ${RW_DIR}
+			rwdev=""
+		fi
+		mount $rodev ${RO_DIR}
 
 		if [ "${FLG_INIT}" == "true" ] ; then
 			echo "Running by default configuration..."
@@ -312,7 +322,7 @@ start)
 			fdisk_and_mke2fs $rwdev
 		fi
 
-		mount -t $rwdev_fs $rwdev ${RW_DIR}
+		mount $rwdev ${RW_DIR}
 
 	fi
 
@@ -323,7 +333,7 @@ start)
 		mount -o remount,size=${RW_TMPFS_SIZE} ${RW_DIR}
 	else
 		remount_opt=
-		if [ "$rwdev_fs" == "ext4" ] ; then
+		if fsck -N $rwdev | grep -q "ext4" ; then
 			remount_opt="$remount_opt discard"
 		fi
 		if [ "$NOATIME" == "true" ] ; then
@@ -334,6 +344,7 @@ start)
 		[ -n "$_remount_opt" ] && \
 			mount -oremount,$_remount_opt ${RW_DIR}
 	fi
+
 
 	# extract CONFIG_FILE and execute CONFIG_SCRIPT
 	if [ -n "$confdev" ] ; then
@@ -352,6 +363,7 @@ start)
 	for dir in ${UNIONFS_DIRS} ; do
 		mawk '$1 !~ /^#/ {print $2}' < /etc/fstab | grep -q "^/$dir" && continue
 		mkdir -p ${RW_DIR}/$dir
+		[ -n $rodev ] && mkdir -p ${RO_DIR}/$dir
 		case $union_fs in
 		overlay)
 			mkdir -p ${RW_DIR}/work/$dir
@@ -378,6 +390,8 @@ start)
 		;;
 		esac
 	done
+	[ -n "$rodev" ] && \
+			mount -oremount,ro,$_remount_opt ${RO_DIR}
 
 	# for Measures to rename network interface
 	rm -f /etc/udev/rules.d/70-persistent-net.rules
