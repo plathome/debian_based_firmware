@@ -282,7 +282,7 @@ start)
 	fi
 
 	# 3layer mode
-	if [ "$FLG_3LAYER_MODE" == "true" ]; then
+	if [ "$FLG_3LAYER_MODE" == "true" ] && [ "$FLG_INIT" != "true" ]; then
 		if [ -n "$rwdev" ]; then
 			mount $rwdev ${RW_DIR}
 		else
