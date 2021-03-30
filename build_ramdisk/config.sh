@@ -277,13 +277,13 @@ buster)
 	KERNEL=4.19.85
 	case ${TARGET} in
 	obsvx1)
-		ISOFILE=debian-10.2.0-amd64-DVD-1.iso
+		ISOFILE=debian-10.3.0-amd64-DVD-1.iso
 		PATCHLEVEL=2
 		RAMDISK_SIZE=260
 	;;
 	obsvx2)
 		KERNEL=4.19.152
-		ISOFILE=debian-10.2.0-amd64-DVD-1.iso
+		ISOFILE=debian-10.3.0-amd64-DVD-1.iso
 		PATCHLEVEL=0
 		RAMDISK_SIZE=260
 	;;
@@ -316,13 +316,13 @@ buster)
 	;;
 	obsix9)
 		KERNEL=4.19.152
-		ISOFILE=debian-10.2.0-amd64-DVD-1.iso
+		ISOFILE=debian-10.3.0-amd64-DVD-1.iso
 		PATCHLEVEL=0
 		RAMDISK_SIZE=512
 	;;
 	obsix9r)
 		KERNEL=4.19.152
-		ISOFILE=debian-10.2.0-amd64-DVD-1.iso
+		ISOFILE=debian-10.3.0-amd64-DVD-1.iso
 		PATCHLEVEL=1
 		RAMDISK_SIZE=512
 	;;

@@ -46,7 +46,7 @@ obsbx*)
 	pkglist="atcmd disable_modem nitz obs_util obs_hwclock obsiot_power pshd runled wav_play wd_keepalive"
 	;;
 obsix*)
-	pkglist="obs_util obs_hwclock pshd runled wav_play wd_keepalive"
+	pkglist="obs_util obs_hwclock obs_nicrename pshd runled wav_play wd_keepalive"
 	;;
 obsgem*)
 	pkglist="atcmd disable_modem nitz obs_util obs_hwclock obsiot_power pshd runled wav_play"
@@ -128,6 +128,15 @@ obsbx*|obsvx*|obsgem*)
 	cp -f ${FILESDIR}/obsiot-power.sh ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/
 	chmod 555 ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/obsiot-power.sh
 
+	;;
+esac
+
+case $TARGET in
+obsix*)
+	echo "OBS-NICRENAME"
+	mkdir -p ${OBSTOOLDIR}/template-obs-nicrename/usr/local/sbin/
+	cp -f ${FILESDIR}/obs-nicrename.sh ${OBSTOOLDIR}/template-obs-nicrename/usr/local/sbin/
+	chmod 555 ${OBSTOOLDIR}/template-obs-nicrename/usr/sbin/obs-nicrename.sh
 	;;
 esac
 

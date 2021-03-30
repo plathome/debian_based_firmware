@@ -147,7 +147,7 @@ buster)
 		EXCLUDE="nano"
 		;;
 	obsix*)
-		INCLUDE="openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,gnupg,strace,wget,apparmor"
+		INCLUDE="openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,gnupg,strace,wget,apparmor,libiw30"
 		EXCLUDE="nano"
 		;;
 	esac

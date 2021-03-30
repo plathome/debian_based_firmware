@@ -1,0 +1,13 @@
+[Unit]
+Description=OpenBlocks NIC Rename Unit
+After=systemd-udevd.service
+Before=networking.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/obs-nicrename.sh
+ExecStop=
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target
