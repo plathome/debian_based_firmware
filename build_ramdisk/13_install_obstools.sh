@@ -46,7 +46,14 @@ obsbx*)
 	pkglist="atcmd disable_modem nitz obs_util obs_hwclock obsiot_power pshd runled wav_play wd_keepalive"
 	;;
 obsix*)
-	pkglist="obs_util obs_hwclock obs_nicrename pshd runled wav_play wd_keepalive"
+	case $DIST in
+	bullseye)
+		pkglist="obs_util obs_hwclock obs_nicrename pshd runled wav_play wd_keepalive"
+		;;
+	*)
+		pkglist="obs_util obs_hwclock pshd runled wav_play wd_keepalive"
+		;;
+	esac
 	;;
 obsgem*)
 	pkglist="atcmd disable_modem nitz obs_util obs_hwclock obsiot_power pshd runled wav_play"

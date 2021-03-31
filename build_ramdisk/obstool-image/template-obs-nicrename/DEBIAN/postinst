@@ -10,7 +10,10 @@
 case "$1" in
 configure)
 	[ -f /.chroot ] && exit 0
-	systemctl enable obs-nicrename
+	if ! grep -q "^11" /etc/debian_version ; then
+		[ -f 70-numbering-port-net.rules ] && rf -f 70-numbering-port-net.rules
+	fi
+	systemctl enable obs-ifrename
 	;;
 abort-upgrade|abort-remove|abort-deconfigure)
 	;;
