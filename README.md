@@ -2,7 +2,7 @@
 
 ぷらっとホーム株式会社
 
-Copyright (c) 2013-2020 Plat'Home CO., LTD.
+Copyright (c) 2013-2021 Plat'Home CO., LTD.
 
 # 1. はじめに
 
