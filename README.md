@@ -24,9 +24,12 @@ A7|8|obsa7|jessie|armel|Debian GNU/Linux 8/amd64
 A7|7|obsa7|wheezy|armel|Debian GNU/Linux 8/amd64
 A6|7|obsa6|wheezy|armel|Debian GNU/Linux 8/amd64
 600|7|obs600|wheezy|powerpc|Debian GNU/Linux 8/amd64
+BXn|10|obsbx1s|buster|i386|Debian GNU/Linux 10/amd64
 BXn|9|obsbx1s|stretch|i386|Debian GNU/Linux 9/amd64
 BXn|8|obsbx1|jessie|i386|Debian GNU/Linux 8/amd64
 BXn|7|obsbx1|wheezy|i386|Debian GNU/Linux 8/amd64
+EX1|10|obsbx1s|buster|i386|Debian GNU/Linux 10/amd64
+EX1|9|obsbx1s|stretch|i386|Debian GNU/Linux 9/amd64
 EX1|8|obsbx1|jessie|i386|Debian GNU/Linux 8/amd64
 EX1|7|obsbx1|wheezy|i386|Debian GNU/Linux 8/amd64
 VX2|10|obsvx2|buster|amd64|Debian GNU/Linux 10/amd64
