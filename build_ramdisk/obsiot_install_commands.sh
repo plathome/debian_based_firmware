@@ -73,7 +73,7 @@ obsbx*)
 		fi
 	fi
 
-	if [ "$DIST" != "buster" ]; then
+	if [ "$DIST" != "buster" ] && [ "$DIST" != "bullseye" ]; then
 		apt-get -y install libi2c-dev
 		echo "WD-KEEPALIVE"
 		$CC -o ${BUILDDIR}/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
@@ -99,7 +99,7 @@ obsbx*)
 		$CC -o ${BUILDDIR}/wav-play ${FILESDIR}/wav-play.c $_CFLAGS
 
 		echo "OBSIOT-POWER"
-		[ "$DIST" == "buster" ] && CFLAGS="$CFLAGS -li2c"
+		[ "$DIST" == "buster" -o "$DIST" == "bullseye" ] && CFLAGS="$CFLAGS -li2c"
 		$CC -o ${BUILDDIR}/obsiot-power ${FILESDIR}/obsiot-power.c $CFLAGS
 
 		cp ${FILESDIR}/obsiot-modem.sh ${DISTDIR}/usr/sbin/obsiot-modem.sh
@@ -164,8 +164,6 @@ obsbx*)
 		CFLAGS=-m32 CXXFLAGS=-m32 LDFLAGS=-m32 make;				\
 		strip ${FILESDIR}/cp210xmanufacturing/Release/Linux/libcp210xmanufacturing.so.1.0
 		cp ${FILESDIR}/cp210xmanufacturing/Release/Linux/libcp210xmanufacturing.so.1.0 ${DISTDIR}/usr/lib/i386-linux-gnu/libcp210xmanufacturing.so;	\
-		cc -O2 -Wall -m32 -I./Release/Linux -I./Common -L./Release/Linux	\
-		-lcp210xmanufacturing -o cp2105-rs485 cp2105-rs485.c;			\
 		strip ${FILESDIR}/cp210xmanufacturing/cp2105-rs485
 		cp ${FILESDIR}/cp210xmanufacturing/cp2105-rs485 ${DISTDIR}/usr/sbin
 	)
@@ -176,7 +174,7 @@ obsvx*)
 	LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
 
 	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -mstackrealign -fno-omit-frame-pointer -DCONFIG_OBSVX1"
-	[ "$DIST" == "buster" ] && CFLAGS="$CFLAGS -li2c"
+	[ "$DIST" == "buster" -o "$DIST" == "bullseye" ] && CFLAGS="$CFLAGS -li2c"
 
 	mkdir -p ${BUILDDIR}
 
@@ -184,7 +182,7 @@ obsvx*)
 	(cd ${FILESDIR}/mmc-utils;make clean;CC=gcc make;prefix=${DISTDIR}/usr make install)
 
 	apt-get -y install libi2c-dev
-	if [ "$DIST" != "buster" ]; then
+	if [ "$DIST" != "buster" ] && [ "$DIST" != "bullseye" ]; then
 	echo "WD-KEEPALIVE"
 	$CC -o ${BUILDDIR}/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
 
@@ -231,7 +229,7 @@ obsvx*)
 	$CC -o ${BUILDDIR}/hub-ctrl ${FILESDIR}/hub-ctrl.c $_CFLAGS
 
 	echo;echo;echo
-	if [ "$DIST" == "buster" ]; then
+	if [ "$DIST" == "buster" ] || [ "$DIST" == "bullseye" ]; then
 		OBSTOOLLIST="hub-ctrl"
 	else
 		OBSTOOLLIST="wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wav-play obsvx1-modem obsvx1-gpio obsiot-power"
@@ -257,18 +255,16 @@ obsvx*)
 	(cd ${FILESDIR}/cp210xmanufacturing;make clean;make;				\
 		strip ${FILESDIR}/cp210xmanufacturing/Release/Linux/libcp210xmanufacturing.so.1.0
 		cp ${FILESDIR}/cp210xmanufacturing/Release/Linux/libcp210xmanufacturing.so.1.0 ${DISTDIR}/usr/lib/x86_64-linux-gnu/libcp210xmanufacturing.so;	\
-		cc -O2 -Wall -I./Release/Linux -I./Common -L./Release/Linux		\
-		-lcp210xmanufacturing -o cp2104-rs485 cp2104-rs485.c;			\
 		strip ${FILESDIR}/cp210xmanufacturing/cp2104-rs485
 		cp ${FILESDIR}/cp210xmanufacturing/cp2104-rs485 ${DISTDIR}/usr/sbin
 	)
 	chroot ${DISTDIR} ldconfig
 ;;
-obsgem1)
+obsa16)
 	BUILDDIR=/tmp/obstools.$$
 	LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
 
-	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -fno-omit-frame-pointer -DCONFIG_OBSGEM1"
+	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -fno-omit-frame-pointer -DCONFIG_OBSA16"
 
 	mkdir -p ${BUILDDIR}
 

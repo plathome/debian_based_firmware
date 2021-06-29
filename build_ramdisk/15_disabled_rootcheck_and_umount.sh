@@ -28,7 +28,7 @@
 . `dirname $0`/config.sh
 
 case $DIST in
-stretch|buster)
+stretch|buster|bullseye)
 	;;
 *)
 	chroot ${DISTDIR} /sbin/insserv -rfv checkroot.sh

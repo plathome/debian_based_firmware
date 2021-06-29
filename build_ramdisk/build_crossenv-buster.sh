@@ -31,7 +31,7 @@
 if ! grep -q "^10" /etc/debian_version ; then
 	echo "This machine is not Debian 10"
 	echo "Abort!!"
-	exit 1
+#	exit 1
 fi
 
 #

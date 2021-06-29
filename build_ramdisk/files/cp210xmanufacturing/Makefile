@@ -8,7 +8,7 @@
 
 OUT      ?= Release/Linux/
 
-all: $(OUT)libcp210xmanufacturing.so.1.0 $(OUT)cp210xmanufacturing-example contrib
+all: $(OUT)libcp210xmanufacturing.so.1.0 $(OUT)cp210xmanufacturing-example contrib cp2104-rs485 cp2105-rs485
 
 CC       ?= gcc
 CFLAGS   ?= -Wall -fPIC
@@ -51,6 +51,18 @@ main.o: main.cpp
 $(OUT)cp210xmanufacturing-example: main.o $(OUT)libcp210xmanufacturing.so.1.0
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $< $(LIBS) $(APP_LIBS) -o $@
 
+cp2104-rs485.o: cp2104-rs485.c
+	$(CXX) $(CXXFLAGS) -c $(INCLUDES) $< -o $@
+
+cp2104-rs485: cp2104-rs485.o $(OUT)libcp210xmanufacturing.so.1.0
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $< $(LIBS) $(APP_LIBS) -o $@
+
+cp2105-rs485.o: cp2105-rs485.c
+	$(CXX) $(CXXFLAGS) -c $(INCLUDES) $< -o $@
+
+cp2105-rs485: cp2105-rs485.o $(OUT)libcp210xmanufacturing.so.1.0
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $< $(LIBS) $(APP_LIBS) -o $@
+
 contrib: $(OUT)libcp210xmanufacturing.so.1.0
 	$(MAKE) -C contrib
 
@@ -58,6 +70,7 @@ clean:
 	$(RM) $(OBJS) $(OUT)libcp210xmanufacturing.so*
 	$(RM) main.o $(OUT)cp210xmanufacturing-example
 	$(RM) cp2104-rs485 cp2105-rs485
+	$(RM) cp2104-rs485.o cp2105-rs485.o
 	$(MAKE) -C contrib clean
 
 .PHONY: clean

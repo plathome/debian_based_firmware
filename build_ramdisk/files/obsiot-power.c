@@ -57,8 +57,6 @@ extern int errno;
 #define I2C_NAME	"/dev/i2c-2"
 #elif defined(CONFIG_OBSBX1)
 #define I2C_NAME	"/dev/i2c-1"
-#elif defined(CONFIG_OBSGEM1)
-#define I2C_NAME	"/dev/i2c-1"
 #endif
 #define SLAVE		0x21
 #define INIT_BAT	0xfd
@@ -75,10 +73,6 @@ enum{
 #define POWER_USB	"/sys/class/gpio/gpio40/value"
 #define POWER_AC	"/sys/class/gpio/gpio41/value"
 #define POWER_DC	"/sys/class/gpio/gpio42/value"
-#elif defined(CONFIG_OBSGEM1)
-#define POWER_USB	"/sys/class/gpio/gpio503/value"
-#define POWER_AC	"/sys/class/gpio/gpio500/value"
-#define POWER_DC	"/sys/class/gpio/gpio504/value"
 #endif
 
 int chg_charging(unsigned char);
@@ -105,8 +99,6 @@ int LIMIT		= 300;
 #if defined(CONFIG_OBSVX1)
 #define DEF_COMMAND	"/sbin/poweroff"
 #elif defined(CONFIG_OBSBX1)
-#define DEF_COMMAND	"/sbin/halt"
-#elif defined(CONFIG_OBSGEM1)
 #define DEF_COMMAND	"/sbin/halt"
 #endif
 char COMMAND[1024];

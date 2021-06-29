@@ -52,8 +52,8 @@ if [ "$DIST" == "stretch" ]; then
 fi
 
 case ${TARGET} in
-obsbx*|obsvx*|obsgem*)
-	if [ "$DIST" != "buster" ]; then
+obsbx*|obsvx*|obsa16)
+	if [ "$DIST" != "buster" ] && [ "$DIST" != "bullseye" ]; then
 		chmod 755 ${DISTDIR}/etc/init.d/bluetooth
 		chroot ${DISTDIR} /sbin/insserv -rf bluetooth
 		chroot ${DISTDIR} /sbin/insserv bluetooth
@@ -144,7 +144,7 @@ if [ -f ${DISTDIR}/etc/modules ]; then
 fi
 
 case $DIST in
-stretch|buster)
+stretch|buster|bullseye)
 	sed -e "s|^PermitRootLogin without-password|PermitRootLogin yes|" \
 		-e "s|^#PermitRootLogin prohibit-password|PermitRootLogin yes|" \
 		< ${DISTDIR}/etc/ssh/sshd_config > /tmp/sshd_config.new

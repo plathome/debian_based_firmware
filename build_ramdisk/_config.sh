@@ -115,7 +115,7 @@ arm64)
 	CC=${CROSS_COMPILE}gcc
 	STRIP=${CROSS_COMPILE}strip
 	KERN_ARCH=arm64
-	MAKE_IMAGE=Image.gz
+	MAKE_IMAGE=Image
 	QEMU_BIN=qemu-aarch64-static
 ;;
 *)

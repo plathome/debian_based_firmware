@@ -65,7 +65,7 @@ obsbx*)
 	[ ! -d $GPIOPATH/gpio41 ] && echo 41 > $GPIOPATH/export
 	[ ! -d $GPIOPATH/gpio42 ] && echo 42 > $GPIOPATH/export
 	;;
-obsgem*)
+obsa16)
 	# runled
 	[ ! -d $GPIOPATH/gpio488 ] && echo 488 > $GPIOPATH/export; \
 		echo out > $GPIOPATH/gpio488/direction

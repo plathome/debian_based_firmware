@@ -28,12 +28,12 @@
 #debug=echo
 . `dirname $0`/config.sh
 
-DIST_LIST="(wheezy|jessie|stretch|buster)"
-TARGET_LIST="(obsix9|obsix9r|obsgem1|obsvx1|obsvx2|obsmv4|bpv4|bpv4-h|bpv8|obsbx1|obsbx1s|obsa6|obsa7|obsax3|obs600)"
+DIST_LIST="(stretch|buster|bullseye)"
+TARGET_LIST="(obsix9|obsix9r|obsa16|obsvx1|obsvx2|obsbx1|obsbx1s|obsa7|obsax3)"
 
 function _usage(){
 	echo
-	echo "usage: $(basename $0) -M [obsix9|obsix9r|obsvx1|obsvx2|obsmv4|bpv4|bpv4-h|bpv8|obsbx1|obsbx1s|obsa6|obsa7|obsax3|obs600] -D [wheezy|jessie|stretch|buster]"
+	echo "usage: $(basename $0) -M [obsix9|obsix9r|obsa16|obsvx1|obsvx2|obsbx1|obsbx1s|obsa7|obsax3] -D [stretch|buster|bullseye]"
 	echo
 	exit 1
 }
@@ -62,14 +62,9 @@ if ! (echo $_TARGET | grep -Eq "$TARGET_LIST") ; then
 fi
 
 case $_DIST in
-jessie|stretch)
+stretch)
 	case $_TARGET in
-	obs600|obsa6)
-		echo
-		echo "$_TARGET is never supported."
-		exit 1
-		;;
-	obsgem1|obsix9*)
+	obsa16|obsix9*)
 		echo
 		echo "$_TARGET is not supported."
 		exit 1
@@ -78,12 +73,14 @@ jessie|stretch)
 	;;
 buster)
 	case $_TARGET in
-	obs600|obsa*)
+	obsa16)
 		echo
 		echo "$_TARGET is never supported."
 		exit 1
 		;;
 	esac
+	;;
+*)
 	;;
 esac
 

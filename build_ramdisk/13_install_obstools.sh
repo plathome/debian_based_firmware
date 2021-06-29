@@ -29,7 +29,7 @@
 . `dirname $0`/_obstool_version.sh
 
 case $DIST in
-buster);;
+buster|bullseye);;
 *) exit;;
 esac
 
@@ -55,7 +55,7 @@ obsix*)
 		;;
 	esac
 	;;
-obsgem*)
+obsa16)
 	pkglist="atcmd disable_modem nitz obs_util obs_hwclock obsiot_power pshd runled wav_play"
 	;;
 *) exit 1 ;;
@@ -71,8 +71,8 @@ obsvx*)
 obsbx*)
 	CFLAGS="-Wall -I/usr/include/${ARCH}-linux-gnu${ABI}/ -L/usr/lib/${ARCH}-linux-gnu${ABI}/ -L/lib/${ARCH}-linux-gnu${ABI}/ -m32 -O2 -march=core2 -mtune=core2 -msse3 -mfpmath=sse -mstackrealign -fno-omit-frame-pointer -DCONFIG_OBSBX1"
 	;;
-obsgem*)
-	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -fno-omit-frame-pointer -DCONFIG_OBSGEM1"
+obsa16)
+	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -fno-omit-frame-pointer -DCONFIG_OBSA16"
 	;;
 obsix*)
 	CFLAGS="-Wall -I/usr/${KERN_ARCH}-linux-gnu${ABI}/include -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -li2c -O2 -mstackrealign -fno-omit-frame-pointer -DCONFIG_OBSIX9"
@@ -85,7 +85,7 @@ esac
 #
 
 case $TARGET in
-obsbx*|obsvx*|obsgem*)
+obsbx*|obsvx*|obsa16)
 	echo "ATCMD"
 	mkdir -p ${OBSTOOLDIR}/template-atcmd/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-atcmd/usr/sbin/atcmd ${FILESDIR}/atcmd.c $CFLAGS
@@ -108,7 +108,7 @@ obsbx*|obsvx*|obsgem*)
 esac
 
 case $TARGET in
-obsbx*|obsvx*|obsgem*)
+obsbx*|obsvx*|obsa16)
 	echo "OBS-HWCLOCK"
 	mkdir -p ${OBSTOOLDIR}/template-obs-hwclock/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-obs-hwclock/usr/sbin/obs-hwclock ${FILESDIR}/obs-hwclock.c $CFLAGS
@@ -127,7 +127,7 @@ $CC -o ${OBSTOOLDIR}/template-obs-util/usr/sbin/kosanu ${FILESDIR}/kosanu.c $CFL
 $STRIP ${OBSTOOLDIR}/template-obs-util/usr/sbin/kosanu
 
 case $TARGET in
-obsbx*|obsvx*|obsgem*)
+obsbx*|obsvx*|obsa16)
 	echo "OBSIOT-POWER"
 	mkdir -p ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/obsiot-power ${FILESDIR}/obsiot-power.c $CFLAGS
@@ -192,13 +192,18 @@ for pkg in $pkglist; do
 	eval version='$'${pkg}_ver
 	pkg=${pkg//_/-}
 	pkgfile=${pkg}-${version}-${ARCH}.deb
-	rm -f ${RELEASEDIR}/${pkgfile}
+#	rm -f ${RELEASEDIR}/${pkgfile}
+	rm -f ${RELEASEDIR}/${pkg}-*.deb
 	(cd ${OBSTOOLDIR}/; ./mkdeb.sh ${version} ${ARCH} ${pkg} ${RELEASEDIR} "")
 	cp -f ${RELEASEDIR}/${pkgfile} ${DISTDIR}/
 	chroot ${DISTDIR} dpkg -r ${pkg}
 	chroot ${DISTDIR} dpkg -i ${pkgfile}
 	rm -f ${DISTDIR}/${pkgfile}
 done
+
+if [ "$TARGET" == "obsbx1" ] && [ "$DIST" == "bullseye" ]; then
+	chroot ${DISTDIR} systemctl disable wd-keepalive 
+fi
 
 #
 # all
@@ -240,7 +245,8 @@ for pkg in $pkglist; do
 	eval version='$'${pkg}_ver
 	pkg=${pkg//_/-}
 	pkgfile=${pkg}-${version}-all.deb
-	rm -f ${RELEASEDIR}/${pkgfile}
+#	rm -f ${RELEASEDIR}/${pkgfile}
+	rm -f ${RELEASEDIR}/${pkg}-*.deb
 	(cd ${OBSTOOLDIR}/; ./mkdeb.sh ${version} "all" ${pkg} ${RELEASEDIR} "")
 	cp -f ${RELEASEDIR}/${pkgfile} ${DISTDIR}/
 	chroot ${DISTDIR} dpkg -r ${pkg}

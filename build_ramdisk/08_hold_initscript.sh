@@ -28,16 +28,6 @@
 . `dirname $0`/config.sh
 
 case $DIST in
-wheezy)
-	chroot ${DISTDIR} /usr/bin/aptitude hold initscripts
-	;;
-jessie)
-	cat > ${DISTDIR}/tmp/hold.$$ <<_HOLD2
-	echo ifupdown hold | dpkg --set-selections
-_HOLD2
-	chroot ${DISTDIR} /bin/bash /tmp/hold.$$
-	rm -f ${DISTDIR}/tmp/hold.$$
-	;;
 stretch)
 	cat > ${DISTDIR}/tmp/hold.$$ <<_HOLD3
 	echo kmod hold | dpkg --set-selections
@@ -50,15 +40,4 @@ _HOLD3
 	chroot ${DISTDIR} /bin/bash /tmp/hold.$$
 	rm -f ${DISTDIR}/tmp/hold.$$
 	;;
-esac
-
-case $DIST in
-squeeze|wheezy|jessie)
-	cat > ${DISTDIR}/tmp/hold.$$ <<_HOLD
-	echo initscripts hold | dpkg --set-selections
-_HOLD
-	chroot ${DISTDIR} /bin/bash /tmp/hold.$$
-	rm -f ${DISTDIR}/tmp/hold.$$
-	;;
-*)	;;
 esac

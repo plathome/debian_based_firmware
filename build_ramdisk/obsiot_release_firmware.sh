@@ -81,9 +81,6 @@ obsvx*)
 		fi
 	fi
 	;;
-obsgem1)
-	[ "$KERNEL" == "4.14.96" ] && LOCAL_VER="-qcomlt-arm64"
-	;;
 *)
 	;;
 esac
@@ -112,7 +109,7 @@ fi
 
 	# kernel modules and firmware
 case $TARGET in
-obsvx2|obsgem1)
+obsvx2|obsa16)
 	(cd ${MOUNTDIR}/lib; tar cfzp ${RELEASEDIR}/modules.tgz firmware modules)
 	;;
 obsbx1s)
@@ -182,19 +179,6 @@ obsvx2)
 	;;
 obsgem1)
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
-#	${COMP} -${COMP_LVL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/initrd.${COMP_EXT}
-#	mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \
-#		-A arm64 -O linux -T kernel -C none -a 0x8008000 -e 0x8008000 \
-#		-d ${RELEASEDIR}/Image.gz \
-#		${RELEASEDIR}/uImage.${TARGET}
-#	mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \
-#		-A arm64 -T ramdisk -C gzip \
-#		-d ${RELEASEDIR}/initrd.${COMP_EXT} \
-#		${RELEASEDIR}/uInitrd.${TARGET}
-#	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
-#	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-obsiot.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/${MAKE_IMAGE} ${RELEASEDIR}/initrd.${COMP_EXT} dummy ${FILESDIR}/flashcfg.sh ${RELEASEDIR}/MD5.${TARGET} dummy)
-#	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
-#	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 
 	# Linux kernel
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
@@ -216,28 +200,16 @@ obsgem1)
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
-bpv4*|bpv8)
-	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/bzImage ${RELEASEDIR}
-	${COMP} -${COMP_LVL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/ramdisk-bpv.img.${COMPEXT}
-	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/bzImage ${RELEASEDIR}/bzImage.recovery
-	cp -f ${RELEASEDIR}/ramdisk-bpv.img.${COMPEXT} ${RELEASEDIR}/ramdisk-bpv.img.recovery.${COMPEXT}
-	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-obsiot.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/bzImage ${RELEASEDIR}/ramdisk-bpv.img.${COMPEXT} ${FILESDIR}/grub/grub.cfg ${FILESDIR}/flashcfg.sh ${RELEASEDIR}/MD5.${TARGET} dummy)
-	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
-;;
 obsbx1)
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/bzImage ${RELEASEDIR}
-	case $DIST in
-	wheezy)
-		${COMP} -${COMP_LVL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/${RAMDISK_IMG}.${COMPEXT}
-		(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
-		(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-obsiot.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/bzImage ${RELEASEDIR}/${RAMDISK_IMG}.${COMPEXT} ${FILESDIR}/grub/grub.cfg ${FILESDIR}/flashcfg.sh ${RELEASEDIR}/MD5.${TARGET} ${FILESDIR})
-	;;
-	jessie|stretch|buster)
 		${COMP} -${COMP_LVL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/initrd.${COMPEXT}
-		(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
-		(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-obsiot.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/bzImage ${RELEASEDIR}/initrd.${COMPEXT} ${FILESDIR}/grub/grub.cfg ${FILESDIR}/flashcfg.sh ${RELEASEDIR}/MD5.${TARGET} ${FILESDIR})
-	;;
-	esac
+	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
+
+	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-obsiot.sh \
+	${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/bzImage \
+	${RELEASEDIR}/initrd.${COMPEXT} ${FILESDIR}/grub/grub.cfg \
+	${FILESDIR}/flashcfg.sh ${RELEASEDIR}/MD5.${TARGET} ${FILESDIR})
+
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 ;;
 obsbx1s)

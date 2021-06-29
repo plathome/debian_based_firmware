@@ -45,7 +45,7 @@ if [ $? -eq 0 ]; then
 	rm -f ${DISTDIR}/*.deb
 fi
 
-if [ "$DIST" == "buster" ]; then
+if [ "$DIST" == "buster" -o "$DIST" == "bullseye" ]; then
 	chroot ${DISTDIR} systemctl disable rng-tools5
 	chroot ${DISTDIR} systemctl disable hostapd
 
@@ -60,7 +60,7 @@ fi
 #
 case $TARGET in
 obsvx*)
-	if [ "$DIST" == "buster" ]; then
+	if [ "$DIST" == "buster" ] || [ "$DIST" == "bullseye" ]; then
 		mkdir -p ${DISTDIR}/usr/lib/crda/pubkeys
 		cp ${FILESDIR}/wireless-regdb/regulatory.bin ${DISTDIR}/usr/lib/crda
 		cp ${FILESDIR}/wireless-regdb/sforshee.key.pub.pem ${DISTDIR}/usr/lib/crda/pubkeys

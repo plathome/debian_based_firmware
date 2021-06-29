@@ -45,7 +45,7 @@
 #define SEGLED_DEV_R	"/sys/class/gpio/gpio342/value"
 #define SEGLED_DEV_G	"/sys/class/gpio/gpio343/value"
 #define SEGLED_DEV_B	"/sys/class/gpio/gpio344/value"
-#elif defined(CONFIG_OBSGEM1)
+#elif defined(CONFIG_OBSA16)
 #define SEGLED_DEV_R   "/sys/class/gpio/gpio488/value"
 #define SEGLED_DEV_G   "/sys/class/gpio/gpio489/value"
 #define SEGLED_DEV_B   "/sys/class/gpio/gpio490/value"

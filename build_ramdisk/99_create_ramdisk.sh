@@ -49,18 +49,6 @@ if [ "$ENA_VIRT" == "true" -a -f ${EXTRADEBDIR}/virtimg-${TARGET}-${DIST}.tar.xz
 	tar -xJf ${EXTRADEBDIR}/virtimg-${TARGET}-${DIST}.tar.xz -C ${MOUNTDIR}
 fi
 
-case "$TARGET" in
-bpv*)
-	for f in "available" "available-old" "status" "status-old"; do
-		sed -e "s|kernel-image-bpv.|kernel-image-$TARGET|" \
-			< $MOUNTDIR/var/lib/dpkg/$f > /tmp/$f
-		mv -f /tmp/$f $MOUNTDIR/var/lib/dpkg/$f
-	done
-	;;
-*)
-	;;
-esac
-
 umount ${MOUNTDIR}
 
 tune2fs -c 0 -i 0 ${_RAMDISK_IMG}
