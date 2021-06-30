@@ -1,5 +1,6 @@
 [Unit]
 Description=Setup GPIO for Openblocks family
+Before = ssh.service
 
 [Service]
 ExecStart=/usr/sbin/setup-gpio.sh

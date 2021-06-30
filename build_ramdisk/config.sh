@@ -328,13 +328,12 @@ bullseye)
 	obsix9r)
 		ISOFILE=debian-bullseye-DI-rc2-amd64-DVD-1.iso
 		PATCHLEVEL=1
-		DEFCONFIG=obsix9r_defconfig
 		RAMDISK_SIZE=500
 	;;
 	obsvx2|obsix9)
 		ISOFILE=debian-bullseye-DI-rc2-amd64-DVD-1.iso
 		PATCHLEVEL=1
-		DEFCONFIG=obsvx2_defconfig
+#		DEFCONFIG=obsvx2_defconfig
 		RAMDISK_SIZE=500
 	;;
 	obsbx1s)

@@ -1,0 +1,1 @@
+ACTION=="add", KERNELS=="1-1*", SUBSYSTEMS=="usb", DRIVERS=="ftdi_sio", SYMLINK+="ttyEX-FTDI"

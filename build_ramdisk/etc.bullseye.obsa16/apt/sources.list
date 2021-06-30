@@ -1,0 +1,9 @@
+deb http://ftp.jp.debian.org/debian/ buster main
+
+#deb http://ftp.jp.debian.org/debian/ buster-backports main
+
+deb http://ftp.jp.debian.org/debian/ buster-updates main
+
+deb http://security.debian.org buster/updates main
+
+#deb http://ftp.plathome.co.jp/pub/OBSGEM1/debian/buster ./
