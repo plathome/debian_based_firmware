@@ -1,8 +1,0 @@
-Section: utils
-Priority: important
-Maintainer: Plat'Home CO.,LTD. <support@plathome.co.jp>
-Version: __VERSION__
-Package: obs-nicrename
-Architecture: __ARCH__
-Depends: __DEPENDS__
-Description: OpenBlocks NIC Rename Unit

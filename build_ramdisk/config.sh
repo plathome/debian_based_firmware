@@ -282,7 +282,7 @@ buster)
 		RAMDISK_SIZE=260
 	;;
 	obsvx2)
-		KERNEL=4.19.152
+		KERNEL=4.19.198
 		ISOFILE=debian-10.2.0-amd64-DVD-1.iso
 		PATCHLEVEL=0
 		RAMDISK_SIZE=260

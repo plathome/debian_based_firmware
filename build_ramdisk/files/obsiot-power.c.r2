@@ -1,4 +1,4 @@
-#define DEBUG
+//#define DEBUG
 /*	$ssdlinux: obsiot-power.c,v 1.17 2014/01/07 07:19:06 yamagata Exp $	*/
 /*
  * Copyright (c) 2008-2021 Plat'Home CO., LTD.
@@ -60,22 +60,9 @@ extern int errno;
 #endif
 #define SLAVE		0x21
 #define INIT_BAT	0xfd
-
-#define STOP 0
-#define START 2
-#define LOST 0xfb
-#define RETURN 0xff
-
 enum{
-	BAT_L = 0x1,
-	PF_L = 0x2,
-	FSCHG = 0x8,
-	REV = 0xc0
-};
-
-enum{
-	LOW=0,
-	HIGH=1
+	STOP	= 0,
+	START	= 2,
 };
 
 #if defined(CONFIG_OBSVX1)
@@ -88,13 +75,13 @@ enum{
 #define POWER_DC	"/sys/class/gpio/gpio42/value"
 #endif
 
-int chg_charging(unsigned char, int stat);
+int chg_charging(unsigned char);
 
 void donothing(int i){}
 void die(int i){
-	chg_charging(STOP, LOW);
+	chg_charging(STOP);
 	openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
-	syslog(LOG_WARNING, "%d: Stop battery charging\n", __LINE__);
+	syslog(LOG_ERR, "%d: Stop battery charging\n", __LINE__);
 	closelog();
 	exit(0);
 }
@@ -115,12 +102,6 @@ int LIMIT		= 300;
 #define DEF_COMMAND	"/sbin/halt"
 #endif
 char COMMAND[1024];
-
-enum _revision{
-	R2 = 0x0,
-	R3 = 0x40
-};
-char revision;
 
 enum{
 	INPUT=0,
@@ -149,7 +130,77 @@ int open_i2c(void)
 	return fd;
 }
 
-char get_input(void)
+int read_gpio(int reg, unsigned char *val)
+{
+	int fd;
+
+	if((fd = open_i2c()) < 0)
+		return -1;
+
+#if defined(CONFIG_OBSVX1)
+	if((*val = i2c_smbus_read_byte_data(fd, reg)) == -1){
+		close(fd);
+		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
+		syslog(LOG_ERR, "%d: %s\n", __LINE__, strerror(errno));
+		closelog();
+		return -1;
+	}
+#else
+	if(write(fd, &reg, 1) < 0){
+		close(fd);
+		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
+		syslog(LOG_ERR, "%d: %s\n", __LINE__, strerror(errno));
+		closelog();
+		return -1;
+	}
+	if(read(fd, val, 1) < 0){
+		close(fd);
+		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
+		syslog(LOG_ERR, "%d: %s\n", __LINE__, strerror(errno));
+		closelog();
+		return -1;
+	}
+#endif
+	close(fd);
+
+	return 0;
+}
+
+int write_gpio(int reg, unsigned char val)
+{
+	int fd;
+#if ! defined(CONFIG_OBSVX1)
+	unsigned char buf[2];
+#endif
+
+	if((fd = open_i2c()) < 0)
+		return -1;
+
+#if defined(CONFIG_OBSVX1)
+	if(i2c_smbus_write_byte_data(fd, reg, val) == -1){
+		close(fd);
+		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
+		syslog(LOG_ERR, "%d: %s\n", __LINE__, strerror(errno));
+		closelog();
+		return -1;
+	}
+#else
+	buf[0] = reg;
+	buf[1] = val;
+	if(write(fd, buf, 2) < 0){
+		close(fd);
+		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
+		syslog(LOG_ERR, "%d: %s\n", __LINE__, strerror(errno));
+		closelog();
+		return -1;
+	}
+#endif
+	close(fd);
+
+	return 0;
+}
+
+int chk_voltage(void)
 {
 	int fd;
 	unsigned char val;
@@ -186,20 +237,13 @@ char get_input(void)
 #endif
 	close(fd);
 
-#if defined(DEBUG)
-openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
-syslog(LOG_INFO, "%d: val=%02x\n", __LINE__, val);
-closelog();
-#endif
-	return val;
+	return (int)(val & 0x01);
 }
 
-int chg_charging(unsigned char val, int stat)
+int chg_charging(unsigned char val)
 {
 	int fd;
-#if defined(CONFIG_OBSVX1)
-	unsigned char buf;
-#else
+#if ! defined(CONFIG_OBSVX1)
 	unsigned char buf[2];
 #endif
 
@@ -207,46 +251,13 @@ int chg_charging(unsigned char val, int stat)
 		return -1;
 
 #if defined(CONFIG_OBSVX1)
-#if 1
-	if((buf = i2c_smbus_read_byte_data(fd, CONFIG)) == -1){
+	if(i2c_smbus_write_byte_data(fd, OUTPUT, val) == -1){
 		close(fd);
 		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
 		syslog(LOG_ERR, "%d: %s\n", __LINE__, strerror(errno));
 		closelog();
 		return -1;
 	}
-#if defined DEBUG
-	openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
-	syslog(LOG_INFO, "%d: %s val=%02x buf=%02x\n", __LINE__, stat ? "HIGH" : "LOW", val, buf);
-	closelog();
-#endif
-	if(stat){	/* High */
-		buf |= val;
-	}
-	else{		/* Low */
-		buf &= ~val;
-	}
-#if defined DEBUG
-	openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
-	syslog(LOG_INFO, "%d: %s val=%02x buf=%02x\n", __LINE__, stat ? "HIGH" : "LOW", val, buf);
-	closelog();
-#endif
-	if(i2c_smbus_write_byte_data(fd, OUTPUT, buf) == -1){
-		close(fd);
-		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
-		syslog(LOG_ERR, "%d: %s\n", __LINE__, strerror(errno));
-		closelog();
-		return -1;
-	}
-#else
-	if(i2c_smbus_write_byte_data(fd, OUTPUT, (buf|val)) == -1){
-		close(fd);
-		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
-		syslog(LOG_ERR, "%d: %s\n", __LINE__, strerror(errno));
-		closelog();
-		return -1;
-	}
-#endif
 #else
 	buf[0] = OUTPUT;
 	buf[1] = val;
@@ -319,9 +330,7 @@ int init_gpio(void)
 #endif
 	close(fd);
 
-	openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
-	syslog(LOG_INFO, "%d: init config reg=%02x\n", __LINE__, val);
-	closelog();
+	printf("init config: %02x\n", val);
 	return 0;
 }
 
@@ -364,22 +373,21 @@ int get_power_status(void)
 
 	if(val & 0x01){
 		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
-		syslog(LOG_WARNING, "%d: BAT-L was detected, shutdown the machine.\n", __LINE__);
+		syslog(LOG_ERR, "%d: BAT-L was detected, shutdown the machine.\n", __LINE__);
 		closelog();
 	}
 
 	return 0;
 }
 
-int get_power_input(char inp)
+int get_power_input(void)
 {
 	int fd;
-	char val;
+	char val = 0;
 	int usb=0, ac=0, dc=0;
 
 	/* usb power */
 	if ((fd = open(POWER_USB, O_RDONLY)) != -1){
-		val=0;
 		read(fd, &val, 1);
 		close(fd);
 		usb = val - '0';
@@ -392,7 +400,6 @@ int get_power_input(char inp)
 
 	/* AC power */
 	if ((fd = open(POWER_AC, O_RDONLY)) != -1){
-		val=0;
 		read(fd, &val, 1);
 		close(fd);
 		ac = val - '0';
@@ -405,7 +412,6 @@ int get_power_input(char inp)
 
 	/* DC power */
 	if ((fd = open(POWER_DC, O_RDONLY)) != -1){
-		val=0;
 		read(fd, &val, 1);
 		close(fd);
 		dc = val - '0';
@@ -417,9 +423,7 @@ int get_power_input(char inp)
 	}
 
 #if defined(DEBUG)
-openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
-syslog(LOG_INFO, "%d: usb=%d ac=%d dc=%d\n", __LINE__, usb, ac, dc);
-closelog();
+	printf("usb=%d ac=%d dc=%d\n", usb, ac, dc);
 #endif
 	return usb + ac + dc;
 }
@@ -427,9 +431,7 @@ closelog();
 int chk_power()
 {
 	int count = -1;
-	int fschg;
 	int ret;
-	char input;
 
 	if(init_gpio() == -1){
 		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
@@ -437,76 +439,38 @@ int chk_power()
 		closelog();
 		return -1;
 	}
-
-	if(chg_charging(START, HIGH) == -1){
+	if(chg_charging(START) == -1){
 		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
 		syslog(LOG_ERR, "%d: Error battery charging\n", __LINE__);
 		closelog();
 		return -1;
 	}
 	openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
-	syslog(LOG_NOTICE, "%d: Start battery charging\n", __LINE__);
+	syslog(LOG_ERR, "%d: Start battery charging\n", __LINE__);
 	closelog();
 
-	/* check revision */
-	revision = get_input() & REV;
-	switch(revision){
-	case R2:
-		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
-		syslog(LOG_INFO, "%d: R2\n", __LINE__);
-		closelog();
-		break;
-	case R3:
-		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
-		syslog(LOG_INFO, "%d: R3\n", __LINE__);
-		closelog();
-		chg_charging(PF_L, HIGH);
-		break;
-	default:
-		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
-		syslog(LOG_ERR, "%d: No battery installed.(rev=%d)\n", __LINE__, (int)revision);
-		closelog();
-		return -1;
-	}
-
-	fschg = 0;
 	for (;;) {
-		/* check fast charging */
-		input = get_input();
-		if(input & FSCHG){
-			if(!fschg){
-				fschg = FSCHG;
-				openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
-				syslog(LOG_NOTICE, "%d: Start Fast Charging\n", __LINE__);
-				closelog();
-			}
-		}
-		else{
-			if(fschg){
-				fschg = 0;
-				openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
-				syslog(LOG_NOTICE, "%d: End Fast Charging\n", __LINE__);
-				closelog();
-			}
-		}
-		if(!get_power_input(input)){
+		if(!get_power_input()){
 			if(count == -1){
 				count = LIMIT / INTERVAL;	/* power lost */
 				if(count < 0) count = 0;
 				openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
-				syslog(LOG_WARNING, "%d: Power lost(count=%d).Stop battery charging.\n", __LINE__, count);
+				syslog(LOG_ERR, "%d: Power lost(count=%d)\n", __LINE__, count);
 				closelog();
-				chg_charging(PF_L, LOW);
+
+				chg_charging(STOP);
+				openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
+				syslog(LOG_ERR, "%d: Stop battery charging\n", __LINE__);
+				closelog();
 			}
 		}
 		else{
 			if(count != -1){
 				openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
-				syslog(LOG_NOTICE, "%d: Power return\n", __LINE__);
+				syslog(LOG_ERR, "%d: Power return\n", __LINE__);
 				closelog();
 
-				chg_charging(START, HIGH);
-				chg_charging(PF_L, HIGH);
+				chg_charging(START);
 			}
 			count = -1;					/* power return */
 		}
@@ -514,21 +478,24 @@ int chk_power()
 		if(!count){		/* timeup power lost */
 			ret = system(COMMAND);
 			openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
-			syslog(LOG_NOTICE, "%d: system() retrun %d\n", __LINE__, ret);
+			syslog(LOG_ERR, "%d: system() retrun %d\n", __LINE__, ret);
 			closelog();
 			count = -1;
 		}
 		else if(count > 0){	/* continue power lost */
 			count--;
+//			openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
+//			syslog(LOG_ERR, "%d: Continue power lost(count=%d)\n", __LINE__, count);
+//			closelog();
 		}
 
-		if(count > 0 && !(input & BAT_L)){	/* Low battery */
+		if(count > 0 && !chk_voltage()){
 			openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
-			syslog(LOG_WARNING, "%d: Detect low voltage\n", __LINE__);
+			syslog(LOG_ERR, "%d: Detect low voltage\n", __LINE__);
 			closelog();
 			ret = system(COMMAND);
 			openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
-			syslog(LOG_NOTICE, "%d: system() retrun %d\n", __LINE__, ret);
+			syslog(LOG_ERR, "%d: system() retrun %d\n", __LINE__, ret);
 			closelog();
 		}
 		sleep(INTERVAL);
@@ -600,7 +567,7 @@ main(int ac, char *av[])
 		close(STDERR_FILENO);
 #endif
 		if(setsid() == -1)
-			exit(-4);
+			exit(4);
 
 		/* child */
 		signal( SIGHUP,donothing);
