@@ -1,4 +1,4 @@
-#define DEBUG
+//#define DEBUG
 /*	$ssdlinux: obsiot-power.c,v 1.17 2014/01/07 07:19:06 yamagata Exp $	*/
 /*
  * Copyright (c) 2008-2021 Plat'Home CO., LTD.
