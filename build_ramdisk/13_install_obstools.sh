@@ -143,7 +143,7 @@ obsix*)
 	echo "OBS-NICRENAME"
 	mkdir -p ${OBSTOOLDIR}/template-obs-nicrename/usr/local/sbin/
 	cp -f ${FILESDIR}/obs-nicrename.sh ${OBSTOOLDIR}/template-obs-nicrename/usr/local/sbin/
-	chmod 555 ${OBSTOOLDIR}/template-obs-nicrename/usr/sbin/obs-nicrename.sh
+	chmod 555 ${OBSTOOLDIR}/template-obs-nicrename/usr/local/sbin/obs-nicrename.sh
 	;;
 esac
 
