@@ -291,7 +291,7 @@ buster)
 		KERNEL=3.10.98
 		ISOFILE=debian-10.2.0-i386-DVD-1.iso
 		ARCH=i386
-		PATCHLEVEL=301
+		PATCHLEVEL=303
 		RAMDISK_SIZE=240
 	;;
 	obsbx1)
