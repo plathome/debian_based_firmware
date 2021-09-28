@@ -112,7 +112,7 @@ done
 case $RUN in
 firmware)
 	case $MODEL in
-	obsvx2|obsbx*)
+	obsvx2|obsbx*|obsix9)
 		# check MD5
 		for file in bzImage modules.tgz obstools.tgz
 		do
@@ -129,7 +129,7 @@ firmware)
 
 		# remove previous firmware
 		mkdir -p ${WORK_DIR}
-		if [ "$MODEL" == "obsvx2" ]; then
+		if [ "$MODEL" == "obsvx2" -o "$MODEL" == "obsix9" ]; then
 			mount `findfs LABEL=${FIRM_DIR}` ${WORK_DIR}
 		else
 			mount ${FIRM_DIR} ${WORK_DIR}
