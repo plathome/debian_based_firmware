@@ -67,10 +67,10 @@ extern int errno;
 #define RETURN 0xff
 
 enum{
-	BAT_L = 0x1,
-	PF_L = 0x2,
-	FSCHG = 0x8,
-	REV = 0xc0
+	BAT_L = 0x1,	// in
+	PF_L = 0x2,		// out
+	FSCHG = 0x8,	// in
+	REV = 0xc0		// in
 };
 
 enum{
@@ -92,9 +92,10 @@ int chg_charging(unsigned char, int stat);
 
 void donothing(int i){}
 void die(int i){
-	chg_charging(STOP, LOW);
+//	chg_charging(STOP, LOW);
 	openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
-	syslog(LOG_WARNING, "%d: Stop battery charging\n", __LINE__);
+//	syslog(LOG_WARNING, "%d: Stop battery charging\n", __LINE__);
+	syslog(LOG_NOTICE, "%d: Stop program\n", __LINE__);
 	closelog();
 	exit(0);
 }
@@ -438,7 +439,7 @@ int chk_power()
 		return -1;
 	}
 
-	if(chg_charging(START, HIGH) == -1){
+	if(chg_charging(PF_L, HIGH) == -1){
 		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
 		syslog(LOG_ERR, "%d: Error battery charging\n", __LINE__);
 		closelog();
@@ -505,7 +506,7 @@ int chk_power()
 				syslog(LOG_NOTICE, "%d: Power return\n", __LINE__);
 				closelog();
 
-				chg_charging(START, HIGH);
+//				chg_charging(START, HIGH);
 				chg_charging(PF_L, HIGH);
 			}
 			count = -1;					/* power return */
