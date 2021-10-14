@@ -1,4 +1,4 @@
-#define DEBUG
+//#define DEBUG
 /*	$ssdlinux: obsiot-power.c,v 1.17 2014/01/07 07:19:06 yamagata Exp $	*/
 /*
  * Copyright (c) 2008-2021 Plat'Home CO., LTD.
@@ -475,7 +475,7 @@ int chk_power()
 		/* check fast charging */
 		input = get_input();
 		if(input & FSCHG){
-			if((!fschg) & (input & PF_L)){
+			if(!fschg){
 				fschg = FSCHG;
 				openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
 				syslog(LOG_NOTICE, "%d: Start Fast Charging\n", __LINE__);
