@@ -199,9 +199,9 @@ int chg_charging(unsigned char val, int stat)
 {
 	int fd;
 #if defined(CONFIG_OBSVX1)
-	unsigned char buf;
+	unsigned char buf=0;
 #else
-	unsigned char buf[2];
+	unsigned char buf[2]={0, 0};
 #endif
 
 	if((fd = open_i2c()) < 0)
@@ -250,7 +250,17 @@ int chg_charging(unsigned char val, int stat)
 #endif
 #else
 	buf[0] = OUTPUT;
-	buf[1] = stat;
+	if(stat){	/* High */
+		buf[1] = PF_L;;
+	}
+	else{		/* Low */
+		buf[1] = 0;
+	}
+#if defined DEBUG
+	openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
+	syslog(LOG_INFO, "%d: val=%02x stat=%02x buf=%02x,%02x\n", __LINE__, val, stat, buf[0], buf[1]);
+	closelog();
+#endif
 	if(write(fd, buf, 2) < 0){
 		close(fd);
 		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
@@ -461,7 +471,7 @@ int chk_power()
 		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
 		syslog(LOG_INFO, "%d: R3\n", __LINE__);
 		closelog();
-		chg_charging(PF_L, HIGH);
+//		chg_charging(PF_L, HIGH);
 		break;
 	default:
 		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
@@ -474,8 +484,19 @@ int chk_power()
 	for (;;) {
 		/* check fast charging */
 		input = get_input();
+#if defined(DEBUG)
+openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
+syslog(LOG_DEBUG, "%d: reg=%02x FSCHG=%02x stat=%02x\n", __LINE__, input, FSCHG, (input & FSCHG));
+closelog();
+#endif
+
+#if defined(DEBUG)
+openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
+syslog(LOG_DEBUG, "%d: input=%02x (%02x)\n", __LINE__, input, (input & PF_L));
+closelog();
+#endif
 		if(input & FSCHG){
-			if(!fschg){
+			if((!fschg) && (input & PF_L)){
 				fschg = FSCHG;
 				openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
 				syslog(LOG_NOTICE, "%d: Start Fast Charging\n", __LINE__);
