@@ -114,8 +114,9 @@ arm64)
 	CROSS_COMPILE=aarch64-linux-gnu-
 	CC=${CROSS_COMPILE}gcc
 	STRIP=${CROSS_COMPILE}strip
+	OBJCOPY=${CROSS_COMPILE}objcopy
 	KERN_ARCH=arm64
-	MAKE_IMAGE=Image
+	MAKE_IMAGE=zImage
 	QEMU_BIN=qemu-aarch64-static
 ;;
 *)

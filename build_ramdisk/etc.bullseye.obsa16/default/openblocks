@@ -5,17 +5,17 @@
 # * /usr/sbin/flashcfg
 
 # BEGIN: don't edit
-MODEL="obsgem1"
+MODEL="obsa16"
 
-FIRM_DIR=""
-SAVE_DIR=""
+FIRM_DIR="/dev/mmcblk2p1"
+SAVE_DIR="/dev/mmcblk2p1"
 
 # Set union filesysytem target directories.
 # The first item is "etc" always.
-UNIONFS_DIRS=
+UNIONFS_DIRS="etc bin home lib sbin usr var root opt srv media"
 
 # Set tmpfs size for ramdisk mode. Recommend over to 384m.
-RW_TMPFS_SIZE=""
+RW_TMPFS_SIZE="384m"
 
 # Set noatime option, when using SSD.
 NOATIME=false

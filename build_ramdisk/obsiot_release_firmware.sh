@@ -37,7 +37,7 @@ else
 	KERN_COMPILE_OPTS="ARCH=$KERN_ARCH"
 fi
 case $TARGET in
-obsgem1) KERN_COMPILE_OPTS=" $KERN_COMPILE_OPTS INSTALL_MOD_STRIP=1" ;;
+obsa16) KERN_COMPILE_OPTS=" $KERN_COMPILE_OPTS INSTALL_MOD_STRIP=1" ;;
 esac
 
 _RAMDISK_IMG=${DISTDIR}/../${RAMDISK_IMG}
@@ -86,20 +86,20 @@ obsvx*)
 esac
 rm -f ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/source ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/build
 
-case $TARGET in
-obsgem1)
-	if [ -d ${FILESDIR}/firmware-${TARGET}-${KERNEL} ]; then
-		mkdir -p ${MOUNTDIR}/lib/firmware
-		cp -a ${FILESDIR}/firmware-${TARGET}-${KERNEL}/* ${MOUNTDIR}/lib/firmware
-	fi
-	;;
-*)
+#case $TARGET in
+#obsgem1)
+#	if [ -d ${FILESDIR}/firmware-${TARGET}-${KERNEL} ]; then
+#		mkdir -p ${MOUNTDIR}/lib/firmware
+#		cp -a ${FILESDIR}/firmware-${TARGET}-${KERNEL}/* ${MOUNTDIR}/lib/firmware
+#	fi
+#	;;
+#*)
 	if [ -d ${FILESDIR}/firmware-${TARGET} ]; then
 		mkdir -p ${MOUNTDIR}/lib/firmware
 		cp -a ${FILESDIR}/firmware-${TARGET}/* ${MOUNTDIR}/lib/firmware
 	fi
-	;;
-esac
+#	;;
+#esac
 
 	depmod -ae -b ${MOUNTDIR} -F ${MOUNTDIR}/boot/System.map ${KERNEL}${LOCAL_VER}
 
@@ -109,13 +109,13 @@ fi
 
 	# kernel modules and firmware
 case $TARGET in
-obsvx2|obsa16)
+obsvx2)
 	(cd ${MOUNTDIR}/lib; tar cfzp ${RELEASEDIR}/modules.tgz firmware modules)
 	;;
 obsbx1s)
 	(cd ${MOUNTDIR}; tar cfzp ${RELEASEDIR}/modules.tgz etc/firmware lib/modules)
 	;;
-obsix9)
+obsix9|obsa16)
 	(cd ${MOUNTDIR}/lib; tar cfzp ${RELEASEDIR}/modules.tgz modules)
 	;;
 esac
@@ -126,7 +126,7 @@ cp -f ${LINUX_SRC}/System.map ${RELEASEDIR}
 
 case $TARGET in
 obsvx1)
-	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/bzImage ${RELEASEDIR}
+	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
 	${COMP} -${COMP_LVL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/initrd.${COMPEXT}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-obsiot.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/bzImage ${RELEASEDIR}/initrd.${COMPEXT} dummy ${FILESDIR}/flashcfg.sh ${RELEASEDIR}/MD5.${TARGET} dummy)
@@ -177,11 +177,18 @@ obsvx2)
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
-obsgem1)
-	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
-
+obsa16)
 	# Linux kernel
-	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
+	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/Image ${RELEASEDIR}
+	${OBJCOPY} -O binary -R .comment -S ${LINUX_SRC}/vmlinux ${RELEASEDIR}/${MAKE_IMAGE}
+	${COMP} -${COMP_LVL:-3} -f ${RELEASEDIR}/${MAKE_IMAGE} 
+
+	# Ramdisk Image
+	${COMP} -${COMP_LVL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/${RAMDISK_IMG}.${COMPEXT}
+	mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \
+		-A arm64 -O linux -T multi -C gzip -a 0x40008000 -e 0x40008000 \
+		-d ${RELEASEDIR}/${MAKE_IMAGE}.${COMP_EXT}:${RELEASEDIR}/${RAMDISK_IMG}.${COMP_EXT}:${RELEASEDIR}/${DTBFILE} \
+		${RELEASEDIR}/uImage.initrd.${TARGET}
 
 	# Debian rootfs
 	mount -o loop ${_RAMDISK_IMG} ${MOUNTDIR}
@@ -189,19 +196,13 @@ obsgem1)
 	umount ${MOUNTDIR}
 
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
-	case $DIST in
-	stretch)
-	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs-stretch.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/${MAKE_IMAGE} ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/modules.tgz ${RELEASEDIR}/obstools.tgz ${RELEASEDIR}/System.map)
-		;;
-	*)
 	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/${MAKE_IMAGE} ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/modules.tgz ${RELEASEDIR}/System.map)
-		;;
-	esac
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
+	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/freescale/${DTBFILE} ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
 obsbx1)
-	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/bzImage ${RELEASEDIR}
+	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
 		${COMP} -${COMP_LVL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/initrd.${COMPEXT}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 

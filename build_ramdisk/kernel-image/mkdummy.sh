@@ -59,7 +59,7 @@ sed -e "s|__VERSION__|$VERSION|" \
     -e "s|__PACKAGE__|$pkgstr|" \
 	< $pkgdir/DEBIAN/control > /tmp/control.new
 case $MODEL in
-obsa*)
+obsax3|obsa6|obsa7)
 	echo "Depends: uboot-image" >> /tmp/control.new
 	;;
 *)

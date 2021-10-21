@@ -66,29 +66,23 @@ obsbx*)
 	[ ! -d $GPIOPATH/gpio42 ] && echo 42 > $GPIOPATH/export
 	;;
 obsa16)
-	# runled
-	[ ! -d $GPIOPATH/gpio488 ] && echo 488 > $GPIOPATH/export; \
-		echo out > $GPIOPATH/gpio488/direction
-	[ ! -d $GPIOPATH/gpio489 ] && echo 489 > $GPIOPATH/export; \
-		echo out > $GPIOPATH/gpio489/direction
-	[ ! -d $GPIOPATH/gpio490 ] && echo 490 > $GPIOPATH/export; \
-		echo out > $GPIOPATH/gpio490/direction
-
 	# pshd
-	[ ! -d $GPIOPATH/gpio466 ] && echo 466 > $GPIOPATH/export; \
-		echo both > $GPIOPATH/gpio466/edge
-
-	# obsiot-power
-	[ ! -d $GPIOPATH/gpio500 ] && echo 500 > $GPIOPATH/export
-	[ ! -d $GPIOPATH/gpio503 ] && echo 503 > $GPIOPATH/export
-	[ ! -d $GPIOPATH/gpio504 ] && echo 504 > $GPIOPATH/export
+	[ ! -d $GPIOPATH/gpio466 ] && echo 86 > $GPIOPATH/export; \
+		echo both > $GPIOPATH/gpio86/edge
 	;;
 *)
 	exit 1
 	;;
 esac
 
-#export DEBIAN_FRONTEND=noninteractive
+IFS='.'
+set -- `cat /etc/debian_version`
+case $1 in
+11) ;;
+*)
+	export DEBIAN_FRONTEND=noninteractive
 dpkg-reconfigure openssh-server
+	;;
+esac
 
 exit 0

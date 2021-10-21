@@ -70,5 +70,5 @@ apt -y install $packages
 #
 # arm64 development tools
 #
-packages="gcc-aarch64-linux-gnu zlib1g-dev:arm64 libusb-dev:arm64 libasound2-dev:arm64 libusb-1.0-0-dev:arm64"
+packages="gcc-aarch64-linux-gnu zlib1g-dev:arm64 libusb-dev:arm64 libasound2-dev:arm64 libusb-1.0-0-dev:arm64 libi2c0:arm64"
 apt -y install $packages

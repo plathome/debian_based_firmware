@@ -64,7 +64,7 @@ fi
 
 case $TARGET in
 obsa16)
-	make -j$((${cpunum}+1)) ${MAKE_OPTION} ${MAKE_IMAGE} modules dtbs
+	make -j$((${cpunum}+1)) ${MAKE_OPTION} Image modules dtbs
 	;;
 *)
 	make -j$((${cpunum}+1)) ${MAKE_OPTION} ${MAKE_IMAGE} modules

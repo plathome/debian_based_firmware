@@ -297,7 +297,7 @@ start)
 			echo "Don't extract files in FlashROM..."
 		else
 			case $MODEL in
-			obsbx1|obsvx1|obsix9)
+			obsbx1|obsvx1|obsix9|obsa16)
 				restore_func
 			;;
 			esac
@@ -311,7 +311,7 @@ start)
 			echo "Don't extract files in FlashROM..."
 		else
 			case $MODEL in
-			obsbx1|obsvx1|obsix9)
+			obsbx1|obsvx1|obsix9|obsa16)
 				restore_func
 			;;
 			esac
@@ -378,7 +378,13 @@ start)
 		*)
 			if [ "$unionfs" == "aufs" ]; then
 				xino_opt="xino=/.aufs.xino.$dir,trunc_xino,"
-				[ "$MODEL" == "obsvx1" -o "$MODEL" == "obsix9" ] && xino_opt+="acl,"
+				case $MODEL in
+#				obsvx1|obsix9|obsa16)
+				obsvx1|obsix9)
+					xino_opt+="acl,"
+					;;
+				*) ;;
+				esac
 			fi
 			if [ "$FLG_3LAYER_MODE" == "true" ] ; then
 				mount -n -t ${union_fs} \

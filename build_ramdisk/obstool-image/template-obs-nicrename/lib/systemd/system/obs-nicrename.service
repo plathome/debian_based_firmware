@@ -1,0 +1,10 @@
+[Unit]
+Description=Setup Ethernet for Openblocks family
+Before = networking.service
+
+[Service]
+ExecStart=/usr/local/sbin/obs-nicrename.sh
+Type=oneshot
+
+[Install]
+WantedBy=multi-user.target

@@ -56,7 +56,7 @@ obsix*)
 	esac
 	;;
 obsa16)
-	pkglist="atcmd disable_modem nitz obs_util obs_hwclock obsiot_power pshd runled wav_play"
+	pkglist="obs_util obs_hwclock pshd runled wav_play"
 	;;
 *) exit 1 ;;
 esac
@@ -127,7 +127,7 @@ $CC -o ${OBSTOOLDIR}/template-obs-util/usr/sbin/kosanu ${FILESDIR}/kosanu.c $CFL
 $STRIP ${OBSTOOLDIR}/template-obs-util/usr/sbin/kosanu
 
 case $TARGET in
-obsbx*|obsvx*|obsa16)
+obsbx*|obsvx*)
 	echo "OBSIOT-POWER"
 	mkdir -p ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/obsiot-power ${FILESDIR}/obsiot-power.c $CFLAGS
@@ -143,7 +143,7 @@ obsix*)
 	echo "OBS-NICRENAME"
 	mkdir -p ${OBSTOOLDIR}/template-obs-nicrename/usr/local/sbin/
 	cp -f ${FILESDIR}/obs-nicrename.sh ${OBSTOOLDIR}/template-obs-nicrename/usr/local/sbin/
-	chmod 555 ${OBSTOOLDIR}/template-obs-nicrename/usr/local/sbin/obs-nicrename.sh
+	chmod 555 ${OBSTOOLDIR}/template-obs-nicrename/usr/sbin/obs-nicrename.sh
 	;;
 esac
 
@@ -210,10 +210,13 @@ fi
 #
 case $TARGET in
 obsvx*|obsix*)
-	pkglist="instfirm setup_gpio"
+	pkglist="instfirm obs_createkeys setup_gpio"
+	;;
+obsa16)
+	pkglist="obs_createkeys setup_gpio"
 	;;
 *)
-	pkglist="setup_gpio"
+	pkglist="obs_createkeys setup_gpio"
 	;;
 esac
 
@@ -223,7 +226,7 @@ cp -f ${FILESDIR}/setup-gpio.sh ${OBSTOOLDIR}/template-setup-gpio/usr/sbin/
 chmod 555 ${OBSTOOLDIR}/template-setup-gpio/usr/sbin/setup-gpio.sh
 
 case $TARGET in
-obsvx*|obsix*)
+obsvx*|obsix9|obsa16)
 	echo "FLASHCFG"
 	FLASHCFG=flashcfg-rootfs.sh
 	[ "$TARGET" == "obsvx1" -o "$TARGET" == "obsix9r" ] && FLASHCFG=flashcfg.sh
@@ -233,11 +236,29 @@ obsvx*|obsix*)
 	cp -f ${FILESDIR}/instfirm.sh ${OBSTOOLDIR}/template-instfirm/usr/sbin/
 	chmod 555 ${OBSTOOLDIR}/template-instfirm/usr/sbin/instfirm.sh
 	;;
-obsbx*)
+obsbx*|obsix9r)
 	echo "FLASHCFG"
 	mkdir -p ${OBSTOOLDIR}/template-instfirm/usr/sbin/
 	cp -f ${FILESDIR}/flashcfg.sh ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg
 	chmod 555 ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg
+	;;
+esac
+
+case $DIST in
+bullseye)
+	echo "OBS-CREATEKEYS"
+	mkdir -p ${OBSTOOLDIR}/template-obs-createkeys/usr/sbin/
+	cp -f ${FILESDIR}/obs-createkeys.sh ${OBSTOOLDIR}/template-obs-createkeys/usr/sbin/
+	chmod 555 ${OBSTOOLDIR}/template-obs-createkeys/usr/sbin/obs-createkeys.sh
+	;;
+esac
+
+case $TARGET in
+obsa16)
+	echo "OBS-MACADDR"
+	mkdir -p ${OBSTOOLDIR}/template-obs-macaddr/usr/sbin/
+	cp -f ${FILESDIR}/obs-macaddr.sh ${OBSTOOLDIR}/template-obs-macaddr/usr/sbin/
+	chmod 555 ${OBSTOOLDIR}/template-obs-macaddr/usr/sbin/obs-macaddr.sh
 	;;
 esac
 
@@ -255,3 +276,7 @@ for pkg in $pkglist; do
 		chroot ${DISTDIR} ln -sf /lib/systemd/system/${pkg}.service /etc/systemd/system/multi-user.target.wants/${pkg}.service
 	rm -f ${DISTDIR}/${pkgfile}
 done
+
+if [ "$TARGET" == "obsa16" ]; then
+	chroot ${DISTDIR} systemctl disable wpa_supplicant
+fi

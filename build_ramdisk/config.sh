@@ -282,7 +282,7 @@ buster)
 		RAMDISK_SIZE=260
 	;;
 	obsvx2)
-		KERNEL=4.19.198
+		KERNEL=4.19.152
 		ISOFILE=debian-10.2.0-amd64-DVD-1.iso
 		PATCHLEVEL=0
 		RAMDISK_SIZE=260
@@ -291,7 +291,7 @@ buster)
 		KERNEL=3.10.98
 		ISOFILE=debian-10.2.0-i386-DVD-1.iso
 		ARCH=i386
-		PATCHLEVEL=303
+		PATCHLEVEL=301
 		RAMDISK_SIZE=240
 	;;
 	obsbx1)
@@ -302,15 +302,15 @@ buster)
 		RAMDISK_SIZE=240
 	;;
 	obsix9)
-		KERNEL=4.19.198
+		KERNEL=4.19.152
 		ISOFILE=debian-10.2.0-amd64-DVD-1.iso
 		PATCHLEVEL=0
 		RAMDISK_SIZE=512
 	;;
 	obsix9r)
-		KERNEL=4.19.198
+		KERNEL=4.19.152
 		ISOFILE=debian-10.2.0-amd64-DVD-1.iso
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		RAMDISK_SIZE=512
 	;;
 	*)
@@ -318,12 +318,12 @@ buster)
 	esac
 ;;
 bullseye)
-	KERNEL=5.10.41
+	KERNEL=4.19.198
 	case ${TARGET} in
 	obsvx1)
 		ISOFILE=debian-bullseye-DI-rc2-amd64-DVD-1.iso
 		PATCHLEVEL=1
-		RAMDISK_SIZE=500
+		RAMDISK_SIZE=260
 	;;
 	obsix9r)
 		ISOFILE=debian-bullseye-DI-rc2-amd64-DVD-1.iso
@@ -352,15 +352,17 @@ bullseye)
 		RAMDISK_SIZE=240
 	;;
 	obsa16)
-		ISOFILE=debian-bullseye-DI-rc1-arm64-DVD-1.iso
-		RAMDISK_SIZE=260
+		KERNEL=5.4.47
+		ISOFILE=debian-11.0.0-arm64-DVD-1.iso
+		RAMDISK_SIZE=250
 		PATCHLEVEL=1
+		DTBFILE=imx8mp-evk.dtb
 		ARCH=arm64
 		COMP_LVL=9
 		COMP=gzip
 		COMP_EXT=gz
-		UBOOT_VER=2020.04
-		UDEFCONFIG=obsa16_defconfig
+#		UBOOT_VER=2020.04
+#		UDEFCONFIG=obsa16_defconfig
 	;;
 	*)
 	;;

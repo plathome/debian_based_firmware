@@ -28,7 +28,7 @@
 . `dirname $0`/config.sh
 
 case $TARGET in
-obsa*|obs600)
+obsa6|obsa7|obsax3|obs600)
 	TARGET=$TARGET ./obsa_release_firmware.sh || exit 1
 	;;
 *)

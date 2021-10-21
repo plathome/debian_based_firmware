@@ -1,0 +1,10 @@
+[Unit]
+Description=Create SSH keys for Openblocks family
+Before = ssh.service
+
+[Service]
+ExecStart=/usr/sbin/obs-createkeys.sh
+Type=oneshot
+
+[Install]
+WantedBy=multi-user.target

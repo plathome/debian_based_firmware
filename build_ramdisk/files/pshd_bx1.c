@@ -50,7 +50,7 @@ void die(int);
 #if defined(CONFIG_OBSVX1) || defined(CONFIG_OBSIX9)
 #define INITSW		"/sys/class/gpio/gpio345/value"
 #elif defined(CONFIG_OBSA16)
-#define INITSW     "/sys/class/gpio/gpio466/value"
+#define INITSW     "/sys/class/gpio/gpio86/value"
 #else
 #define INITSW		"/sys/class/gpio/gpio14/value"
 #endif

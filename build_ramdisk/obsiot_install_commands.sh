@@ -302,8 +302,8 @@ obsa16)
 	_CFLAGS="$CFLAGS -lasound"
 	$CC -o ${BUILDDIR}/wav-play ${FILESDIR}/wav-play.c $_CFLAGS
 
-	echo "OBSIOT-POWER"
-	$CC -o ${BUILDDIR}/obsiot-power ${FILESDIR}/obsiot-power.c $CFLAGS
+#	echo "OBSIOT-POWER"
+#	$CC -o ${BUILDDIR}/obsiot-power ${FILESDIR}/obsiot-power.c $CFLAGS
 
 	echo;echo;echo
 #	(cd ${BUILDDIR}; ls -l wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wav-play obsiot-power)

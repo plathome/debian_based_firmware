@@ -46,9 +46,9 @@
 #define SEGLED_DEV_G	"/sys/class/gpio/gpio343/value"
 #define SEGLED_DEV_B	"/sys/class/gpio/gpio344/value"
 #elif defined(CONFIG_OBSA16)
-#define SEGLED_DEV_R   "/sys/class/gpio/gpio488/value"
-#define SEGLED_DEV_G   "/sys/class/gpio/gpio489/value"
-#define SEGLED_DEV_B   "/sys/class/gpio/gpio490/value"
+#define SEGLED_DEV_R   "/sys/class/leds/red/brightness"
+#define SEGLED_DEV_G   "/sys/class/leds/green/brightness"
+#define SEGLED_DEV_B   "/sys/class/leds/blue/brightness"
 #else
 #define SEGLED_DEV_R	"/sys/class/gpio/gpio47/value"
 #define SEGLED_DEV_G	"/sys/class/gpio/gpio48/value"
@@ -175,6 +175,7 @@ void dancer(void)
 	struct timespec req, rem;
 	int i;
 
+printf("%s %d\n", __func__, __LINE__);
 	memset(&req, 0x0, sizeof(req));
 	memset(&rem, 0x0, sizeof(rem));
 	for (i=0;forever;i++){
@@ -249,6 +250,7 @@ void dancer(void)
 				req.tv_nsec = rem.tv_nsec;
 		}
 	}
+printf("%s %d\n", __func__, __LINE__);
 }
 
 int
@@ -284,6 +286,7 @@ main(void)
 		close(STDOUT_FILENO);
 		close(STDERR_FILENO);
 #endif
+printf("%s %d\n", __func__, __LINE__);
 		if(setsid() == -1)
 			exit(4);
 
@@ -322,7 +325,9 @@ main(void)
 		signal( SIGPWR,die);
 		signal( SIGSYS,die);
 #endif
+printf("%s %d\n", __func__, __LINE__);
 		dancer();
+printf("%s %d\n", __func__, __LINE__);
 		exit(0);
 	}
 	return 0;
