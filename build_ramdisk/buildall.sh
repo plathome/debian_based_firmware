@@ -29,7 +29,7 @@
 . `dirname $0`/config.sh
 
 DIST_LIST="(stretch|buster|bullseye)"
-TARGET_LIST="(obsix9|obsix9r|obsa16|obsvx1|obsvx2|obsbx1|obsbx1s|obsa7|obsax3)"
+TARGET_LIST="(obsix9|obsix9r|obsa16|obsa16r|obsvx1|obsvx2|obsbx1|obsbx1s|obsa7|obsax3)"
 
 function _usage(){
 	echo

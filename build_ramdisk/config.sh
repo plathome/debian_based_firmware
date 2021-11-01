@@ -364,6 +364,19 @@ bullseye)
 #		UBOOT_VER=2020.04
 #		UDEFCONFIG=obsa16_defconfig
 	;;
+	obsa16r)
+		KERNEL=5.4.47
+		ISOFILE=debian-11.0.0-arm64-DVD-1.iso
+		RAMDISK_SIZE=250
+		PATCHLEVEL=1
+		DTBFILE=imx8mp-evk.dtb
+		ARCH=arm64
+		COMP_LVL=9
+		COMP=gzip
+		COMP_EXT=gz
+#		UBOOT_VER=2020.04
+#		UDEFCONFIG=obsa16_defconfig
+	;;
 	*)
 	;;
 	esac

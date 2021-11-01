@@ -37,7 +37,7 @@ else
 	KERN_COMPILE_OPTS="ARCH=$KERN_ARCH"
 fi
 case $TARGET in
-obsa16) KERN_COMPILE_OPTS=" $KERN_COMPILE_OPTS INSTALL_MOD_STRIP=1" ;;
+obsa16*) KERN_COMPILE_OPTS=" $KERN_COMPILE_OPTS INSTALL_MOD_STRIP=1" ;;
 esac
 
 _RAMDISK_IMG=${DISTDIR}/../${RAMDISK_IMG}
@@ -183,22 +183,34 @@ obsa16)
 	${OBJCOPY} -O binary -R .comment -S ${LINUX_SRC}/vmlinux ${RELEASEDIR}/${MAKE_IMAGE}
 	${COMP} -${COMP_LVL:-3} -f ${RELEASEDIR}/${MAKE_IMAGE} 
 
-	# Ramdisk Image
-	${COMP} -${COMP_LVL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/${RAMDISK_IMG}.${COMPEXT}
-	mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \
-		-A arm64 -O linux -T multi -C gzip -a 0x40008000 -e 0x40008000 \
-		-d ${RELEASEDIR}/${MAKE_IMAGE}.${COMP_EXT}:${RELEASEDIR}/${RAMDISK_IMG}.${COMP_EXT}:${RELEASEDIR}/${DTBFILE} \
-		${RELEASEDIR}/uImage.initrd.${TARGET}
-
 	# Debian rootfs
 	mount -o loop ${_RAMDISK_IMG} ${MOUNTDIR}
 	(cd ${MOUNTDIR}; tar cfzp ${RELEASEDIR}/${TARGET}-rootfs.tgz .)
 	umount ${MOUNTDIR}
 
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
-	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/${MAKE_IMAGE} ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/modules.tgz ${RELEASEDIR}/System.map)
+	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/Image ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/modules.tgz ${RELEASEDIR}/System.map)
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/freescale/${DTBFILE} ${RELEASEDIR}
+	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
+	;;
+obsa16r)
+	# Linux kernel
+	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/Image ${RELEASEDIR}
+	${OBJCOPY} -O binary -R .comment -S ${LINUX_SRC}/vmlinux ${RELEASEDIR}/${MAKE_IMAGE}
+	${COMP} -${COMP_LVL:-3} -f ${RELEASEDIR}/${MAKE_IMAGE} 
+
+	# Ramdisk Image
+	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/freescale/${DTBFILE} ${RELEASEDIR}
+	${COMP} -${COMP_LVL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/${RAMDISK_IMG}.${COMPEXT}
+	mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \
+		-A arm64 -O linux -T multi -C gzip -a 0x40008000 -e 0x40008000 \
+		-d ${RELEASEDIR}/${MAKE_IMAGE}.${COMP_EXT}:${RELEASEDIR}/${RAMDISK_IMG}.${COMP_EXT}:${RELEASEDIR}/${DTBFILE} \
+		${RELEASEDIR}/uImage.initrd.${TARGET}
+
+	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
+	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/${MAKE_IMAGE} ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/modules.tgz ${RELEASEDIR}/System.map)
+	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
 obsbx1)
