@@ -55,6 +55,8 @@ elif [ "$MODEL" == "obsvx1" ]; then
 elif [ "$MODEL" == "bpv4-h" ]; then
 	DESCRIPTION="Linux firmware for Based Platform V Hinemos"
 	MODEL="bpv4"
+elif [ "$MODEL" == "obsa16r" ]; then
+	DESCRIPTION="Linux firmware for Openblocks A16"
 else
 	DESCRIPTION="Linux firmware for Based Platform V"
 	TARGET=$MODEL
@@ -84,6 +86,11 @@ bpv4*|bpv8)
 	mv -f /tmp/grub.cfg.new $pkgdir/etc/grub.cfg
 	chmod 444 $pkgdir/etc/grub.cfg
 	cp -f $INITRD $pkgdir/etc/
+	;;
+obsa16r)
+	if [ -d $UBOOTENVPATH ]; then
+		cp -f $UBOOTENVPATH/update_ubootenv-obsa16r.sh $pkgdir/etc/update_ubootenv.sh
+	fi
 	;;
 *)
 	cp -f $INITRD $pkgdir/etc/

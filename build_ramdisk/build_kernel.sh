@@ -63,7 +63,7 @@ if [ -f "${LINUX_SRC}/../linux-${KERNEL}.dot.config" ]; then
 fi
 
 case $TARGET in
-obsa16)
+obsa16*)
 	make -j$((${cpunum}+1)) ${MAKE_OPTION} Image modules dtbs
 	;;
 *)
