@@ -116,7 +116,7 @@ arm64)
 	STRIP=${CROSS_COMPILE}strip
 	OBJCOPY=${CROSS_COMPILE}objcopy
 	KERN_ARCH=arm64
-	MAKE_IMAGE=zImage
+	MAKE_IMAGE=Image
 	QEMU_BIN=qemu-aarch64-static
 ;;
 *)

@@ -196,16 +196,14 @@ obsa16)
 	;;
 obsa16r)
 	# Linux kernel
-	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/Image ${RELEASEDIR}
-	${OBJCOPY} -O binary -R .comment -S ${LINUX_SRC}/vmlinux ${RELEASEDIR}/${MAKE_IMAGE}
-	${COMP} -${COMP_LVL:-3} -f ${RELEASEDIR}/${MAKE_IMAGE} 
+	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
 
 	# Ramdisk Image
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/freescale/${DTBFILE} ${RELEASEDIR}
 	${COMP} -${COMP_LVL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/${RAMDISK_IMG}.${COMPEXT}
 	mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \
-		-A arm64 -O linux -T multi -C gzip -a 0x40008000 -e 0x40008000 \
-		-d ${RELEASEDIR}/${MAKE_IMAGE}.${COMP_EXT}:${RELEASEDIR}/${RAMDISK_IMG}.${COMP_EXT}:${RELEASEDIR}/${DTBFILE} \
+		-A arm64 -O linux -T multi -C none -a 0x40008000 -e 0x40008000 \
+		-d ${RELEASEDIR}/${MAKE_IMAGE}:${RELEASEDIR}/${RAMDISK_IMG}.${COMP_EXT}:${RELEASEDIR}/${DTBFILE} \
 		${RELEASEDIR}/uImage.initrd.${TARGET}
 
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})

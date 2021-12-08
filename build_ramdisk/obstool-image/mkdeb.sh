@@ -52,6 +52,17 @@ sed -e "s|__VERSION__|$VERSION|" \
 	< $pkgdir/DEBIAN/control > /tmp/control.new
 mv -f /tmp/control.new $pkgdir/DEBIAN/control
 
+if [ -e "${pkgdir}/lib/systemd/system/${PACKAGE}.service" ] ; then
+	case "$DIST" in
+		"buster")
+			sed -e "s|^KillMode=mixed|KillMode=none|" -i ${pkgdir}/lib/systemd/system/${PACKAGE}.service
+			;;
+		*)
+			sed -e "s|^KillMode=none|KillMode=mixed|" -i ${pkgdir}/lib/systemd/system/${PACKAGE}.service
+			;;
+	esac
+fi
+
 rm -rf ${pkgdir}.deb
 
 dpkg-deb --build ${pkgdir}

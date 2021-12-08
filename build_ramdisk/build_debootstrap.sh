@@ -200,6 +200,8 @@ $debug rm -f  ${DISTDIR}/etc/udev/rules.d/70-persistent-net.rules
 
 $debug rm -rf ${DISTDIR}/dev/.udev
 
+$debug rm -f ${DISTDIR}/etc/init.d/README ${DISTDIR}/etc/rc*/README
+
 $debug mkdir -p ${DISTDIR}/usr/src/firmware
 
 if [ -n "$ISOFILE" ]; then

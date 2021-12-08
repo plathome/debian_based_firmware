@@ -33,6 +33,7 @@ function _call_obsutil() {
 	fi
 	IFS=$'\n'
 	LIST=(`cat $TMP | fold -w2`)
+	rm -f $TMP
 	case ${LIST[0]} in
 	01|02)
 		if [ "$1" != "obsbx1" ]; then
@@ -142,7 +143,6 @@ function _call_obsutil() {
 		exit 8
 		;;
 	esac
-	rm -f $TMP
 }
 
 GPIOPATH=/sys/class/gpio

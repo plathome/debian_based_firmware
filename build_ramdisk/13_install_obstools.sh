@@ -143,7 +143,7 @@ obsix*)
 	echo "OBS-NICRENAME"
 	mkdir -p ${OBSTOOLDIR}/template-obs-nicrename/usr/local/sbin/
 	cp -f ${FILESDIR}/obs-nicrename.sh ${OBSTOOLDIR}/template-obs-nicrename/usr/local/sbin/
-	chmod 555 ${OBSTOOLDIR}/template-obs-nicrename/usr/sbin/obs-nicrename.sh
+	chmod 555 ${OBSTOOLDIR}/template-obs-nicrename/usr/local/sbin/obs-nicrename.sh
 	;;
 esac
 
@@ -236,11 +236,19 @@ obsvx*|obsix9|obsa16*)
 	cp -f ${FILESDIR}/instfirm.sh ${OBSTOOLDIR}/template-instfirm/usr/sbin/
 	chmod 555 ${OBSTOOLDIR}/template-instfirm/usr/sbin/instfirm.sh
 	;;
-obsbx*|obsix9r)
+obsbx*)
 	echo "FLASHCFG"
 	mkdir -p ${OBSTOOLDIR}/template-instfirm/usr/sbin/
 	cp -f ${FILESDIR}/flashcfg.sh ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg
 	chmod 555 ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg
+	;;
+obsix9r)
+	echo "FLASHCFG"
+	mkdir -p ${OBSTOOLDIR}/template-instfirm/usr/sbin/
+	cp -f ${FILESDIR}/flashcfg.sh ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg
+	chmod 555 ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg
+	cp -f ${FILESDIR}/instfirm.sh ${OBSTOOLDIR}/template-instfirm/usr/sbin/
+	chmod 555 ${OBSTOOLDIR}/template-instfirm/usr/sbin/instfirm.sh
 	;;
 esac
 
@@ -280,5 +288,23 @@ done
 case $TARGET in
 obsa16*)
 	chroot ${DISTDIR} systemctl disable wpa_supplicant
+	;;
+esac
+
+case $TARGET in
+obsbx1*)
+	if [ "$DIST" = "bullseye"  ] ; then
+		echo "BLUETOOTHD for bullseye(later?)"
+		mkdir -p ${DISTDIR}/usr/local/sbin/
+		cp -f ${FILESDIR}/bluez_5.50-1.2~deb10u2_i386/bluetoothd ${DISTDIR}/usr/local/sbin/
+		mkdir -p ${DISTDIR}/lib/systemd/system/bluetooth.service.d
+		{
+			cat <<!
+[Service]
+ExecStart=
+ExecStart=/usr/local/sbin/bluetoothd --noplugin=sap
+!
+		} > ${DISTDIR}/lib/systemd/system/bluetooth.service.d/override.conf
+	fi
 	;;
 esac
