@@ -1,4 +1,4 @@
-//#define DEBUG 1
+#define DEBUG 1
 /*	$ssdlinux: obs-util.c,v 1.17 2014/01/07 07:19:06 yamagata Exp $	*/
 /*
  * Copyright (c) 2008-2021 Plat'Home CO., LTD.
@@ -47,7 +47,8 @@
 
 #define DEVNAME "/dev/i2c"
 #define POLY 0x1021 
-#define BSIZ 32
+#define ROMSZ 128
+#define BSIZ 64
 #if defined(CONFIG_OBSVX1) || defined(CONFIG_OBSIX9)
 #define CHANNEL 7
 #else
@@ -68,6 +69,10 @@ union CRC16{
 union MODEM{
 	unsigned long l;
 	unsigned char c[4];
+};
+union MACADDR{
+	unsigned long long ll;
+	unsigned char c[8];
 };
 
 /* some variables used in getopt (3) */
@@ -180,6 +185,18 @@ unsigned char read_i2c(unsigned char i2cnum, unsigned char slave, unsigned char 
 	close(fd);
 
 	*dat = c;
+	return 0;
+}
+
+int clear_eeprom(int i2cnum, char* fname)
+{
+	int i;
+	for(i=0; i<ROMSZ; i++){
+		if(write_i2c(i2cnum, slave, i, 0xff) == -1){
+			printf("%d: %s\n", __LINE__, strerror(errno));
+			return -1;
+		}
+	}
 	return 0;
 }
 
@@ -370,6 +387,122 @@ int write_serial(int i2cnum, char* fname, unsigned char* data)
 #undef SZ
 }
 
+int read_macaddr(int i2cnum, char* fname, int num, unsigned char* data)
+{
+	FILE *fp;
+	union CRC16 crc16;
+	unsigned short s;
+	int cnt;
+
+	cnt = 38 + (8 * num);
+	crc16.c[0] = data[cnt];
+	crc16.c[1] = data[cnt+1];
+#ifdef DEBUG
+printf("mac crc=%x\n", crc16.s);
+#endif
+	if(crc16.s == 0xffff){
+		printf("blank\n");
+		return -1;
+	}
+	s = CRC16_CCITT(&data[32+(8*num)], 6, 0xffff);
+	swap(crc16.c[0], crc16.c[1]);
+	if(crc16.s != s){
+		printf("%d: ERROR %04x%04x\n", __LINE__, s, crc16.s);
+		return -1;
+	}
+
+	if(data[0] != 0xfd){
+		printf("%d: invalid offset value\n", __LINE__);
+		return -1;
+	}
+	if((fp = fopen(fname, "w")) == NULL){
+		printf("%d: %s\n", __LINE__, strerror(errno));
+		return -1;
+	}
+	cnt = 32 + (8 * num);
+	fprintf(fp, "%02x%02x%02x%02x%02x%02x\n", data[cnt], data[cnt+1], data[cnt+2], data[cnt+3], data[cnt+4], data[cnt+5]);
+	fclose(fp);
+
+	return 0;
+}
+
+int write_macaddr(int i2cnum, char* fname, int num, unsigned char* data)
+{
+#define SZ 12
+	union CRC16 crc16;
+	union MACADDR macaddr;
+	FILE *fp;
+	char buf[SZ+1];
+	char s[3];
+	char head;
+	int i;
+
+	if((fp = fopen(fname, "r")) == NULL){
+		printf("%d: %s\n", __LINE__, strerror(errno));
+		return -1;
+	}
+
+	memset(buf, 0x0, SZ+1);
+	if(fread(buf, SZ, 1, fp) != 1){
+		printf("%d: %s\n", __LINE__, strerror(errno));
+		fclose(fp);
+		return -1;
+	}
+	fclose(fp);
+	if(strlen(buf) != SZ){
+		printf("%d: ERROR\n", __LINE__);
+		return -1;
+	}
+
+	for(i=0; i<6; i++){
+		s[0] = buf[i*2];
+		s[1] = buf[i*2+1];
+		s[2] = 0x0;
+		macaddr.c[i] = strtol(s, NULL, 16);
+	}
+
+	/* write modem */
+	for(i=0; i<6; i++){
+		if(write_i2c(i2cnum, slave, i+32+(num*8), macaddr.c[i]) == -1){
+			printf("%d: %s\n", __LINE__, strerror(errno));
+			return -1;
+		}
+	}
+
+	if((macaddr.ll & 0xffffffffffff) != 0xffffffffffff){
+		/* CRC16 */
+		crc16.s = CRC16_CCITT(macaddr.c, 6, 0xffff);
+		swap(crc16.c[0], crc16.c[1]);
+		for(i=0; i<2; i++){
+			if(write_i2c(i2cnum, slave, i+38+(num*8), crc16.c[i]) == -1){
+				printf("%d: %s\n", __LINE__, strerror(errno));
+				return -1;
+			}
+		}
+		head = 0xfd;
+	}
+	else{
+		crc16.c[0] = 0xff;
+		crc16.c[1] = 0xff;
+		for(i=0; i<2; i++){
+			if(write_i2c(i2cnum, slave, i+30, crc16.c[i]) == -1){
+				printf("%d: %s\n", __LINE__, strerror(errno));
+				return -1;
+			}
+		}
+		head = 0xff;
+	}
+
+	/* write headder */
+	if(write_i2c(i2cnum, slave, 0, head) == -1){
+		printf("%d: %s\n", __LINE__, strerror(errno));
+		return -1;
+	}
+
+	return 0;
+#undef SZ
+}
+
 //
 // usage: obs-util [option] filename
 //
@@ -377,12 +510,16 @@ int write_serial(int i2cnum, char* fname, unsigned char* data)
 //		-(0-f)		i2c channel(default: vx/ix=7, bx=1)
 //		-m			modem
 //		-w			write
+//		-M (0-3)	eth(0-3) MAC address
 //
 //	ex. i2c=7
 //		read serial number		obs-util [-7] filename
 //		wirte serial number		obs-util [-7] -w filename
 //		read modem type			obs-util [-7] -m filename
 //		write modem type		obs-util -wm7 filename
+//		read eth0 MAC address	obs-util [-7] -M 0 filename
+//		write eth0 MAC address	obs-util -w -M 0 filename
+//		clear eeprom			obs-util -c
 //
 int main(int ac, char* av[])
 {
@@ -390,15 +527,21 @@ int main(int ac, char* av[])
 	char buf[2];
 	unsigned char data[BSIZ];
 	unsigned char c;
+	int clear=0;
 	int access=0;
 	int modem=0;
+	int macaddr=0;
+	int mac_num=0;
 	int i2cnum=CHANNEL;
 
 	if(ac == 1)
 		return 0;
 
-	while((i=getopt(ac, av, "wm0123456789abcdef")) != -1){
+	while((i=getopt(ac, av, "M:Cwm0123456789abcdef")) != -1){
 		switch(i){
+		case 'C':
+			clear = 1;
+			break;
 		case 'w':
 			access = 1;
 #ifdef DEBUG
@@ -433,6 +576,13 @@ printf("%s\n", modem ? "modem" : "serial");
 printf("%d\n", i2cnum);
 #endif
 			break;
+		case 'M':
+			macaddr=1;
+			mac_num = strtol(optarg, NULL, 10);
+#ifdef DEBUG
+printf("mac_num=%d\n", mac_num);
+#endif
+			break;
 		default:
 			printf("ERR%d\n", __LINE__);
 			exit(1);
@@ -441,7 +591,7 @@ printf("%d\n", i2cnum);
 	}
 	ac -= optind;
 	av += optind;
-	if(ac != 1){	/* param num error */
+	if(!clear && ac != 1){	/* param num error */
 		printf("ERR%d\n", __LINE__);
 		exit(1);
 	}
@@ -449,6 +599,13 @@ printf("%d\n", i2cnum);
 #ifdef DEBUG
 printf("%s-%d %x\n", DEVNAME, i2cnum, slave);
 #endif
+	/* Clear EEPROM */
+	if(clear){
+		if(clear_eeprom(i2cnum, av[0]) == -1)
+			return -1;
+		else
+			return 0;
+	}
 	memset(data, 0x0, BSIZ);
 	for(i=0; i<BSIZ; i++){
 		if(read_i2c(i2cnum, slave, i, &c) == -1){
@@ -473,8 +630,14 @@ data[16], data[17], data[18], data[19],
 data[20], data[21], data[22], data[23],
 data[24], data[25], data[26], data[27],
 data[28], data[29], data[30], data[31]); 
+
+for(int i=0; i<32; i++){
+	printf("%02x", data[32+i]);
+	if(!(i % 16) && i != 0) printf("\n");
+}
+printf("\n");
 #endif
-	if(data[0] < 0xfe){
+	if(data[0] < 0xfd){
 		printf("%d: invalid offset value\n", __LINE__);
 		exit(1);
 	}
@@ -486,6 +649,19 @@ data[28], data[29], data[30], data[31]);
 		}
 		else{
 			if(read_modem(i2cnum, av[0], data) == -1)
+				return -1;
+		}
+	}
+	else if(macaddr){
+		if(access){
+			if(write_macaddr(i2cnum, av[0], mac_num, data) == -1)
+				return -1;
+		}
+		else{
+#ifdef DEBUG
+printf("option read maccaddr\n");
+#endif
+			if(read_macaddr(i2cnum, av[0], mac_num, data) == -1)
 				return -1;
 		}
 	}
