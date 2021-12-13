@@ -179,9 +179,8 @@ obsvx2)
 	;;
 obsa16)
 	# Linux kernel
-	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/Image ${RELEASEDIR}
+	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
 	${OBJCOPY} -O binary -R .comment -S ${LINUX_SRC}/vmlinux ${RELEASEDIR}/${MAKE_IMAGE}
-	${COMP} -${COMP_LVL:-3} -f ${RELEASEDIR}/${MAKE_IMAGE} 
 
 	# Debian rootfs
 	mount -o loop ${_RAMDISK_IMG} ${MOUNTDIR}
