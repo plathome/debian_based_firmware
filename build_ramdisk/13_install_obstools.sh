@@ -213,7 +213,7 @@ obsvx*|obsix*)
 	pkglist="instfirm obs_createkeys setup_gpio"
 	;;
 obsa16*)
-	pkglist="obs_createkeys setup_gpio"
+	pkglist="obs_createkeys setup_macether setup_gpio"
 	;;
 *)
 	pkglist="obs_createkeys setup_gpio"
@@ -267,6 +267,11 @@ obsa16*)
 	mkdir -p ${OBSTOOLDIR}/template-obs-macaddr/usr/sbin/
 	cp -f ${FILESDIR}/obs-macaddr.sh ${OBSTOOLDIR}/template-obs-macaddr/usr/sbin/
 	chmod 555 ${OBSTOOLDIR}/template-obs-macaddr/usr/sbin/obs-macaddr.sh
+
+	echo "SETUP-MACETHER"
+	mkdir -p ${OBSTOOLDIR}/template-setup-macether/usr/local/sbin/
+	cp -f ${FILESDIR}/setup-macether.sh ${OBSTOOLDIR}/template-setup-macether/usr/local/sbin/
+	chmod 555 ${OBSTOOLDIR}/template-setup-macether/usr/local/sbin/setup-macether.sh
 	;;
 esac
 

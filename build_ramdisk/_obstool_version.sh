@@ -40,6 +40,7 @@ obsvx1_gpio_ver=1
 obsvx1_modem_ver=2
 pshd_ver=1
 runled_ver=1
+setup_macether_ver=1
 setup_gpio_ver=1
 wav_play_ver=1
 wd_keepalive_ver=1
