@@ -1,4 +1,4 @@
-/dev/mmcblk0p10   /               ext4    defaults,noatime 1 1
+/dev/mmcblk2p2   /               ext4    defaults,noatime 1 1
 #proc            /proc           proc    defaults        0 0
 none		/tmp		tmpfs	size=64m	0 0
 cgroup		/sys/fs/cgroup	cgroup	defaults	0 0
