@@ -519,7 +519,7 @@ int write_macaddr(int i2cnum, char* fname, int num, unsigned char* data)
 //		write modem type		obs-util -wm7 filename
 //		read eth0 MAC address	obs-util [-7] -M 0 filename
 //		write eth0 MAC address	obs-util -w -M 0 filename
-//		clear eeprom			obs-util -c
+//		clear eeprom			obs-util -C
 //
 int main(int ac, char* av[])
 {
@@ -591,10 +591,12 @@ printf("mac_num=%d\n", mac_num);
 	}
 	ac -= optind;
 	av += optind;
+#if 0
 	if(!clear && ac != 1){	/* param num error */
 		printf("ERR%d\n", __LINE__);
 		exit(1);
 	}
+#endif
 
 #ifdef DEBUG
 printf("%s-%d %x\n", DEVNAME, i2cnum, slave);
