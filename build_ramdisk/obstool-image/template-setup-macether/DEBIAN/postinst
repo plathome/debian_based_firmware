@@ -10,7 +10,7 @@
 case "$1" in
 configure)
 	[ -f /.chroot ] && exit 0
-	systemctl enable obs-nicrename
+	systemctl enable setup-macether
 	;;
 abort-upgrade|abort-remove|abort-deconfigure)
 	;;

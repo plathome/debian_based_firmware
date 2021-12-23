@@ -1,0 +1,13 @@
+[Unit]
+Description=Setup Ethernet MAC Address
+Before=networking.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/setup-macether.sh
+ExecStop=
+TimeoutSec=1min
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target
