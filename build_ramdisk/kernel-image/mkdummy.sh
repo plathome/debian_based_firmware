@@ -40,7 +40,7 @@ MODEL=$3
 
 pkgdir=dummy-kernel-image-${VERSION}
 case $MODEL in
-obsa*)
+obsa6|obsa7|obsax3)
 	pkgstr="kernel-image"
 	;;
 *)

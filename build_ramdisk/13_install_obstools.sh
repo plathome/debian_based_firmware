@@ -56,7 +56,7 @@ obsix*)
 	esac
 	;;
 obsa16*)
-	pkglist="obs_util obs_hwclock pshd runled wav_play"
+	pkglist="obs_util obs_hwclock pshd runled wav_play wd_keepalive"
 	;;
 *) exit 1 ;;
 esac

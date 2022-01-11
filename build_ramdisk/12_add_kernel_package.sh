@@ -29,7 +29,7 @@
 
 # dummy package: uboot-image
 case $TARGET in
-obsa*)
+obsax3|obsa6|obsa7)
 	(cd ${PWD}/uboot-image; rm -f dummy-uboot-image-0.0.0-0.deb)
 	(cd ${PWD}/uboot-image; ./mkdummy.sh ${UBOOT_VER}-${UBOOT_PL} ${ARCH} ${TARGET} ${UBOOT_OLD_VER})
 	cp -f ${PWD}/uboot-image/dummy-uboot-image-0.0.0-0.deb ${DISTDIR}/
