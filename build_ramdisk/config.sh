@@ -327,7 +327,7 @@ bullseye)
 	;;
 	obsix9r)
 		ISOFILE=debian-11.1.0-amd64-DVD-1.iso
-		PATCHLEVEL=1
+		PATCHLEVEL=100
 		RAMDISK_SIZE=500
 	;;
 	obsvx2|obsix9)
