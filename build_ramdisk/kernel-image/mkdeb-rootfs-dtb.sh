@@ -27,11 +27,11 @@
 
 #set -x
 
-if [ "$#" -ne "8" ] ; then
+if [ "$#" -ne "9" ] ; then
 	echo
-	echo "usage: $0 [VERSION] [ARCH] [MODEL] [bzImage] [flashcfg] [MD5] [modules] [System.map]"
+	echo "usage: $0 [VERSION] [ARCH] [MODEL] [bzImage] [flashcfg] [MD5] [modules] [System.map] [DTB file]"
 	echo
-	echo "ex) $0 1.0.0-0 amd64 obsvx2 bzImage flashcfg MD5.obsvx2 modules.tgz System.map"
+	echo "ex) $0 1.0.0-0 arm64 obsa16 Image flashcfg MD5.obsa16 modules.tgz System.map dtbfile"
 	echo
 	exit 1
 fi
@@ -44,16 +44,11 @@ FLASHCFG=$5
 MD5=$6
 MODULES=$7
 MAP=$8
+DTB=$9
 FIRM_DIR=$(dirname $FIRM)
 
-if [ "$MODEL" == "obsvx2" ]; then
-	DESCRIPTION="Linux firmware for OpenBlocks IoT VX2"
-	TARGET=$MODEL
-elif [ "$MODEL" == "obsbx1s" ]; then
-	DESCRIPTION="Linux firmware for OpenBlocks IoT BX1S"
-	TARGET=$MODEL
-elif [ "$MODEL" == "obsix9" ]; then
-	DESCRIPTION="Linux firmware for OpenBlocks IX9"
+if [ "$MODEL" == "obsa16" ]; then
+	DESCRIPTION="Linux firmware for OpenBlocks A16"
 	TARGET=$MODEL
 else
 	echo
@@ -81,6 +76,7 @@ cp -f $FLASHCFG $pkgdir/etc/flashcfg.sh
 cp -f $MD5 $pkgdir/etc/
 cp -f $MODULES $pkgdir/etc/
 cp -f $MAP $pkgdir/etc/
+cp -f $DTB $pkgdir/etc/
 
 rm -rf ${pkgdir}.deb
 

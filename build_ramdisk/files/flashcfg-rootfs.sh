@@ -161,6 +161,50 @@ firmware)
 		umount ${WORK_DIR}
 		rmdir ${WORK_DIR}
 		;;
+	obsa16)
+		# check MD5
+		for file in Image imx8mp-evk.dtb modules.tgz
+		do
+			if [ -f ${FIRM_FILE}/${file} ]; then
+				_get_md5 ${file}
+				val=(`md5sum ${FIRM_FILE}/${file}`)
+				if [ "$MD5_RET" != $val ]; then
+					echo "$LINENO: ${file} is broken, write firmware failed."
+					[ "$DEBUG" == "yes" ] && echo "${FIRM_FILE}/${file}: MD5.${MODEL}=$MD5_RET, source=$val"
+					exit 1
+				fi
+			fi
+		done
+
+		# remove previous firmware
+		mkdir -p ${WORK_DIR}
+		mount ${FIRM_DIR} ${WORK_DIR}
+
+		# copy new firmware
+		if [ -f ${FIRM_FILE}/Image ]; then
+			${TEST} cp -f ${FIRM_FILE}/Image ${WORK_DIR}
+		fi
+
+		if [ -f ${FIRM_FILE}/imx8mp-evk.dtb ]; then
+			${TEST} cp -f ${FIRM_FILE}/imx8mp-evk.dtb ${WORK_DIR}
+		fi
+
+		if [ -f ${FIRM_FILE}/openblocks-release ]; then
+			${TEST} cp -f ${FIRM_FILE}/openblocks-release ${WORK_DIR}
+		fi
+
+		if [ -f ${FIRM_FILE}/modules.tgz ]; then
+			${TEST} tar xfzp ${FIRM_FILE}/modules.tgz -C /lib
+		fi
+
+		if [ -f ${FIRM_FILE}/System.map ]; then
+			${TEST} cp -f ${FIRM_FILE}/System.map /boot
+		fi
+		sync
+
+		umount ${WORK_DIR}
+		rmdir ${WORK_DIR}
+		;;
 	*)
 		;;
 	esac

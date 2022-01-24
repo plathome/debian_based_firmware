@@ -53,9 +53,6 @@ if [ "$MODEL" == "obsvx2" ]; then
 elif [ "$MODEL" == "obsbx1s" ]; then
 	DESCRIPTION="Linux firmware for OpenBlocks IoT BX1S"
 	TARGET=$MODEL
-elif [ "$MODEL" == "obsa16" ]; then
-	DESCRIPTION="Linux firmware for OpenBlocks IoT A16"
-	TARGET=$MODEL
 elif [ "$MODEL" == "obsix9" ]; then
 	DESCRIPTION="Linux firmware for OpenBlocks IX9"
 	TARGET=$MODEL
