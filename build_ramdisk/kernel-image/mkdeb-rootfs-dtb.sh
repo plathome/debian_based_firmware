@@ -27,11 +27,11 @@
 
 #set -x
 
-if [ "$#" -ne "9" ] ; then
+if [ "$#" -ne "8" ] ; then
 	echo
-	echo "usage: $0 [VERSION] [ARCH] [MODEL] [bzImage] [flashcfg] [MD5] [modules] [System.map] [DTB file]"
+	echo "usage: $0 [VERSION] [ARCH] [MODEL] [bzImage] [flashcfg] [MD5] [modules] [System.map] [DTB file] [uboot env file]"
 	echo
-	echo "ex) $0 1.0.0-0 arm64 obsa16 Image flashcfg MD5.obsa16 modules.tgz System.map dtbfile"
+	echo "ex) $0 1.0.0-0 arm64 obsa16 Image flashcfg MD5.obsa16 modules.tgz System.map dtbfile update_ubootenv.sh"
 	echo
 	exit 1
 fi
@@ -42,9 +42,8 @@ MODEL=$3
 FIRM=$4
 FLASHCFG=$5
 MD5=$6
-MODULES=$7
-MAP=$8
-DTB=$9
+DTB=$7
+RELDIR=$8
 FIRM_DIR=$(dirname $FIRM)
 
 if [ "$MODEL" == "obsa16" ]; then
@@ -74,9 +73,10 @@ mv -f /tmp/control.new $pkgdir/DEBIAN/control
 cp -f $FIRM $pkgdir/etc/
 cp -f $FLASHCFG $pkgdir/etc/flashcfg.sh
 cp -f $MD5 $pkgdir/etc/
-cp -f $MODULES $pkgdir/etc/
-cp -f $MAP $pkgdir/etc/
+cp -f ${RELDIR}/modules.tgz $pkgdir/etc/
+cp -f ${RELDIR}/System.map $pkgdir/etc/
 cp -f $DTB $pkgdir/etc/
+cp -f ${RELDIR}/update_ubootenv.sh $pkgdir/etc/
 
 rm -rf ${pkgdir}.deb
 
