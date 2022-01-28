@@ -180,7 +180,7 @@ $CC -o ${OBSTOOLDIR}/template-wav-play/usr/sbin/wav-play ${FILESDIR}/wav-play.c 
 $STRIP ${OBSTOOLDIR}/template-wav-play/usr/sbin/wav-play
 
 case $TARGET in
-obsix*|obsvx*|obsbx*)
+obsix*|obsvx*|obsbx*|obsa16*)
 	echo "WD-KEEPALIVE"
 	mkdir -p ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
