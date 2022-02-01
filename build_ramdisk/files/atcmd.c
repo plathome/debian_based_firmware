@@ -1,3 +1,4 @@
+#define DEBUG
 /*	$ssdlinux: runled_bx1.c,v 1.17 2014/01/07 07:19:06 yamagata Exp $	*/
 /*
  * Copyright (c) 2008-2022 Plat'Home CO., LTD.
@@ -65,6 +66,7 @@
 #define CMD_CGSN "CGSN"
 
 #define AT_AT "at\r\n"
+#define AT_ATE0 "ate0\r\n"
 #define AT_POFF "at^smso\r\n"
 #define AT_POFF_U200 "at+cpwroff\r\n"
 #define AT_POFF_UM04 "at*dpwroff\r\n"
@@ -271,6 +273,8 @@ int set_power_kym11(int val)
 int set_power_s710(int val, char *gpio_pin)
 {
 #if defined(CONFIG_OBSVX1)
+	system("/usr/sbin/obsvx1-modem power low");
+	sleep(1);
 	system("/usr/sbin/obsvx1-modem power high");
 	sleep(4);
 	system("/usr/sbin/obsvx1-modem power low");
@@ -606,7 +610,9 @@ int get_time(char *buf)
 	char *p1;
 	char year[3], mon[3], day[3], hour[3], min[3], sec[3];
 
-//printf("buf=%s\n", buf);
+#ifdef DEBUG
+printf("buf=%s\n", buf);
+#endif
 	/* check error */
 	if(strstr(buf, "ERROR")){
 		return -1;
@@ -959,6 +965,9 @@ int get_ati_s(char *buf, char* match)
 	char *p1,*p2;
 	char work[32];
 
+#ifdef DEBUG
+printf("buf=**%s**", buf);
+#endif
 	/* check error */
 	if(strstr(buf, "ERROR")){
 		return -1;
@@ -1061,6 +1070,9 @@ int get_cgsn_s(char *buf)
 {
 	char *p1;
 
+#ifdef DEBUG
+printf("buf=**%s**", buf);
+#endif
 	/* check error */
 	if(strstr(buf, "ERROR")){
 		return -1;
@@ -1223,6 +1235,10 @@ int main(int ac, char *av[])
 				}
 				else if(strncmp(S710, MNAME, sizeof(S710)) == 0
 					|| strncmp(S710E, MNAME, sizeof(S710E)) == 0){
+#if defined(CONFIG_OBSVX1)
+					system("/usr/sbin/obsvx1-modem power low");
+					sleep(1);
+#endif
 					send_atcmd(fd, AT_POFF_S710, buf, 100);
 				}
 				else if(strncmp(EC25, MNAME, sizeof(EC25)) == 0){
@@ -1555,11 +1571,16 @@ int main(int ac, char *av[])
 			else if(strncmp(S710, MNAME, sizeof(S710)) == 0
 				|| strncmp(S710E, MNAME, sizeof(S710E)) == 0){
 				send_atcmd(fd, AT_GMR, buf, 100);
-				if(get_ati_s(buf, "SIM7100JC")){
+				if(!get_ati_s(buf, "SIM7100JC")){
+					puts("");
+				}
+				else if(!get_ati_s(buf, "SIM7600JC-H")){
+					puts("");
+				}
+				else{
 					ret = -1;
 					break;
 				}
-				puts("");
 			}
 		}
 		else if(strncmp(CMD_CTZU, av[i], sizeof(CMD_CTZU)) == 0){
@@ -1653,8 +1674,12 @@ int main(int ac, char *av[])
 
 					send_atcmd(fd, AT_AT, buf, 0);
 					send_atcmd(fd, AT_CCLK, buf, 200);
-					if(strstr(buf, "70/01/01,09:"))
+					if(strstr(buf, "70/01/01")){
 						continue;
+					}
+					else if(strstr(buf, "80/01/01,")){
+						continue;
+					}
 					if(!get_cclk(buf)){
 						break;
 					}
@@ -1722,6 +1747,7 @@ int main(int ac, char *av[])
 			else if(strncmp(S710, MNAME, sizeof(S710)) == 0
 				|| strncmp(S710E, MNAME, sizeof(S710E)) == 0){
 //				send_atcmd(fd, AT_AT, buf, 100);
+				send_atcmd(fd, AT_ATE0, buf, 100);
 				send_atcmd(fd, AT_CGSN, buf, 100);
 				if(get_cgsn_s(buf)){
 					ret = -1;
