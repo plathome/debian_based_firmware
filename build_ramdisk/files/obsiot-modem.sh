@@ -64,6 +64,10 @@ function _call_obsutil() {
 			echo "S710"
 			exit 9
 			;;
+		0502)
+			echo "S760"
+			exit 11
+			;;
 		FFFF|ffff)
 			echo "none"
 			exit 0
@@ -91,6 +95,10 @@ function _call_obsutil() {
 		0501)
 			echo "S710E"
 			exit 9
+			;;
+		0502)
+			echo "S760E"
+			exit 11
 			;;
 		0601)
 			echo "EC25"
@@ -123,6 +131,10 @@ function _call_obsutil() {
 		0501)
 			echo "S710E"
 			exit 9
+			;;
+		0502)
+			echo "S760E"
+			exit 11
 			;;
 		0601)
 			echo "EC25"

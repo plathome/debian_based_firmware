@@ -1,4 +1,4 @@
-#define DEBUG
+//#define DEBUG
 /*	$ssdlinux: runled_bx1.c,v 1.17 2014/01/07 07:19:06 yamagata Exp $	*/
 /*
  * Copyright (c) 2008-2022 Plat'Home CO., LTD.
@@ -106,7 +106,9 @@
 #define KYM11 "KYM11\n"
 #define UM04 "UM04\n"
 #define S710 "S710\n"
+#define S760 "S760\n"
 #define S710E "S710E\n"
+#define S760E "S760E\n"
 #define EC25 "EC25\n"
 #define EC25E "EC25E\n"
 #define NONE "none\n"
@@ -1153,10 +1155,12 @@ int main(int ac, char *av[])
 				else if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
 					set_power_u200(1, POWERSW_U200);
 				}
-				else if(strncmp(S710E, MNAME, sizeof(S710E)) == 0){
+				else if(strncmp(S710E, MNAME, sizeof(S710E)) == 0
+						|| strncmp(S760E, MNAME, sizeof(S760E)) == 0){
 					set_power_s710(1, POWERSW_U200);
 				}
-				else if(strncmp(S710, MNAME, sizeof(S710)) == 0){
+				else if(strncmp(S710, MNAME, sizeof(S710)) == 0
+						|| strncmp(S760, MNAME, sizeof(S760)) == 0){
 					set_power_s710(1, POWERSW);
 				}
 				else if(strncmp(EC25, MNAME, sizeof(EC25)) == 0){
@@ -1182,7 +1186,9 @@ int main(int ac, char *av[])
 					sleep(12);
 				}
 				else if(strncmp(S710, MNAME, sizeof(S710)) == 0
-					|| strncmp(S710E, MNAME, sizeof(S710E)) == 0){
+					|| strncmp(S710E, MNAME, sizeof(S710E)) == 0
+					|| strncmp(S760, MNAME, sizeof(S760)) == 0
+					|| strncmp(S760E, MNAME, sizeof(S760E)) == 0){
 					sleep(12);
 				}
 				else if(strncmp(EC25, MNAME, sizeof(EC25)) == 0){
@@ -1190,7 +1196,9 @@ int main(int ac, char *av[])
 				}
 			}
 			if(strncmp(S710, MNAME, sizeof(S710)) == 0
-				|| strncmp(S710E, MNAME, sizeof(S710E)) == 0){
+				|| strncmp(S710E, MNAME, sizeof(S710E)) == 0
+				|| strncmp(S760, MNAME, sizeof(S760)) == 0
+				|| strncmp(S760E, MNAME, sizeof(S760E)) == 0){
 				// disable autocsq
 				if(fd == 0 && init_modem(&fd)){
 					end_modem(&fd);
@@ -1234,7 +1242,9 @@ int main(int ac, char *av[])
 					send_atcmd(fd, AT_POFF_UM04, buf, 100);
 				}
 				else if(strncmp(S710, MNAME, sizeof(S710)) == 0
-					|| strncmp(S710E, MNAME, sizeof(S710E)) == 0){
+					|| strncmp(S710E, MNAME, sizeof(S710E)) == 0
+					|| strncmp(S760, MNAME, sizeof(S760)) == 0
+					|| strncmp(S760E, MNAME, sizeof(S760E)) == 0){
 #if defined(CONFIG_OBSVX1)
 					system("/usr/sbin/obsvx1-modem power low");
 					sleep(1);
@@ -1289,7 +1299,8 @@ int main(int ac, char *av[])
 					return -1;
 				}
 			}
-			else if(strncmp(S710E, MNAME, sizeof(S710E)) == 0){
+			else if(strncmp(S710E, MNAME, sizeof(S710E)) == 0
+						|| strncmp(S760E, MNAME, sizeof(S760E)) == 0){
 				if(access(MODEM, F_OK) == 0){
 					set_reset_u200(RESETSW_U200);
 				}
@@ -1332,7 +1343,9 @@ int main(int ac, char *av[])
 				sleep(6);
 			}
 			else if(strncmp(S710E, MNAME, sizeof(S710E)) == 0
-				|| strncmp(S710, MNAME, sizeof(S710)) == 0){
+				|| strncmp(S710, MNAME, sizeof(S710)) == 0
+				|| strncmp(S760E, MNAME, sizeof(S760E)) == 0
+				|| strncmp(S760, MNAME, sizeof(S760)) == 0){
 				sleep(3);
 			}
 		}
@@ -1360,7 +1373,9 @@ int main(int ac, char *av[])
 				send_atcmd(fd, AT_PRST_UM04, buf, 100);
 			}
 			else if(strncmp(S710, MNAME, sizeof(S710)) == 0
-				|| strncmp(S710E, MNAME, sizeof(S710E)) == 0){
+				|| strncmp(S710E, MNAME, sizeof(S710E)) == 0
+				|| strncmp(S760, MNAME, sizeof(S760)) == 0
+				|| strncmp(S760E, MNAME, sizeof(S760E)) == 0){
 				send_atcmd(fd, AT_AT, buf, 0);
 				send_atcmd(fd, AT_PRST_S710, buf, 100);
 			}
@@ -1395,7 +1410,9 @@ int main(int ac, char *av[])
 				sleep(11);
 			}
 			else if(strncmp(S710E, MNAME, sizeof(S710E)) == 0
-					|| strncmp(S710, MNAME, sizeof(S710)) == 0){
+					|| strncmp(S710, MNAME, sizeof(S710)) == 0
+					|| strncmp(S760E, MNAME, sizeof(S760E)) == 0
+					|| strncmp(S760, MNAME, sizeof(S760)) == 0){
 				sleep(6);
 			}
 			else if(strncmp(EC25, MNAME, sizeof(EC25)) == 0){
@@ -1448,6 +1465,8 @@ int main(int ac, char *av[])
 						|| strncmp(U200, MNAME, sizeof(U200)) == 0
 						|| strncmp(S710, MNAME, sizeof(S710)) == 0
 						|| strncmp(S710E, MNAME, sizeof(S710E)) == 0
+						|| strncmp(S760, MNAME, sizeof(S760)) == 0
+						|| strncmp(S760E, MNAME, sizeof(S760E)) == 0
 						|| strncmp(EC25, MNAME, sizeof(EC25)) == 0){
 				send_atcmd(fd, AT_AT, buf, 0);
 				send_atcmd(fd, AT_CSQ, buf, 200);
@@ -1499,7 +1518,9 @@ int main(int ac, char *av[])
 				}
 			}
 			else if(strncmp(S710, MNAME, sizeof(S710)) == 0
-				|| strncmp(S710E, MNAME, sizeof(S710E)) == 0){
+				|| strncmp(S710E, MNAME, sizeof(S710E)) == 0
+				|| strncmp(S760, MNAME, sizeof(S760)) == 0
+				|| strncmp(S760E, MNAME, sizeof(S760E)) == 0){
 				send_atcmd(fd, AT_AT, buf, 0);
 				send_atcmd(fd, AT_CCID_S, buf, 100);
 				if(get_ccid(buf, 2)){
@@ -1569,12 +1590,14 @@ int main(int ac, char *av[])
 				puts("");
 			}
 			else if(strncmp(S710, MNAME, sizeof(S710)) == 0
-				|| strncmp(S710E, MNAME, sizeof(S710E)) == 0){
+				|| strncmp(S710E, MNAME, sizeof(S710E)) == 0
+				|| strncmp(S760, MNAME, sizeof(S760)) == 0
+				|| strncmp(S760E, MNAME, sizeof(S760E)) == 0){
 				send_atcmd(fd, AT_GMR, buf, 100);
 				if(!get_ati_s(buf, "SIM7100JC")){
 					puts("");
 				}
-				else if(!get_ati_s(buf, "SIM7600JC-H")){
+				else if(!get_ati_s(buf, "SIM7600")){
 					puts("");
 				}
 				else{
@@ -1592,6 +1615,8 @@ int main(int ac, char *av[])
 						|| strncmp(U200, MNAME, sizeof(U200)) == 0
 						|| strncmp(S710, MNAME, sizeof(S710)) == 0
 						|| strncmp(S710E, MNAME, sizeof(S710E)) == 0
+						|| strncmp(S760, MNAME, sizeof(S760)) == 0
+						|| strncmp(S760E, MNAME, sizeof(S760E)) == 0
 						|| strncmp(EC25, MNAME, sizeof(EC25)) == 0
 						|| strncmp(EC25E, MNAME, sizeof(EC25E)) == 0){
 				if(av[i+1] == NULL || (av[i+1] != NULL && av[i+1][0] != '0' && av[i+1][0] != '1')){
@@ -1653,7 +1678,9 @@ int main(int ac, char *av[])
 			if(strncmp(U200E, MNAME, sizeof(U200E)) == 0
 						|| strncmp(U200, MNAME, sizeof(U200)) == 0
 						|| strncmp(S710, MNAME, sizeof(S710)) == 0
-						|| strncmp(S710E, MNAME, sizeof(S710E)) == 0){
+						|| strncmp(S710E, MNAME, sizeof(S710E)) == 0
+						|| strncmp(S760, MNAME, sizeof(S760)) == 0
+						|| strncmp(S760E, MNAME, sizeof(S760E)) == 0){
 				for(j=0; j<100; j++){
 					sprintf(cmd, AT_CTZU, "0");
 					send_atcmd(fd, cmd, buf, 100);
@@ -1745,7 +1772,9 @@ int main(int ac, char *av[])
 				}
 			}
 			else if(strncmp(S710, MNAME, sizeof(S710)) == 0
-				|| strncmp(S710E, MNAME, sizeof(S710E)) == 0){
+				|| strncmp(S710E, MNAME, sizeof(S710E)) == 0
+				|| strncmp(S760, MNAME, sizeof(S760)) == 0
+				|| strncmp(S760E, MNAME, sizeof(S760E)) == 0){
 //				send_atcmd(fd, AT_AT, buf, 100);
 				send_atcmd(fd, AT_ATE0, buf, 100);
 				send_atcmd(fd, AT_CGSN, buf, 100);

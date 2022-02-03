@@ -122,7 +122,7 @@ MODEM=`/usr/sbin/obsiot-modem.sh`
 
 if [ "$MODEM" != "none" -a \( "$MODEL" == "obsvx1" -o "$MODEL" == "obsvx2" \) ]; then
 	obsvx1-modem init
-	[ "$MODEM" == "S710" ] && obsvx1-modem power low
+	[ "$MODEM" == "S710" -o "$MODEM" == "S760" ] && obsvx1-modem power low
 	atcmd PON
 	[ "$MODEM" == "EC25" ] && obsvx1-modem power low
 elif [ "$MODEL" == "obsbx1" ]; then
@@ -140,7 +140,7 @@ elif [ "$MODEL" == "obsbx1" ]; then
 		echo high > $GPIOPATH/gpio202/direction
 		atcmd PON
 		;;
-	KYM11|S710E)
+	KYM11|S710E|S760E)
 		echo 202 > $GPIOPATH/export	# 3G reset
 		echo high > $GPIOPATH/gpio202/direction
 		echo 200 > $GPIOPATH/export	# 3G modem power
@@ -152,7 +152,7 @@ elif [ "$MODEL" == "obsbx1" ]; then
 			sleep 20
 		fi
 		;;
-	EHS6|S710)
+	EHS6|S710|S760)
 		echo 165 > $GPIOPATH/export	# 3G modem power
 		echo low > $GPIOPATH/gpio165/direction
 		echo 15 > $GPIOPATH/export	# 3G reset
@@ -172,13 +172,13 @@ case $MODEM in
 EHS6)
 	set_time_ehs6
 	;;
-U200|S710)
+U200)
 	set_time_u200
 	;;
-S710)
+S710|S760)
 	set_time_s710
 	;;
-U200E|KYM11|UM04|S710E|EC25|none)
+U200E|KYM11|UM04|S710E|S760E|EC25|none)
 	echo "nitz: skipped time synchronization"
 	;;
 *)
