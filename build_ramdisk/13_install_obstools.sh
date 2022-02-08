@@ -55,7 +55,7 @@ obsix*)
 		;;
 	esac
 	;;
-obsa16*)
+obsa16*|obsfx1)
 	pkglist="obs_util obs_hwclock pshd runled wav_play wd_keepalive"
 	;;
 *) exit 1 ;;
@@ -71,7 +71,7 @@ obsvx*)
 obsbx*)
 	CFLAGS="-Wall -I/usr/include/${ARCH}-linux-gnu${ABI}/ -L/usr/lib/${ARCH}-linux-gnu${ABI}/ -L/lib/${ARCH}-linux-gnu${ABI}/ -m32 -O2 -march=core2 -mtune=core2 -msse3 -mfpmath=sse -mstackrealign -fno-omit-frame-pointer -DCONFIG_OBSBX1"
 	;;
-obsa16*)
+obsa16*|obsfx1)
 	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -fno-omit-frame-pointer -DCONFIG_OBSA16"
 	;;
 obsix*)
@@ -85,7 +85,7 @@ esac
 #
 
 case $TARGET in
-obsbx*|obsvx*|obsa16*)
+obsbx*|obsvx*|obsa16*|obsfx1)
 	echo "ATCMD"
 	mkdir -p ${OBSTOOLDIR}/template-atcmd/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-atcmd/usr/sbin/atcmd ${FILESDIR}/atcmd.c $CFLAGS
@@ -108,7 +108,7 @@ obsbx*|obsvx*|obsa16*)
 esac
 
 case $TARGET in
-obsbx*|obsvx*|obsa16*)
+obsbx*|obsvx*|obsa16*|obsfx1)
 	echo "OBS-HWCLOCK"
 	mkdir -p ${OBSTOOLDIR}/template-obs-hwclock/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-obs-hwclock/usr/sbin/obs-hwclock ${FILESDIR}/obs-hwclock.c $CFLAGS
@@ -180,7 +180,7 @@ $CC -o ${OBSTOOLDIR}/template-wav-play/usr/sbin/wav-play ${FILESDIR}/wav-play.c 
 $STRIP ${OBSTOOLDIR}/template-wav-play/usr/sbin/wav-play
 
 case $TARGET in
-obsix*|obsvx*|obsbx*|obsa16*)
+obsix*|obsvx*|obsbx*|obsa16*|obsfx1)
 	echo "WD-KEEPALIVE"
 	mkdir -p ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
@@ -212,7 +212,7 @@ case $TARGET in
 obsvx*|obsix*)
 	pkglist="instfirm obs_createkeys setup_gpio"
 	;;
-obsa16*)
+obsa16*|obsfx1)
 	pkglist="obs_createkeys setup_macether setup_gpio"
 	;;
 *)
@@ -226,7 +226,7 @@ cp -f ${FILESDIR}/setup-gpio.sh ${OBSTOOLDIR}/template-setup-gpio/usr/sbin/
 chmod 555 ${OBSTOOLDIR}/template-setup-gpio/usr/sbin/setup-gpio.sh
 
 case $TARGET in
-obsvx*|obsix9|obsa16*)
+obsvx*|obsix9|obsa16*|obsfx1)
 	echo "FLASHCFG"
 	FLASHCFG=flashcfg-rootfs.sh
 	[ "$TARGET" == "obsvx1" -o "$TARGET" == "obsix9r" ] && FLASHCFG=flashcfg.sh
@@ -262,7 +262,7 @@ bullseye)
 esac
 
 case $TARGET in
-obsa16*)
+obsa16*|obsfx1)
 	echo "OBS-MACADDR"
 	mkdir -p ${OBSTOOLDIR}/template-obs-macaddr/usr/sbin/
 	cp -f ${FILESDIR}/obs-macaddr.sh ${OBSTOOLDIR}/template-obs-macaddr/usr/sbin/

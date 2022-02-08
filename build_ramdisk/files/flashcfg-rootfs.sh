@@ -161,7 +161,7 @@ firmware)
 		umount ${WORK_DIR}
 		rmdir ${WORK_DIR}
 		;;
-	obsa16)
+	obsa16|obsfx1)
 		# check MD5
 		for file in Image imx8mp-evk.dtb modules.tgz
 		do

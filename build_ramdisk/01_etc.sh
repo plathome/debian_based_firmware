@@ -52,7 +52,7 @@ if [ "$DIST" == "stretch" ]; then
 fi
 
 case ${TARGET} in
-obsbx*|obsvx*|obsa16*)
+obsbx*|obsvx*|obsa16*|obsfx1)
 	if [ "$DIST" != "buster" ] && [ "$DIST" != "bullseye" ]; then
 		chmod 755 ${DISTDIR}/etc/init.d/bluetooth
 		chroot ${DISTDIR} /sbin/insserv -rf bluetooth

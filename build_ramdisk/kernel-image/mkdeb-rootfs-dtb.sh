@@ -46,7 +46,7 @@ DTB=$7
 RELDIR=$8
 FIRM_DIR=$(dirname $FIRM)
 
-if [ "$MODEL" == "obsa16" ]; then
+if [ "$MODEL" == "obsa16" -o "$MODEL" == "obsfx1" ]; then
 	DESCRIPTION="Linux firmware for OpenBlocks A16"
 	TARGET=$MODEL
 else
