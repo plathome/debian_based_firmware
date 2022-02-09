@@ -37,7 +37,8 @@ else
 	KERN_COMPILE_OPTS="ARCH=$KERN_ARCH"
 fi
 case $TARGET in
-obsa16*|obsfx1) KERN_COMPILE_OPTS=" $KERN_COMPILE_OPTS INSTALL_MOD_STRIP=1" ;;
+obsa16*) KERN_COMPILE_OPTS=" $KERN_COMPILE_OPTS INSTALL_MOD_STRIP=1" ;;
+obsfx1) KERN_COMPILE_OPTS=" $KERN_COMPILE_OPTS INSTALL_MOD_STRIP=1 KLIB_BUILD=${LINUX_SRC} KLIB=${MOUNTDIR} " ;;
 esac
 
 _RAMDISK_IMG=${DISTDIR}/../${RAMDISK_IMG}
@@ -81,25 +82,30 @@ obsvx*)
 		fi
 	fi
 	;;
+obsfx1)
+	DRIVER_SRC="`dirname ${LINUX_SRC}`/${WIFI_DRIVER}"
+
+    if [ ! -d ${DRIVER_SRC} ]; then
+        echo "${DRIVER_SRC} is not found."
+        exit 1
+    fi
+    if [ ! -f ${LINUX_SRC}/vmlinux ]; then
+        echo "Linux kernel build is not complete."
+        exit 1
+    fi
+    (cd ${DRIVER_SRC}; [ ! -f .config ] && make defconfig-lwb5p ${KERN_COMPILE_OPTS})
+    (cd ${DRIVER_SRC}; make ${KERN_COMPILE_OPTS})
+    (cd ${DRIVER_SRC}; make modules_install ${KERN_COMPILE_OPTS} INSTALL_MOD_PATH=${MOUNTDIR})
+	;;
 *)
 	;;
 esac
 rm -f ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/source ${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/build
 
-#case $TARGET in
-#obsgem1)
-#	if [ -d ${FILESDIR}/firmware-${TARGET}-${KERNEL} ]; then
-#		mkdir -p ${MOUNTDIR}/lib/firmware
-#		cp -a ${FILESDIR}/firmware-${TARGET}-${KERNEL}/* ${MOUNTDIR}/lib/firmware
-#	fi
-#	;;
-#*)
-	if [ -d ${FILESDIR}/firmware-${TARGET} ]; then
-		mkdir -p ${MOUNTDIR}/lib/firmware
-		cp -a ${FILESDIR}/firmware-${TARGET}/* ${MOUNTDIR}/lib/firmware
-	fi
-#	;;
-#esac
+if [ -d ${FILESDIR}/firmware-${TARGET} ]; then
+	mkdir -p ${MOUNTDIR}/lib/firmware
+	cp -a ${FILESDIR}/firmware-${TARGET}/* ${MOUNTDIR}/lib/firmware
+fi
 
 	depmod -ae -b ${MOUNTDIR} -F ${MOUNTDIR}/boot/System.map ${KERNEL}${LOCAL_VER}
 
