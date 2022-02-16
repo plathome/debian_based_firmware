@@ -38,6 +38,7 @@ obs_macaddr_ver=1
 obsiot_power_ver=3
 obsvx1_gpio_ver=1
 obsvx1_modem_ver=2
+obsfx1_modem_ver=1
 pshd_ver=1
 runled_ver=1
 setup_macether_ver=1

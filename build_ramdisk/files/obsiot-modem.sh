@@ -47,6 +47,12 @@ function _call_obsutil() {
 			exit
 		fi
 		;;
+	04)
+		if [ "$1" != "obsfx1" ]; then
+			echo "ERROR${LINENO}"
+			exit
+		fi
+		;;
 	esac
 
 	case ${LIST[0]} in
@@ -147,6 +153,14 @@ function _call_obsutil() {
 		*)
 			echo "ERROR${LINENO} (${LIST[0]}${LIST[1]}${LIST[2]})"
 			exit 8
+			;;
+		esac
+		;;
+	04)
+		case "${LIST[1]}${LIST[2]}" in
+		0502)
+			echo "S760E"
+			exit 11
 			;;
 		esac
 		;;
@@ -336,4 +350,7 @@ elif [ "$MODEL" == "obsbx1" ]; then
 		exit 8
 		;;
 	esac
+elif [ "$MODEL" == "obsfx1" ]; then
+	_call_obsutil "obsfx1"
+	exit 10
 fi

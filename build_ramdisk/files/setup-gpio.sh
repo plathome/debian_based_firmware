@@ -65,7 +65,14 @@ obsbx*)
 	[ ! -d $GPIOPATH/gpio41 ] && echo 41 > $GPIOPATH/export
 	[ ! -d $GPIOPATH/gpio42 ] && echo 42 > $GPIOPATH/export
 	;;
-obsa16|obsfx1)
+obsa16*)
+	# pshd
+	[ ! -d $GPIOPATH/gpio466 ] && echo 86 > $GPIOPATH/export; \
+		echo both > $GPIOPATH/gpio86/edge
+	;;
+obsfx1)
+	# modem/usb/etc
+	obsfx1-modem init
 	# pshd
 	[ ! -d $GPIOPATH/gpio466 ] && echo 86 > $GPIOPATH/export; \
 		echo both > $GPIOPATH/gpio86/edge

@@ -41,6 +41,7 @@
 #include <errno.h>
 
 #define OBSVX1_MODEM "/usr/sbin/obsvx1-modem"
+#define OBSFX1_MODEM "/usr/sbin/obsfx1-modem"
 #define DEFAULT_MODEM "/dev/ttyMODEM0"
 #define POWERSW "/sys/class/gpio/gpio165/value"
 #define RESETSW "/sys/class/gpio/gpio15/value"
@@ -197,6 +198,10 @@ int set_power_u200(int val, char *gpio_pin)
 	system("/usr/sbin/obsvx1-modem power low");
 	sleep(1);
 	system("/usr/sbin/obsvx1-modem power high");
+#elif defined(CONFIG_OBSFX1)
+	system("/usr/sbin/obsfx1-modem power low");
+	sleep(1);
+	system("/usr/sbin/obsfx1-modem power high");
 #else
 	int fd;
 
@@ -237,6 +242,10 @@ int set_power_kym11(int val)
 	system("/usr/sbin/obsvx1-modem power high");
 	sleep(3);
 	system("/usr/sbin/obsvx1-modem power low");
+#elif defined(CONFIG_OBSFX1)
+	system("/usr/sbin/obsfx1-modem power high");
+	sleep(3);
+	system("/usr/sbin/obsfx1-modem power low");
 #else
 	int fd;
 
@@ -280,6 +289,8 @@ int set_power_s710(int val, char *gpio_pin)
 	system("/usr/sbin/obsvx1-modem power high");
 	sleep(4);
 	system("/usr/sbin/obsvx1-modem power low");
+#elif defined(CONFIG_OBSFX1)
+	system("/usr/sbin/obsfx1-modem power low");
 #else
 	int fd;
 
@@ -322,6 +333,12 @@ int set_power_ec25(int val, char *gpio_pin)
 	system("/usr/sbin/obsvx1-modem power high");
 	sleep(1);
 	system("/usr/sbin/obsvx1-modem power low");
+#elif defined(CONFIG_OBSFX1)
+	system("/usr/sbin/obsfx1-modem power low");
+	sleep(1);
+	system("/usr/sbin/obsfx1-modem power high");
+	sleep(1);
+	system("/usr/sbin/obsfx1-modem power low");
 #else
 	int fd;
 
@@ -391,6 +408,10 @@ int set_reset_u200(char *gpio_pin)
 	system("/usr/sbin/obsvx1-modem reset1 low");
 	sleep(3);
 	system("/usr/sbin/obsvx1-modem reset1 high");
+#elif defined(CONFIG_OBSFX1)
+	system("/usr/sbin/obsfx1-modem reset1 high");
+	sleep(3);
+	system("/usr/sbin/obsfx1-modem reset1 low");
 #else
 	int fd;
 
@@ -420,6 +441,10 @@ int set_reset_kym11(char *gpio_reset)
 	system("/usr/sbin/obsvx1-modem reset1 low");
 	sleep(2);
 	system("/usr/sbin/obsvx1-modem reset1 high");
+#elif defined(CONFIG_OBSFX1)
+	system("/usr/sbin/obsfx1-modem reset1 low");
+	sleep(2);
+	system("/usr/sbin/obsfx1-modem reset1 high");
 #else
 	int fd;
 	struct timespec req, rem;
@@ -1094,7 +1119,7 @@ printf("buf=**%s**", buf);
 int main(int ac, char *av[])
 {
 	FILE *fp;
-#if defined(CONFIG_OBSVX1)
+#if defined(CONFIG_OBSVX1) || defined(CONFIG_OBSFX1)
 	struct stat sta;
 #endif
 	int fd=0;
@@ -1111,6 +1136,11 @@ int main(int ac, char *av[])
 #if defined(CONFIG_OBSVX1)
 	if(stat(OBSVX1_MODEM, &sta) == -1){
 		printf("%d: %s is not found.\n", __LINE__, OBSVX1_MODEM);
+		return 1;
+	}
+#elif defined(CONFIG_OBSFX1)
+	if(stat(OBSFX1_MODEM, &sta) == -1){
+		printf("%d: %s is not found.\n", __LINE__, OBSFX1_MODEM);
 		return 1;
 	}
 #endif
@@ -1155,13 +1185,19 @@ int main(int ac, char *av[])
 				else if(strncmp(UM04, MNAME, sizeof(UM04)) == 0){
 					set_power_u200(1, POWERSW_U200);
 				}
-				else if(strncmp(S710E, MNAME, sizeof(S710E)) == 0
-						|| strncmp(S760E, MNAME, sizeof(S760E)) == 0){
+				else if(strncmp(S710E, MNAME, sizeof(S710E)) == 0){
 					set_power_s710(1, POWERSW_U200);
 				}
 				else if(strncmp(S710, MNAME, sizeof(S710)) == 0
 						|| strncmp(S760, MNAME, sizeof(S760)) == 0){
 					set_power_s710(1, POWERSW);
+				}
+				else if(strncmp(S760E, MNAME, sizeof(S760E)) == 0){
+#if defined(CONFIG_OBSFX1)
+					set_power_s710(0, POWERSW_U200);
+#else
+					set_power_s710(1, POWERSW_U200);
+#endif
 				}
 				else if(strncmp(EC25, MNAME, sizeof(EC25)) == 0){
 					set_power_ec25(1, POWERSW_U200);
@@ -1247,6 +1283,9 @@ int main(int ac, char *av[])
 					|| strncmp(S760E, MNAME, sizeof(S760E)) == 0){
 #if defined(CONFIG_OBSVX1)
 					system("/usr/sbin/obsvx1-modem power low");
+					sleep(1);
+#elif defined(CONFIG_OBSFX1)
+					system("/usr/sbin/obsfx1-modem power high");
 					sleep(1);
 #endif
 					send_atcmd(fd, AT_POFF_S710, buf, 100);

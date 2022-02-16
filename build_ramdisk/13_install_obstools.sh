@@ -55,8 +55,11 @@ obsix*)
 		;;
 	esac
 	;;
-obsa16*|obsfx1)
+obsa16*)
 	pkglist="obs_util obs_hwclock pshd runled wav_play wd_keepalive"
+	;;
+obsfx1)
+	pkglist="atcmd obs_util obs_hwclock obsfx1_modem pshd runled wav_play wd_keepalive"
 	;;
 *) exit 1 ;;
 esac
@@ -71,8 +74,11 @@ obsvx*)
 obsbx*)
 	CFLAGS="-Wall -I/usr/include/${ARCH}-linux-gnu${ABI}/ -L/usr/lib/${ARCH}-linux-gnu${ABI}/ -L/lib/${ARCH}-linux-gnu${ABI}/ -m32 -O2 -march=core2 -mtune=core2 -msse3 -mfpmath=sse -mstackrealign -fno-omit-frame-pointer -DCONFIG_OBSBX1"
 	;;
-obsa16*|obsfx1)
+obsa16*)
 	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -fno-omit-frame-pointer -DCONFIG_OBSA16"
+	;;
+obsfx1)
+	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -fno-omit-frame-pointer -DCONFIG_OBSA16 -DCONFIG_OBSFX1 "
 	;;
 obsix*)
 	CFLAGS="-Wall -I/usr/${KERN_ARCH}-linux-gnu${ABI}/include -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -li2c -O2 -mstackrealign -fno-omit-frame-pointer -DCONFIG_OBSIX9"
@@ -158,6 +164,12 @@ obsvx*)
 	mkdir -p ${OBSTOOLDIR}/template-obsvx1-gpio/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-obsvx1-gpio/usr/sbin/obsvx1-gpio ${FILESDIR}/obsvx1-gpio.c $CFLAGS
 	$STRIP ${OBSTOOLDIR}/template-obsvx1-gpio/usr/sbin/obsvx1-gpio
+	;;
+obsfx1)
+	echo "OBSFX1-MODEM"
+	mkdir -p ${OBSTOOLDIR}/template-obsfx1-modem/usr/sbin/
+	$CC -o ${OBSTOOLDIR}/template-obsfx1-modem/usr/sbin/obsfx1-modem ${FILESDIR}/obsfx1-modem.c $CFLAGS
+	$STRIP ${OBSTOOLDIR}/template-obsfx1-modem/usr/sbin/obsfx1-modem
 	;;
 esac
 
