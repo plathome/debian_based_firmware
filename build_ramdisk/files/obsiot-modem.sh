@@ -162,6 +162,10 @@ function _call_obsutil() {
 			echo "S760E"
 			exit 11
 			;;
+		FFFF|ffff)
+			echo "none"
+			exit 0
+			;;
 		esac
 		;;
 	*)
