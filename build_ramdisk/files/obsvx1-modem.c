@@ -60,8 +60,7 @@
 #define I2C_NAME "/dev/i2c-5"
 #define SLAVE 0x20
 #define INIT_MODEM0	0x70
-//#define INIT_MODEM1	0xef
-#define INIT_MODEM1	0xee
+#define INIT_MODEM1	0xff
 
 #define POWER "power"
 #define RESET1 "reset1"
