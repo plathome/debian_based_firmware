@@ -15,6 +15,7 @@ OpenBlocksのファームウェアは、機種(Aファミリ, IoTファミリ, 6
 機種|Debian|TARGET|DIST|ARCH|ファームウェアを作成するホストのOS
 ---|---|---|---|---|---
 IX9|10|obsix9|buster|amd64|Debian GNU/Linux 10/amd64
+IX9|11|obsix9r|bullseye|amd64|Debian GNU/Linux 11/amd64
 IX9|10|obsix9r|buster|amd64|Debian GNU/Linux 10/amd64
 AX3|9|obsax3|stretch|armhf|Debian GNU/Linux 9/amd64
 AX3|8|obsax3|jessie|armhf|Debian GNU/Linux 8/amd64
@@ -53,8 +54,8 @@ BXn: BX0, BX1, BX1S, BX3, BX5
 作成ホストにgitパッケージをインストールします。
 
 ```
-# apt-get update
-# apt-get install git
+# apt update
+# apt install git
 ```
 
 Gitリポジトリを取得します。
@@ -120,6 +121,13 @@ $ git checkout -b ブランチ名 タグ名
 # ./build_crossenv-buster.sh
 ```
 
+* 作成するホストのOSが、Debian GNU/Linux 11/amd64の場合。
+
+```
+# cd build_ramdisk
+# ./build_crossenv-buster.sh
+```
+
 ## 3.4. カーネルソース
 
 ### 3.4.1. 取得
@@ -129,17 +137,17 @@ $ git checkout -b ブランチ名 タグ名
 以下は場所の例です。
 
 * TARGET=obsax3, DIST=wheezy, KERNEL=3.2.40, PATCHLEVEL=4の場合  
-http://ftp.plathome.co.jp/pub/OBSAX3/wheezy/3.2.40-4/linux-3.2.40-20140220.tar.gz
+https://ftp.plathome.co.jp/pub/OBSAX3/wheezy/3.2.40-4/linux-3.2.40-20140220.tar.gz
 * TARGET=obsa7, DIST=wheezy, KERNEL=3.2.40, PATCHLEVEL=4の場合  
-http://ftp.plathome.co.jp/pub/OBSA7/wheezy/3.2.40-4/linux-3.2.40-20140220.tar.gz
+https://ftp.plathome.co.jp/pub/OBSA7/wheezy/3.2.40-4/linux-3.2.40-20140220.tar.gz
 * TARGET=obsa6, DIST=wheezy, KERNEL=3.2.40, PATCHLEVEL=3の場合  
-http://ftp.plathome.co.jp/pub/OBSA6/wheezy/3.2.40-3/linux-3.2.40-20140220.tar.gz
+https://ftp.plathome.co.jp/pub/OBSA6/wheezy/3.2.40-3/linux-3.2.40-20140220.tar.gz
 * TARGET=obs600, DIST=wheezy, KERNEL=3.10.25, PATCHLEVEL=0の場合  
-http://ftp.plathome.co.jp/pub/OBS600/debian/files/wheezy/3.10.25-0/linux-3.10.25-obs600.tar.gz
+https://ftp.plathome.co.jp/pub/OBS600/debian/files/wheezy/3.10.25-0/linux-3.10.25-obs600.tar.gz
 * TARGET=obsbx1, DIST=wheezy, KERNEL=3.10.17, PATCHLEVEL=15の場合  
-http://ftp.plathome.co.jp/pub/BX1/wheezy/3.10.17-15/linux-3.10.17-20160309.tar.xz
+https://ftp.plathome.co.jp/pub/BX1/wheezy/3.10.17-15/linux-3.10.17-20160309.tar.xz
 * TARGET=obsvx1, DIST=jessie, KERNEL=4.4.26, PATCHLEVEL=1の場合  
-http://ftp.plathome.co.jp/pub/OBSVX1/jessie/4.4.26-1/linux-4.4.26-obs-20161027.tar.xz
+https://ftp.plathome.co.jp/pub/OBSVX1/jessie/4.4.26-1/linux-4.4.26-obs-20161027.tar.xz
 
 ### 3.4.2. 展開
 
@@ -165,7 +173,7 @@ debian-7.8.0-i386-DVD-1.iso
 debian-8.5.0-amd64-DVD-1.iso
 
 これらのファイルは  
-http://ftp.plathome.co.jp/pub/cdimages/debian/  
+https://ftp.plathome.co.jp/pub/cdimages/debian/  
 https://cdimage.debian.org/mirror/cdimage/archive/  
 からも取得できます。
 
