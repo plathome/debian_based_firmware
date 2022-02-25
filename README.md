@@ -10,7 +10,7 @@ Copyright (c) 2013-2022 Plat'Home CO., LTD.
 
 # 2. 対応ファームウェア
 
-OpenBlocksのファームウェアは、機種(Aファミリ, IoTファミリ, 600)とOS(Debian GNU/Linux)によって異なります。対応しているファームウェアは下の表をご覧ください。
+OpenBlocksのファームウェアは、機種(OpenBlocksシリーズ, OpenBlocks IoTシリーズ)とOS(Debian GNU/Linux)によって異なります。対応しているファームウェアは下の表をご覧ください。
 
 機種|Debian|TARGET|DIST|ARCH|ファームウェアを作成するホストのOS
 ---|---|---|---|---|---
@@ -136,18 +136,8 @@ $ git checkout -b ブランチ名 タグ名
 
 以下は場所の例です。
 
-* TARGET=obsax3, DIST=wheezy, KERNEL=3.2.40, PATCHLEVEL=4の場合  
-https://ftp.plathome.co.jp/pub/OBSAX3/wheezy/3.2.40-4/linux-3.2.40-20140220.tar.gz
-* TARGET=obsa7, DIST=wheezy, KERNEL=3.2.40, PATCHLEVEL=4の場合  
-https://ftp.plathome.co.jp/pub/OBSA7/wheezy/3.2.40-4/linux-3.2.40-20140220.tar.gz
-* TARGET=obsa6, DIST=wheezy, KERNEL=3.2.40, PATCHLEVEL=3の場合  
-https://ftp.plathome.co.jp/pub/OBSA6/wheezy/3.2.40-3/linux-3.2.40-20140220.tar.gz
-* TARGET=obs600, DIST=wheezy, KERNEL=3.10.25, PATCHLEVEL=0の場合  
-https://ftp.plathome.co.jp/pub/OBS600/debian/files/wheezy/3.10.25-0/linux-3.10.25-obs600.tar.gz
-* TARGET=obsbx1, DIST=wheezy, KERNEL=3.10.17, PATCHLEVEL=15の場合  
-https://ftp.plathome.co.jp/pub/BX1/wheezy/3.10.17-15/linux-3.10.17-20160309.tar.xz
-* TARGET=obsvx1, DIST=jessie, KERNEL=4.4.26, PATCHLEVEL=1の場合  
-https://ftp.plathome.co.jp/pub/OBSVX1/jessie/4.4.26-1/linux-4.4.26-obs-20161027.tar.xz
+* TARGET=obsix9r, DIST=bullseye, KERNEL=4.9.198, PATCHLEVEL=100の場合</br>
+https://ftp.plathome.co.jp/pub/OBSIX9R/bullseye/4.19.198-100/linux-4.19.198-obsiot-20211027.tar.xz
 
 ### 3.4.2. 展開
 
@@ -161,67 +151,44 @@ DebianのDVDイメージをDebianのミラーサイトからダウンロード�
 
 以下はファイル名の例です。
 
-* TARGET=obsax3, DIST=wheezyの場合  
-debian-7.7.0-armhf-DVD-1.iso
-* TARGET=obsa7, obsa6, DIST=wheezyの場合  
-debian-7.7.0-armel-DVD-1.iso
-* TARGET=obs600, DIST=wheezyの場合  
-debian-7.4.0-powerpc-DVD-1.iso
-* TARGET=obsbx1, DIST=wheezyの場合  
-debian-7.8.0-i386-DVD-1.iso
-* TARGET=obsvx1, DIST=jessieの場合  
-debian-8.5.0-amd64-DVD-1.iso
+* TARGET=obsix9r, DIST=bullseyeの場合</br>
+debian-11.1.0-amd64-DVD-1.iso
 
-これらのファイルは  
-https://ftp.plathome.co.jp/pub/cdimages/debian/  
-https://cdimage.debian.org/mirror/cdimage/archive/  
+これらのファイルは</br>
+https://ftp.plathome.co.jp/pub/cdimages/debian/</br>
+https://cdimage.debian.org/mirror/cdimage/archive/</br>
 からも取得できます。
 
 # 4. 作成
 
-ファームウェアを作成します。シェルスクリプトbuild_ramdisk/buildall.shのオプション-MにTARGET、-DにDISTを指定します。TARGET=obsax3、DIST=wheezyの場合、
+ファームウェアを作成します。シェルスクリプトbuild_ramdisk/buildall.shのオプション-MにTARGET、-DにDISTを指定します。 ARGET=obsix9r、DIST=bullseyeの場合、
 
 ```
 # cd build_ramdisk
-# ./buildall.sh -M obsax3 -D wheezy
+# ./buildall.sh -M obsix9r -D bullseye
 ```
 
 と実行します。
 
 作成されたファームウェア一式は、ディレクトリrelease/TARGET/DIST/KERNEL-PATCHLEVELに置かれます。TARGET, DIST,KERNEL, PATCHLEVELは、ご自身の文字列に置き換えてください。
 
-例えば、ディレクトリrelease/obsax3/wheezy/3.2.40-3には、以下のファイルが作成されます。
-
-* MD5.obsax3  
-MD5チェックサムファイル
-* System.map  
-カーネルのシステムマップファイル
-* kernel-image-3.2.40-3.deb  
-コマンドdpkgなどでインストールするためのパッケージ
-* ramdisk-wheezy.obsax3.img.lzma  
-ファームウェアのRAMディスクイメージ
-* uImage.initrd.obsax3  
-コマンドflashcfgでインストールするためのファームウェア
-* zImage.gz  
-ファームウェアのカーネルイメージ
-
 # 5. カスタマイズ
 
 本節ではファームウェアのカスタマイズの手順を説明します。
 
-シェルスクリプトbuild_ramdisk/buildall.shを実行することは、DIST=wheezy, TARGET=obsax3の場合、以下の通り実行することと同じです。
+シェルスクリプトbuild_ramdisk/buildall.shを実行することは、DIST=bullseye, TARGET=obsix9rの場合、以下の通り実行することと同じです。
 
 ```
-# DIST=wheezy TARGET=obsax3 ./build_debootstrap.sh
-# DIST=wheezy TARGET=obsax3 ./build_kernel.sh
-# DIST=wheezy TARGET=obsax3 ./build_ramdisk.sh
-# DIST=wheezy TARGET=obsax3 ./release_firmware.sh
+# DIST=bullseye TARGET=obsix9r ./build_debootstrap.sh
+# DIST=bullseye TARGET=obsix9r ./build_kernel.sh
+# DIST=bullseye TARGET=obsix9r ./build_ramdisk.sh
+# DIST=bullseye TARGET=obsix9r ./release_firmware.sh
 ```
 
 TARGETとDISTについては、予め次のように設定することで、毎回の指定は不要になります。
 
 ```
-# export DIST=wheezy TARGET=obsax3
+# export DIST=bullseye TARGET=obsix9r
 ```
 
 内容の詳細は各シェルスクリプトを読んでいただくことにして、簡単に説明しておきます。以下のTARGETとDISTは、ご自身の文字列に置き換えてください。
@@ -250,7 +217,7 @@ debootstrapを実行し、ディレクトリrootfs/DIST_TARGET以下にDebianを
 次のコマンドを実行して、カーネルのコンフィグレーションを変更します。TARGETとDISTは、ご自身の文字列に置き換えてください。
 
 ```
-# DIST=wheezy TARGET=obsax3 ./kernel_menuconfig.sh
+# DIST=bullseye TARGET=obsix9r ./kernel_menuconfig.sh
 ```
 
 変更したコンフィグレーションファイルはsource/TARGET/linux-KERNEL.dot.configにコピーされます。TARGETとKERNELは、ご自身の文字列に置き換えてください。
@@ -269,10 +236,10 @@ debootstrapを実行し、ディレクトリrootfs/DIST_TARGET以下にDebianを
 
 ### 5.2.2. パッケージの追加
 
-次のコマンドを実行してパッケージを追加します。DIST=wheezy,TARGET=obsax3の場合、
+次のコマンドを実行してパッケージを追加します。DIST=bullseye,TARGET=obsix9rの場合、
 
 ```
-# DIST=wheezy TARGET=obsax3 ./08_add_extra_packages.sh
+# DIST=bullseye TARGET=obsix9r ./06_add_extra_packages.sh
 ```
 
 と実行します。
@@ -281,18 +248,18 @@ debootstrapを実行し、ディレクトリrootfs/DIST_TARGET以下にDebianを
 
 ### 5.2.3. RAMディスクイメージの作成
 
-ディレクトリrootfs/DIST_TARGET以下のファイルをもとにRAMディスクイメージを作成します。TARGETとDISTは、ご自身の文字列に置き換えてください。DIST=wheezy, TARGET=obsax3の場合、
+ディレクトリrootfs/DIST_TARGET以下のファイルをもとにRAMディスクイメージを作成します。TARGETとDISTは、ご自身の文字列に置き換えてください。DIST=bullseye, TARGET=obsix9rの場合、
 
 ```
-# DIST=wheezy TARGET=obsax3 ./99_create_ramdisk.sh
+# DIST=bullseye TARGET=obsix9r ./99_create_ramdisk.sh
 ```
 
 と実行します。
 
-ファームウェアを作成します。DIST=wheezy, TARGET=obsax3の場合、
+ファームウェアを作成します。DIST=bullseye, TARGET=obsix9rの場合、
 
 ```
-# DIST=wheezy TARGET=obsax3 ./release_firmware.sh
+# DIST=bullseye TARGET=obsix9r ./release_firmware.sh
 ```
 
 と実行します。
