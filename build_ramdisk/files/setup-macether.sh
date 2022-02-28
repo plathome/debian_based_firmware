@@ -5,9 +5,10 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 [ -e "/etc/default/openblocks" ] && . /etc/default/openblocks
 
-if [ ! "${MODEL}" = "obsa16" -a ! MODEL"" = "obsfx1" ] ; then
-	exit 0
-fi
+case $MODEL in
+obsa16*|obsfx1*) ;;
+*) exit 0 ;;
+esac
 
 for one in /sys/class/net/*
 do

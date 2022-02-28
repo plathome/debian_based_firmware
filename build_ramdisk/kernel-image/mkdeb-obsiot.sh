@@ -41,7 +41,7 @@ ARCH=$2
 MODEL=$3
 FIRM=$4
 INITRD=$5
-GRUB=$6
+GRUB=$6			# Debian version for obsa16r/obsfx1r
 FLASHCFG=$7
 MD5=$8
 UBOOTENVPATH=$9
@@ -89,7 +89,7 @@ bpv4*|bpv8)
 	;;
 obsa16r)
 	if [ -d $UBOOTENVPATH ]; then
-		cp -f $UBOOTENVPATH/update_ubootenv-obsa16r.sh $pkgdir/etc/update_ubootenv.sh
+		cp -f $UBOOTENVPATH/update_ubootenv-${MODEL}-${GRUB}.sh $pkgdir/etc/update_ubootenv.sh
 	fi
 	;;
 *)

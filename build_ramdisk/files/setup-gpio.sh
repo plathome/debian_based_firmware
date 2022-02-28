@@ -70,7 +70,7 @@ obsa16*)
 	[ ! -d $GPIOPATH/gpio466 ] && echo 86 > $GPIOPATH/export; \
 		echo both > $GPIOPATH/gpio86/edge
 	;;
-obsfx1)
+obsfx1*)
 	# modem/usb/etc
 	obsfx1-modem init
 	# pshd

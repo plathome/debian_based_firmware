@@ -38,7 +38,7 @@ else
 fi
 case $TARGET in
 obsa16*) KERN_COMPILE_OPTS=" $KERN_COMPILE_OPTS INSTALL_MOD_STRIP=1" ;;
-obsfx1) KERN_COMPILE_OPTS=" $KERN_COMPILE_OPTS INSTALL_MOD_STRIP=1 KLIB_BUILD=${LINUX_SRC} KLIB=${MOUNTDIR} " ;;
+obsfx1*) KERN_COMPILE_OPTS=" $KERN_COMPILE_OPTS INSTALL_MOD_STRIP=1 KLIB_BUILD=${LINUX_SRC} KLIB=${MOUNTDIR} " ;;
 esac
 
 _RAMDISK_IMG=${DISTDIR}/../${RAMDISK_IMG}
@@ -82,7 +82,7 @@ obsvx*)
 		fi
 	fi
 	;;
-obsfx1)
+obsfx1*)
 	DRIVER_SRC="`dirname ${LINUX_SRC}`/${WIFI_DRIVER}"
 
     if [ ! -d ${DRIVER_SRC} ]; then
@@ -186,7 +186,7 @@ obsvx2)
 obsa16|obsfx1)
 	# Linux kernel
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
-	${OBJCOPY} -O binary -R .comment -S ${LINUX_SRC}/vmlinux ${RELEASEDIR}/${MAKE_IMAGE}
+#	${OBJCOPY} -O binary -R .comment -S ${LINUX_SRC}/vmlinux ${RELEASEDIR}/${MAKE_IMAGE}
 
 	# Debian rootfs
 	mount -o loop ${_RAMDISK_IMG} ${MOUNTDIR}
@@ -202,7 +202,7 @@ obsa16|obsfx1)
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
-obsa16r)
+obsa16r|obsfx1r)
 	# Linux kernel
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
 
@@ -218,7 +218,7 @@ obsa16r)
 
 	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-obsiot.sh \
 	${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/uImage.initrd.${TARGET} \
-	${RELEASEDIR}/uImage.initrd.${TARGET} "" \
+	${RELEASEDIR}/uImage.initrd.${TARGET} ${DIST} \
 	${FILESDIR}/flashcfg.sh ${RELEASEDIR}/MD5.${TARGET} ${FILESDIR})
 
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
@@ -273,7 +273,7 @@ obsbx1s)
 	umount ${MOUNTDIR}
 
 	# uboot env update script
-	cp -f ${FILESDIR}/update_ubootenv-${DIST}.sh ${RELEASEDIR}/update_ubootenv.sh
+	cp -f ${FILESDIR}/update_ubootenv-${TARGET}-${DIST}.sh ${RELEASEDIR}/update_ubootenv.sh
 
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	case $DIST in

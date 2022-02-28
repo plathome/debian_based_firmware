@@ -29,11 +29,11 @@
 . `dirname $0`/config.sh
 
 DIST_LIST="(stretch|buster|bullseye)"
-TARGET_LIST="(obsix9|obsix9r|obsa16|obsfx1|obsvx1|obsvx2|obsbx1|obsbx1s|obsa7|obsax3)"
+TARGET_LIST="(obsix9|obsix9r|obsa16|obsa16r|obsfx1|obsfx1r|obsvx1|obsvx2|obsbx1|obsbx1s|obsa7|obsax3)"
 
 function _usage(){
 	echo
-	echo "usage: $(basename $0) -M [obsix9|obsix9r|obsa16|obsvx1|obsvx2|obsbx1|obsbx1s|obsa7|obsax3] -D [stretch|buster|bullseye]"
+	echo "usage: $(basename $0) -M [obsix9|obsix9r|obsa16|obsa16r|obsfx1|obsfx1r|obsvx1|obsvx2|obsbx1|obsbx1s|obsa7|obsax3] -D [stretch|buster|bullseye]"
 	echo
 	exit 1
 }
@@ -64,7 +64,7 @@ fi
 case $_DIST in
 stretch)
 	case $_TARGET in
-	obsa16|obsix9*)
+	obsa16*|obsfx1*|obsix9*)
 		echo
 		echo "$_TARGET is not supported."
 		exit 1
@@ -73,7 +73,7 @@ stretch)
 	;;
 buster)
 	case $_TARGET in
-	obsa16)
+	obsa16*|obsfx1*)
 		echo
 		echo "$_TARGET is never supported."
 		exit 1

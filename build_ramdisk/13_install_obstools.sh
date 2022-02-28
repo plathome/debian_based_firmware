@@ -58,7 +58,7 @@ obsix*)
 obsa16*)
 	pkglist="obs_util obs_hwclock pshd runled wav_play wd_keepalive"
 	;;
-obsfx1)
+obsfx1*)
 	pkglist="atcmd obs_util obs_hwclock obsfx1_modem pshd runled wav_play wd_keepalive"
 	;;
 *) exit 1 ;;
@@ -77,7 +77,7 @@ obsbx*)
 obsa16*)
 	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -fno-omit-frame-pointer -DCONFIG_OBSA16"
 	;;
-obsfx1)
+obsfx1*)
 	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -fno-omit-frame-pointer -DCONFIG_OBSA16 -DCONFIG_OBSFX1 "
 	;;
 obsix*)
@@ -91,7 +91,7 @@ esac
 #
 
 case $TARGET in
-obsbx*|obsvx*|obsa16*|obsfx1)
+obsbx*|obsvx*|obsfx1*)
 	echo "ATCMD"
 	mkdir -p ${OBSTOOLDIR}/template-atcmd/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-atcmd/usr/sbin/atcmd ${FILESDIR}/atcmd.c $CFLAGS
@@ -114,7 +114,7 @@ obsbx*|obsvx*|obsa16*|obsfx1)
 esac
 
 case $TARGET in
-obsbx*|obsvx*|obsa16*|obsfx1)
+obsbx*|obsvx*|obsa16*|obsfx1*)
 	echo "OBS-HWCLOCK"
 	mkdir -p ${OBSTOOLDIR}/template-obs-hwclock/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-obs-hwclock/usr/sbin/obs-hwclock ${FILESDIR}/obs-hwclock.c $CFLAGS
@@ -165,7 +165,7 @@ obsvx*)
 	$CC -o ${OBSTOOLDIR}/template-obsvx1-gpio/usr/sbin/obsvx1-gpio ${FILESDIR}/obsvx1-gpio.c $CFLAGS
 	$STRIP ${OBSTOOLDIR}/template-obsvx1-gpio/usr/sbin/obsvx1-gpio
 	;;
-obsfx1)
+obsfx1*)
 	echo "OBSFX1-MODEM"
 	mkdir -p ${OBSTOOLDIR}/template-obsfx1-modem/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-obsfx1-modem/usr/sbin/obsfx1-modem ${FILESDIR}/obsfx1-modem.c $CFLAGS
@@ -192,7 +192,7 @@ $CC -o ${OBSTOOLDIR}/template-wav-play/usr/sbin/wav-play ${FILESDIR}/wav-play.c 
 $STRIP ${OBSTOOLDIR}/template-wav-play/usr/sbin/wav-play
 
 case $TARGET in
-obsix*|obsvx*|obsbx*|obsa16*|obsfx1)
+obsix*|obsvx*|obsbx*|obsa16*|obsfx1*)
 	echo "WD-KEEPALIVE"
 	mkdir -p ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
@@ -224,7 +224,7 @@ case $TARGET in
 obsvx*|obsix*)
 	pkglist="instfirm obs_createkeys setup_gpio"
 	;;
-obsa16*|obsfx1)
+obsa16*|obsfx1*)
 	pkglist="obs_createkeys setup_macether setup_gpio"
 	;;
 *)
@@ -238,7 +238,7 @@ cp -f ${FILESDIR}/setup-gpio.sh ${OBSTOOLDIR}/template-setup-gpio/usr/sbin/
 chmod 555 ${OBSTOOLDIR}/template-setup-gpio/usr/sbin/setup-gpio.sh
 
 case $TARGET in
-obsvx*|obsix9|obsa16*|obsfx1)
+obsvx*|obsix9|obsa16*|obsfx1*)
 	echo "FLASHCFG"
 	FLASHCFG=flashcfg-rootfs.sh
 	[ "$TARGET" == "obsvx1" -o "$TARGET" == "obsix9r" ] && FLASHCFG=flashcfg.sh
@@ -274,7 +274,7 @@ bullseye)
 esac
 
 case $TARGET in
-obsa16*|obsfx1)
+obsa16*|obsfx1*)
 	echo "OBS-MACADDR"
 	mkdir -p ${OBSTOOLDIR}/template-obs-macaddr/usr/sbin/
 	cp -f ${FILESDIR}/obs-macaddr.sh ${OBSTOOLDIR}/template-obs-macaddr/usr/sbin/

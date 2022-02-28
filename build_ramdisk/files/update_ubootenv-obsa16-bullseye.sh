@@ -57,6 +57,7 @@ obsiot_env(){
 	fw_setenv loadusb 'ext4load usb 0:1 ${loadaddr} /boot/${image}; ext4load usb 0:1 ${fdt_addr} /boot/${fdt_file}'
 	fw_setenv usbboot 'usb start; run loadusb; setenv mmcroot /dev/sda1; run chkinit; setenv miscargs ${miscargs} rootdelay=10; run mmcargs; booti ${loadaddr} - ${fdt_addr}'
 	fw_setenv nvmeboot 'echo Booting from NVMe ...; run chkinit; setenv mmcroot /dev/nvme0n1p1; run mmcargs; run loadimage; run loadfdt; booti ${loadaddr} - ${fdt_addr};'
+	fw_setenv rdboot 'echo Booting from Ramdisk ...; run chkinit; setenv mmcroot /dev/ram; run mmcargs; run loadimage; bootm ${loadaddr};'
 	fw_setenv bootcmd 'mmc dev ${mmcdev}; if mmc rescan; then if run loadbootscript; then run bootscript; else if run loadimage; then run ${bootdev}; else run netboot; fi; fi; fi;'
 	[ ! `fw_printenv | grep "^bootdev" 2> /dev/null` ] && fw_setenv bootdev mmcboot
 }
