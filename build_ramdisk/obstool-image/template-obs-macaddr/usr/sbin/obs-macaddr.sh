@@ -28,7 +28,7 @@
 [ -f /etc/default/openblocks ] && . /etc/default/openblocks
 
 case $MODEL in
-obsa16|obsfx1)
+obsa16*|obsfx1*)
 	IFS='='
 	param=`fw_printenv eth0macaddr`
 	array=($param)

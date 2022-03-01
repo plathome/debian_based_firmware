@@ -47,6 +47,10 @@ default_env(){
 	fw_setenv loadusb
 	fw_setenv usbboot
 	fw_setenv bootdev
+	fw_setenv ethaddr
+	fw_setenv eth1addr
+	fw_setenv ethact
+	fw_setenv ethprime
 }
 
 obsiot_env(){
