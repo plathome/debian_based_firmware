@@ -5,7 +5,7 @@
 MODEL="obsix9"
 
 FIRM_DIR="BOOT"
-SAVE_DIR="primary"
+SAVE_DIR="BOOT"
 
 # Set union filesysytem target directories.
 # The first item is "etc" always.

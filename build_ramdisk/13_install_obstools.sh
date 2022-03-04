@@ -248,7 +248,7 @@ obsvx*|obsix9|obsa16*|obsfx1*)
 	cp -f ${FILESDIR}/instfirm.sh ${OBSTOOLDIR}/template-instfirm/usr/sbin/
 	chmod 555 ${OBSTOOLDIR}/template-instfirm/usr/sbin/instfirm.sh
 	;;
-obsbx*)
+obsbx*|obsa16r|obsfx1r)
 	echo "FLASHCFG"
 	mkdir -p ${OBSTOOLDIR}/template-instfirm/usr/sbin/
 	cp -f ${FILESDIR}/flashcfg.sh ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg

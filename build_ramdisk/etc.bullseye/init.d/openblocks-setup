@@ -297,7 +297,7 @@ start)
 			echo "Don't extract files in FlashROM..."
 		else
 			case $MODEL in
-			obsbx1|obsvx1|obsix9|obsa16)
+			obsbx1|obsvx1|obsix9|obsa16r|obsfx1)
 				restore_func
 			;;
 			esac
@@ -311,7 +311,7 @@ start)
 			echo "Don't extract files in FlashROM..."
 		else
 			case $MODEL in
-			obsbx1|obsvx1|obsix9|obsa16)
+			obsbx1|obsvx1|obsix9|obsa16r|obsfx1)
 				restore_func
 			;;
 			esac
@@ -379,7 +379,6 @@ start)
 			if [ "$unionfs" == "aufs" ]; then
 				xino_opt="xino=/.aufs.xino.$dir,trunc_xino,"
 				case $MODEL in
-#				obsvx1|obsix9|obsa16)
 				obsvx1|obsix9)
 					xino_opt+="acl,"
 					;;
