@@ -25,7 +25,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-atcmd_ver=5
+atcmd_ver=6
 disable_modem_ver=1
 hub_ctrl_ver=1
 instfirm_ver=2

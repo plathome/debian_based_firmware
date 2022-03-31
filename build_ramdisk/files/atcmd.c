@@ -41,12 +41,13 @@
 #include <errno.h>
 
 #define OBSVX1_MODEM "/usr/sbin/obsvx1-modem"
-#define OBSFX1_MODEM "/usr/sbin/obsfx1-modem"
 #define DEFAULT_MODEM "/dev/ttyMODEM0"
 #define POWERSW "/sys/class/gpio/gpio165/value"
 #define RESETSW "/sys/class/gpio/gpio15/value"
 #define POWERSW_U200 "/sys/class/gpio/gpio200/value"
 #define RESETSW_U200 "/sys/class/gpio/gpio202/value"
+#define POWERSW_FX1_S760 "/sys/class/gpio/gpio503/value"
+#define RESETSW_FX1_S760 "/sys/class/gpio/gpio501/value"
 #define LED_R "/sys/class/gpio/gpio47/value"
 #define LED_G "/sys/class/gpio/gpio48/value"
 #define LED_B "/sys/class/gpio/gpio49/value"
@@ -198,10 +199,6 @@ int set_power_u200(int val, char *gpio_pin)
 	system("/usr/sbin/obsvx1-modem power low");
 	sleep(1);
 	system("/usr/sbin/obsvx1-modem power high");
-#elif defined(CONFIG_OBSFX1)
-	system("/usr/sbin/obsfx1-modem power low");
-	sleep(1);
-	system("/usr/sbin/obsfx1-modem power high");
 #else
 	int fd;
 
@@ -242,10 +239,6 @@ int set_power_kym11(int val)
 	system("/usr/sbin/obsvx1-modem power high");
 	sleep(3);
 	system("/usr/sbin/obsvx1-modem power low");
-#elif defined(CONFIG_OBSFX1)
-	system("/usr/sbin/obsfx1-modem power high");
-	sleep(3);
-	system("/usr/sbin/obsfx1-modem power low");
 #else
 	int fd;
 
@@ -289,10 +282,9 @@ int set_power_s710(int val, char *gpio_pin)
 	system("/usr/sbin/obsvx1-modem power high");
 	sleep(4);
 	system("/usr/sbin/obsvx1-modem power low");
-#elif defined(CONFIG_OBSFX1)
-	system("/usr/sbin/obsfx1-modem power low");
 #else
 	int fd;
+	char buf[2]; 
 
 	if(val == 1 && access(MODEM, F_OK) == 0){
 		/* already Power On */
@@ -308,6 +300,14 @@ int set_power_s710(int val, char *gpio_pin)
 		return -1;
 	}
 
+#if defined(CONFIG_OBSFX1)
+	strcpy(buf, val ? "0" : "1");
+	if(write(fd, buf, 1) == -1){
+		printf("%d: %s\n", __LINE__, strerror(errno));
+		close(fd);
+		return -1;
+	}
+#else
 	if(write(fd, "1", 1) == -1){
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		close(fd);
@@ -319,6 +319,7 @@ int set_power_s710(int val, char *gpio_pin)
 		close(fd);
 		return -1;
 	}
+#endif
 	close(fd);
 #endif
 
@@ -333,12 +334,6 @@ int set_power_ec25(int val, char *gpio_pin)
 	system("/usr/sbin/obsvx1-modem power high");
 	sleep(1);
 	system("/usr/sbin/obsvx1-modem power low");
-#elif defined(CONFIG_OBSFX1)
-	system("/usr/sbin/obsfx1-modem power low");
-	sleep(1);
-	system("/usr/sbin/obsfx1-modem power high");
-	sleep(1);
-	system("/usr/sbin/obsfx1-modem power low");
 #else
 	int fd;
 
@@ -387,6 +382,7 @@ int set_reset(char *gpio_reset)
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		return -1;
 	}
+#if defined(CONFIG_OBSFX1)
 	if(write(fd, "1", 1) == -1){
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		close(fd);
@@ -398,6 +394,19 @@ int set_reset(char *gpio_reset)
 		close(fd);
 		return -1;
 	}
+#else
+	if(write(fd, "1", 1) == -1){
+		printf("%d: %s\n", __LINE__, strerror(errno));
+		close(fd);
+		return -1;
+	}
+	sleep(2);
+	if(write(fd, "0", 1) == -1){
+		printf("%d: %s\n", __LINE__, strerror(errno));
+		close(fd);
+		return -1;
+	}
+#endif
 	close(fd);
 	return 0;
 }
@@ -408,10 +417,6 @@ int set_reset_u200(char *gpio_pin)
 	system("/usr/sbin/obsvx1-modem reset1 low");
 	sleep(3);
 	system("/usr/sbin/obsvx1-modem reset1 high");
-#elif defined(CONFIG_OBSFX1)
-	system("/usr/sbin/obsfx1-modem reset1 high");
-	sleep(3);
-	system("/usr/sbin/obsfx1-modem reset1 low");
 #else
 	int fd;
 
@@ -419,6 +424,19 @@ int set_reset_u200(char *gpio_pin)
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		return -1;
 	}
+#if defined(CONFIG_OBSFX1)
+	if(write(fd, "1", 1) == -1){
+		printf("%d: %s\n", __LINE__, strerror(errno));
+		close(fd);
+		return -1;
+	}
+	sleep(3);
+	if(write(fd, "0", 1) == -1){
+		printf("%d: %s\n", __LINE__, strerror(errno));
+		close(fd);
+		return -1;
+	}
+#else
 	if(write(fd, "0", 1) == -1){
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		close(fd);
@@ -430,6 +448,7 @@ int set_reset_u200(char *gpio_pin)
 		close(fd);
 		return -1;
 	}
+#endif
 	close(fd);
 #endif
 	return 0;
@@ -441,10 +460,6 @@ int set_reset_kym11(char *gpio_reset)
 	system("/usr/sbin/obsvx1-modem reset1 low");
 	sleep(2);
 	system("/usr/sbin/obsvx1-modem reset1 high");
-#elif defined(CONFIG_OBSFX1)
-	system("/usr/sbin/obsfx1-modem reset1 low");
-	sleep(2);
-	system("/usr/sbin/obsfx1-modem reset1 high");
 #else
 	int fd;
 	struct timespec req, rem;
@@ -1119,7 +1134,7 @@ printf("buf=**%s**", buf);
 int main(int ac, char *av[])
 {
 	FILE *fp;
-#if defined(CONFIG_OBSVX1) || defined(CONFIG_OBSFX1)
+#if defined(CONFIG_OBSVX1)
 	struct stat sta;
 #endif
 	int fd=0;
@@ -1136,11 +1151,6 @@ int main(int ac, char *av[])
 #if defined(CONFIG_OBSVX1)
 	if(stat(OBSVX1_MODEM, &sta) == -1){
 		printf("%d: %s is not found.\n", __LINE__, OBSVX1_MODEM);
-		return 1;
-	}
-#elif defined(CONFIG_OBSFX1)
-	if(stat(OBSFX1_MODEM, &sta) == -1){
-		printf("%d: %s is not found.\n", __LINE__, OBSFX1_MODEM);
 		return 1;
 	}
 #endif
@@ -1194,7 +1204,7 @@ int main(int ac, char *av[])
 				}
 				else if(strncmp(S760E, MNAME, sizeof(S760E)) == 0){
 #if defined(CONFIG_OBSFX1)
-					set_power_s710(0, POWERSW_U200);
+					set_power_s710(1, POWERSW_FX1_S760);
 #else
 					set_power_s710(1, POWERSW_U200);
 #endif
@@ -1281,14 +1291,15 @@ int main(int ac, char *av[])
 					|| strncmp(S710E, MNAME, sizeof(S710E)) == 0
 					|| strncmp(S760, MNAME, sizeof(S760)) == 0
 					|| strncmp(S760E, MNAME, sizeof(S760E)) == 0){
+#if defined(CONFIG_OBSFX1)
+					set_power_s710(0, POWERSW_FX1_S760);
+#else
 #if defined(CONFIG_OBSVX1)
 					system("/usr/sbin/obsvx1-modem power low");
 					sleep(1);
-#elif defined(CONFIG_OBSFX1)
-					system("/usr/sbin/obsfx1-modem power high");
-					sleep(1);
 #endif
 					send_atcmd(fd, AT_POFF_S710, buf, 100);
+#endif
 				}
 				else if(strncmp(EC25, MNAME, sizeof(EC25)) == 0){
 					send_atcmd(fd, AT_POFF_EC25, buf, 100);
@@ -1341,7 +1352,11 @@ int main(int ac, char *av[])
 			else if(strncmp(S710E, MNAME, sizeof(S710E)) == 0
 						|| strncmp(S760E, MNAME, sizeof(S760E)) == 0){
 				if(access(MODEM, F_OK) == 0){
+#if defined(CONFIG_OBSFX1)
+					set_reset_u200(RESETSW_FX1_S760);
+#else
 					set_reset_u200(RESETSW_U200);
+#endif
 				}
 				else{
 					printf("%d: Can not Reset at the power off.\n", __LINE__);

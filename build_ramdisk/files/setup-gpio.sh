@@ -67,15 +67,18 @@ obsbx*)
 	;;
 obsa16*)
 	# pshd
-	[ ! -d $GPIOPATH/gpio466 ] && echo 86 > $GPIOPATH/export; \
+	[ ! -d $GPIOPATH/gpio86 ] && echo 86 > $GPIOPATH/export; \
 		echo both > $GPIOPATH/gpio86/edge
 	;;
 obsfx1*)
-	# modem/usb/etc
-	obsfx1-modem init
 	# pshd
-	[ ! -d $GPIOPATH/gpio466 ] && echo 86 > $GPIOPATH/export; \
+	[ ! -d $GPIOPATH/gpio86 ] && echo 86 > $GPIOPATH/export; \
 		echo both > $GPIOPATH/gpio86/edge
+	# i2c-gpio
+	[ ! -d $GPIOPATH/gpio501 ] && echo 501 > $GPIOPATH/export; \
+		echo low > $GPIOPATH/gpio501/direction			# S1_RST_N
+	[ ! -d $GPIOPATH/gpio503 ] && echo 503 > $GPIOPATH/export; \
+		echo low > $GPIOPATH/gpio503/direction			# FULL_CD_POFF
 	;;
 *)
 	exit 1
