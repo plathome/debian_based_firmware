@@ -81,7 +81,7 @@ wheezy)
 		ARCH=armhf
 		COMP_LVL=3
 		COMP=lzma
-		COMP_EXT=lzma
+		COMPEXT=lzma
 		UBOOT_VER=3.0.0
 		UBOOT_PL=0
 		UBOOT_OLD_VER="1\\\.0\\\.0\|1\\\.1\\\.[1235]\|2\\\.0\\\.[347]"
@@ -94,7 +94,7 @@ wheezy)
 		ARCH=armel
 		COMP_LVL=9
 		COMP=lzma
-		COMP_EXT=lzma
+		COMPEXT=lzma
 		UBOOT_VER=1.2.6
 		UBOOT_PL=1
 		UBOOT_OLD_VER="1\\\.0\\\.2\|1\\\.1\\\.0\|1\\\.2\\\.[34]"
@@ -107,7 +107,7 @@ wheezy)
 		ARCH=armel
 		COMP_LVL=9
 		COMP=gzip
-		COMP_EXT=gz
+		COMPEXT=gz
 		UBOOT_VER=1.2.13
 		UBOOT_PL=2
 		UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
@@ -122,7 +122,7 @@ wheezy)
 		ARCH=powerpc
 		COMP_LVL=9
 		COMP=gzip
-		COMP_EXT=gz
+		COMPEXT=gz
 	;;
 	*) exit 1 ;;
 	esac
@@ -159,7 +159,7 @@ jessie)
 		ARCH=armhf
 		COMP_LVL=9
 		COMP=lzma
-		COMP_EXT=lzma
+		COMPEXT=lzma
 		UBOOT_VER=3.0.1
 		UBOOT_PL=2
 		UBOOT_OLD_VER="1\\\.0\\\.0\|1\\\.1\\\.[1235]\|2\\\.0\\\.[347]\|3\\\.0\\\.0"
@@ -172,7 +172,7 @@ jessie)
 		ARCH=armel
 		COMP_LVL=9
 		COMP=gzip
-		COMP_EXT=gz
+		COMPEXT=gz
 		UBOOT_VER=1.2.13
 		UBOOT_PL=2
 		UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
@@ -185,7 +185,7 @@ jessie)
 #		ARCH=armel
 #		COMP_LVL=9
 #		COMP=lzma
-#		COMP_EXT=lzma
+#		COMPEXT=lzma
 #		UBOOT_VER=1.2.6
 #		UBOOT_PL=1
 #		UBOOT_OLD_VER="1\\\.0\\\.2\|1\\\.1\\\.0\|1\\\.2\\\.[34]"
@@ -199,7 +199,7 @@ jessie)
 #		ARCH=powerpc
 #		COMP_LVL=9
 #		COMP=gzip
-#		COMP_EXT=gz
+#		COMPEXT=gz
 #		UBOOT_VER=1.2.13
 #		UBOOT_PL=2
 #		UBOOT_OLD_VER="1\\\.2\\\.[4689]\|1\\\.2\\\.1[2]"
@@ -239,7 +239,7 @@ stretch)
 		ARCH=armhf
 		COMP_LVL=9
 		COMP=lzma
-		COMP_EXT=lzma
+		COMPEXT=lzma
 #		DEFCONFIG=${TARGET}_defconfig
 		DEFCONFIG=${TARGET}_sysvinit_defconfig
 		ENA_SYSVINIT=true
@@ -255,7 +255,7 @@ stretch)
 		ARCH=armel
 		COMP_LVL=9
 		COMP=gzip
-		COMP_EXT=gz
+		COMPEXT=gz
 #		DEFCONFIG=${TARGET}_sysvinit_defconfig
 #		ENA_SYSVINIT=true
 		UBOOT_VER=1.2.13
@@ -360,7 +360,7 @@ bullseye)
 		ARCH=arm64
 		COMP_LVL=9
 		COMP=gzip
-		COMP_EXT=gz
+		COMPEXT=gz
 #		UBOOT_VER=2020.04
 #		UDEFCONFIG=obsa16_defconfig
 	;;
@@ -373,7 +373,7 @@ bullseye)
 		ARCH=arm64
 		COMP_LVL=9
 		COMP=gzip
-		COMP_EXT=gz
+		COMPEXT=gz
 #		UBOOT_VER=2020.04
 #		UDEFCONFIG=obsa16_defconfig
 	;;
@@ -386,7 +386,7 @@ bullseye)
 		ARCH=arm64
 		COMP_LVL=9
 		COMP=gzip
-		COMP_EXT=gz
+		COMPEXT=gz
 		WIFI_DRIVER=laird-backport-8.5.0.7
 #		UBOOT_VER=2020.04
 #		UDEFCONFIG=obsa16_defconfig
@@ -400,7 +400,11 @@ bullseye)
 		ARCH=arm64
 		COMP_LVL=9
 		COMP=gzip
-		COMP_EXT=gz
+		COMPEXT=gz
+		COMPOPT=
+#		COMP=xz
+#		COMPEXT=xz
+#		COMPOPT="-C crc32"
 		WIFI_DRIVER=laird-backport-8.5.0.7
 #		UBOOT_VER=2020.04
 #		UDEFCONFIG=obsa16_defconfig

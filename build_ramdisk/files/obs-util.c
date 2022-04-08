@@ -60,6 +60,12 @@ const unsigned char slave = 0xae >> 1;
 const unsigned char slave = 0xa0 >> 1;
 #endif
 
+enum version{
+	V1 = 0xff,
+	V2 = 0xfe,
+	V3 = 0xfd,
+};
+
 #define swap(x,y) do{ unsigned char z=y; y=x; x=z; } while(0)
 
 union CRC16{
@@ -219,7 +225,7 @@ int read_modem(int i2cnum, char* fname, unsigned char* data)
 		return -1;
 	}
 
-	if(data[0] != 0xfe){
+	if(data[0] == V1){
 		printf("%d: invalid offset value\n", __LINE__);
 		return -1;
 	}
@@ -241,7 +247,6 @@ int write_modem(int i2cnum, char* fname, unsigned char* data)
 	FILE *fp;
 	char buf[SZ+1];
 	char s[3];
-	char head;
 	int i;
 
 	if((fp = fopen(fname, "r")) == NULL){
@@ -286,7 +291,13 @@ int write_modem(int i2cnum, char* fname, unsigned char* data)
 				return -1;
 			}
 		}
-		head = 0xfe;
+		/* write headder */
+		if(data[0] == V1 || data[0] < V3){
+			if(write_i2c(i2cnum, slave, 0, (char)V2) == -1){
+				printf("%d: %s\n", __LINE__, strerror(errno));
+				return -1;
+			}
+		}
 	}
 	else{
 		crc16.c[0] = 0xff;
@@ -297,15 +308,7 @@ int write_modem(int i2cnum, char* fname, unsigned char* data)
 				return -1;
 			}
 		}
-		head = 0xff;
 	}
-
-	/* write headder */
-	if(write_i2c(i2cnum, slave, 0, head) == -1){
-		printf("%d: %s\n", __LINE__, strerror(errno));
-		return -1;
-	}
-
 	return 0;
 #undef SZ
 }
@@ -336,7 +339,6 @@ int write_serial(int i2cnum, char* fname, unsigned char* data)
 {
 #define SZ 8
 	char buf[SZ+1];
-	char head = 0xff;
 	int i;
 	int fd;
 
@@ -376,8 +378,8 @@ int write_serial(int i2cnum, char* fname, unsigned char* data)
 	}
 
 	/* write headder */
-	if(data[0] < 0xfe){
-		if(write_i2c(i2cnum, slave, 0, head) == -1){
+	if(data[0] < V3){
+		if(write_i2c(i2cnum, slave, 0, (char)V1) == -1){
 			printf("%d: %s\n", __LINE__, strerror(errno));
 			return -1;
 		}
@@ -411,7 +413,7 @@ printf("mac crc=%x\n", crc16.s);
 		return -1;
 	}
 
-	if(data[0] != 0xfd){
+	if(data[0] != V3){
 		printf("%d: invalid offset value\n", __LINE__);
 		return -1;
 	}
@@ -434,7 +436,6 @@ int write_macaddr(int i2cnum, char* fname, int num, unsigned char* data)
 	FILE *fp;
 	char buf[SZ+1];
 	char s[3];
-	char head;
 	int i;
 
 	if((fp = fopen(fname, "r")) == NULL){
@@ -479,7 +480,10 @@ int write_macaddr(int i2cnum, char* fname, int num, unsigned char* data)
 				return -1;
 			}
 		}
-		head = 0xfd;
+		if(write_i2c(i2cnum, slave, 0, (char)V3) == -1){
+			printf("%d: %s\n", __LINE__, strerror(errno));
+			return -1;
+		}
 	}
 	else{
 		crc16.c[0] = 0xff;
@@ -490,13 +494,6 @@ int write_macaddr(int i2cnum, char* fname, int num, unsigned char* data)
 				return -1;
 			}
 		}
-		head = 0xff;
-	}
-
-	/* write headder */
-	if(write_i2c(i2cnum, slave, 0, head) == -1){
-		printf("%d: %s\n", __LINE__, strerror(errno));
-		return -1;
 	}
 
 	return 0;

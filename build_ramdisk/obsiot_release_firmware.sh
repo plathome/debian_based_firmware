@@ -208,10 +208,10 @@ obsa16r|obsfx1r)
 
 	# Ramdisk Image
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/freescale/${DTBFILE} ${RELEASEDIR}
-	${COMP} -${COMP_LVL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/${RAMDISK_IMG}.${COMPEXT}
+	${COMP} -${COMP_LVL:-3} ${COMPOPT} < ${_RAMDISK_IMG} > ${RELEASEDIR}/${RAMDISK_IMG}.${COMPEXT}
 	mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \
 		-A arm64 -O linux -T multi -C none -a 0x40008000 -e 0x40008000 \
-		-d ${RELEASEDIR}/${MAKE_IMAGE}:${RELEASEDIR}/${RAMDISK_IMG}.${COMP_EXT}:${RELEASEDIR}/${DTBFILE} \
+		-d ${RELEASEDIR}/${MAKE_IMAGE}:${RELEASEDIR}/${RAMDISK_IMG}.${COMPEXT}:${RELEASEDIR}/${DTBFILE} \
 		${RELEASEDIR}/uImage.initrd.${TARGET}
 
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
