@@ -284,7 +284,6 @@ int set_power_s710(int val, char *gpio_pin)
 	system("/usr/sbin/obsvx1-modem power low");
 #else
 	int fd;
-	char buf[2]; 
 
 	if(val == 1 && access(MODEM, F_OK) == 0){
 		/* already Power On */
