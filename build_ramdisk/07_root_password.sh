@@ -28,11 +28,15 @@
 . `dirname $0`/config.sh
 
 pw='$1$afC9J.v6$Dkq.k8sVRq7n0Py5eWWAp1'
-pw_new='$6$Eq7045XjAMxZ3AQo$N471tuPsYCcOJuCEduSo7fv8WyOp96qBwg6dRA7aJtapVoFIc0uiWmQD5Ibs9l4RPsa3R6VrenJnogxp5n9Il.'
+pw_ix9='$6$Eq7045XjAMxZ3AQo$N471tuPsYCcOJuCEduSo7fv8WyOp96qBwg6dRA7aJtapVoFIc0uiWmQD5Ibs9l4RPsa3R6VrenJnogxp5n9Il.'
+pw_a16='$y$j9T$suL2ZomyH7.hwZX0M4khs1$J1CilnhxtR8hBK3FpS4/zTyXnZ497ukKi1f7RNuEXF5'
 
 case $TARGET in
 obsix9r)
-	chroot ${DISTDIR} /usr/sbin/usermod -p $pw_new root
+	chroot ${DISTDIR} /usr/sbin/usermod -p $pw_ix9 root
+	;;
+obsa16*)
+	chroot ${DISTDIR} /usr/sbin/usermod -p $pw_a16 root
 	;;
 *)
 	chroot ${DISTDIR} /usr/sbin/usermod -p $pw root

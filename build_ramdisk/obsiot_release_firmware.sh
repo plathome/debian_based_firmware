@@ -66,6 +66,9 @@ obsbx*)
 				INSTALLPATH=${MOUNTDIR}/lib/modules/${KERNEL}${LOCAL_VER}/kernel/drivers/net/wireless make install)
 		fi
 		;;
+	4.16.*)
+		LOCAL_VER="-edison-standard"
+		;;
 	*)
 		LOCAL_VER=""
 		;;

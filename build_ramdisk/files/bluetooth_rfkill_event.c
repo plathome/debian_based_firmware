@@ -41,6 +41,7 @@
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/hci.h>
 #include <bluetooth/hci_lib.h>
+#include <linux/version.h>
 
 enum {
     BT_PWR,
@@ -50,7 +51,7 @@ enum {
 /* list of all supported chips:
    name is defined in the kernel driver implementing rfkill interface for power */
 #define BCM_RFKILL_NAME "bcm43xx Bluetooth\n"
-#if defined(CONFIG_LINUX4)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 0, 0)
 #define BCM_43341_UART_DEV "/dev/ttyS0"
 #else
 #define BCM_43341_UART_DEV "/dev/ttyMFD0"
