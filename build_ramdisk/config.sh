@@ -320,6 +320,13 @@ buster)
 bullseye)
 	KERNEL=4.19.198
 	case ${TARGET} in
+	obsvx2)
+		KERNEL=5.10.100
+		ISOFILE=debian-11.1.0-amd64-DVD-1.iso
+		PATCHLEVEL=99dev0
+#		DEFCONFIG=obsvx2_defconfig
+		RAMDISK_SIZE=500
+	;;
 	obsvx1)
 		ISOFILE=debian-11.1.0-amd64-DVD-1.iso
 		PATCHLEVEL=1
@@ -330,7 +337,7 @@ bullseye)
 		PATCHLEVEL=100
 		RAMDISK_SIZE=500
 	;;
-	obsvx2|obsix9)
+	obsix9)
 		ISOFILE=debian-11.1.0-amd64-DVD-1.iso
 		PATCHLEVEL=1
 #		DEFCONFIG=obsvx2_defconfig
