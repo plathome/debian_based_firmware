@@ -334,8 +334,9 @@ bullseye)
 		RAMDISK_SIZE=280
 	;;
 	obsix9r)
+		KERNEL=5.10.100
 		ISOFILE=debian-11.1.0-amd64-DVD-1.iso
-		PATCHLEVEL=100
+		PATCHLEVEL=99dev0
 		RAMDISK_SIZE=500
 	;;
 	obsix9)
