@@ -358,7 +358,7 @@ bullseye)
 		KERNEL=3.10.17
 		ISOFILE=debian-11.1.0-i386-DVD-1.iso
 		ARCH=i386
-		PATCHLEVEL=1
+		PATCHLEVEL=399dev0
 		RAMDISK_SIZE=250
 	;;
 	obsa16)
