@@ -237,6 +237,7 @@ obsbx1)
 	${RELEASEDIR}/initrd.${COMPEXT} ${FILESDIR}/grub/grub.cfg \
 	${FILESDIR}/flashcfg.sh ${RELEASEDIR}/MD5.${TARGET} ${FILESDIR})
 
+	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 ;;
 obsbx1s)
