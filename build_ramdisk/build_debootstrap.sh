@@ -127,23 +127,23 @@ stretch)
 buster)
 	case $TARGET in
 	obsvx1)
-		INCLUDE="openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,initscripts,gnupg,strace,wget"
+		INCLUDE="openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,initscripts,gnupg,strace,wget,dbus"
 		EXCLUDE="nano"
 		;;
 	obsvx2)
-		INCLUDE="openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,initscripts,gnupg,strace,wget,apparmor"
+		INCLUDE="openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,initscripts,gnupg,strace,wget,apparmor,dbus"
 		EXCLUDE="nano"
 		;;
 	obsbx1)
-		INCLUDE="openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,busybox,bluez,iw,libasound2,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,initscripts,gnupg,strace,wget"
+		INCLUDE="openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,busybox,bluez,iw,libasound2,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,initscripts,gnupg,strace,wget,dbus"
 		EXCLUDE="nano"
 		;;
 	obsbx1s)
-		INCLUDE="openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,busybox,bluez,iw,libasound2,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,initscripts,gnupg,strace,wget,apparmor"
+		INCLUDE="openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,busybox,bluez,iw,libasound2,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,initscripts,gnupg,strace,wget,apparmor,dbus"
 		EXCLUDE="nano"
 		;;
 	obsix*)
-		INCLUDE="openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,gnupg,strace,wget,apparmor,libiw30"
+		INCLUDE="openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,gnupg,strace,wget,apparmor,libiw30,dbus"
 		EXCLUDE="nano"
 		;;
 	esac
@@ -151,31 +151,31 @@ buster)
 bullseye)
 	case $TARGET in
 	obsvx1)
-		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,initscripts,gnupg,strace,wget,gdisk"
+		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,initscripts,gnupg,strace,wget,gdisk,dbus"
 		EXCLUDE="nano"
 		;;
 	obsvx2)
-		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,initscripts,gnupg,strace,wget,apparmor,gdisk"
+		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,initscripts,gnupg,strace,wget,apparmor,gdisk,dbus"
 		EXCLUDE="nano"
 		;;
 	obsbx1)
-		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,busybox,bluez,iw,libasound2,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,initscripts,gnupg,strace,wget,gdisk"
+		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,busybox,bluez,iw,libasound2,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,initscripts,gnupg,strace,wget,gdisk,dbus"
 		EXCLUDE="nano"
 		;;
 	obsbx1s)
-		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,busybox,bluez,iw,libasound2,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,initscripts,gnupg,strace,wget,apparmor,gdisk"
+		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,busybox,bluez,iw,libasound2,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,initscripts,gnupg,strace,wget,apparmor,gdisk,dbus"
 		EXCLUDE="nano"
 		;;
 	obsa16*)
-		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200,initscripts,gnupg,strace,wget,apparmor,gdisk"
+		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200,initscripts,gnupg,strace,wget,apparmor,gdisk,dbus"
 		EXCLUDE="nano"
 		;;
 	obsfx1*)
-		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200,initscripts,gnupg,strace,wget,apparmor,gdisk"
+		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200,initscripts,gnupg,strace,wget,apparmor,gdisk,dbus"
 		EXCLUDE="nano"
 		;;
 	obsix*)
-		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,gnupg,strace,wget,apparmor,libiw30,gdisk"
+		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,gnupg,strace,wget,apparmor,libiw30,gdisk,dbus"
 		EXCLUDE="nano"
 		;;
 	esac
