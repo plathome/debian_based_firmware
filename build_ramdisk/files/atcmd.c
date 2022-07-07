@@ -300,6 +300,7 @@ int set_power_s710(int val, char *gpio_pin)
 	}
 
 #if defined(CONFIG_OBSFX1)
+	char buf[2];
 	strcpy(buf, val ? "0" : "1");
 	if(write(fd, buf, 1) == -1){
 		printf("%d: %s\n", __LINE__, strerror(errno));
@@ -423,19 +424,6 @@ int set_reset_u200(char *gpio_pin)
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		return -1;
 	}
-#if defined(CONFIG_OBSFX1)
-	if(write(fd, "1", 1) == -1){
-		printf("%d: %s\n", __LINE__, strerror(errno));
-		close(fd);
-		return -1;
-	}
-	sleep(3);
-	if(write(fd, "0", 1) == -1){
-		printf("%d: %s\n", __LINE__, strerror(errno));
-		close(fd);
-		return -1;
-	}
-#else
 	if(write(fd, "0", 1) == -1){
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		close(fd);
@@ -447,7 +435,6 @@ int set_reset_u200(char *gpio_pin)
 		close(fd);
 		return -1;
 	}
-#endif
 	close(fd);
 #endif
 	return 0;

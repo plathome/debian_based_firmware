@@ -163,7 +163,8 @@ firmware)
 		;;
 	obsa16|obsfx1)
 		# check MD5
-		for file in Image imx8mp-evk.dtb modules.tgz
+		dtbfile=`find $FIRM_FILE -name "*\.dtb"`
+		for file in Image $dtbfile modules.tgz
 		do
 			if [ -f ${FIRM_FILE}/${file} ]; then
 				_get_md5 ${file}
@@ -185,9 +186,7 @@ firmware)
 			${TEST} cp -f ${FIRM_FILE}/Image ${WORK_DIR}
 		fi
 
-		if [ -f ${FIRM_FILE}/imx8mp-evk.dtb ]; then
-			${TEST} cp -f ${FIRM_FILE}/imx8mp-evk.dtb ${WORK_DIR}
-		fi
+		${TEST} cp -f ${FIRM_FILE}/*.dtb ${WORK_DIR}
 
 		if [ -f ${FIRM_FILE}/openblocks-release ]; then
 			${TEST} cp -f ${FIRM_FILE}/openblocks-release ${WORK_DIR}

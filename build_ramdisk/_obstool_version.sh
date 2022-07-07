@@ -25,7 +25,8 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-atcmd_ver=6
+atcmd_ver=7
+cp210x_rs485_ver=1
 disable_modem_ver=1
 hub_ctrl_ver=1
 instfirm_ver=2

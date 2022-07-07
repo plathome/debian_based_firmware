@@ -1,0 +1,7 @@
+Section: utils
+Priority: important
+Maintainer: Plat'Home CO.,LTD. <support@plathome.co.jp>
+Version: __VERSION__
+Package: cp210x-rs485
+Architecture: __ARCH__
+Description: CP210x setting tool for Openblocks family

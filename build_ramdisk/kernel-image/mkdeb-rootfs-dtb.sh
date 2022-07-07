@@ -45,6 +45,7 @@ MD5=$6
 DTB=$7
 RELDIR=$8
 FIRM_DIR=$(dirname $FIRM)
+DTB_DIR=$(dirname $DTB)
 
 if [ "$MODEL" == "obsa16" -o "$MODEL" == "obsfx1" ]; then
 	DESCRIPTION="Linux firmware for OpenBlocks A16"
@@ -77,6 +78,7 @@ cp -f ${RELDIR}/modules.tgz $pkgdir/etc/
 cp -f ${RELDIR}/System.map $pkgdir/etc/
 cp -f $DTB $pkgdir/etc/
 cp -f ${RELDIR}/update_ubootenv.sh $pkgdir/etc/
+cp -f $(find $DTB_DIR -name "*\.dtb") $pkgdir/etc/
 
 rm -rf ${pkgdir}.deb
 
