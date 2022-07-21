@@ -170,15 +170,6 @@ obsfx1*)
 	mkdir -p ${OBSTOOLDIR}/template-obsfx1-modem/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-obsfx1-modem/usr/sbin/obsfx1-modem ${FILESDIR}/obsfx1-modem.c $CFLAGS
 	$STRIP ${OBSTOOLDIR}/template-obsfx1-modem/usr/sbin/obsfx1-modem
-echo "CP2102N-RS485"
-	(cd ${FILESDIR}/cp210xmanufacturing;make clean;	make ARCH=${KERN_ARCH} CROSS_COMPILE=${CROSS_COMPILE} ;
-		${CROSS_COMPLIE}strip ${FILESDIR}/cp210xmanufacturing/libcp210xmanufacturing.so.1.0 ;
-		mkdir -p ${OBSTOOLDIR}/template-cp210x-rs485/usr/lib/aarch64-linux-gnu ;
-		cp ${FILESDIR}/cp210xmanufacturing/Release/Linux/libcp210xmanufacturing.so.1.0 ${OBSTOOLDIR}/template-cp210x-rs485/usr/lib/aarch64-linux-gnu ; 
-		${CROSS_COMPLIE}strip ${FILESDIR}/cp210xmanufacturing/cp2102n-rs485 ;
-		mkdir -p ${OBSTOOLDIR}/template-cp210x-rs485/usr/sbin ;
-		cp ${FILESDIR}/cp210xmanufacturing/cp2102n-rs485 ${OBSTOOLDIR}/template-cp210x-rs485/usr/sbin
-	)
 	;;
 esac
 

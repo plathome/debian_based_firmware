@@ -75,22 +75,30 @@ obsfx1*)
 	[ ! -d $GPIOPATH/gpio86 ] && echo 86 > $GPIOPATH/export; \
 		echo both > $GPIOPATH/gpio86/edge
 	# i2c-gpio
+		# 496	WL_PWR_EN
+		# 497	WL_DIS_N
+		# 498	BT_DIS_N
+		# 499	S1_PWR_EN
+		# 500	S1_PON
 	[ ! -d $GPIOPATH/gpio501 ] && echo 501 > $GPIOPATH/export; \
-		echo low > $GPIOPATH/gpio501/direction			# S1_RST_N
+		echo high > $GPIOPATH/gpio501/direction			# S1_RST_N
+	[ ! -d $GPIOPATH/gpio502 ] && echo 502 > $GPIOPATH/export; \
+		echo low > $GPIOPATH/gpio502/direction			# W_DISABLE
 	[ ! -d $GPIOPATH/gpio503 ] && echo 503 > $GPIOPATH/export; \
 		echo low > $GPIOPATH/gpio503/direction			# FULL_CD_POFF
-	[ ! -d $GPIOPATH/gpio504 ] && echo 504 > $GPIOPATH/export; \
-		echo low > $GPIOPATH/gpio504/direction			# S2_PWR_EN
+	# 504 N.C.
 	[ ! -d $GPIOPATH/gpio505 ] && echo 505 > $GPIOPATH/export; \
-		echo high > $GPIOPATH/gpio505/direction			# S2_RST_N
-	[ ! -d $GPIOPATH/gpio506 ] && echo 512 > $GPIOPATH/export; \
-		echo high > $GPIOPATH/gpio506/direction			# USBHUB_RST_N
-	[ ! -d $GPIOPATH/gpio507 ] && echo 513 > $GPIOPATH/export; \
-		echo in > $GPIOPATH/gpio507/direction			# PWRFAIL_N
-	[ ! -d $GPIOPATH/gpio508 ] && echo 514 > $GPIOPATH/export; \
-		echo in > $GPIOPATH/gpio508/direction			# BAT_L
-	[ ! -d $GPIOPATH/gpio509 ] && echo 515 > $GPIOPATH/export; \
-		echo in > $GPIOPATH/gpio509/direction			# FSCAG-H
+		echo high > $GPIOPATH/gpio505/direction			# S2_PWR_EN
+	[ ! -d $GPIOPATH/gpio506 ] && echo 506 > $GPIOPATH/export; \
+		echo high > $GPIOPATH/gpio506/direction			# S2_RST_N
+	[ ! -d $GPIOPATH/gpio507 ] && echo 507 > $GPIOPATH/export; \
+		echo high > $GPIOPATH/gpio507/direction			# USBHUB_RST_N
+	[ ! -d $GPIOPATH/gpio508 ] && echo 508 > $GPIOPATH/export; \
+		echo in > $GPIOPATH/gpio508/direction			# PWRFAIL_N
+	[ ! -d $GPIOPATH/gpio509 ] && echo 509 > $GPIOPATH/export; \
+		echo in > $GPIOPATH/gpio509/direction			# BAT_L
+	[ ! -d $GPIOPATH/gpio510 ] && echo 510 > $GPIOPATH/export; \
+		echo in > $GPIOPATH/gpio510/direction			# FSCAG-H
 	;;
 *)
 	exit 1

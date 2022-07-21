@@ -366,7 +366,7 @@ bullseye)
 		ISOFILE=debian-11.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=260
 		PATCHLEVEL=5
-		DTBFILE=imx8mp-evk-obsa16-ar8033.dtb
+		DTBFILE=imx8mp-evk.dtb
 		ARCH=arm64
 		COMP_LVL=9
 		COMP=gzip

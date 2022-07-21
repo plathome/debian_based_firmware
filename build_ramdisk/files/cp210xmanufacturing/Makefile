@@ -8,8 +8,7 @@
 
 OUT      ?= Release/Linux/
 
-#all: $(OUT)libcp210xmanufacturing.so.1.0 $(OUT)cp210xmanufacturing-example contrib cp2104-rs485 cp2105-rs485 cp2102n-rs485
-all: $(OUT)libcp210xmanufacturing.so.1.0 $(OUT)cp210xmanufacturing-example cp2104-rs485 cp2105-rs485 cp2102n-rs485
+all: $(OUT)libcp210xmanufacturing.so.1.0 $(OUT)cp210xmanufacturing-example cp2104-rs485 cp2105-rs485
 
 CC       = $(CROSS_COMPILE)gcc
 CFLAGS   ?= -Wall -fPIC
@@ -25,6 +24,7 @@ COBJS     =
 CPPOBJS   = CP210xManufacturing/CP210xDevice.o \
             CP210xManufacturing/CP2101Device.o \
             CP210xManufacturing/CP2102Device.o \
+            CP210xManufacturing/CP2102NDevice.o \
             CP210xManufacturing/CP2103Device.o \
             CP210xManufacturing/CP2104Device.o \
             CP210xManufacturing/CP2105Device.o \
@@ -68,20 +68,14 @@ cp2105-rs485.o: cp2105-rs485.c
 cp2105-rs485: cp2105-rs485.o $(OUT)libcp210xmanufacturing.so.1.0
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $< $(LIBS) $(APP_LIBS) -o $@
 
-cp2102n-rs485.o: cp2102n-rs485.c
-	$(CXX) $(CXXFLAGS) -c $(INCLUDES) $< -o $@
-
-cp2102n-rs485: cp2102n-rs485.o $(OUT)libcp210xmanufacturing.so.1.0
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $< $(LIBS) $(APP_LIBS) -o $@
-
 #contrib: $(OUT)libcp210xmanufacturing.so.1.0
 #	$(MAKE) -C contrib CROSS_COMPILE=$(CROSS_COMPILE)
 
 clean:
 	$(RM) $(OBJS) $(OUT)libcp210xmanufacturing.so*
 	$(RM) main.o $(OUT)cp210xmanufacturing-example
-	$(RM) cp2104-rs485 cp2105-rs485 cp2102n-rs485
-	$(RM) cp2104-rs485.o cp2105-rs485.o cp2102n-rs485.o
+	$(RM) cp2104-rs485 cp2105-rs485
+	$(RM) cp2104-rs485.o cp2105-rs485.o
 #	$(MAKE) -C contrib clean
 
 .PHONY: clean
