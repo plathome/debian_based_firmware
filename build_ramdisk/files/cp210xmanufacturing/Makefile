@@ -24,7 +24,6 @@ COBJS     =
 CPPOBJS   = CP210xManufacturing/CP210xDevice.o \
             CP210xManufacturing/CP2101Device.o \
             CP210xManufacturing/CP2102Device.o \
-            CP210xManufacturing/CP2102NDevice.o \
             CP210xManufacturing/CP2103Device.o \
             CP210xManufacturing/CP2104Device.o \
             CP210xManufacturing/CP2105Device.o \
