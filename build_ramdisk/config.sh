@@ -277,8 +277,9 @@ buster)
 	KERNEL=4.19.85
 	case ${TARGET} in
 	obsvx1)
+		KERNEL=4.19.198
 		ISOFILE=debian-10.2.0-amd64-DVD-1.iso
-		PATCHLEVEL=2
+		PATCHLEVEL=0
 		RAMDISK_SIZE=260
 	;;
 	obsvx2)
