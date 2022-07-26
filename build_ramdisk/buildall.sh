@@ -29,11 +29,11 @@
 . `dirname $0`/config.sh
 
 DIST_LIST="(stretch|buster|bullseye)"
-TARGET_LIST="(obsix9|obsix9r|obsa16|obsa16r|obsfx1|obsfx1r|obsvx1|obsvx2|obsbx1|obsbx1s|obsa7|obsax3)"
+TARGET_LIST="(obshx2|obsix9|obsix9r|obsa16|obsa16r|obsfx1|obsfx1r|obsvx1|obsvx2|obsbx1|obsbx1s|obsa7|obsax3)"
 
 function _usage(){
 	echo
-	echo "usage: $(basename $0) -M [obsix9|obsix9r|obsa16|obsa16r|obsfx1|obsfx1r|obsvx1|obsvx2|obsbx1|obsbx1s|obsa7|obsax3] -D [stretch|buster|bullseye]"
+	echo "usage: $(basename $0) -M [obshx2|obsix9|obsix9r|obsa16|obsa16r|obsfx1|obsfx1r|obsvx1|obsvx2|obsbx1|obsbx1s|obsa7|obsax3] -D [stretch|buster|bullseye]"
 	echo
 	exit 1
 }

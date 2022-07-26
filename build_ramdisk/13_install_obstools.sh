@@ -61,6 +61,7 @@ obsa16*)
 obsfx1*)
 	pkglist="atcmd cp210x_rs485 obs_util obs_hwclock obsfx1_modem pshd runled wav_play wd_keepalive"
 	;;
+obshx2) exit 0 ;;
 *) exit 1 ;;
 esac
 

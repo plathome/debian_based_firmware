@@ -124,7 +124,7 @@ obsvx2)
 obsbx1s)
 	(cd ${MOUNTDIR}; tar cfzp ${RELEASEDIR}/modules.tgz etc/firmware lib/modules)
 	;;
-obsix9|obsa16|obsfx1)
+obsix9|obsa16|obsfx1|obshx2)
 	(cd ${MOUNTDIR}/lib; tar cfzp ${RELEASEDIR}/modules.tgz modules)
 	;;
 esac
@@ -291,7 +291,7 @@ obsbx1s)
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
-obsix9)
+obsix9|obshx2)
 	# Linux kernel
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/bzImage ${RELEASEDIR}
 

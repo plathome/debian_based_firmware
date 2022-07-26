@@ -260,7 +260,7 @@ obsvx*)
 	)
 	chroot ${DISTDIR} ldconfig
 ;;
-obsix*)
+obsix*|obshx2)
 	BUILDDIR=/tmp/obstools.$$
 	LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
 

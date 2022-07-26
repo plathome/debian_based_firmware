@@ -105,7 +105,7 @@ obsbx*|obsvx*|obsa16*|obsfx1*)
 		esac
 	fi
 	;;
-obsix*)
+obsix*|obshx2)
 	chroot ${DISTDIR} /usr/bin/systemctl disable apparmor
 	chroot ${DISTDIR} /usr/bin/systemctl enable acpid
 	;;

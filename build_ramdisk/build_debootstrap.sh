@@ -174,7 +174,7 @@ bullseye)
 		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200,initscripts,gnupg,strace,wget,apparmor,gdisk,dbus"
 		EXCLUDE="nano"
 		;;
-	obsix*)
+	obsix*|obshx2)
 		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,gnupg,strace,wget,apparmor,libiw30,gdisk,dbus"
 		EXCLUDE="nano"
 		;;
