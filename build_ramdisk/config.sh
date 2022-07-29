@@ -393,7 +393,7 @@ bullseye)
 		KERNEL=5.4.47
 		ISOFILE=debian-11.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=260
-		PATCHLEVEL=0dev0
+		PATCHLEVEL=0dev1
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
 #		DTBFILE=imx8mp-evk-obsfx1-rtl8211.dtb
 		ARCH=arm64
