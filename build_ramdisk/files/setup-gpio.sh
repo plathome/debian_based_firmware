@@ -95,10 +95,10 @@ obsfx1*)
 		echo high > $GPIOPATH/gpio507/direction			# USBHUB_RST_N
 	[ ! -d $GPIOPATH/gpio508 ] && echo 508 > $GPIOPATH/export; \
 		echo in > $GPIOPATH/gpio508/direction			# PWRFAIL_N
-	[ ! -d $GPIOPATH/gpio509 ] && echo 509 > $GPIOPATH/export; \
-		echo in > $GPIOPATH/gpio509/direction			# BAT_L
-	[ ! -d $GPIOPATH/gpio510 ] && echo 510 > $GPIOPATH/export; \
-		echo in > $GPIOPATH/gpio510/direction			# FSCAG-H
+	# 509 D.C.
+	# 510 D.C.
+	# 511 D.C.
+	# 512 N.C.
 	;;
 *)
 	exit 1

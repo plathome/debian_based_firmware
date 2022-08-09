@@ -55,6 +55,10 @@ obsgem*)
 	ACPOW=500
 	DCPOW=504
 	;;
+obsfx1*)
+	"$MODEL is not supported."
+	exit 1
+	;;
 *)
 	USBPOW=40
 	ACPOW=41

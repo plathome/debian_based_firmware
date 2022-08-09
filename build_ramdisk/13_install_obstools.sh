@@ -59,9 +59,9 @@ obsa16*)
 	pkglist="obs_util obs_hwclock pshd runled wav_play wd_keepalive"
 	;;
 obsfx1*)
-	pkglist="atcmd cp210x_rs485 obs_util obs_hwclock obsfx1_modem pshd runled wav_play wd_keepalive"
+	pkglist="atcmd cp210x_rs485 obs_util obs_hwclock obsiot_power obsfx1_modem pshd runled wav_play wd_keepalive"
 	;;
-obshx2) exit 0 ;;
+obshx2*) exit 0 ;;
 *) exit 1 ;;
 esac
 
@@ -84,6 +84,7 @@ obsfx1*)
 obsix*)
 	CFLAGS="-Wall -I/usr/${KERN_ARCH}-linux-gnu${ABI}/include -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -li2c -O2 -mstackrealign -fno-omit-frame-pointer -DCONFIG_OBSIX9"
 	;;
+obshx2*) exit 0 ;;
 *) exit 1 ;;
 esac
 
@@ -134,7 +135,7 @@ $CC -o ${OBSTOOLDIR}/template-obs-util/usr/sbin/kosanu ${FILESDIR}/kosanu.c $CFL
 $STRIP ${OBSTOOLDIR}/template-obs-util/usr/sbin/kosanu
 
 case $TARGET in
-obsbx*|obsvx*)
+obsbx*|obsvx*|obsfx1*)
 	echo "OBSIOT-POWER"
 	mkdir -p ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/obsiot-power ${FILESDIR}/obsiot-power.c $CFLAGS

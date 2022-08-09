@@ -57,6 +57,10 @@ elif [ "$MODEL" == "bpv4-h" ]; then
 	MODEL="bpv4"
 elif [ "$MODEL" == "obsa16r" ]; then
 	DESCRIPTION="Linux firmware for Openblocks A16"
+elif [ "$MODEL" == "obsix9" ]; then
+	DESCRIPTION="Linux firmware for Openblocks IX9"
+elif [ "$MODEL" == "obshx2" ]; then
+	DESCRIPTION="Linux firmware for Openblocks HX2"
 else
 	DESCRIPTION="Linux firmware for Based Platform V"
 	TARGET=$MODEL

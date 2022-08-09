@@ -1,4 +1,4 @@
-//#define DEBUG
+#define DEBUG
 /*	$ssdlinux: obsiot-power.c,v 1.17 2014/01/07 07:19:06 yamagata Exp $	*/
 /*
  * Copyright (c) 2008-2022 Plat'Home CO., LTD.
@@ -55,7 +55,7 @@ extern int errno;
 #define PID_FILE "/var/run/obsiot-power.pid"
 #if defined(CONFIG_OBSVX1)
 #define I2C_NAME	"/dev/i2c-2"
-#elif defined(CONFIG_OBSBX1)
+#elif defined(CONFIG_OBSBX1) || defined(CONFIG_OBSFX1)
 #define I2C_NAME	"/dev/i2c-1"
 #endif
 #define SLAVE		0x21
@@ -86,15 +86,15 @@ enum{
 #define POWER_USB	"/sys/class/gpio/gpio40/value"
 #define POWER_AC	"/sys/class/gpio/gpio41/value"
 #define POWER_DC	"/sys/class/gpio/gpio42/value"
+#elif defined(CONFIG_OBSFX1)
+#define POWER_AC	"/sys/class/gpio/gpio508/value"
 #endif
 
 int chg_charging(unsigned char, int stat);
 
 void donothing(int i){}
 void die(int i){
-//	chg_charging(STOP, LOW);
 	openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
-//	syslog(LOG_WARNING, "%d: Stop battery charging\n", __LINE__);
 	syslog(LOG_NOTICE, "%d: Stop program\n", __LINE__);
 	closelog();
 	exit(0);
@@ -110,7 +110,7 @@ extern int optreset;
 
 int INTERVAL		= 10;
 int LIMIT		= 300;
-#if defined(CONFIG_OBSVX1)
+#if defined(CONFIG_OBSVX1) || defined(CONFIG_OBSFX1)
 #define DEF_COMMAND	"/sbin/poweroff"
 #elif defined(CONFIG_OBSBX1)
 #define DEF_COMMAND	"/sbin/halt"
@@ -153,7 +153,7 @@ int open_i2c(void)
 char get_input(void)
 {
 	int fd;
-	unsigned char val;
+	unsigned char val=0;
 #if ! defined(CONFIG_OBSVX1)
 	unsigned char reg = INPUT;
 #endif
@@ -208,7 +208,6 @@ int chg_charging(unsigned char val, int stat)
 		return -1;
 
 #if defined(CONFIG_OBSVX1)
-#if 1
 	if((buf = i2c_smbus_read_byte_data(fd, CONFIG)) == -1){
 		close(fd);
 		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
@@ -239,15 +238,6 @@ int chg_charging(unsigned char val, int stat)
 		closelog();
 		return -1;
 	}
-#else
-	if(i2c_smbus_write_byte_data(fd, OUTPUT, (buf|val)) == -1){
-		close(fd);
-		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
-		syslog(LOG_ERR, "%d: %s\n", __LINE__, strerror(errno));
-		closelog();
-		return -1;
-	}
-#endif
 #else
 	buf[0] = OUTPUT;
 	if(stat){	/* High */
@@ -388,6 +378,7 @@ int get_power_input(char inp)
 	char val;
 	int usb=0, ac=0, dc=0;
 
+#if ! defined(CONFIG_OBSFX1)
 	/* usb power */
 	if ((fd = open(POWER_USB, O_RDONLY)) != -1){
 		val=0;
@@ -401,19 +392,6 @@ int get_power_input(char inp)
 		closelog();
 	}
 
-	/* AC power */
-	if ((fd = open(POWER_AC, O_RDONLY)) != -1){
-		val=0;
-		read(fd, &val, 1);
-		close(fd);
-		ac = val - '0';
-	}
-	else{
-		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
-		syslog(LOG_ERR, "%d: gpio AC open error\n", __LINE__);
-		closelog();
-	}
-
 	/* DC power */
 	if ((fd = open(POWER_DC, O_RDONLY)) != -1){
 		val=0;
@@ -424,6 +402,20 @@ int get_power_input(char inp)
 	else{
 		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
 		syslog(LOG_ERR, "%d: gpio DC open error\n", __LINE__);
+		closelog();
+	}
+#endif
+
+	/* AC power */
+	if ((fd = open(POWER_AC, O_RDONLY)) != -1){
+		val=0;
+		read(fd, &val, 1);
+		close(fd);
+		ac = val - '0';
+	}
+	else{
+		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
+		syslog(LOG_ERR, "%d: gpio AC open error\n", __LINE__);
 		closelog();
 	}
 
@@ -471,7 +463,6 @@ int chk_power()
 		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
 		syslog(LOG_INFO, "%d: R3\n", __LINE__);
 		closelog();
-//		chg_charging(PF_L, HIGH);
 		break;
 	default:
 		openlog("obsiot-power", LOG_CONS|LOG_PID, LOG_USER);
@@ -527,7 +518,6 @@ closelog();
 				syslog(LOG_NOTICE, "%d: Power return\n", __LINE__);
 				closelog();
 
-//				chg_charging(START, HIGH);
 				chg_charging(PF_L, HIGH);
 			}
 			count = -1;					/* power return */
@@ -561,7 +551,6 @@ void usage(char *fname)
 {
 	printf("usage : %s -i seconds -t seconds -C command\n", fname);
 	printf("\n");
-//	printf("\t-i : Monitaring interval(in seconds)\n");
 	printf("\t-t : Execute command after specified time(in seconds)\n");
 	printf("\t-C : Command to execute(strings)\n");
 }
@@ -582,7 +571,6 @@ main(int ac, char *av[])
 	while ((i = getopt(ac, av, "i:t:C:h")) != -1) {
 		switch (i) {
 		case 'i':
-//			INTERVAL = strtol(optarg, NULL, 10);
 			break;
 		case 't':
 			LIMIT = strtol(optarg, NULL, 10);
