@@ -267,7 +267,7 @@ obsix9r)
 esac
 
 case $DIST in
-bullseye|buster)
+bullseye)
 	echo "OBS-CREATEKEYS"
 	mkdir -p ${OBSTOOLDIR}/template-obs-createkeys/usr/sbin/
 	cp -f ${FILESDIR}/obs-createkeys.sh ${OBSTOOLDIR}/template-obs-createkeys/usr/sbin/
