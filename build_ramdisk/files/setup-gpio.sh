@@ -86,19 +86,18 @@ obsfx1*)
 		echo low > $GPIOPATH/gpio502/direction			# W_DISABLE
 	[ ! -d $GPIOPATH/gpio503 ] && echo 503 > $GPIOPATH/export; \
 		echo low > $GPIOPATH/gpio503/direction			# FULL_CD_POFF
-	# 504 N.C.
+	[ ! -d $GPIOPATH/gpio504 ] && echo 504 > $GPIOPATH/export; \
+		echo high > $GPIOPATH/gpio504/direction			# S2_PWR_EN
 	[ ! -d $GPIOPATH/gpio505 ] && echo 505 > $GPIOPATH/export; \
-		echo high > $GPIOPATH/gpio505/direction			# S2_PWR_EN
+		echo high > $GPIOPATH/gpio505/direction			# S2_RST_N
 	[ ! -d $GPIOPATH/gpio506 ] && echo 506 > $GPIOPATH/export; \
-		echo high > $GPIOPATH/gpio506/direction			# S2_RST_N
+		echo high > $GPIOPATH/gpio506/direction			# USBHUB_RST_N
 	[ ! -d $GPIOPATH/gpio507 ] && echo 507 > $GPIOPATH/export; \
-		echo high > $GPIOPATH/gpio507/direction			# USBHUB_RST_N
-	[ ! -d $GPIOPATH/gpio508 ] && echo 508 > $GPIOPATH/export; \
-		echo in > $GPIOPATH/gpio508/direction			# PWRFAIL_N
+		echo in > $GPIOPATH/gpio507/direction			# PWRFAIL_N
+	# 508 D.C.
 	# 509 D.C.
 	# 510 D.C.
-	# 511 D.C.
-	# 512 N.C.
+	# 511 N.C.
 	;;
 *)
 	exit 1

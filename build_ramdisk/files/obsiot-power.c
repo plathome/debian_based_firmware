@@ -1,4 +1,4 @@
-#define DEBUG
+//#define DEBUG
 /*	$ssdlinux: obsiot-power.c,v 1.17 2014/01/07 07:19:06 yamagata Exp $	*/
 /*
  * Copyright (c) 2008-2022 Plat'Home CO., LTD.
@@ -87,7 +87,7 @@ enum{
 #define POWER_AC	"/sys/class/gpio/gpio41/value"
 #define POWER_DC	"/sys/class/gpio/gpio42/value"
 #elif defined(CONFIG_OBSFX1)
-#define POWER_AC	"/sys/class/gpio/gpio508/value"
+#define POWER_AC	"/sys/class/gpio/gpio507/value"
 #endif
 
 int chg_charging(unsigned char, int stat);

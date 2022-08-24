@@ -56,10 +56,10 @@
 
 #define I2C_NAME "/dev/i2c-1"
 #define SLAVE 0x20
-#define INIT_MODEM0	0x00
-#define INIT_MODEM1	0x0c
-#define INIT_OUTPUT0	0x1f
-#define INIT_OUTPUT1	0x01
+#define INIT_MODEM0	0x10
+#define INIT_MODEM1	0xf8
+#define INIT_OUTPUT0	0x2f
+#define INIT_OUTPUT1	0x07
 
 #define WLPWR "wlpwr"
 #define WLDIS "wldis"
