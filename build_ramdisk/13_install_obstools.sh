@@ -222,15 +222,31 @@ fi
 #
 # all
 #
-case $TARGET in
-obsvx*|obsix*)
-	pkglist="instfirm obs_createkeys setup_gpio"
+case $DIST in
+bullseye)
+	case $TARGET in
+	obsvx*|obsix*)
+		pkglist="instfirm obs_createkeys setup_gpio"
+		;;
+	obsa16*|obsfx1*)
+		pkglist="obs_createkeys setup_macether setup_gpio"
+		;;
+	*)
+		pkglist="obs_createkeys setup_gpio"
+		;;
+	esac
 	;;
-obsa16*|obsfx1*)
-	pkglist="obs_createkeys setup_macether setup_gpio"
+buster)
+	case $TARGET in
+	obsvx*|obsix*)
+		pkglist="instfirm setup_gpio"
+		;;
+	*)
+		pkglist="setup_gpio"
+		;;
+	esac
 	;;
 *)
-	pkglist="obs_createkeys setup_gpio"
 	;;
 esac
 
