@@ -275,8 +275,18 @@ obsix*|obshx2*)
 	_CFLAGS="$CFLAGS -lusb "
 	$CC -o ${BUILDDIR}/hub-ctrl ${FILESDIR}/hub-ctrl.c $_CFLAGS
 
+
+	case $TARGET in
+	obshx1*|obshx2*)
+		echo "BPV-HASH"
+		_CFLAGS="$CFLAGS -lcrypto -lssl -lm"
+		$CC ${CFLAGS} -o ${BUILDDIR}/bpv-hash ${FILESDIR}/bpv-hash.c $_CFLAGS
+		;;
+	*) ;;
+	esac
+
 	echo;echo;echo
-	OBSTOOLLIST="hub-ctrl"
+	OBSTOOLLIST="hub-ctrl bpv-hash"
 	(cd ${BUILDDIR}; ls -l ${OBSTOOLLIST})
 
 	for cmd in ${OBSTOOLLIST}; do
