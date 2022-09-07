@@ -52,7 +52,7 @@ if [ "$DIST" == "stretch" ]; then
 fi
 
 case ${TARGET} in
-obsbx*|obsvx*|obsa16*|obsfx1*)
+obsbx*|obsvx*)
 	if [ "$DIST" != "buster" ] && [ "$DIST" != "bullseye" ]; then
 		chmod 755 ${DISTDIR}/etc/init.d/bluetooth
 		chroot ${DISTDIR} /sbin/insserv -rf bluetooth
@@ -104,6 +104,10 @@ obsbx*|obsvx*|obsa16*|obsfx1*)
 			;;
 		esac
 	fi
+	;;
+obsa16*|obsfx1*)
+	chroot ${DISTDIR} /usr/bin/systemctl disable apparmor
+	chroot ${DISTDIR} /usr/bin/systemctl disable nfs-server
 	;;
 obsix*|obshx2)
 	chroot ${DISTDIR} /usr/bin/systemctl disable apparmor

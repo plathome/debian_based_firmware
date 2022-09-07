@@ -167,11 +167,11 @@ bullseye)
 		EXCLUDE="nano"
 		;;
 	obsa16*)
-		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200,initscripts,gnupg,strace,wget,apparmor,gdisk,dbus"
+		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200,initscripts,gnupg,strace,wget,apparmor,gdisk,dbus,nfs-kernel-server"
 		EXCLUDE="nano"
 		;;
 	obsfx1*)
-		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200,initscripts,gnupg,strace,wget,apparmor,gdisk,dbus"
+		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libnl-route-3-200,initscripts,gnupg,strace,wget,apparmor,gdisk,dbus,nfs-kernel-server"
 		EXCLUDE="nano"
 		;;
 	obsix*|obshx2*)
