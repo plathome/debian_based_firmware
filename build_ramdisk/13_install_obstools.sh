@@ -61,7 +61,9 @@ obsa16*)
 obsfx1*)
 	pkglist="atcmd cp210x_rs485 obs_util obs_hwclock obsiot_power obsfx1_modem pshd runled wav_play wd_keepalive"
 	;;
-obshx2*) exit 0 ;;
+obshx2*)
+	pkglist="runled wav_play"
+	;;
 *) exit 1 ;;
 esac
 
@@ -84,7 +86,9 @@ obsfx1*)
 obsix*)
 	CFLAGS="-Wall -I/usr/${KERN_ARCH}-linux-gnu${ABI}/include -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -li2c -O2 -mstackrealign -fno-omit-frame-pointer -DCONFIG_OBSIX9"
 	;;
-obshx2*) exit 0 ;;
+obshx2*)
+	CFLAGS="-Wall -I/usr/${KERN_ARCH}-linux-gnu${ABI}/include -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -li2c -O2 -mstackrealign -fno-omit-frame-pointer -DCONFIG_OBSHX1"
+	;;
 *) exit 1 ;;
 esac
 
@@ -230,6 +234,9 @@ bullseye)
 		;;
 	obsa16*|obsfx1*)
 		pkglist="obs_createkeys setup_macether setup_gpio"
+		;;
+	obshx2*)
+		pkglist="obs_createkeys"
 		;;
 	*)
 		pkglist="obs_createkeys setup_gpio"

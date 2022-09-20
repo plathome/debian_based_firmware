@@ -32,6 +32,9 @@ if [ $? -eq 0 ]; then
 	rm -f ${DISTDIR}/*.deb
 	rsync ${EXTRADEBDIR}/*${ARCH}.deb ${DISTDIR}/ ${EXCLUDE}
 	rsync ${EXTRADEBDIR}/*all.deb ${DISTDIR}/ ${EXCLUDE}
+	if [ -d ${EXTRADEBDIR}/${TARGET} ]; then
+		rsync ${EXTRADEBDIR}/${TARGET}/*.deb ${DISTDIR}/ ${EXCLUDE}
+	fi
 	if [ "$ENA_SYSVINIT" == "true" ]; then
 		rsync ${EXTRADEBDIR}/sysvinit/*${ARCH}.deb ${DISTDIR}/ ${EXCLUDE}
 		rsync ${EXTRADEBDIR}/sysvinit/*all.deb ${DISTDIR}/ ${EXCLUDE}

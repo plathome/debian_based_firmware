@@ -46,7 +46,13 @@ _RAMDISK_IMG=${DISTDIR}/../${RAMDISK_IMG}
 mount -o loop ${_RAMDISK_IMG} ${MOUNTDIR}
 
 rm -rf ${MOUNTDIR}/lib/modules/${KERNEL}
-rm -rf ${MOUNTDIR}/lib/firmware
+case $TARGET in
+obshx2*)
+	;;
+*)
+	rm -rf ${MOUNTDIR}/lib/firmware
+	;;
+esac
 
 VERSION=${KERNEL}-${PATCHLEVEL}
 
