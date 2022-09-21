@@ -62,7 +62,7 @@ obsfx1*)
 	pkglist="atcmd cp210x_rs485 obs_util obs_hwclock obsiot_power obsfx1_modem pshd runled wav_play wd_keepalive"
 	;;
 obshx2*)
-	pkglist="runled wav_play"
+	pkglist="runled wav_play wd_keepalive"
 	;;
 *) exit 1 ;;
 esac
@@ -198,7 +198,7 @@ $CC -o ${OBSTOOLDIR}/template-wav-play/usr/sbin/wav-play ${FILESDIR}/wav-play.c 
 $STRIP ${OBSTOOLDIR}/template-wav-play/usr/sbin/wav-play
 
 case $TARGET in
-obsix*|obsvx*|obsbx*|obsa16*|obsfx1*)
+obsix*|obsvx*|obsbx*|obsa16*|obsfx1*|obshx2*)
 	echo "WD-KEEPALIVE"
 	mkdir -p ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS

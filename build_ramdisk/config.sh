@@ -355,7 +355,7 @@ bullseye)
 	obshx2r)
 		ISOFILE=debian-11.5.0-amd64-DVD-1.iso
 		PATCHLEVEL=0
-		RAMDISK_SIZE=500
+		RAMDISK_SIZE=300
 	;;
 	obsbx1s)
 		KERNEL=3.10.17
