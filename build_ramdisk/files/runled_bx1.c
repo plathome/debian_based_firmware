@@ -55,6 +55,22 @@
 #define SEGLED_DEV_B	"/sys/class/gpio/gpio49/value"
 #endif
 
+#if defined(CONFIG_OBSHX1)
+#define I2C_NAME "/dev/i2c-0"
+#define SLAVE_NUM 0x70
+
+#define LED_R 0x01
+#define LED_G 0x02
+#define LED_B 0x04
+
+enum{
+	INPUT = 0,
+	OUTPUT,
+	POLARITY,
+	CONFIG
+};
+#endif
+
 /*	config file format			*/
 /*	line 1		light up (sec)	*/
 /*	line 2		light out (sec)	*/
@@ -146,10 +162,45 @@ ERROR:
 	fclose(fp);
 }
 
+#if defined(CONFIG_OBSHX1)
+int open_device(void)
+{
+	int fd;
+	if((fd = open(I2C_NAME, O_RDWR)) < 0){
+		printf("ERR%d: %s\n", __LINE__, strerror(errno));
+		return -1;
+	}
+	if(ioctl(fd, I2C_SLAVE, SLAVE_NUM) < 0){
+		close(fd);
+		printf("ERR%d: %s\n", __LINE__, strerror(errno));
+		return -1;
+	}
+	return fd;
+}
+#endif
+
 void set_color(char* b, char* g, char* r)
 {
 	int fd;
 
+#if defined(CONFIG_OBSHX1)
+	unsigned char led = 0;
+
+	if(*r - '0') led |= LED_R;
+	if(*g - '0') led |= LED_G;
+	if(*b - '0') led |= LED_B;
+
+	if((fd = open_device()) < 0)
+		return -1;
+
+	if(i2c_smbus_write_byte_data(fd, OUTPUT, led) == -1){
+		close(fd);
+		printf("ERR%d: %s\n", __LINE__, strerror(errno));
+		return -1;
+	}
+
+	close(fd);
+#else
 	if ((fd = open(SEGLED_DEV_R, O_RDWR)) < 0) {
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		exit(-1);
@@ -167,7 +218,9 @@ void set_color(char* b, char* g, char* r)
 		exit(-1);
 	}
 	write(fd, b, 1);
+
 	close(fd);
+#endif
 }
 
 void dancer(void)
