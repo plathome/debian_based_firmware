@@ -39,6 +39,13 @@
 #include <errno.h>
 #include <syslog.h>
 
+#include <sys/ioctl.h>
+#include <linux/i2c-dev.h>
+#include <linux/version.h>
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 19, 0)
+#include <i2c/smbus.h>
+#endif
+
 #define PID_FILE "/var/run/segled.pid"
 
 #if defined(CONFIG_OBSVX1) || defined(CONFIG_OBSIX9)
@@ -191,12 +198,12 @@ void set_color(char* b, char* g, char* r)
 	if(*b - '0') led |= LED_B;
 
 	if((fd = open_device()) < 0)
-		return -1;
+		exit(-1);
 
 	if(i2c_smbus_write_byte_data(fd, OUTPUT, led) == -1){
 		close(fd);
 		printf("ERR%d: %s\n", __LINE__, strerror(errno));
-		return -1;
+		exit(-1);
 	}
 
 	close(fd);

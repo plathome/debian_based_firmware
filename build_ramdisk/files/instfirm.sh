@@ -65,18 +65,16 @@ fi
 
 mount $BOOT /media || exit 1
 cp /media/SFR/${MODEL}-bzImage /media/bzImage
+[ -f /media/SFR/${MODEL}-initrd.gz ] && cp /media/SFR/${MODEL}-initrd.gz /media/initrd.gz
 if [ "$MODEL" == "obsvx1" ]; then
-	cp /media/SFR/obsvx1-initrd.gz /media/initrd.gz
 	e2label ${BOOT/%?/}2 DEBIAN
-elif [ "$MODEL" == "obsix9r" ]; then
-	cp /media/SFR/obsix9r-initrd.gz /media/initrd.gz
 fi
 cp /media/SFR/openblocks-release /media/openblocks-release
 case $MODEL in
 obsvx*)
 	cp /media/EFI/boot/bootx64.conf-obsiot /media/EFI/boot/bootx64.conf
 	;;
-obsix*)
+*)
 	cp /media/EFI/boot/bootx64.conf-${MODEL} /media/EFI/boot/bootx64.conf
 	;;
 esac

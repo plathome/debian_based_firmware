@@ -66,11 +66,14 @@ restore_func(){
 WORK_DIR=/tmp/_tmpfs.$$
 
 	mkdir -p ${WORK_DIR}
-	if [ "$MODEL" == "obsvx1" ] || [ "$MODEL" == "obsix9" ]; then
+	case $MODEL in
+	obsvx1|obsix9|obshx*)
 		mount `findfs LABEL=${SAVE_DIR}` ${WORK_DIR} -r
-	else
+		;;
+	*)
 		mount ${SAVE_DIR} ${WORK_DIR} -r
-	fi
+		;;
+	esac
 	echo -n "Extract userland files... "
 	if (tar xpzmf ${WORK_DIR}/userland.tgz -C ${RW_DIR} > /dev/null 2>&1); then
 		echo "done."
@@ -297,7 +300,7 @@ start)
 			echo "Don't extract files in FlashROM..."
 		else
 			case $MODEL in
-			obsbx1|obsvx1|obsix9|obsa16r|obsfx1)
+			obsbx1|obsvx1|obsix9|obsa16r|obsfx1|obshx2)
 				restore_func
 			;;
 			esac
@@ -311,7 +314,7 @@ start)
 			echo "Don't extract files in FlashROM..."
 		else
 			case $MODEL in
-			obsbx1|obsvx1|obsix9|obsa16r|obsfx1)
+			obsbx1|obsvx1|obsix9|obsa16r|obsfx1|obshx2)
 				restore_func
 			;;
 			esac
@@ -348,10 +351,18 @@ start)
 
 	# extract CONFIG_FILE and execute CONFIG_SCRIPT
 	if [ -n "$confdev" ] ; then
-		[ "$MODEL" == "obsvx1" -o "$MODEL" == "obsix9" ] && /etc/init.d/dbus start
-		if_exists_extract_config_file
-		if_exists_execute_config_script
-		[ "$MODEL" == "obsvx1" -o "$MODEL" == "obsix9" ] && /etc/init.d/dbus stop
+		case $MODEL in
+		obsvx1|obsix9|obshx*)
+			/etc/init.d/dbus start
+			if_exists_extract_config_file
+			if_exists_execute_config_script
+			/etc/init.d/dbus stop
+			;;
+		*)
+			if_exists_extract_config_file
+			if_exists_execute_config_script
+			;;
+		esac
 	fi
 
 	# if using DEBIAN storage, /tmp directory mount under storage.
@@ -379,7 +390,7 @@ start)
 			if [ "$unionfs" == "aufs" ]; then
 				xino_opt="xino=/.aufs.xino.$dir,trunc_xino,"
 				case $MODEL in
-				obsvx1|obsix9)
+				obsvx1|obsix9|obshx*)
 					xino_opt+="acl,"
 					;;
 				*) ;;

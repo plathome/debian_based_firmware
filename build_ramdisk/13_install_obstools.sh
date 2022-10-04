@@ -61,7 +61,7 @@ obsa16*)
 obsfx1*)
 	pkglist="atcmd cp210x_rs485 obs_util obs_hwclock obsiot_power obsfx1_modem pshd runled wav_play wd_keepalive"
 	;;
-obshx2*)
+obshx1*|obshx2*)
 	pkglist="runled wav_play wd_keepalive"
 	;;
 *) exit 1 ;;
@@ -236,7 +236,7 @@ bullseye)
 		pkglist="obs_createkeys setup_macether setup_gpio"
 		;;
 	obshx2*)
-		pkglist="obs_createkeys"
+		pkglist="obs_createkeys instfirm"
 		;;
 	*)
 		pkglist="obs_createkeys setup_gpio"
@@ -263,29 +263,24 @@ cp -f ${FILESDIR}/setup-gpio.sh ${OBSTOOLDIR}/template-setup-gpio/usr/sbin/
 chmod 555 ${OBSTOOLDIR}/template-setup-gpio/usr/sbin/setup-gpio.sh
 
 case $TARGET in
-obsvx*|obsix9|obsa16*|obsfx1*)
+obsbx*|obsvx*|obsix9*|obsa16*|obsfx1*|obshx1*|obshx2*)
 	echo "FLASHCFG"
-	FLASHCFG=flashcfg-rootfs.sh
-	[ "$TARGET" == "obsvx1" -o "$TARGET" == "obsix9r" ] && FLASHCFG=flashcfg.sh
+	case $TARGET in
+	obsvx1|obsix9r|obshx1r|obshx2r)
+		FLASHCFG=flashcfg.sh
+		;;
+	*)
+		FLASHCFG=flashcfg-rootfs.sh
+		;;
+	esac
 	mkdir -p ${OBSTOOLDIR}/template-instfirm/usr/sbin/
 	cp -f ${FILESDIR}/${FLASHCFG} ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg
 	chmod 555 ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg
 	cp -f ${FILESDIR}/instfirm.sh ${OBSTOOLDIR}/template-instfirm/usr/sbin/
 	chmod 555 ${OBSTOOLDIR}/template-instfirm/usr/sbin/instfirm.sh
 	;;
-obsbx*|obsa16r|obsfx1r)
-	echo "FLASHCFG"
-	mkdir -p ${OBSTOOLDIR}/template-instfirm/usr/sbin/
-	cp -f ${FILESDIR}/flashcfg.sh ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg
-	chmod 555 ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg
-	;;
-obsix9r)
-	echo "FLASHCFG"
-	mkdir -p ${OBSTOOLDIR}/template-instfirm/usr/sbin/
-	cp -f ${FILESDIR}/flashcfg.sh ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg
-	chmod 555 ${OBSTOOLDIR}/template-instfirm/usr/sbin/flashcfg
-	cp -f ${FILESDIR}/instfirm.sh ${OBSTOOLDIR}/template-instfirm/usr/sbin/
-	chmod 555 ${OBSTOOLDIR}/template-instfirm/usr/sbin/instfirm.sh
+*)
+	echo "$LINENO: $TARGET is not supported."
 	;;
 esac
 

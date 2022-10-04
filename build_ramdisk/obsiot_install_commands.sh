@@ -277,7 +277,7 @@ obsix*|obshx2*)
 
 
 	case $TARGET in
-	obshx1*|obshx2*)
+	obshx*)
 		echo "BPV-HASH"
 		_CFLAGS="$CFLAGS -lcrypto -lssl -lm"
 		$CC ${CFLAGS} -o ${BUILDDIR}/bpv-hash ${FILESDIR}/bpv-hash.c $_CFLAGS
