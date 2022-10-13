@@ -62,7 +62,7 @@ obsfx1*)
 	pkglist="atcmd cp210x_rs485 obs_util obs_hwclock obsiot_power obsfx1_modem pshd runled wav_play wd_keepalive"
 	;;
 obshx1*|obshx2*)
-	pkglist="runled wav_play wd_keepalive"
+	pkglist="obs_nicrename runled wav_play wd_keepalive"
 	;;
 *) exit 1 ;;
 esac
@@ -151,7 +151,7 @@ obsbx*|obsvx*|obsfx1*)
 esac
 
 case $TARGET in
-obsix*)
+obsix*|obshx*)
 	echo "OBS-NICRENAME"
 	mkdir -p ${OBSTOOLDIR}/template-obs-nicrename/usr/local/sbin/
 	cp -f ${FILESDIR}/obs-nicrename.sh ${OBSTOOLDIR}/template-obs-nicrename/usr/local/sbin/

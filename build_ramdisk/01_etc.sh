@@ -154,12 +154,19 @@ stretch|buster|bullseye)
 		< ${DISTDIR}/etc/ssh/sshd_config > /tmp/sshd_config.new
 	mv -f /tmp/sshd_config.new ${DISTDIR}/etc/ssh/sshd_config
 
-	if [ ! -e "${DISTDIR}/etc/udev/rules.d/73-usb-net-by-mac.rules" ]; then
-		ln -s /dev/null ${DISTDIR}/etc/udev/rules.d/73-usb-net-by-mac.rules
-	fi
-	if [ ! -e "${DISTDIR}/etc/udev/rules.d/75-net-description.rules" ]; then
-		ln -s /dev/null ${DISTDIR}/etc/udev/rules.d/75-net-description.rules
-	fi
+	case $TARGET in
+	obshx*)
+		;;
+	*)
+		if [ ! -e "${DISTDIR}/etc/udev/rules.d/73-usb-net-by-mac.rules" ]; then
+			ln -s /dev/null ${DISTDIR}/etc/udev/rules.d/73-usb-net-by-mac.rules
+		fi
+
+		if [ ! -e "${DISTDIR}/etc/udev/rules.d/75-net-description.rules" ]; then
+			ln -s /dev/null ${DISTDIR}/etc/udev/rules.d/75-net-description.rules
+		fi
+		;;
+	esac
 	;;
 jessie)
 	sed -e "s|^PermitRootLogin without-password|PermitRootLogin yes|" \
