@@ -260,7 +260,7 @@ obsvx*)
 	)
 	chroot ${DISTDIR} ldconfig
 ;;
-obsix*|obshx2*)
+obsix*|obshx*)
 	BUILDDIR=/tmp/obstools.$$
 	LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
 
@@ -300,6 +300,27 @@ obsix*|obshx2*)
 #	chmod 555 ${DISTDIR}/usr/sbin/flashcfg
 	cp ${FILESDIR}/bin/resize ${DISTDIR}/usr/bin/
 	chmod 555 ${DISTDIR}/usr/bin/resize
+;;
+obsa16*|obsfx1*)
+	BUILDDIR=/tmp/obstools.$$
+	LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
+
+	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -fno-omit-frame-pointer -DCONFIG_OBSA16"
+	mkdir -p ${BUILDDIR}
+
+	echo "HUB-CTRL"
+	apt-get -y install libusb-dev:arm64
+	_CFLAGS="$CFLAGS -lusb "
+	$CC -o ${BUILDDIR}/hub-ctrl ${FILESDIR}/hub-ctrl.c $_CFLAGS
+
+	echo;echo;echo
+	OBSTOOLLIST="hub-ctrl"
+	(cd ${BUILDDIR}; ls -l ${OBSTOOLLIST})
+
+	for cmd in ${OBSTOOLLIST}; do
+		(cd ${BUILDDIR}; install -c -o root -g root -m 555 $cmd ${DISTDIR}/usr/sbin/$cmd)
+		$STRIP ${DISTDIR}/usr/sbin/$cmd
+	done
 ;;
 *)
 ;;

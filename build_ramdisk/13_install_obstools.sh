@@ -59,7 +59,7 @@ obsa16*)
 	pkglist="obs_util obs_hwclock pshd runled wav_play wd_keepalive"
 	;;
 obsfx1*)
-	pkglist="atcmd cp210x_rs485 obs_util obs_hwclock obsiot_power obsfx1_modem pshd runled wav_play wd_keepalive"
+	pkglist="atcmd cp210x_rs485 obs_util obs_hwclock obsiot_power pshd runled wav_play wd_keepalive"
 	;;
 obshx1*|obshx2*)
 	pkglist="obs_nicrename runled wav_play wd_keepalive"
