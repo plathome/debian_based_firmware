@@ -1,0 +1,10 @@
+[Unit]
+Description=Setup NIC LED for Openblocks family
+After=networking.service
+
+[Service]
+ExecStart=/usr/sbin/obs-nicled.sh
+Type=oneshot
+
+[Install]
+WantedBy=multi-user.target

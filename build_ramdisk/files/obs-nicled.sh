@@ -28,40 +28,21 @@
 [ -f /etc/default/openblocks ] && . /etc/default/openblocks
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
+RTL8211F_ETH0=/sys/devices/platform/soc@0/30800000.bus/30be0000.ethernet/mdio_bus/30be0000.ethernet-1/30be0000.ethernet-1:01/rtl8211f
+RTL8211F_ETH1=/sys/devices/platform/soc@0/30800000.bus/30bf0000.ethernet/mdio_bus/stmmac-1/stmmac-1:01/rtl8211f
+LED_VALUE=6f12
+EEELED_VALUE=0
+
 case $MODEL in
-obshx*)
-	if [ -e /sys/class/net/enp1s0 ]; then
-		ifrename -c /etc/network/iftab-4port
-		cp -a /etc/network/interfaces-4port /etc/network/interfaces
-	elif [ -e /sys/class/net/enp5s0 ]; then
-		ifrename -c /etc/network/iftab-3port
-		cp -a /etc/network/interfaces-3port /etc/network/interfaces
-	elif [ -e /sys/class/net/enp4s0 ]; then
-		sleep 5
-		if [ -e /sys/class/net/eno1 ]; then
-			ifrename -c /etc/network/iftab-hx2-3port
-			cp -a /etc/network/interfaces-3port /etc/network/interfaces
-		else
-			ifrename -c /etc/network/iftab-2port
-			cp -a /etc/network/interfaces-2port /etc/network/interfaces
-		fi
-	else
-		sleep 5
-		ifrename -c /etc/network/iftab-hx2-2port
-		cp -a /etc/network/interfaces-2port /etc/network/interfaces
+obsa16*)
+	if dmesg | grep -q RTL8211F; then
+		echo ${EEELED_VALUE} > ${RTL8211F_ETH0}/rtl8211f_eeelcr
+		echo ${EEELED_VALUE} > ${RTL8211F_ETH1}/rtl8211f_eeelcr
+		echo ${LED_VALUE} > ${RTL8211F_ETH0}/rtl8211f_lcr
+		echo ${LED_VALUE} > ${RTL8211F_ETH1}/rtl8211f_lcr
 	fi
 	;;
-obsix9*)
-	first_conf=/etc/openblocks/rename/tmp_rename.conf
-	second_conf=/etc/openblocks/rename/act_rename.conf
-
-	if ( which ifrename 2>&1 ) > /dev/null ; then
-		if [ -f "${first_conf}" -a -f "${second_conf}" ] ; then
-			ifrename -c ${first_conf}
-			sleep 0.01
-			ifrename -c ${second_conf}
-		fi
-	fi
+*)
 	;;
 esac
 

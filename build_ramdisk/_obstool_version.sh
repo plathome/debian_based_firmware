@@ -33,6 +33,7 @@ instfirm_ver=2
 nitz_ver=3
 obs_util_ver=4
 obs_hwclock_ver=1
+obs_nicled_ver=1
 obs_nicrename_ver=1
 obs_createkeys_ver=1
 obs_macaddr_ver=1

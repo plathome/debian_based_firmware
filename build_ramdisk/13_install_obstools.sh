@@ -56,7 +56,7 @@ obsix*)
 	esac
 	;;
 obsa16*)
-	pkglist="obs_util obs_hwclock pshd runled wav_play wd_keepalive"
+	pkglist="obs_nicled obs_util obs_hwclock pshd runled wav_play wd_keepalive"
 	;;
 obsfx1*)
 	pkglist="atcmd cp210x_rs485 obs_util obs_hwclock obsiot_power pshd runled wav_play wd_keepalive"
@@ -233,7 +233,7 @@ bullseye)
 		pkglist="instfirm obs_createkeys setup_gpio"
 		;;
 	obsa16*|obsfx1*)
-		pkglist="obs_createkeys setup_macether setup_gpio"
+		pkglist="obs_createkeys obs_nicled setup_macether setup_gpio"
 		;;
 	obshx2*)
 		pkglist="obs_createkeys instfirm"
@@ -304,6 +304,11 @@ obsa16*|obsfx1*)
 	mkdir -p ${OBSTOOLDIR}/template-setup-macether/usr/local/sbin/
 	cp -f ${FILESDIR}/setup-macether.sh ${OBSTOOLDIR}/template-setup-macether/usr/local/sbin/
 	chmod 555 ${OBSTOOLDIR}/template-setup-macether/usr/local/sbin/setup-macether.sh
+
+	echo "OBS-NICLED"
+	mkdir -p ${OBSTOOLDIR}/template-obs-nicled/usr/sbin/
+	cp -f ${FILESDIR}/obs-nicled.sh ${OBSTOOLDIR}/template-obs-nicled/usr/sbin/
+	chmod 555 ${OBSTOOLDIR}/template-obs-nicled/usr/sbin/obs-nicled.sh
 	;;
 esac
 
