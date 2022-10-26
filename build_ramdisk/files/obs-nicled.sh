@@ -30,8 +30,8 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 RTL8211F_ETH0=/sys/devices/platform/soc@0/30800000.bus/30be0000.ethernet/mdio_bus/30be0000.ethernet-1/30be0000.ethernet-1:01/rtl8211f
 RTL8211F_ETH1=/sys/devices/platform/soc@0/30800000.bus/30bf0000.ethernet/mdio_bus/stmmac-1/stmmac-1:01/rtl8211f
-LED_VALUE=6f12
-EEELED_VALUE=0
+LED_VALUE=c102
+EEELED_VALUE=6001
 
 case $MODEL in
 obsa16*)

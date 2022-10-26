@@ -62,7 +62,7 @@ obsfx1*)
 	pkglist="atcmd cp210x_rs485 obs_util obs_hwclock obsiot_power pshd runled wav_play wd_keepalive"
 	;;
 obshx1*|obshx2*)
-	pkglist="obs_nicrename runled wav_play wd_keepalive"
+	pkglist="obs_nicrename runled wav_play"
 	;;
 *) exit 1 ;;
 esac
@@ -348,5 +348,8 @@ ExecStart=/usr/local/sbin/bluetoothd --noplugin=sap
 !
 		} > ${DISTDIR}/lib/systemd/system/bluetooth.service.d/override.conf
 	fi
+	;;
+obshx2*)
+	[ -f ${DISTDIR}/etc/watchdog.conf ] && cp ${FILESDIR}/watchdog.conf ${DISTDIR}/etc
 	;;
 esac
