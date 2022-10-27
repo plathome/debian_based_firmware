@@ -347,12 +347,12 @@ bullseye)
 #		DEFCONFIG=obsvx2_defconfig
 		RAMDISK_SIZE=500
 	;;
-	obshx2)
+	obshx1|obshx2)
 		ISOFILE=debian-11.5.0-amd64-DVD-1.iso
 		PATCHLEVEL=0
 		RAMDISK_SIZE=500
 	;;
-	obshx2r)
+	obshx1r|obshx2r)
 		ISOFILE=debian-11.5.0-amd64-DVD-1.iso
 		PATCHLEVEL=0
 		RAMDISK_SIZE=300

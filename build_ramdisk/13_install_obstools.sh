@@ -61,7 +61,10 @@ obsa16*)
 obsfx1*)
 	pkglist="atcmd cp210x_rs485 obs_util obs_hwclock obsiot_power pshd runled wav_play wd_keepalive"
 	;;
-obshx1*|obshx2*)
+obshx1*)
+	pkglist="obs_nicrename obshx1_wdt runled wav_play"
+	;;
+obshx2*)
 	pkglist="obs_nicrename runled wav_play"
 	;;
 *) exit 1 ;;
@@ -86,7 +89,7 @@ obsfx1*)
 obsix*)
 	CFLAGS="-Wall -I/usr/${KERN_ARCH}-linux-gnu${ABI}/include -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -li2c -O2 -mstackrealign -fno-omit-frame-pointer -DCONFIG_OBSIX9"
 	;;
-obshx2*)
+obshx1*|obshx2*)
 	CFLAGS="-Wall -I/usr/${KERN_ARCH}-linux-gnu${ABI}/include -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -li2c -O2 -mstackrealign -fno-omit-frame-pointer -DCONFIG_OBSHX1"
 	;;
 *) exit 1 ;;
@@ -151,7 +154,7 @@ obsbx*|obsvx*|obsfx1*)
 esac
 
 case $TARGET in
-obsix*|obshx*)
+obsix*|obshx1*|obshx2*)
 	echo "OBS-NICRENAME"
 	mkdir -p ${OBSTOOLDIR}/template-obs-nicrename/usr/local/sbin/
 	cp -f ${FILESDIR}/obs-nicrename.sh ${OBSTOOLDIR}/template-obs-nicrename/usr/local/sbin/
@@ -203,6 +206,15 @@ obsix*|obsvx*|obsbx*|obsa16*|obsfx1*|obshx2*)
 	mkdir -p ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
 	$STRIP ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/wd-keepalive
+	;;
+obshx1*)
+	echo "OBSHX1-WDT"
+	(cd ${FILESDIR}/CAPA322/demo;make)
+	mkdir -p ${OBSTOOLDIR}/template-obshx1-wdt/usr/lib
+	cp ${FILESDIR}/CAPA322/lib/64/libaxio.so.1.0.0 ${OBSTOOLDIR}/template-obshx1-wdt/usr/lib
+	mkdir -p ${OBSTOOLDIR}/template-obshx1-wdt/usr/sbin
+	cp ${FILESDIR}/CAPA322/demo/obshx1-wdt ${OBSTOOLDIR}/template-obshx1-wdt/usr/sbin
+	$STRIP ${OBSTOOLDIR}/template-obshx1-wdt/usr/sbin/obshx1-wdt
 	;;
 esac
 

@@ -37,6 +37,7 @@ obs_nicled_ver=1
 obs_nicrename_ver=1
 obs_createkeys_ver=1
 obs_macaddr_ver=1
+obshx1_wdt_ver=1
 obsiot_power_ver=5
 obsvx1_gpio_ver=1
 obsvx1_modem_ver=3
