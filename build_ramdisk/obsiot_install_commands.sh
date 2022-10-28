@@ -260,7 +260,7 @@ obsvx*)
 	)
 	chroot ${DISTDIR} ldconfig
 ;;
-obsix*|obshx*)
+obsix*|obshx1*|obshx2*)
 	BUILDDIR=/tmp/obstools.$$
 	LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
 
@@ -277,7 +277,7 @@ obsix*|obshx*)
 
 
 	case $TARGET in
-	obshx*)
+	obshx1*|obshx2*)
 		echo "BPV-HASH"
 		_CFLAGS="$CFLAGS -lcrypto -lssl -lm"
 		$CC ${CFLAGS} -o ${BUILDDIR}/bpv-hash ${FILESDIR}/bpv-hash.c $_CFLAGS

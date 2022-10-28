@@ -247,7 +247,7 @@ bullseye)
 	obsa16*|obsfx1*)
 		pkglist="obs_createkeys obs_nicled setup_macether setup_gpio"
 		;;
-	obshx2*)
+	obshx1*|obshx2*)
 		pkglist="obs_createkeys instfirm"
 		;;
 	*)

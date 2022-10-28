@@ -58,6 +58,9 @@ elif [ "$MODEL" == "obsix9" ]; then
 elif [ "$MODEL" == "obshx2" ]; then
 	DESCRIPTION="Linux firmware for OpenBlocks HX2"
 	TARGET=$MODEL
+elif [ "$MODEL" == "obshx1" ]; then
+	DESCRIPTION="Linux firmware for OpenBlocks HX1"
+	TARGET=$MODEL
 else
 	echo
 	echo "$MODEL is not supported."

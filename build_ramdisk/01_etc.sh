@@ -109,7 +109,7 @@ obsa16*|obsfx1*)
 	chroot ${DISTDIR} /usr/bin/systemctl disable apparmor
 	chroot ${DISTDIR} /usr/bin/systemctl disable nfs-server
 	;;
-obsix*|obshx2)
+obsix*|obshx1*|obshx2*)
 	chroot ${DISTDIR} /usr/bin/systemctl disable apparmor
 	chroot ${DISTDIR} /usr/bin/systemctl enable acpid
 	;;
@@ -155,7 +155,7 @@ stretch|buster|bullseye)
 	mv -f /tmp/sshd_config.new ${DISTDIR}/etc/ssh/sshd_config
 
 	case $TARGET in
-	obshx*)
+	obshx1*|obshx2*)
 		;;
 	*)
 		if [ ! -e "${DISTDIR}/etc/udev/rules.d/73-usb-net-by-mac.rules" ]; then

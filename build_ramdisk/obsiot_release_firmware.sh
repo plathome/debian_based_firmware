@@ -47,7 +47,7 @@ mount -o loop ${_RAMDISK_IMG} ${MOUNTDIR}
 
 rm -rf ${MOUNTDIR}/lib/modules/${KERNEL}
 case $TARGET in
-obshx2*)
+obshx1*|obshx2*)
 	;;
 *)
 	rm -rf ${MOUNTDIR}/lib/firmware
@@ -130,7 +130,7 @@ obsvx2)
 obsbx1s)
 	(cd ${MOUNTDIR}; tar cfzp ${RELEASEDIR}/modules.tgz etc/firmware lib/modules)
 	;;
-obsix9|obsa16|obsfx1|obshx2)
+obsix9|obsa16|obsfx1|obshx1|obshx2)
 	(cd ${MOUNTDIR}/lib; tar cfzp ${RELEASEDIR}/modules.tgz modules)
 	;;
 esac
@@ -297,7 +297,7 @@ obsbx1s)
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
-obsix9|obshx2)
+obsix9|obshx1|obshx2)
 	# Linux kernel
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/bzImage ${RELEASEDIR}
 
@@ -311,7 +311,7 @@ obsix9|obshx2)
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
-obsix9r|obshx2r)
+obsix9r|obshx1r|obshx2r)
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/bzImage ${RELEASEDIR}
 	${COMP} -${COMP_LVL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/initrd.${COMPEXT}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
