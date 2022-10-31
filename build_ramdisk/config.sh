@@ -329,19 +329,19 @@ bullseye)
 		RAMDISK_SIZE=500
 	;;
 	obsvx1)
-		KERNEL=5.10.100
+		KERNEL=5.10.140
 		ISOFILE=debian-11.1.0-amd64-DVD-1.iso
 		PATCHLEVEL=0dev0
 		RAMDISK_SIZE=280
 	;;
 	obsix9r)
-		KERNEL=5.10.100
+		KERNEL=5.10.140
 		ISOFILE=debian-11.1.0-amd64-DVD-1.iso
-		PATCHLEVEL=99dev0
+		PATCHLEVEL=0dev0
 		RAMDISK_SIZE=500
 	;;
 	obsix9)
-		KERNEL=5.10.100
+		KERNEL=5.10.140
 		ISOFILE=debian-11.1.0-amd64-DVD-1.iso
 		PATCHLEVEL=0dev0
 #		DEFCONFIG=obsvx2_defconfig
@@ -361,7 +361,7 @@ bullseye)
 		KERNEL=3.10.17
 		ISOFILE=debian-11.1.0-i386-DVD-1.iso
 		ARCH=i386
-		PATCHLEVEL=399dev0
+		PATCHLEVEL=399dev1
 		DEFCONFIG=obsbx1_defconfig
 		RAMDISK_SIZE=250
 	;;
@@ -369,7 +369,7 @@ bullseye)
 		KERNEL=3.10.17
 		ISOFILE=debian-11.1.0-i386-DVD-1.iso
 		ARCH=i386
-		PATCHLEVEL=399dev0
+		PATCHLEVEL=399dev1
 		RAMDISK_SIZE=250
 	;;
 	obsa16)
