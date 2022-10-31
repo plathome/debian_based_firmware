@@ -1,0 +1,55 @@
+Axiomtek Hardware Board Support Package for User mode API Library
+=================================================================
+
+2022
+
+Contents
+========
+- File Discription
+- Building and Installation
+- Demo Program
+
+
+
+File Discription
+================
+Compiler environment : Deboam 11, kerneal version: 5.10 
+demo : This directory include BSP API library demo program sample codes
+lib : This directory include BSP API shared libraries.
+src : This directory include BSP API library source codes
+Makefile : This BSP's installation description file
+README : This BSP's documentation file
+
+
+
+Building and Installation
+=========================
+1. Unpack the BSP tar file, where <x.x.x> is the version number for the 
+   file:
+	# tar zxvf <folder name>.tar.gz
+
+2. Change to the directory:
+	# cd <folder name>
+
+3. Install the API shared libraries in /usr/lib
+	# make
+
+4. Compile the demo funtion
+	# cd demo	(Change to demo directory)
+	# make
+	
+	
+
+Demo Program
+============
+NOTE:Detail to use the BSP API function, can see lib header file *.h
+
+1. Hardware Monitor demo program
+  -hwm.c
+
+2. watch dog timer demo program
+  -wdt.c
+
+3. dio demo program
+  -dio.c
+
