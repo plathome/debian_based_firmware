@@ -286,7 +286,15 @@ obsix*|obshx1*|obshx2*)
 	esac
 
 	echo;echo;echo
-	OBSTOOLLIST="hub-ctrl bpv-hash"
+	case $TARGET in
+	obshx1*|obshx2*)
+		OBSTOOLLIST="hub-ctrl bpv-hash"
+		;;
+	obsix*)
+		OBSTOOLLIST="hub-ctrl"
+		;;
+	*) ;;
+	esac
 	(cd ${BUILDDIR}; ls -l ${OBSTOOLLIST})
 
 	for cmd in ${OBSTOOLLIST}; do
