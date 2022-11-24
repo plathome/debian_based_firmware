@@ -111,13 +111,6 @@ set_time_s710(){
 	echo "done"
 }
 
-# check init sw
-grep -q 'noflashcfg=1' /proc/cmdline
-if [ $? == 0 ]; then
-	echo "nitz: push INIT switch"
-	exit 0
-fi
-
 MODEM=`/usr/sbin/obsiot-modem.sh`
 
 if [ "$MODEM" != "none" -a \( "$MODEL" == "obsvx1" -o "$MODEL" == "obsvx2" \) ]; then
@@ -168,6 +161,14 @@ elif [ "$MODEL" == "obsbx1" ]; then
 		;;
 	esac
 fi
+
+# check init sw
+grep -q 'noflashcfg=1' /proc/cmdline
+if [ $? == 0 ]; then
+	echo "nitz: push INIT switch"
+	exit 0
+fi
+
 case $MODEM in
 EHS6)
 	set_time_ehs6

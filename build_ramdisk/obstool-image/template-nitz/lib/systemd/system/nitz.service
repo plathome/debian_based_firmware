@@ -1,6 +1,6 @@
 [Unit]
 Description=Network Identity and Time Zone for Openblocks family
-After=setup-gpio.service
+After=ssh.service
 
 [Service]
 ExecStart=/usr/sbin/nitz.sh
