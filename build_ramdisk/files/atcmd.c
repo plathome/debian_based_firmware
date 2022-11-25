@@ -1386,7 +1386,10 @@ int main(int ac, char *av[])
 				|| strncmp(S710, MNAME, sizeof(S710)) == 0
 				|| strncmp(S760E, MNAME, sizeof(S760E)) == 0
 				|| strncmp(S760, MNAME, sizeof(S760)) == 0){
-				sleep(3);
+				sleep(11);
+			}
+			else if(strncmp(EC25, MNAME, sizeof(EC25)) == 0){
+				sleep(11);
 			}
 		}
 		else if(strncmp(CMD_PRST, av[i], sizeof(CMD_PRST)) == 0){
@@ -1453,7 +1456,7 @@ int main(int ac, char *av[])
 					|| strncmp(S710, MNAME, sizeof(S710)) == 0
 					|| strncmp(S760E, MNAME, sizeof(S760E)) == 0
 					|| strncmp(S760, MNAME, sizeof(S760)) == 0){
-				sleep(6);
+				sleep(11);
 			}
 			else if(strncmp(EC25, MNAME, sizeof(EC25)) == 0){
 				sleep(11);
