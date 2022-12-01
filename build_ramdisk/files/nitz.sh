@@ -150,6 +150,7 @@ elif [ "$MODEL" == "obsbx1" ]; then
 		echo low > $GPIOPATH/gpio165/direction
 		echo 15 > $GPIOPATH/export	# 3G reset
 		echo low > $GPIOPATH/gpio15/direction
+		[ "$MODEM" == "S710" -o "$MODEM" == "S760" ] && atcmd PON
 		;;
 	U200)
 		echo 165 > $GPIOPATH/export	# 3G modem power
