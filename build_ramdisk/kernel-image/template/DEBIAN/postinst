@@ -79,7 +79,7 @@ configure)
 		udev_rules=/etc/udev/rules.d/40-rename-ttyrs485.rules
 		if [ -e $udev_rules ]; then
 			cp $udev_rules $udev_rules.tmp
-			sed -e 's/\"1-1.5\"/\"1-1.5:1.0\"/' $udev_rules.tmp.tmp > $udev_rules
+			sed -e 's/\"1-1.5\"/\"1-1.5:1.0\"/' $udev_rules.tmp > $udev_rules
 			rm $udev_rules.tmp
 		fi
 	fi
