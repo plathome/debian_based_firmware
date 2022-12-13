@@ -74,6 +74,15 @@ configure)
 			rm -f /etc/udev/rules.d/50-symlink-ttyusb-ttyacm.rules
 		fi
 	fi
+
+	if [ "$MODEL"="obsbx1" -o "$MODEL"="obsbx1s" ]; then
+		udev_rules=/etc/udev/rules.d/40-rename-ttyrs485.rules
+		if [ -e $udev_rules ]; then
+			cp $udev_rules $udev_rules.tmp
+			sed -e 's/\"1-1.5\"/\"1-1.5:1.0\"/' $udev_rules.tmp.tmp > $udev_rules
+			rm $udev_rules.tmp
+		fi
+	fi
 ;;
 
 abort-upgrade|abort-remove|abort-deconfigure)
