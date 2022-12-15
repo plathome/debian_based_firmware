@@ -447,3 +447,10 @@ else
 	echo "could't read _config.sh"
 	exit 1
 fi
+
+if [ -f local_config.sh ] ; then
+	echo "read local_config.sh as it exists"
+	. local_config.sh
+fi
+
+
