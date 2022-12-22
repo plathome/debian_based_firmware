@@ -409,8 +409,8 @@ bullseye)
 		COMP_LVL=9
 		COMP=gzip
 		COMPEXT=gz
-		WIFI_DRIVER=laird-backport-8.5.0.7
-		WIFI_DEFCONFIG=lwb5p
+		WIFI_DRIVER=laird-backport-9.15.0.14
+		WIFI_DEFCONFIG=lwb5p_nrc
 #		UBOOT_VER=2020.04
 #		UDEFCONFIG=obsa16_defconfig
 	;;
