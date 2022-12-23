@@ -33,6 +33,7 @@ EX1|10|obsbx1s|buster|i386|Debian GNU/Linux 10/amd64
 EX1|9|obsbx1s|stretch|i386|Debian GNU/Linux 9/amd64
 EX1|8|obsbx1|jessie|i386|Debian GNU/Linux 8/amd64
 EX1|7|obsbx1|wheezy|i386|Debian GNU/Linux 8/amd64
+FX1|11|obsfx1|bullseye|arm64|Debian GNU/Linux 11/amd64
 VX2|10|obsvx2|buster|amd64|Debian GNU/Linux 10/amd64
 VX2|9|obsvx2|stretch|amd64|Debian GNU/Linux 9/amd64
 VX1|8|obsvx1|jessie|amd64|Debian GNU/Linux 8/amd64
