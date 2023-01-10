@@ -417,7 +417,13 @@ start)
 
 	# create ssh keys for openssh-server
 	if [ -x /usr/sbin/sshd ] ; then
-#		rngd -r /dev/urandom
+		case "$MODEL" in
+		obsbx1)
+			if [ -x /usr/sbin/rngd ] ; then
+				rngd -r /dev/urandom
+			fi
+			;;
+		esac
 		ssh-keygen -N '' -A
 	fi
 
