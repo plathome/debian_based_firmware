@@ -1,1 +1,1 @@
-ACTION=="add", KERNELS=="1-1.5", SUBSYSTEMS=="usb", SYMLINK+="ttyRS485"
+ACTION=="add", SUBSYSTEMS=="platform" , KERNEL=="ttymxc0" , SUBSYSTEM=="tty" , SYMLINK+="ttyRS485"
