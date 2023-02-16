@@ -439,6 +439,11 @@ bullseye)
 ;;
 esac
 
+if [ -f local_config.sh ] ; then
+	echo "read local_config.sh as it exists"
+	. local_config.sh
+fi
+
 if [ -f _config.sh ] ; then
 	. _config.sh
 elif [ -f ../_config.sh ] ; then
@@ -447,10 +452,3 @@ else
 	echo "could't read _config.sh"
 	exit 1
 fi
-
-if [ -f local_config.sh ] ; then
-	echo "read local_config.sh as it exists"
-	. local_config.sh
-fi
-
-
