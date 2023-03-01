@@ -2,7 +2,7 @@
 
 ぷらっとホーム株式会社
 
-Copyright (c) 2013-2022 Plat'Home CO., LTD.
+Copyright (c) 2013-2023 Plat'Home CO., LTD.
 
 # 1. はじめに
 
@@ -14,6 +14,7 @@ OpenBlocksのファームウェアは、機種(OpenBlocksシリーズ, OpenBlock
 
 機種|Debian|TARGET|DIST|ARCH|ファームウェアを作成するホストのOS
 ---|---|---|---|---|---
+IX9|11|obsix9|bullseye|amd64|Debian GNU/Linux 11/amd64
 IX9|10|obsix9|buster|amd64|Debian GNU/Linux 10/amd64
 IX9|11|obsix9r|bullseye|amd64|Debian GNU/Linux 11/amd64
 IX9|10|obsix9r|buster|amd64|Debian GNU/Linux 10/amd64
@@ -25,15 +26,18 @@ A7|8|obsa7|jessie|armel|Debian GNU/Linux 8/amd64
 A7|7|obsa7|wheezy|armel|Debian GNU/Linux 8/amd64
 A6|7|obsa6|wheezy|armel|Debian GNU/Linux 8/amd64
 600|7|obs600|wheezy|powerpc|Debian GNU/Linux 8/amd64
+BXn|11|obsbx1s|bullseye|i386|Debian GNU/Linux 11/amd64
 BXn|10|obsbx1s|buster|i386|Debian GNU/Linux 10/amd64
 BXn|9|obsbx1s|stretch|i386|Debian GNU/Linux 9/amd64
 BXn|8|obsbx1|jessie|i386|Debian GNU/Linux 8/amd64
 BXn|7|obsbx1|wheezy|i386|Debian GNU/Linux 8/amd64
+EX1|11|obsbx1s|bullseye|i386|Debian GNU/Linux 11/amd64
 EX1|10|obsbx1s|buster|i386|Debian GNU/Linux 10/amd64
 EX1|9|obsbx1s|stretch|i386|Debian GNU/Linux 9/amd64
 EX1|8|obsbx1|jessie|i386|Debian GNU/Linux 8/amd64
 EX1|7|obsbx1|wheezy|i386|Debian GNU/Linux 8/amd64
 FX1|11|obsfx1|bullseye|arm64|Debian GNU/Linux 11/amd64
+VX2|11|obsvx2|bullseye|amd64|Debian GNU/Linux 11/amd64
 VX2|10|obsvx2|buster|amd64|Debian GNU/Linux 10/amd64
 VX2|9|obsvx2|stretch|amd64|Debian GNU/Linux 9/amd64
 VX1|8|obsvx1|jessie|amd64|Debian GNU/Linux 8/amd64
