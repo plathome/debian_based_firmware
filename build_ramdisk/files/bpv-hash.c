@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Plat'Home CO., LTD.
+ * Copyright (c) 2018 - 2023 Plat'Home CO., LTD.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -116,7 +116,6 @@ int encode_aes128_base64(unsigned char *inbuf , unsigned char *outbuf) {
 	unsigned char     aesdest [AESSIZE] = { '\0' };
         char    *base64EncodeOutput;
         int writelen     = 0 ;
-        int wtotallen    = 0 ;
         int enpadlen     = 0 ;
 
         memset(aesdest , 0x00 , sizeof(aesdest));
@@ -127,7 +126,7 @@ int encode_aes128_base64(unsigned char *inbuf , unsigned char *outbuf) {
         if ( ! EVP_EncryptInit_ex(cten, EVP_aes_128_cbc(), NULL, (unsigned char*)key, iv) )
                 return 11 ;
 
-        if ( ! EVP_EncryptUpdate(cten, aesdest, &writelen, (unsigned char *)inbuf, strlen(inbuf)) )
+        if ( ! EVP_EncryptUpdate(cten, aesdest, &writelen, (unsigned char *)inbuf, strlen((const char *)inbuf)) )
                 return 12 ;
 
         if ( ! EVP_EncryptFinal_ex(cten, (unsigned char *)(aesdest + writelen), &enpadlen) )
@@ -149,13 +148,13 @@ int encode_aes128_base64(unsigned char *inbuf , unsigned char *outbuf) {
 #endif
 
         // base64 encode
-        Base64Encode(aesdest , writelen+enpadlen , &base64EncodeOutput);
+        Base64Encode((char *)aesdest , writelen+enpadlen , &base64EncodeOutput);
 
 #ifdef LDEBUG
         printf("* ENCODE to Base64 : [%s]\n" , base64EncodeOutput);
 #endif
 
-	sprintf(outbuf , "%s"  , base64EncodeOutput);
+	sprintf((char *)outbuf , "%s"  , base64EncodeOutput);
 
 	return 0 ;
 }
@@ -167,9 +166,7 @@ int decode_base64_aws128(char *inbuf , char *obuf) {
         int decode_buf_size = 0 ;
         char* base64DecodeOutput;
 
-        int decpadlen    = 0 ;
         int readlen      = 0 ;
-        int rtotallen    = 0 ;
         int rlastlen      = 0 ;
 
         memset(aesdest , 0x00 , sizeof(aesdest));
@@ -373,8 +370,6 @@ int fsenvread(char *devname , char *obuf) {
 int fsenvwrite(char *devname , char *wbuf) {
         int ret;
         int mount_flag = 0;
-        int totallen = 0 ;
-        int rlen = 0 ;
 
         int pid = getpid();
 
@@ -383,7 +378,6 @@ int fsenvwrite(char *devname , char *wbuf) {
         char path[512] ;
         char fpath[1024] ;
 	char buf[WRSIZE] ;
-        char lbuf[1024] ;
 
 	memset(buf , 0x00 , sizeof(buf));
         memset(path , 0x00 , sizeof(path));
@@ -454,7 +448,7 @@ int write_env(char *devname , char *envfile) {
 	printf("DEBUG : %s\n" , buf);
 #endif
 
-	ret = encode_aes128_base64(buf , enbuf) ;
+	ret = encode_aes128_base64((unsigned char *)buf , enbuf) ;
 	if ( ret != 0 )
 		return ret + 110 ;
 
@@ -462,7 +456,7 @@ int write_env(char *devname , char *envfile) {
 	printf("DEBUG ENCODE : %s\n" , enbuf);
 #endif
 
-	ret = fsenvwrite(devname , enbuf);
+	ret = fsenvwrite(devname , (char *)enbuf);
 	if ( ret != 0 )
 		return ret + 120 ;
 
@@ -491,7 +485,7 @@ int read_env(char *devname) {
 #endif
 
 	// decode
-	ret = decode_base64_aws128(buf , debuf) ;
+	ret = decode_base64_aws128(buf , (char *)debuf) ;
 	if ( ret != 0 ) {
 		return ret + 210 ;
 	}
@@ -507,7 +501,7 @@ int main(int argc , char *argv[]) {
 
 	// Exec Mode Flag
 	int mode = 0 ; // 1 : Read , 2 : Write
-	int i , opt ;
+	int opt ;
 	char storage[2048] , envfile[2048]; 
 
 	memset( storage , 0x00 , sizeof(storage) );
