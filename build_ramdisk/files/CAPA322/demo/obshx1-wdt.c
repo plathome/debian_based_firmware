@@ -95,8 +95,9 @@ int main(int ac, char* av[])
 	int ret;
 	int i;
 	struct timespec req, rem;
+	extern char *optarg;	
 
-	while ((i = getopt(ac, av, "it")) != -1){
+	while ((i = getopt(ac, av, "i:t:")) != -1){
 		switch(i){
 		case 'i':
 			interval = strtoul(optarg, NULL, 10);
