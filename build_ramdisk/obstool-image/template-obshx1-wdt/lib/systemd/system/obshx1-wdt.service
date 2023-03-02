@@ -1,0 +1,11 @@
+[Unit]
+Description=Watchdog timer daemon for Openblocks family
+
+[Service]
+ExecStart=/usr/sbin/obshx1-wdt -i 30 -t 60
+Restart=always
+Type=forking
+PIDFile=/run/obshx1-wdt.pid
+
+[Install]
+WantedBy=multi-user.target
