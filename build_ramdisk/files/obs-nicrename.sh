@@ -29,27 +29,23 @@
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 case $MODEL in
-obshx*)
+obshx1)
 	sleep 5
-	if [ -e /sys/class/net/enp1s0 ]; then
-		if [ -e /sys/class/net/enp5s0 ]; then
-			ifrename -c /etc/network/iftab-obshx1-4port
-			cp -a /etc/network/interfaces-4port /etc/network/interfaces
-		else
-			ifrename -c /etc/network/iftab-obshx1-pcie-3port
-			cp -a /etc/network/interfaces-3port /etc/network/interfaces
-		fi
-	elif [ -e /sys/class/net/enp5s0 ]; then
+	if [ -e /sys/class/net/enp2s0 ]; then
+		ifrename -c /etc/network/iftab-obshx1-4port
+		cp -a /etc/network/interfaces-4port /etc/network/interfaces
+	elif [ -e /sys/class/net/enp3s0 ]; then
 		ifrename -c /etc/network/iftab-obshx1-3port
 		cp -a /etc/network/interfaces-3port /etc/network/interfaces
-	elif [ -e /sys/class/net/enp4s0 ]; then
-		if [ -e /sys/class/net/eno1 ]; then
-			ifrename -c /etc/network/iftab-obshx2-3port
-			cp -a /etc/network/interfaces-3port /etc/network/interfaces
-		else
-			ifrename -c /etc/network/iftab-obshx1-2port
-			cp -a /etc/network/interfaces-2port /etc/network/interfaces
-		fi
+	else
+		ifrename -c /etc/network/iftab-obshx1-2port
+		cp -a /etc/network/interfaces-2port /etc/network/interfaces
+	fi
+	;;
+obshx2)
+	if [ -e /sys/class/net/eno1 ]; then
+		ifrename -c /etc/network/iftab-obshx2-3port
+		cp -a /etc/network/interfaces-3port /etc/network/interfaces
 	else
 		ifrename -c /etc/network/iftab-obshx2-2port
 		cp -a /etc/network/interfaces-2port /etc/network/interfaces
