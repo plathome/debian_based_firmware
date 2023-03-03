@@ -210,10 +210,10 @@ obsix*|obsvx*|obsbx*|obsa16*|obsfx1*|obshx2*)
 obshx1*)
 	echo "OBSHX1-WDT"
 	(cd ${FILESDIR}/CAPA322/demo;make)
-	mkdir -p ${OBSTOOLDIR}/template-obshx1-wdt/usr/lib
-	cp ${FILESDIR}/CAPA322/lib/64/libaxio.so.1.0.0 ${OBSTOOLDIR}/template-obshx1-wdt/usr/lib
-	(cd ${OBSTOOLDIR}/template-obshx1-wdt/usr/lib; ln -sf libaxio.so.1.0.0  libaxio.so.0)
-	(cd ${OBSTOOLDIR}/template-obshx1-wdt/usr/lib; ln -sf libaxio.so.1.0.0  libaxio.so)
+	mkdir -p ${OBSTOOLDIR}/template-obshx1-wdt/usr/lib/x86_64-linux-gnu
+	cp ${FILESDIR}/CAPA322/lib/64/libaxio.so.1.0.0 ${OBSTOOLDIR}/template-obshx1-wdt/usr/lib/x86_64-linux-gnu
+	(cd ${OBSTOOLDIR}/template-obshx1-wdt/usr/lib/x86_64-linux-gnu; ln -sf libaxio.so.1.0.0  libaxio.so.0)
+	(cd ${OBSTOOLDIR}/template-obshx1-wdt/usr/lib/x86_64-linux-gnu; ln -sf libaxio.so.1.0.0  libaxio.so)
 	mkdir -p ${OBSTOOLDIR}/template-obshx1-wdt/usr/sbin
 	cp ${FILESDIR}/CAPA322/demo/obshx1-wdt ${OBSTOOLDIR}/template-obshx1-wdt/usr/sbin
 	$STRIP ${OBSTOOLDIR}/template-obshx1-wdt/usr/sbin/obshx1-wdt
