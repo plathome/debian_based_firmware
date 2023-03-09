@@ -1,6 +1,6 @@
 [Unit]
 Description=Setup Ethernet for Openblocks family
-Before = networking.service
+Before = networking.service ifupdown-pre.service NetworkManager.service
 
 [Service]
 ExecStart=/usr/local/sbin/obs-nicrename.sh
