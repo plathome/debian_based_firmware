@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2022 Plat'Home CO., LTD.
+# Copyright (c) 2013-2023 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,8 @@
 pw='$1$afC9J.v6$Dkq.k8sVRq7n0Py5eWWAp1'
 pw_ix9r='$6$Eq7045XjAMxZ3AQo$N471tuPsYCcOJuCEduSo7fv8WyOp96qBwg6dRA7aJtapVoFIc0uiWmQD5Ibs9l4RPsa3R6VrenJnogxp5n9Il.'
 pw_a16='$y$j9T$suL2ZomyH7.hwZX0M4khs1$J1CilnhxtR8hBK3FpS4/zTyXnZ497ukKi1f7RNuEXF5'
+pw_hx1='$y$j9T$dIV1tf8FpipQuStvw4mkS/$0XNXv0D/yGtjKw.se6EUlFeid8OJJe4jrKQzTXEBFs8:19425'
+pw_hx2='$y$j9T$cIZ4iyeCc0UoDXHENwRVT.$UT21DVGCEaGzFjfwfuxdXfoZ.fbnQVvOuyZFvSi.9Z1:19425'
 
 case $TARGET in
 obsix9r)
@@ -37,6 +39,12 @@ obsix9r)
 	;;
 obsa16*)
 	chroot ${DISTDIR} /usr/sbin/usermod -p $pw_a16 root
+	;;
+obshx1*)
+	chroot ${DISTDIR} /usr/sbin/usermod -p $pw root
+	;;
+obshx2*)
+	chroot ${DISTDIR} /usr/sbin/usermod -p $pw root
 	;;
 *)
 	chroot ${DISTDIR} /usr/sbin/usermod -p $pw root
