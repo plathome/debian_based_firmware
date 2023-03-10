@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2022 Plat'Home CO., LTD.
+# Copyright (c) 2013-2023 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,7 @@ usage()
 {
 	echo -e "$0 src model"
 	echo -e "src : Partition of source storage (exp. USB memory is /dev/sda1)"
-	echo -e "model : obsvx1, obsvx2, obsix9 or obsix9r"
+	echo -e "model : obsvx1, obsvx2, obsix9, obsix9r, obshx1, onshx2"
 	return 0
 }
 
@@ -44,6 +44,12 @@ fi
 
 case ${target} in
 obsvx1|obsvx2|obsix9|obsix9r)
+	destdev=/dev/mmcblk0
+	rootp=p2
+	;;
+obshx1|obshx2)
+	destdev=/dev/nvme0n1
+	rootp=p3
 	;;
 *)
 	usage
@@ -53,30 +59,49 @@ esac
 
 # remove partitions
 for num in 1 2 3; do
-	if [ -e /dev/mmcblk0p$num ]; then
-		parted /dev/mmcblk0 -s rm $num
+	if [ -e ${destdev}p${num} ]; then
+		parted ${destdev} -s rm $num
 	fi
 done
 
-# make partition
-parted /dev/mmcblk0 -s mklabel gpt
-parted /dev/mmcblk0 -s mkpart boot fat16 1M 1537M
-parted /dev/mmcblk0 -s mkpart primary ext4 1537M 100%
-sleep 1
+if [ "${target}" == "obshx1" -o "${target}" == "obshx2" ]; then
+	# make partition
+	parted ${destdev} -s mklabel gpt
+	parted ${destdev} -s mkpart boot fat16 1M 1537M
+	parted ${destdev} -s mkpart primary ext4 1537M 1538M
+	parted ${destdev} -s mkpart primary ext4 1538M 100%
+	sleep 1
 
-# remove partitions info
-wipefs -a /dev/mmcblk0p1
-wipefs -a /dev/mmcblk0p2
+	# remove partitions info
+	wipefs -a ${destdev}p1
+	wipefs -a ${destdev}p2
+	wipefs -a ${destdev}p3
 
-# format partition
-mkfs.vfat -n BOOT /dev/mmcblk0p1
-mkfs.ext4 -U e8c3e922-b1f5-43a2-a026-6a14f01197f6 /dev/mmcblk0p2
+	# format partition
+	mkfs.vfat -n BOOT ${destdev}p1
+	mkfs.ext4 -F -L configs -O ^has_journal ${destdev}p2
+	mkfs.ext4 -F -L primary ${destdev}p3
+else
+	# make partition
+	parted ${destdev} -s mklabel gpt
+	parted ${destdev} -s mkpart boot fat16 1M 1537M
+	parted ${destdev} -s mkpart primary ext4 1537M 100%
+	sleep 1
+
+	# remove partitions info
+	wipefs -a ${destdev}p1
+	wipefs -a ${destdev}p2
+
+	# format partition
+	mkfs.vfat -n BOOT ${destdev}p1
+	mkfs.ext4 -U e8c3e922-b1f5-43a2-a026-6a14f01197f6 ${destdev}p2
+fi
 
 # copy partition
 mount ${src} /media || exit 1
 
 # boot partition
-mount /dev/mmcblk0p1 /mnt || exit 1
+mount ${destdev}p1 /mnt || exit 1
 ( cd /media; tar cfpm - . | tar xfpm - -C /mnt )
 cp /mnt/EFI/boot/bootx64.conf-obsiot /mnt/EFI/boot/bootx64.conf
 cp /mnt/SFR/${target}-bzImage /mnt/bzImage
@@ -93,8 +118,8 @@ sync
 umount /mnt
 
 # restore RootFS and WebUI
-if [ "${target}" == "obsvx2" -o "${target}" == "obsix9" ]; then
-	mount /dev/mmcblk0p2 /mnt || exit 1
+if [ "${target}" == "obsvx2" -o "${target}" == "obsix9" -o "${target}" == "obshx1" -o "${target}" == "obshx2" ]; then
+	mount ${destdev}${rootp} /mnt || exit 1
 	if [ -f /media/SFR/${target}_userland.tgz ]; then
 		tar xfzp /media/SFR/${target}_userland.tgz -C /mnt
 	elif [ -f /media/SFR/${target}-rootfs.tgz ]; then
