@@ -68,7 +68,11 @@ fi
 # format partition
 if [ -e $ROOTFS ]; then
 	wipefs -a $ROOTFS
-	mkfs.ext4 -U e8c3e922-b1f5-43a2-a026-6a14f01197f6 $ROOTFS
+	if [ "$MODEL" == "obshx1" -o "$MODEL" == "obshx2" ]; then
+		mkfs.ext4 -F -L primary $ROOTFS
+	else
+		mkfs.ext4 -U e8c3e922-b1f5-43a2-a026-6a14f01197f6 $ROOTFS
+	fi
 fi
 
 mount $BOOT /media || exit 1
