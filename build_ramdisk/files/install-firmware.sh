@@ -29,7 +29,7 @@ usage()
 {
 	echo -e "$0 src model"
 	echo -e "src : Partition of source storage (exp. USB memory is /dev/sda1)"
-	echo -e "model : obsvx1, obsvx2, obsix9, obsix9r, obshx1, onshx2"
+	echo -e "model : obsvx1, obsvx2, obsix9, obsix9r, obshx1, obshx2"
 	return 0
 }
 
