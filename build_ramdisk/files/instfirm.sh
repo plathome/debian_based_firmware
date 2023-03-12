@@ -72,7 +72,7 @@ if [ -e $ROOTFS ]; then
 	wipefs -a $ROOTFS
 	case $MODEL in
 	obsix9*|obshx*)
-		mkfs.ext4 -F -L primary $ROOTFS
+		mkfs.ext4 -F -L primary -U e8c3e922-b1f5-43a2-a026-6a14f01197f6 $ROOTFS
 		;;
 	*)
 		mkfs.ext4 -U e8c3e922-b1f5-43a2-a026-6a14f01197f6 $ROOTFS
