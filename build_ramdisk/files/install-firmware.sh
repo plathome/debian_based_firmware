@@ -80,7 +80,7 @@ if [ "${target}" == "obshx1" -o "${target}" == "obshx2" ]; then
 	# format partition
 	mkfs.vfat -n BOOT ${destdev}p1
 	mkfs.ext4 -F -L configs -O ^has_journal ${destdev}p2
-	mkfs.ext4 -U e8c3e922-b1f5-43a2-a026-6a14f01197f6 ${destdev}p3
+	mkfs.ext4 -F -L primary ${destdev}p3
 else
 	# make partition
 	parted ${destdev} -s mklabel gpt
