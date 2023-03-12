@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2022 Plat'Home CO., LTD.
+# Copyright (c) 2013-2023 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -52,22 +52,30 @@ do
 done
 
 BOOT=`findfs LABEL=${FIRM_DIR} 2> /dev/null`
+
+case $MODEL in
+obshx*)
+	ROOTFS=${BOOT/%?/}3
+*)
+	ROOTFS=${BOOT/%?/}2
+esac
+
 if [ -z "$BOOT" ]; then
 	echo "Boot partition is not found."
 	exit 1
 fi
 
 # format partition
-if [ -e ${BOOT/%?/}2 ]; then
-	wipefs -a ${BOOT/%?/}2
-	mkfs.ext4 -U e8c3e922-b1f5-43a2-a026-6a14f01197f6 ${BOOT/%?/}2
+if [ -e $ROOTFS ]; then
+	wipefs -a $ROOTFS
+	mkfs.ext4 -U e8c3e922-b1f5-43a2-a026-6a14f01197f6 $ROOTFS
 fi
 
 mount $BOOT /media || exit 1
 cp /media/SFR/${MODEL}-bzImage /media/bzImage
 [ -f /media/SFR/${MODEL}-initrd.gz ] && cp /media/SFR/${MODEL}-initrd.gz /media/initrd.gz
 if [ "$MODEL" == "obsvx1" ]; then
-	e2label ${BOOT/%?/}2 DEBIAN
+	e2label $ROOTFS DEBIAN
 fi
 cp /media/SFR/openblocks-release /media/openblocks-release
 case $MODEL in
@@ -79,14 +87,14 @@ obsvx*)
 	;;
 esac
 if [ -f /media/SFR/${MODEL}-rootfs.tgz ]; then
-	mount ${BOOT/%?/}2 /mnt || exit 1
+	mount $ROOTFS /mnt || exit 1
 	tar xfzp /media/SFR/${MODEL}-rootfs.tgz -C /mnt
 	depmod -ae -b /mnt -F /mnt/boot/System.map `cat /mnt/etc/openblocks-release | cut -d - -f1`
 	sync
 	umount /mnt
 fi
 if [ -f /media/SFR/${MODEL}_userland.tgz ]; then
-	mount ${BOOT/%?/}2 /mnt || exit 1
+	mount $ROOTFS /mnt || exit 1
 	tar xfzp /media/SFR/${MODEL}_userland.tgz -C /mnt
 	sync
 	umount /mnt
