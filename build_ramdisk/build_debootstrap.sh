@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2022 Plat'Home CO., LTD.
+# Copyright (c) 2013-2023 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -171,7 +171,7 @@ bullseye)
 		EXCLUDE="nano"
 		;;
 	obsix*|obshx1*|obshx2*)
-		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,gnupg,strace,wget,apparmor,libiw30,gdisk,dbus"
+		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,gnupg,strace,wget,apparmor,libiw30,gdisk,dbus,systemd-timesyncd"
 		EXCLUDE="nano"
 		;;
 	esac
