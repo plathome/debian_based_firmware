@@ -62,7 +62,7 @@ obsfx1*)
 	pkglist="atcmd cp210x_rs485 obs_util obs_hwclock obsiot_power pshd runled wav_play wd_keepalive"
 	;;
 obshx1*)
-	pkglist="obs_nicrename obshx1_wdt runled wav_play"
+	pkglist="obs_nicrename obshx1_pshd obshx1_runled obshx1_wdt wav_play"
 	;;
 obshx2*)
 	pkglist="obs_nicrename runled wav_play"
@@ -208,6 +208,19 @@ obsix*|obsvx*|obsbx*|obsa16*|obsfx1*|obshx2*)
 	$STRIP ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/wd-keepalive
 	;;
 obshx1*)
+	echo "OBSHX1-PSHD"
+	(cd ${FILESDIR}/obshx1_i2c;make)
+	mkdir -p ${OBSTOOLDIR}/template-obshx1-pshd/usr/sbin
+	cp ${FILESDIR}/obshx1_i2c/pshd ${OBSTOOLDIR}/template-obshx1-pshd/usr/sbin
+	$STRIP ${OBSTOOLDIR}/template-obshx1-pshd/usr/sbin/pshd
+
+	echo "OBSHX1-RUNLED"
+	mkdir -p ${OBSTOOLDIR}/template-obshx1-runled/usr/sbin
+	cp ${FILESDIR}/obshx1_i2c/runled ${OBSTOOLDIR}/template-obshx1-runled/usr/sbin
+	$STRIP ${OBSTOOLDIR}/template-obshx1-runled/usr/sbin/runled
+	cp -f ${FILESDIR}/setup-runled.sh ${OBSTOOLDIR}/template-obshx1-runled/usr/sbin/
+	chmod 555 ${OBSTOOLDIR}/template-obshx1-runled/usr/sbin/setup-runled.sh
+
 	echo "OBSHX1-WDT"
 	(cd ${FILESDIR}/CAPA322/demo;make)
 	mkdir -p ${OBSTOOLDIR}/template-obshx1-wdt/usr/lib/x86_64-linux-gnu
@@ -217,6 +230,9 @@ obshx1*)
 	mkdir -p ${OBSTOOLDIR}/template-obshx1-wdt/usr/sbin
 	cp ${FILESDIR}/CAPA322/demo/obshx1-wdt ${OBSTOOLDIR}/template-obshx1-wdt/usr/sbin
 	$STRIP ${OBSTOOLDIR}/template-obshx1-wdt/usr/sbin/obshx1-wdt
+
+	(cd ${FILESDIR}/obshx1_i2c;make clean)
+	rm -f  ${FILESDIR}/CAPA322/demo/obshx1-wdt
 	;;
 esac
 

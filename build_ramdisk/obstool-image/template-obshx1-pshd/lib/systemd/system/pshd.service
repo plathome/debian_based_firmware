@@ -1,0 +1,12 @@
+[Unit]
+Description=Push switch daemon for Openblocks family
+After=setup-gpio.service
+
+[Service]
+ExecStart=/usr/sbin/pshd
+Restart=always
+Type=forking
+PIDFile=/run/pshd.pid
+
+[Install]
+WantedBy=multi-user.target
