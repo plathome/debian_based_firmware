@@ -112,7 +112,7 @@ done
 case $RUN in
 firmware)
 	case $MODEL in
-	obsvx2|obsbx*)
+	obsvx2|obshx*|obsbx*)
 		# check MD5
 		for file in bzImage modules.tgz obstools.tgz
 		do
@@ -127,12 +127,12 @@ firmware)
 			fi
 		done
 
-		# remove previous firmware
+		# mount boot partition
 		mkdir -p ${WORK_DIR}
-		if [ "$MODEL" == "obsvx2" ]; then
-			mount `findfs LABEL=${FIRM_DIR}` ${WORK_DIR}
-		else
+		if [ "$MODEL" == "obsbx1" -o "$MODEL" == "obsbx1s" ]; then
 			mount ${FIRM_DIR} ${WORK_DIR}
+		else
+			mount `findfs LABEL=${FIRM_DIR}` ${WORK_DIR}
 		fi
 
 		# copy new firmware
