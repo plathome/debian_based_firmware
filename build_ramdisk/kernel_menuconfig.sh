@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2022 Plat'Home CO., LTD.
+# Copyright (c) 2013-2023 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ if [ ! -d "${LINUX_SRC}" ]; then
 fi
 
 cd ${LINUX_SRC}
-make ${MAKE_OPTION} ${TARGET}_defconfig
+make ${MAKE_OPTION} ${DEFCONFIG}
 if [ -f "${LINUX_SRC}/../linux-${KERNEL}.dot.config" ]; then
 	cp -f ${LINUX_SRC}/../linux-${KERNEL}.dot.config .config
 	make ${MAKE_OPTION} oldconfig
