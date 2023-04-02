@@ -369,10 +369,10 @@ bullseye)
 		RAMDISK_SIZE=250
 	;;
 	obsa16)
-		KERNEL=5.4.47
+		KERNEL=5.4.70
 		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=260
-		PATCHLEVEL=8
+		PATCHLEVEL=0
 		DTBFILE=imx8mp-evk.dtb
 		ARCH=arm64
 		COMP_LVL=9
@@ -382,10 +382,10 @@ bullseye)
 #		UDEFCONFIG=obsa16_defconfig
 	;;
 	obsa16r)
-		KERNEL=5.4.47
+		KERNEL=5.4.70
 		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=260
-		PATCHLEVEL=1
+		PATCHLEVEL=0
 		DTBFILE=imx8mp-evk-obsa16.dtb
 		ARCH=arm64
 		COMP_LVL=9
@@ -395,10 +395,10 @@ bullseye)
 #		UDEFCONFIG=obsa16_defconfig
 	;;
 	obsfx1)
-		KERNEL=5.4.47
+		KERNEL=5.4.70
 		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=260
-		PATCHLEVEL=1
+		PATCHLEVEL=0
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
 #		DTBFILE=imx8mp-evk-obsfx1-rtl8211.dtb
 		ARCH=arm64
@@ -411,10 +411,10 @@ bullseye)
 #		UDEFCONFIG=obsa16_defconfig
 	;;
 	obsfx1r)
-		KERNEL=5.4.47
+		KERNEL=5.4.70
 		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=230
-		PATCHLEVEL=1
+		PATCHLEVEL=0
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
 		ARCH=arm64
 		COMP_LVL=9
