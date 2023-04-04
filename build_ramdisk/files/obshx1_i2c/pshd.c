@@ -133,7 +133,7 @@ void wtach_pushsw(const char *fconf)
 				usleep(3000000);
 			}
 		}
-		usleep(1000);
+		usleep(100000);
 	}
 }
 
