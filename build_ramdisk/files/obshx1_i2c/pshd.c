@@ -39,6 +39,8 @@
 #include <sys/stat.h>
 #include "i2cBus.h"
 
+#define INTERVAL	100
+
 #define	PCA9538_ADDR	0xE0
 #define	PCA9538_PIN	0x10
 
@@ -57,8 +59,9 @@ uint8_t flag_debug;
 void usages(const char *prog)
 {
 	printf("\n");
-	printf("usages: %s [-d][-c <conf file>]\n", prog);	
+	printf("usages: %s [-d][-i <interval>][-c <conf file>]\n", prog);	
 	printf("    -c conf file  Conf file. [default: %s]\n", CONFIG_FILE);
+	printf("    -i interval   Polling interval in millisecond. [default: %d]\n", INTERVAL);
 	printf("    -d            Debug mode, running foreground.");
 	printf("\n");
 }
@@ -92,7 +95,7 @@ void system_exec(const char *fconf)
 	return;
 }
 
-void wtach_pushsw(const char *fconf)
+void wtach_pushsw(const char *fconf, uint32_t interval)
 {
 	uint8_t rc; 
 	char buf;
@@ -133,13 +136,14 @@ void wtach_pushsw(const char *fconf)
 				usleep(3000000);
 			}
 		}
-		usleep(100000);
+		usleep(interval);
 	}
 }
 
 int main(int argc, char *argv[])
 {
 	int i;
+	uint32_t interval = INTERVAL * 1000;
 	const char *prog, *fconf;
 	FILE *fp;
 
@@ -149,8 +153,11 @@ int main(int argc, char *argv[])
 	fconf = (const char *)CONFIG_FILE;
 	flag_debug = 0;
 
-	while ((i = getopt(argc, argv, "c:dh?")) > 0) {
+	while ((i = getopt(argc, argv, "c:i:dh?")) > 0) {
 		switch (i) {
+			case 'i':
+				interval = (uint32_t)atoi(optarg) * 1000;
+				break;
 			case 'c':
 				fconf = (const char *)optarg;
 				break;
@@ -180,7 +187,7 @@ int main(int argc, char *argv[])
 
 	i2cBusInit();
 
-	wtach_pushsw(fconf);
+	wtach_pushsw(fconf, interval);
 
 	return 0;	
 }
