@@ -49,6 +49,7 @@ configure)
 			rm -f /etc/MD5.*
 			rm -f /etc/modules.tgz
 			rm -f /etc/obsa16-rootfs*
+			rm -f /etc/obsfx0-rootfs*
 			rm -f /etc/obsfx1-rootfs*
 			rm -f /etc/uImage.initrd.*
 			if [ -e /etc/update_ubootenv.sh ];then

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2022 Plat'Home CO., LTD.
+# Copyright (c) 2013-2023 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,7 @@ ARCH=$2
 MODEL=$3
 FIRM=$4
 INITRD=$5
-GRUB=$6			# Debian version for obsa16r/obsfx1r
+GRUB=$6			# Debian version for obsa16r/obsfx0r/obsfx1r
 FLASHCFG=$7
 MD5=$8
 UBOOTENVPATH=$9

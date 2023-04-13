@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2022 Plat'Home CO., LTD.
+# Copyright (c) 2013-2023 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -36,6 +36,12 @@ obsa16*|obsfx1*)
 	param=`fw_printenv eth1macaddr`
 	array=($param)
 	ip link set dev eth1 address ${array[1]}
+	;;
+obsfx0*)
+	IFS='='
+	param=`fw_printenv eth0macaddr`
+	array=($param)
+	ip link set dev eth0 address ${array[1]}
 	;;
 *) ;;
 esac

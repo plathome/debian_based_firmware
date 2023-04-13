@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2022 Plat'Home CO., LTD.
+# Copyright (c) 2013-2023 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -63,7 +63,7 @@ if [ -f "${LINUX_SRC}/../linux-${KERNEL}.dot.config" ]; then
 fi
 
 case $TARGET in
-obsa16*|obsfx1*)
+obsa16*|obsfx0*|obsfx1*)
 	make -j$((${cpunum}+1)) ${MAKE_OPTION} Image modules dtbs
 	;;
 *)

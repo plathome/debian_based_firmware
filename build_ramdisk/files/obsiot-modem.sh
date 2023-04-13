@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2022 Plat'Home CO., LTD.
+# Copyright (c) 2013-2023 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,7 @@ function _call_obsutil() {
 		fi
 		;;
 	04)
-		if [ "$1" != "obsfx1" ]; then
+		if [ "$1" != "obsfx0" -o "$1" != "obsfx1" ]; then
 			echo "ERROR${LINENO}"
 			exit
 		fi
@@ -354,6 +354,9 @@ elif [ "$MODEL" == "obsbx1" ]; then
 		exit 8
 		;;
 	esac
+elif [ "$MODEL" == "obsfx0" ]; then
+	_call_obsutil "obsfx0"
+	exit 10
 elif [ "$MODEL" == "obsfx1" ]; then
 	_call_obsutil "obsfx1"
 	exit 10

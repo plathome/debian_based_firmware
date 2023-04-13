@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (c) 2013-2022 Plat'Home CO., LTD.
+# Copyright (c) 2013-2023 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@ obsgem*)
 	ACPOW=500
 	DCPOW=504
 	;;
-obsfx1*)
+obsfx0*|obsfx1*)
 	"$MODEL is not supported."
 	exit 1
 	;;

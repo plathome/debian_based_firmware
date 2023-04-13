@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2013-2022 Plat'Home CO., LTD.
+# Copyright (c) 2013-2023 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -391,6 +391,40 @@ bullseye)
 		COMP_LVL=9
 		COMP=gzip
 		COMPEXT=gz
+#		UBOOT_VER=2020.04
+#		UDEFCONFIG=obsa16_defconfig
+	;;
+	obsfx0)
+		KERNEL=5.4.70
+		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
+		RAMDISK_SIZE=260
+		PATCHLEVEL=0
+		DTBFILE=imx8mp-evk-obsfx0.dtb
+		ARCH=arm64
+		COMP_LVL=9
+		COMP=gzip
+		COMPEXT=gz
+		WIFI_DRIVER=laird-backport-9.15.0.14
+		WIFI_DEFCONFIG=lwb5p_nrc
+#		UBOOT_VER=2020.04
+#		UDEFCONFIG=obsa16_defconfig
+	;;
+	obsfx0r)
+		KERNEL=5.4.70
+		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
+		RAMDISK_SIZE=230
+		PATCHLEVEL=0
+		DTBFILE=imx8mp-evk-obsfx0.dtb
+		ARCH=arm64
+		COMP_LVL=9
+		COMP=gzip
+		COMPEXT=gz
+		COMPOPT=
+#		COMP=xz
+#		COMPEXT=xz
+#		COMPOPT="-C crc32"
+		WIFI_DRIVER=laird-backport-9.15.0.14
+		WIFI_DEFCONFIG=lwb5p_nrc
 #		UBOOT_VER=2020.04
 #		UDEFCONFIG=obsa16_defconfig
 	;;

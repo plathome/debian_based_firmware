@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2022 Plat'Home CO., LTD.
+# Copyright (c) 2013-2023 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -309,7 +309,7 @@ obsix*|obshx1*|obshx2*)
 	cp ${FILESDIR}/bin/resize ${DISTDIR}/usr/bin/
 	chmod 555 ${DISTDIR}/usr/bin/resize
 ;;
-obsa16*|obsfx1*)
+obsa16*|obsfx0*|obsfx1*)
 	BUILDDIR=/tmp/obstools.$$
 	LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
 

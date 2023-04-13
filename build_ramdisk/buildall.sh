@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2022 Plat'Home CO., LTD.
+# Copyright (c) 2013-2023 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -29,11 +29,11 @@
 . `dirname $0`/config.sh
 
 DIST_LIST="(stretch|buster|bullseye)"
-TARGET_LIST="(obshx1|obshx1r|obshx2|obshx2r|obsix9|obsix9r|obsa16|obsa16r|obsfx1|obsfx1r|obsvx1|obsvx2|obsbx1|obsbx1s|obsa7|obsax3)"
+TARGET_LIST="(obshx1|obshx1r|obshx2|obshx2r|obsix9|obsix9r|obsa16|obsa16r|obsfx0|obsfx0r|obsfx1|obsfx1r|obsvx1|obsvx2|obsbx1|obsbx1s|obsa7|obsax3)"
 
 function _usage(){
 	echo
-	echo "usage: $(basename $0) -M [obshx1|obshx1r|obshx2|obshx2r|obsix9|obsix9r|obsa16|obsa16r|obsfx1|obsfx1r|obsvx1|obsvx2|obsbx1|obsbx1s|obsa7|obsax3] -D [stretch|buster|bullseye]"
+	echo "usage: $(basename $0) -M [obshx1|obshx1r|obshx2|obshx2r|obsix9|obsix9r|obsa16|obsa16r|obsfx0|obsfx0r|obsfx1|obsfx1r|obsvx1|obsvx2|obsbx1|obsbx1s|obsa7|obsax3] -D [stretch|buster|bullseye]"
 	echo
 	exit 1
 }
@@ -64,7 +64,7 @@ fi
 case $_DIST in
 stretch)
 	case $_TARGET in
-	obsa16*|obsfx1*|obsix9*|obshx*)
+	obsa16*|obsfx*|obsix9*|obshx*)
 		echo
 		echo "$_TARGET is not supported."
 		exit 1
@@ -73,7 +73,7 @@ stretch)
 	;;
 buster)
 	case $_TARGET in
-	obsa16*|obsfx1*|obshx*)
+	obsa16*|obsfx*|obshx*)
 		echo
 		echo "$_TARGET is never supported."
 		exit 1

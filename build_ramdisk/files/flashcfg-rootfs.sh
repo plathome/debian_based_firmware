@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2022 Plat'Home CO., LTD.
+# Copyright (c) 2013-2023 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -161,7 +161,7 @@ firmware)
 		umount ${WORK_DIR}
 		rmdir ${WORK_DIR}
 		;;
-	obsa16|obsfx1)
+	obsa16|obsfx0|obsfx1)
 		# check MD5
 		dtbfile=`find $FIRM_FILE -name "*\.dtb"`
 		for file in Image $dtbfile modules.tgz

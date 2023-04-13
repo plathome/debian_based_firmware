@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2022 Plat'Home CO., LTD.
+# Copyright (c) 2013-2023 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,7 @@ else
 fi
 case $TARGET in
 obsa16*) KERN_COMPILE_OPTS=" $KERN_COMPILE_OPTS INSTALL_MOD_STRIP=1" ;;
-obsfx1*) KERN_COMPILE_OPTS=" $KERN_COMPILE_OPTS INSTALL_MOD_STRIP=1 KLIB_BUILD=${LINUX_SRC} KLIB=${MOUNTDIR} " ;;
+obsfx0*|obsfx1*) KERN_COMPILE_OPTS=" $KERN_COMPILE_OPTS INSTALL_MOD_STRIP=1 KLIB_BUILD=${LINUX_SRC} KLIB=${MOUNTDIR} " ;;
 esac
 
 _RAMDISK_IMG=${DISTDIR}/../${RAMDISK_IMG}
@@ -91,7 +91,7 @@ obsvx*)
 		fi
 	fi
 	;;
-obsfx1*)
+obsfx0*|obsfx1*)
 	DRIVER_SRC="`dirname ${LINUX_SRC}`/${WIFI_DRIVER}"
 	DRIVER_DEFCONFIG=${WIFI_DEFCONFIG}
 
@@ -131,7 +131,7 @@ obsvx2)
 obsbx1s)
 	(cd ${MOUNTDIR}; tar cfzp ${RELEASEDIR}/modules.tgz etc/firmware lib/modules)
 	;;
-obsix9|obsa16|obsfx1|obshx1|obshx2)
+obsix9|obsa16|obsfx0|obsfx1|obshx1|obshx2)
 	(cd ${MOUNTDIR}/lib; tar cfzp ${RELEASEDIR}/modules.tgz modules)
 	;;
 esac
@@ -193,7 +193,7 @@ obsvx2)
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
-obsa16|obsfx1)
+obsa16|obsfx0|obsfx1)
 	# Linux kernel
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
 #	${OBJCOPY} -O binary -R .comment -S ${LINUX_SRC}/vmlinux ${RELEASEDIR}/${MAKE_IMAGE}
@@ -212,7 +212,7 @@ obsa16|obsfx1)
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
-obsa16r|obsfx1r)
+obsa16r|obsfx0r|obsfx1r)
 	# Linux kernel
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
 
