@@ -75,7 +75,7 @@ configure)
 		fi
 	fi
 
-	if [ "$MODEL"="obsbx1" -o "$MODEL"="obsbx1s" ]; then
+	if [ "$MODEL" = "obsbx1" -o "$MODEL" = "obsbx1s" ]; then
 		udev_rules=/etc/udev/rules.d/40-rename-ttyrs485.rules
 		if [ -e $udev_rules ]; then
 			cp $udev_rules $udev_rules.tmp
@@ -84,7 +84,7 @@ configure)
 		fi
 	fi
 
-	if [ "$MODEL"="obsfx1" ]; then
+	if [ "$MODEL" = "obsfx1" ]; then
 		udev_rules=/etc/udev/rules.d/30-rename-ttyex2.rules
 		if [ -e $udev_rules ]; then
 			cp $udev_rules $udev_rules.tmp
