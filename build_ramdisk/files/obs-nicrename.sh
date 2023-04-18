@@ -113,9 +113,9 @@ obsix9*)
 	first_conf=/etc/openblocks/rename/tmp_rename.conf
 	second_conf=/etc/openblocks/rename/act_rename.conf
 
-	func_rename ${first_conf}
+	rename_func ${first_conf}
 	sleep 0.01
-	func_rename ${second_conf}
+	rename_func ${second_conf}
 	;;
 esac
 
