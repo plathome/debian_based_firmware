@@ -112,7 +112,7 @@ done
 case $RUN in
 firmware)
 	case $MODEL in
-	obsvx2|obshx*|obsbx*)
+	obsbx*|obsvx2|obsix9|obshx*)
 		# check MD5
 		for file in bzImage modules.tgz obstools.tgz
 		do
