@@ -134,11 +134,13 @@ $ git checkout -b ブランチ名 タグ名
 # ./build_crossenv-buster.sh
 ```
 
-## 3.4. カーネルソース
+## 3.4. カーネルソースファイル
 
 ### 3.4.1. 取得
 
-カーネルソースをぷらっとホームのFTPサイトftp.plathome.co.jpからダウンロードします。ファイルbuild_ramdisk/config.shのcase文中のKERNELとPATCHLEVELからカーネルソースのFTPサイトに置いてある場所が分ります。
+カーネルソースファイルをぷらっとホームのFTPサイトftp.plathome.co.jpからダウンロードしてディレクトリsourceにコピーします。
+
+ファイルbuild_ramdisk/config.shのcase文中のKERNELとPATCHLEVELからカーネルソースファイルのFTPサイトに置いてある場所が分ります。
 
 以下は場所の例です。
 
@@ -147,7 +149,13 @@ https://ftp.plathome.co.jp/pub/OBSIX9R/bullseye/4.19.198-100/linux-4.19.198-obsi
 
 ### 3.4.2. 展開
 
-ディレクトリsourceには、TARGETをその名前としたディレクトリがあるので、そこにカーネルソースを展開してください。その結果、ディレクトリsource/TARGET/linux-KERNEL(およびlinux-KERNEL.orig)が作成されます。TARGETとKERNELは、ご自身の文字列に置き換えてください。
+ディレクトリsourceには、TARGETをその名前としたディレクトリがあるので、そこにカーネルソースファイルを展開してください。その結果、ディレクトリsource/TARGET/linux-KERNEL(およびlinux-KERNEL.orig)が作成されます。TARGETとKERNELは、ご自身の文字列に置き換えてください。
+
+```
+# rm -rf source/TARGET/linux-KERNEL (存在するならば削除します。)
+# rm -rf source/TARGET/linux-KERNEL.orig (存在するならば削除します。)
+# tar xpf source/<カーネルソースファイル名> -C source/TARGET/
+```
 
 ## 3.5. DVDイメージ
 
