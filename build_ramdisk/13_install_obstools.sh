@@ -29,7 +29,7 @@
 . `dirname $0`/_obstool_version.sh
 
 case $DIST in
-buster|bullseye);;
+buster|bullseye|bookworm);;
 *) exit;;
 esac
 
@@ -47,7 +47,7 @@ obsbx*)
 	;;
 obsix*)
 	case $DIST in
-	bullseye)
+	bullseye|bookworm)
 		pkglist="obs_util obs_hwclock obs_nicrename pshd runled wav_play wd_keepalive"
 		;;
 	*)
@@ -263,7 +263,7 @@ fi
 # all
 #
 case $DIST in
-bullseye)
+bullseye|bookworm)
 	case $TARGET in
 	obsvx*|obsix*)
 		pkglist="instfirm obs_createkeys setup_gpio"
@@ -321,7 +321,7 @@ obsbx*|obsvx*|obsix9*|obsa16*|obsfx1*|obshx1*|obshx2*)
 esac
 
 case $DIST in
-bullseye)
+bullseye|bookworm)
 	echo "OBS-CREATEKEYS"
 	mkdir -p ${OBSTOOLDIR}/template-obs-createkeys/usr/sbin/
 	cp -f ${FILESDIR}/obs-createkeys.sh ${OBSTOOLDIR}/template-obs-createkeys/usr/sbin/

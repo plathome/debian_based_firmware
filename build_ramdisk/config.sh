@@ -114,7 +114,7 @@ wheezy)
 	;;
 	obs600)
 		KERNEL=3.10.25
-        DEFCONFIG=obs600_defconfig
+		DEFCONFIG=obs600_defconfig
 		DTBFILE=obs600.dtb
 		ISOFILE=debian-7.8.0-powerpc-DVD-1.iso
 		RAMDISK_SIZE=160
@@ -461,6 +461,82 @@ bullseye)
 		WIFI_DRIVER=laird-backport-9.15.0.14
 		WIFI_DEFCONFIG=lwb5p_nrc
 #		UBOOT_VER=2020.04
+#		UDEFCONFIG=obsa16_defconfig
+	;;
+	*)
+	;;
+	esac
+;;
+bookworm)
+	KERNEL=6.1.29
+	case ${TARGET} in
+	obsvx1)
+		PATCHLEVEL=0
+		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
+		RAMDISK_SIZE=280
+	;;
+	obsvx2)
+		PATCHLEVEL=0
+		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
+		RAMDISK_SIZE=500
+	;;
+	obsix9)
+		PATCHLEVEL=0
+		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
+		RAMDISK_SIZE=500
+	;;
+	obsix9r)
+		PATCHLEVEL=0
+		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
+		RAMDISK_SIZE=500
+	;;
+	obshx1)
+		PATCHLEVEL=0
+		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
+		RAMDISK_SIZE=500
+	;;
+	obshx1r)
+		PATCHLEVEL=0
+		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
+		RAMDISK_SIZE=300
+	;;
+	obsa16)
+		PATCHLEVEL=0
+		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
+		RAMDISK_SIZE=260
+		DTBFILE=imx8mp-evk-obsa16.dtb
+		ALT_DTBFILE=imx8mp-evk.dtb
+		ARCH=arm64
+		COMP_LVL=9
+		COMP=gzip
+		COMPEXT=gz
+#		UBOOT_VER=2023.04
+#		UDEFCONFIG=obsa16_defconfig
+	;;
+	obsfx0)
+		PATCHLEVEL=0
+		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
+		RAMDISK_SIZE=260
+		DTBFILE=imx8mp-evk-obsfx0.dtb
+		ARCH=arm64
+		COMP_LVL=9
+		COMP=gzip
+		COMPEXT=gz
+#		UBOOT_VER=2023.04
+#		UDEFCONFIG=obsfx0_defconfig
+	;;
+	obsfx1)
+		PATCHLEVEL=0
+		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
+		RAMDISK_SIZE=260
+		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
+#		DTBFILE=imx8mp-evk-obsfx1-rtl8211.dtb
+		ALT_DTBFILE=imx8mp-evk-obsfx1.dtb
+		ARCH=arm64
+		COMP_LVL=9
+		COMP=gzip
+		COMPEXT=gz
+#		UBOOT_VER=2023.04
 #		UDEFCONFIG=obsa16_defconfig
 	;;
 	*)

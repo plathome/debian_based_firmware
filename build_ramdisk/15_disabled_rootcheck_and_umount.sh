@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2022 Plat'Home CO., LTD.
+# Copyright (c) 2013-2023 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,7 @@
 . `dirname $0`/config.sh
 
 case $DIST in
-stretch|buster|bullseye)
+stretch|buster|bullseye|bookworm)
 	;;
 *)
 	chroot ${DISTDIR} /sbin/insserv -rfv checkroot.sh

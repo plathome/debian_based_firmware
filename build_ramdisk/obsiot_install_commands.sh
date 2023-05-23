@@ -73,7 +73,7 @@ obsbx*)
 		fi
 	fi
 
-	if [ "$DIST" != "buster" ] && [ "$DIST" != "bullseye" ]; then
+	if [ "$DIST" != "buster" ] && [ "$DIST" != "bullseye" ] && [ "$DIST" != "bookworm" ]; then
 		apt-get -y install libi2c-dev
 		echo "WD-KEEPALIVE"
 		$CC -o ${BUILDDIR}/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
@@ -99,7 +99,7 @@ obsbx*)
 		$CC -o ${BUILDDIR}/wav-play ${FILESDIR}/wav-play.c $_CFLAGS
 
 		echo "OBSIOT-POWER"
-		[ "$DIST" == "buster" -o "$DIST" == "bullseye" ] && CFLAGS="$CFLAGS -li2c"
+		[ "$DIST" == "buster" -o "$DIST" == "bullseye" -o "$DIST" == "bookworm" ] && CFLAGS="$CFLAGS -li2c"
 		$CC -o ${BUILDDIR}/obsiot-power ${FILESDIR}/obsiot-power.c $CFLAGS
 
 		cp ${FILESDIR}/obsiot-modem.sh ${DISTDIR}/usr/sbin/obsiot-modem.sh
@@ -174,7 +174,7 @@ obsvx*)
 	LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
 
 	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -mstackrealign -fno-omit-frame-pointer -DCONFIG_OBSVX1"
-	[ "$DIST" == "buster" -o "$DIST" == "bullseye" ] && CFLAGS="$CFLAGS -li2c"
+	[ "$DIST" == "buster" -o "$DIST" == "bullseye" -o "$DIST" == "bookworm" ] && CFLAGS="$CFLAGS -li2c"
 
 	mkdir -p ${BUILDDIR}
 
@@ -182,7 +182,7 @@ obsvx*)
 	(cd ${FILESDIR}/mmc-utils;make clean;CC=gcc make;prefix=${DISTDIR}/usr make install)
 
 	apt-get -y install libi2c-dev
-	if [ "$DIST" != "buster" ] && [ "$DIST" != "bullseye" ]; then
+	if [ "$DIST" != "buster" ] && [ "$DIST" != "bullseye" ] &&  [ "$DIST" != "bookworm" ]; then
 	echo "WD-KEEPALIVE"
 	$CC -o ${BUILDDIR}/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
 
@@ -229,7 +229,7 @@ obsvx*)
 	$CC -o ${BUILDDIR}/hub-ctrl ${FILESDIR}/hub-ctrl.c $_CFLAGS
 
 	echo;echo;echo
-	if [ "$DIST" == "buster" ] || [ "$DIST" == "bullseye" ]; then
+	if [ "$DIST" == "buster" ] || [ "$DIST" == "bullseye" ] || [ "$DIST" == "bookworm" ]; then
 		OBSTOOLLIST="hub-ctrl"
 	else
 		OBSTOOLLIST="wd-keepalive pshd runled kosanu atcmd hub-ctrl obs-util obs-hwclock wav-play obsvx1-modem obsvx1-gpio obsiot-power"
