@@ -391,6 +391,7 @@ bullseye)
 		COMP_LVL=9
 		COMP=gzip
 		COMPEXT=gz
+		DEFCONFIG=obsa16_defconfig
 #		UBOOT_VER=2020.04
 #		UDEFCONFIG=obsa16_defconfig
 	;;
@@ -423,6 +424,7 @@ bullseye)
 #		COMP=xz
 #		COMPEXT=xz
 #		COMPOPT="-C crc32"
+#		DEFCONFIG=obsfx0_defconfig
 		WIFI_DRIVER=laird-backport-9.15.0.14
 		WIFI_DEFCONFIG=lwb5p_nrc
 #		UBOOT_VER=2020.04
@@ -458,6 +460,7 @@ bullseye)
 #		COMP=xz
 #		COMPEXT=xz
 #		COMPOPT="-C crc32"
+		DEFCONFIG=obsfx1_defconfig
 		WIFI_DRIVER=laird-backport-9.15.0.14
 		WIFI_DEFCONFIG=lwb5p_nrc
 #		UBOOT_VER=2020.04
