@@ -1,0 +1,41 @@
+/dts-v1/;
+/ {
+	description = "fitImage for hoge";
+	#address-cells = <1>;
+	images {
+		kernel {
+			description = "Linux kernel";
+			data = /incbin/("./Image");
+			type = "kernel";
+			arch = "@ARCH@";
+			os = "linux";
+			compression = "none";
+			load = <@LOAD_ADDRESS@>;
+			entry = <@ENTRY_ADDRESS@>;
+		};
+		fdt {
+			description = "Flattened devicetree blob";
+			data = /incbin/("./@DTBFILE@");
+			type = "flat_dt";
+			arch = "@ARCH@";
+			compression = "none";
+		};
+		ramdisk {
+			description = "Ram disk";
+			data = /incbin/("./@TARGET@-rootfs.cpio.@COMPEXT@");
+			type = "ramdisk";
+			arch = "@ARCH@";
+			os = "linux";
+			compression = "@COMP@";
+		};
+	};
+	configurations {
+		default = "config-1";
+		config-1 {
+			description = "hoge configuration";
+			kernel = "kernel";
+			fdt = "fdt";
+			ramdisk = "ramdisk";
+		};
+	};
+};

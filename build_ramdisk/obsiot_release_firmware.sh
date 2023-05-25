@@ -216,13 +216,26 @@ obsa16r|obsfx0r|obsfx1r)
 	# Linux kernel
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
 
+	# Debian rootfs
+	mount -o loop ${_RAMDISK_IMG} ${MOUNTDIR}
+	(cd ${MOUNTDIR} && find . -print0 | cpio -o -a0 ) | ${COMP} -${COMP_LVL:-3} ${COMPOPT} > ${RELEASEDIR}/${TARGET}-rootfs.cpio.${COMPEXT}
+	umount ${MOUNTDIR}
+
+	# Create .its
+	LOAD_ADDRESS=${LOAD_ADDRESS:-"0x80000000"}
+	ENTRY_ADDRESS=${ENTRY_ADDRESS:-${LOAD_ADDRESS}}
+	sed -e 's|@COMPEXT@|'${COMPEXT}'|' \
+	    -e 's|@ARCH@|'${ARCH}'|' \
+	    -e 's|@COMP@|'${COMP}'|' \
+	    -e 's|@LOAD_ADDRESS@|'${LOAD_ADDRESS}'|' \
+	    -e 's|@ENTRY_ADDRESS@|'${ENTRY_ADDRESS}'|' \
+	    -e 's|@DTBFILE@|'${DTBFILE}'|' \
+	    -e 's|@TARGET@|'${TARGET}'|' \
+		${FILESDIR}/uImage.its.in > ${RELEASEDIR}/${TARGET}-uImage.its
+
 	# Ramdisk Image
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/freescale/${DTBFILE} ${RELEASEDIR}
-	${COMP} -${COMP_LVL:-3} ${COMPOPT} < ${_RAMDISK_IMG} > ${RELEASEDIR}/${RAMDISK_IMG}.${COMPEXT}
-	mkimage -n "$(echo ${TARGET}|tr [a-z] [A-Z]) ${VERSION}" \
-		-A arm64 -O linux -T multi -C none -a 0x40008000 -e 0x40008000 \
-		-d ${RELEASEDIR}/${MAKE_IMAGE}:${RELEASEDIR}/${RAMDISK_IMG}.${COMPEXT}:${RELEASEDIR}/${DTBFILE} \
-		${RELEASEDIR}/uImage.initrd.${TARGET}
+	(cd ${RELEASEDIR} && mkimage -f ${TARGET}-uImage.its uImage.initrd.${TARGET})
 
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 
