@@ -206,9 +206,10 @@ obsa16|obsfx0|obsfx1)
 	# uboot env update script
 	cp -f ${FILESDIR}/update_ubootenv-${TARGET}-${DIST}.sh ${RELEASEDIR}/update_ubootenv.sh
 	# Device tree file
-	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/freescale/${DTBFILE} ${RELEASEDIR}
+	ALT_DTBFILE=${ALT_DTBFILE:-${DTBFILE}}
+	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/freescale/${DTBFILE} ${RELEASEDIR}/${ALT_DTBFILE}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
-	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs-dtb.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/Image ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/${DTBFILE} ${RELEASEDIR})
+	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs-dtb.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/Image ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/${ALT_DTBFILE} ${RELEASEDIR})
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
@@ -222,6 +223,7 @@ obsa16r|obsfx0r|obsfx1r)
 	umount ${MOUNTDIR}
 
 	# Create .its
+	ALT_DTBFILE=${ALT_DTBFILE:-${DTBFILE}}
 	LOAD_ADDRESS=${LOAD_ADDRESS:-"0x80000000"}
 	ENTRY_ADDRESS=${ENTRY_ADDRESS:-${LOAD_ADDRESS}}
 	sed -e 's|@COMPEXT@|'${COMPEXT}'|' \
@@ -229,12 +231,12 @@ obsa16r|obsfx0r|obsfx1r)
 	    -e 's|@COMP@|'${COMP}'|' \
 	    -e 's|@LOAD_ADDRESS@|'${LOAD_ADDRESS}'|' \
 	    -e 's|@ENTRY_ADDRESS@|'${ENTRY_ADDRESS}'|' \
-	    -e 's|@DTBFILE@|'${DTBFILE}'|' \
+	    -e 's|@DTBFILE@|'${ALT_DTBFILE}'|' \
 	    -e 's|@TARGET@|'${TARGET}'|' \
 		${FILESDIR}/uImage.its.in > ${RELEASEDIR}/${TARGET}-uImage.its
 
 	# Ramdisk Image
-	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/freescale/${DTBFILE} ${RELEASEDIR}
+	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/freescale/${DTBFILE} ${RELEASEDIR}${ALT_DTBFILE}
 	(cd ${RELEASEDIR} && mkimage -f ${TARGET}-uImage.its uImage.initrd.${TARGET})
 
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
