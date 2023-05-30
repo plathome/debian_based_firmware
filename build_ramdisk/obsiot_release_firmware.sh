@@ -92,20 +92,22 @@ obsvx*)
 	fi
 	;;
 obsfx0*|obsfx1*)
-	DRIVER_SRC="`dirname ${LINUX_SRC}`/${WIFI_DRIVER}"
-	DRIVER_DEFCONFIG=${WIFI_DEFCONFIG}
+	if [ x"${WIFI_DRIVER}" != x"" ] ; then
+		DRIVER_SRC="`dirname ${LINUX_SRC}`/${WIFI_DRIVER}"
+		DRIVER_DEFCONFIG=${WIFI_DEFCONFIG}
 
-    if [ ! -d ${DRIVER_SRC} ]; then
-        echo "${DRIVER_SRC} is not found."
-        exit 1
-    fi
-    if [ ! -f ${LINUX_SRC}/vmlinux ]; then
-        echo "Linux kernel build is not complete."
-        exit 1
-    fi
-    (cd ${DRIVER_SRC}; [ ! -f .config ] && make defconfig-${WIFI_DEFCONFIG} ${KERN_COMPILE_OPTS})
-    (cd ${DRIVER_SRC}; make ${KERN_COMPILE_OPTS})
-    (cd ${DRIVER_SRC}; make modules_install ${KERN_COMPILE_OPTS} INSTALL_MOD_PATH=${MOUNTDIR})
+		if [ ! -d ${DRIVER_SRC} ]; then
+		echo "${DRIVER_SRC} is not found."
+		exit 1
+		fi
+		if [ ! -f ${LINUX_SRC}/vmlinux ]; then
+			echo "Linux kernel build is not complete."
+			exit 1
+		fi
+		(cd ${DRIVER_SRC}; [ ! -f .config ] && make defconfig-${WIFI_DEFCONFIG} ${KERN_COMPILE_OPTS})
+		(cd ${DRIVER_SRC}; make ${KERN_COMPILE_OPTS})
+		(cd ${DRIVER_SRC}; make modules_install ${KERN_COMPILE_OPTS} INSTALL_MOD_PATH=${MOUNTDIR})
+	fi
 	;;
 *)
 	;;
