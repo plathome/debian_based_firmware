@@ -48,7 +48,7 @@ function _call_obsutil() {
 		fi
 		;;
 	04)
-		if [ "$1" != "obsfx0" -o "$1" != "obsfx1" ]; then
+		if [ "$1" != "obsfx0" -a "$1" != "obsfx1" ]; then
 			echo "ERROR${LINENO}"
 			exit
 		fi
