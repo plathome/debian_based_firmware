@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2022 Plat'Home CO., LTD.
+# Copyright (c) 2013-2023 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -35,13 +35,25 @@ EEELED_VALUE=6001
 
 case $MODEL in
 obsa16*)
-	if dmesg | grep -q RTL8211F; then
-		echo ${EEELED_VALUE} > ${RTL8211F_ETH0}/rtl8211f_eeelcr
-		echo ${EEELED_VALUE} > ${RTL8211F_ETH1}/rtl8211f_eeelcr
-		echo ${LED_VALUE} > ${RTL8211F_ETH0}/rtl8211f_lcr
-		echo ${LED_VALUE} > ${RTL8211F_ETH1}/rtl8211f_lcr
+	KERNEL_MAJOR=`echo ${KERNEL} | cut -f 1 -d '.'`
+	KERNEL_MINOR=`echo ${KERNEL} | cut -f 2 -d '.'`
+
+	if [ "${KERNEL_MAJOR}" = "5" -a "${KERNEL_MINOR}" = "4" ] ; then	
+		if dmesg | grep -q RTL8211F; then
+			echo ${EEELED_VALUE} > ${RTL8211F_ETH0}/rtl8211f_eeelcr
+			echo ${EEELED_VALUE} > ${RTL8211F_ETH1}/rtl8211f_eeelcr
+			echo ${LED_VALUE} > ${RTL8211F_ETH0}/rtl8211f_lcr
+			echo ${LED_VALUE} > ${RTL8211F_ETH1}/rtl8211f_lcr
+		fi
 	fi
 	;;
+obsfx0*)
+	if dmesg | grep -q RTL8211F; then
+		echo ${EEELED_VALUE} > ${RTL8211F_ETH0}/rtl8211f_eeelcr
+		echo ${LED_VALUE} > ${RTL8211F_ETH0}/rtl8211f_lcr
+		fi
+	fi
+	::
 *)
 	;;
 esac
