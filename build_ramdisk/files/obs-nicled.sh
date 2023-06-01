@@ -35,20 +35,18 @@ EEELED_VALUE=6001
 
 case $MODEL in
 obsa16*)
-	KERNEL_MAJOR=`echo ${KERNEL} | cut -f 1 -d '.'`
-	KERNEL_MINOR=`echo ${KERNEL} | cut -f 2 -d '.'`
-
-	if [ "${KERNEL_MAJOR}" = "5" -a "${KERNEL_MINOR}" = "4" ] ; then	
-		if dmesg | grep -q RTL8211F; then
-			echo ${EEELED_VALUE} > ${RTL8211F_ETH0}/rtl8211f_eeelcr
-			echo ${EEELED_VALUE} > ${RTL8211F_ETH1}/rtl8211f_eeelcr
-			echo ${LED_VALUE} > ${RTL8211F_ETH0}/rtl8211f_lcr
-			echo ${LED_VALUE} > ${RTL8211F_ETH1}/rtl8211f_lcr
-		fi
+	if dmesg | grep -q RTL8211F; then
+		ip link set eth0 up
+		echo ${EEELED_VALUE} > ${RTL8211F_ETH0}/rtl8211f_eeelcr
+		echo ${LED_VALUE} > ${RTL8211F_ETH0}/rtl8211f_lcr
+		ip link set eth1 up
+		echo ${EEELED_VALUE} > ${RTL8211F_ETH1}/rtl8211f_eeelcr
+		echo ${LED_VALUE} > ${RTL8211F_ETH1}/rtl8211f_lcr
 	fi
 	;;
 obsfx0*)
 	if dmesg | grep -q RTL8211F; then
+		ip link set eth0 up
 		echo ${EEELED_VALUE} > ${RTL8211F_ETH0}/rtl8211f_eeelcr
 		echo ${LED_VALUE} > ${RTL8211F_ETH0}/rtl8211f_lcr
 		fi
