@@ -509,7 +509,7 @@ bookworm)
 		KERNEL=6.1.1
 		PATCHLEVEL=0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=260
+		RAMDISK_SIZE=300
 		DTBFILE=imx8mp-evk-obsa16.dtb
 		ALT_DTBFILE=imx8mp-evk.dtb
 		ARCH=arm64
@@ -523,7 +523,7 @@ bookworm)
 		KERNEL=6.1.1
 		PATCHLEVEL=0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=260
+		RAMDISK_SIZE=300
 		DTBFILE=imx8mp-evk-obsfx0.dtb
 		ARCH=arm64
 		COMP_LVL=9
@@ -536,7 +536,7 @@ bookworm)
 		KERNEL=6.1.1
 		PATCHLEVEL=0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=260
+		RAMDISK_SIZE=300
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
 #		DTBFILE=imx8mp-evk-obsfx1-rtl8211.dtb
 		ARCH=arm64
