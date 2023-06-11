@@ -473,7 +473,7 @@ bullseye)
 	esac
 ;;
 bookworm)
-	KERNEL=6.1.29
+	KERNEL=6.1.32
 	case ${TARGET} in
 	obsvx1)
 		PATCHLEVEL=0
@@ -506,6 +506,7 @@ bookworm)
 		RAMDISK_SIZE=300
 	;;
 	obsa16)
+		KERNEL=6.1.1
 		PATCHLEVEL=0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=260
@@ -519,6 +520,7 @@ bookworm)
 #		UDEFCONFIG=obsa16_defconfig
 	;;
 	obsfx0)
+		KERNEL=6.1.1
 		PATCHLEVEL=0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=260
@@ -531,12 +533,12 @@ bookworm)
 #		UDEFCONFIG=obsfx0_defconfig
 	;;
 	obsfx1)
+		KERNEL=6.1.1
 		PATCHLEVEL=0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=260
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
 #		DTBFILE=imx8mp-evk-obsfx1-rtl8211.dtb
-		ALT_DTBFILE=imx8mp-evk-obsfx1.dtb
 		ARCH=arm64
 		COMP_LVL=9
 		COMP=gzip
