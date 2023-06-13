@@ -1,7 +1,7 @@
 //#define DEBUG
 /*	$ssdlinux: obsiot-power.c,v 1.17 2014/01/07 07:19:06 yamagata Exp $	*/
 /*
- * Copyright (c) 2008-2022 Plat'Home CO., LTD.
+ * Copyright (c) 2008-2023 Plat'Home CO., LTD.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -78,10 +78,16 @@ enum{
 	HIGH=1
 };
 
-#if defined(CONFIG_OBSVX1)
+#if defined(CONFIG_OBSVX1) || defined(CONFIG_OBSIX9)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0)
+#define POWER_USB	"/sys/class/gpio/gpio878/value"
+#define POWER_AC	"/sys/class/gpio/gpio879/value"
+#define POWER_DC	"/sys/class/gpio/gpio877/value"
+#else
 #define POWER_USB	"/sys/class/gpio/gpio366/value"
 #define POWER_AC	"/sys/class/gpio/gpio367/value"
 #define POWER_DC	"/sys/class/gpio/gpio365/value"
+#endif
 #elif defined(CONFIG_OBSBX1)
 #define POWER_USB	"/sys/class/gpio/gpio40/value"
 #define POWER_AC	"/sys/class/gpio/gpio41/value"

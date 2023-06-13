@@ -43,12 +43,18 @@
 [ -f /etc/default/openblocks ] && . /etc/default/openblocks
 
 GPIOPATH="/sys/class/gpio"
+KERNEL_MAJOR_VERSION=`uname -r | cut -d '.' -f 1`
 
 case $MODEL in
 obsvx*)
-	USBPOW=366
-	ACPOW=367
-	DCPOW=365
+	if [ ${KERNEL_MAJOR_VERSION} -ge 6 ] ; then
+		GPIOBASE=850
+	else
+		GPIOBASE=338
+	fi
+	USBPOW=`expr ${GPIOBASE} + 28`
+	ACPOW=`expr ${GPIOBASE} + 29`
+	DCPOW=`expr ${GPIOBASE} + 27`
 	;;
 obsgem*)
 	USBPOW=503
