@@ -1,6 +1,6 @@
 /*	$ssdlinux: pshd_bx1.c,v 0.01 2014/01/07 07:19:59 yamagata Exp $	*/
 /*
- * Copyright (c) 2009-2022 Plat'Home CO., LTD.
+ * Copyright (c) 2009-2023 Plat'Home CO., LTD.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,11 @@ void die(int);
 
 #define PID_FILE	"/var/run/pshd.pid"
 #if defined(CONFIG_OBSVX1) || defined(CONFIG_OBSIX9)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0)
+#define INITSW		"/sys/class/gpio/gpio857/value"
+#else
 #define INITSW		"/sys/class/gpio/gpio345/value"
+#endif
 #elif defined(CONFIG_OBSA16)
 #define INITSW     "/sys/class/gpio/gpio86/value"
 #else

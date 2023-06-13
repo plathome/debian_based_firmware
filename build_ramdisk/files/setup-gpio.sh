@@ -28,24 +28,38 @@
 [ -r /etc/default/openblocks ] && . /etc/default/openblocks
 
 GPIOPATH="/sys/class/gpio"
+KERNEL_MAJOR_VERSION=`uname -r | cut -d '.' -f 1`
 case $MODEL in
 obsvx*|obsix9)
+	if [ ${KERNEL_MAJOR_VERSION} -ge 6 ] ; then
+		GPIOBASE=850
+	else
+		GPIOBASE=338
+	fi
+	OFFSET4=`expr ${GPIOBASE} + 4`
+	OFFSET5=`expr ${GPIOBASE} + 5`
+	OFFSET6=`expr ${GPIOBASE} + 6`
+	OFFSET7=`expr ${GPIOBASE} + 7`
+	OFFSET27=`expr ${GPIOBASE} + 27`
+	OFFSET28=`expr ${GPIOBASE} + 28`
+	OFFSET29=`expr ${GPIOBASE} + 29`
+
 	# runled
-	[ ! -d $GPIOPATH/gpio342 ] && echo 342 > $GPIOPATH/export; \
-		echo out > $GPIOPATH/gpio342/direction
-	[ ! -d $GPIOPATH/gpio343 ] && echo 343 > $GPIOPATH/export; \
-		echo out > $GPIOPATH/gpio343/direction
-	[ ! -d $GPIOPATH/gpio344 ] && echo 344 > $GPIOPATH/export; \
-		echo out > $GPIOPATH/gpio344/direction
+	[ ! -d $GPIOPATH/gpio${OFFSET4} ] && echo ${OFFSET4} > $GPIOPATH/export; \
+		echo out > $GPIOPATH/gpio${OFFSET4}/direction
+	[ ! -d $GPIOPATH/gpio${OFFSET5} ] && echo ${OFFSET5} > $GPIOPATH/export; \
+		echo out > $GPIOPATH/gpio${OFFSET4}/direction
+	[ ! -d $GPIOPATH/gpio${OFFSET6} ] && echo ${OFFSET6} > $GPIOPATH/export; \
+		echo out > $GPIOPATH/gpio${OFFSET4}/direction
 
 	# pshd
-	[ ! -d $GPIOPATH/gpio345 ] && echo 345 > $GPIOPATH/export; \
-		echo both > $GPIOPATH/gpio345/edge
+	[ ! -d $GPIOPATH/gpio${OFFSET7} ] && echo ${OFFSET7} > $GPIOPATH/export; \
+		echo both > $GPIOPATH/gpio${OFFSET7}/edge
 
 	# obsiot-power
-	[ ! -d $GPIOPATH/gpio366 ] && echo 366 > $GPIOPATH/export
-	[ ! -d $GPIOPATH/gpio367 ] && echo 367 > $GPIOPATH/export
-	[ ! -d $GPIOPATH/gpio365 ] && echo 365 > $GPIOPATH/export
+	[ ! -d $GPIOPATH/gpio${OFFSET27} ] && echo ${OFFSET27} > $GPIOPATH/export
+	[ ! -d $GPIOPATH/gpio${OFFSET28} ] && echo ${OFFSET28} > $GPIOPATH/export
+	[ ! -d $GPIOPATH/gpio${OFFSET29} ] && echo ${OFFSET29} > $GPIOPATH/export
 	;;
 obsbx*)
 	# runled
@@ -133,13 +147,12 @@ obsfx1*)
 	;;
 esac
 
-IFS='.'
-set -- `cat /etc/debian_version`
-case $1 in
-11) ;;
+DEBIAN_MAJOR_VERSION=`cat /etc/debian_version | cut -d '.' -f 1`
+case $DEBIAN_MAJOR_VERSION in
+11|12) ;;
 *)
 	export DEBIAN_FRONTEND=noninteractive
-dpkg-reconfigure openssh-server
+	dpkg-reconfigure openssh-server
 	;;
 esac
 
