@@ -176,6 +176,7 @@ function _call_obsutil() {
 }
 
 GPIOPATH=/sys/class/gpio
+KERNEL_MAJOR_VERSION=`uname -r | cut -d '.' -f 1`
 
 [ -f /etc/default/openblocks ] && . /etc/default/openblocks
 case $MODEL in
@@ -197,24 +198,26 @@ obsbx1)
 	echo 46 > $GPIOPATH/unexport
 	;;
 obsvx*)
-	[ ! -e $GPIOPATH/gpio360 ] && echo 360 > $GPIOPATH/export
-	[ ! -e $GPIOPATH/gpio361 ] && echo 361 > $GPIOPATH/export
-	[ ! -e $GPIOPATH/gpio362 ] && echo 362 > $GPIOPATH/export
+	if [ ${KERNEL_MAJOR_VERSION} -ge 6 ] ; then
+		GPIOBASE=850
+	else
+		GPIOBASE=338
+	fi
+	OFFSET27=`expr ${GPIOBASE} + 27`
+	OFFSET28=`expr ${GPIOBASE} + 28`
+	OFFSET29=`expr ${GPIOBASE} + 29`
 
-	echo in > $GPIOPATH/gpio360/direction
-	echo in > $GPIOPATH/gpio361/direction
-	echo in > $GPIOPATH/gpio362/direction
-	echo 1 > $GPIOPATH/gpio360/active_low
-	echo 1 > $GPIOPATH/gpio361/active_low
-	echo 1 > $GPIOPATH/gpio362/active_low
+	for i in ${OFFSET27} ${OFFSET28} ${OFFSET29}
+	do
+		[ ! -e $GPIOPATH/gpio${i} ] && echo ${i} > $GPIOPATH/export
+		echo in > $GPIOPATH/gpio${i}/direction
+		echo 1 > $GPIOPATH/gpio${i}/active_low
+		echo ${i} > $GPIOPATH/unexport
+	done
 
-	id0=`cat $GPIOPATH/gpio360/value`
-	id1=`cat $GPIOPATH/gpio361/value`
-	id2=`cat $GPIOPATH/gpio362/value`
-
-	echo 360 > $GPIOPATH/unexport
-	echo 361 > $GPIOPATH/unexport
-	echo 362 > $GPIOPATH/unexport
+	id0=`cat $GPIOPATH/gpio${OFFSET27}/value`
+	id1=`cat $GPIOPATH/gpio${OFFSET28}/value`
+	id2=`cat $GPIOPATH/gpio${OFFSET29}/value`
 	;;
 *)
 	id0="F"
