@@ -345,12 +345,12 @@ bullseye)
 	;;
 	obshx1|obshx2)
 		ISOFILE=debian-11.5.0-amd64-DVD-1.iso
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		RAMDISK_SIZE=500
 	;;
 	obshx1r|obshx2r)
 		ISOFILE=debian-11.5.0-amd64-DVD-1.iso
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		RAMDISK_SIZE=300
 	;;
 	obsbx1s)
