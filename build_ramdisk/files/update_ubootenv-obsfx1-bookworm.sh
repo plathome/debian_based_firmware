@@ -1,0 +1,1 @@
+update_ubootenv-obsa16-bookworm.sh
