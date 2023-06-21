@@ -268,8 +268,11 @@ bullseye|bookworm)
 	obsvx*|obsix*)
 		pkglist="instfirm obs_createkeys setup_gpio"
 		;;
-	obsa16*|obsfx1*)
+	obsa16*)
 		pkglist="obs_createkeys obs_nicled setup_macether setup_gpio"
+		;;
+	obsfx0*|obsfx1*)
+		pkglist="obs_createkeys setup_macether setup_gpio"
 		;;
 	obshx1*|obshx2*)
 		pkglist="obs_createkeys instfirm"
@@ -330,7 +333,7 @@ bullseye|bookworm)
 esac
 
 case $TARGET in
-obsa16*|obsfx1*)
+obsa16*|obsfx0*|obsfx1*)
 	echo "OBS-MACADDR"
 	mkdir -p ${OBSTOOLDIR}/template-obs-macaddr/usr/sbin/
 	cp -f ${FILESDIR}/obs-macaddr.sh ${OBSTOOLDIR}/template-obs-macaddr/usr/sbin/
@@ -340,7 +343,11 @@ obsa16*|obsfx1*)
 	mkdir -p ${OBSTOOLDIR}/template-setup-macether/usr/local/sbin/
 	cp -f ${FILESDIR}/setup-macether.sh ${OBSTOOLDIR}/template-setup-macether/usr/local/sbin/
 	chmod 555 ${OBSTOOLDIR}/template-setup-macether/usr/local/sbin/setup-macether.sh
+	;;
+esac
 
+case $TARGET in
+obsa16*)
 	echo "OBS-NICLED"
 	mkdir -p ${OBSTOOLDIR}/template-obs-nicled/usr/sbin/
 	cp -f ${FILESDIR}/obs-nicled.sh ${OBSTOOLDIR}/template-obs-nicled/usr/sbin/
