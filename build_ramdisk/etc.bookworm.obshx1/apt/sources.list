@@ -1,6 +1,6 @@
 deb http://ftp.jp.debian.org/debian/ bookworm main
 
-deb http://ftp.jp.debian.org/debian/ bookworm-backports main
+#deb http://ftp.jp.debian.org/debian/ bookworm-backports main
 
 deb http://ftp.jp.debian.org/debian/ bookworm-updates main
 

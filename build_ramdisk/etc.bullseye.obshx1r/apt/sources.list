@@ -1,6 +1,6 @@
 deb http://ftp.jp.debian.org/debian/ bullseye main
 
-deb http://ftp.jp.debian.org/debian/ bullseye-backports main
+#deb http://ftp.jp.debian.org/debian/ bullseye-backports main
 
 deb http://ftp.jp.debian.org/debian/ bullseye-updates main
 
