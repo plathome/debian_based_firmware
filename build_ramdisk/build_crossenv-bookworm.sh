@@ -28,8 +28,8 @@
 #
 # check host machine
 #
-if ! grep -q "^10" /etc/debian_version ; then
-	echo "This machine is not Debian 10"
+if ! grep -q "^12" /etc/debian_version ; then
+	echo "This machine is not Debian 12"
 	echo "Abort!!"
 #	exit 1
 fi
