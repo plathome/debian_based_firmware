@@ -311,7 +311,7 @@ buster)
 	obsix9r)
 		KERNEL=4.19.198
 		ISOFILE=debian-10.2.0-amd64-DVD-1.iso
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		RAMDISK_SIZE=512
 	;;
 	*)
