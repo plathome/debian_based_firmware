@@ -51,7 +51,7 @@ obsfx0*)
 		echo ${LED_VALUE} > ${RTL8211F_ETH0}/rtl8211f_lcr
 		fi
 	fi
-	::
+	;;
 *)
 	;;
 esac
