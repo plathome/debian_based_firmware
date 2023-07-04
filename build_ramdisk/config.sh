@@ -351,7 +351,7 @@ bullseye)
 	obshx1r|obshx2r)
 		ISOFILE=debian-11.5.0-amd64-DVD-1.iso
 		PATCHLEVEL=1
-		RAMDISK_SIZE=300
+		RAMDISK_SIZE=500
 	;;
 	obsbx1s)
 		KERNEL=3.10.17
@@ -503,7 +503,7 @@ bookworm)
 	obshx1r)
 		PATCHLEVEL=0
 		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
-		RAMDISK_SIZE=300
+		RAMDISK_SIZE=500
 	;;
 	obsa16)
 		KERNEL=6.1.22
