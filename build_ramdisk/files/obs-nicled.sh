@@ -49,7 +49,6 @@ obsfx0*)
 		ip link set eth0 up
 		echo ${EEELED_VALUE} > ${RTL8211F_ETH0}/rtl8211f_eeelcr
 		echo ${LED_VALUE} > ${RTL8211F_ETH0}/rtl8211f_lcr
-		fi
 	fi
 	;;
 *)
