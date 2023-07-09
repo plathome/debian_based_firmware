@@ -473,7 +473,7 @@ bullseye)
 	esac
 ;;
 bookworm)
-	KERNEL=6.1.32
+	KERNEL=6.1.38
 	case ${TARGET} in
 	obsvx1)
 		PATCHLEVEL=0
