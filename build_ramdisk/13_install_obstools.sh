@@ -265,8 +265,11 @@ fi
 case $DIST in
 bullseye)
 	case $TARGET in
-	obsvx*|obsix*)
+	obsvx*|obsix9)
 		pkglist="instfirm obs_createkeys setup_gpio"
+		;;
+	obsix9r)
+		pkglist="instfirm obs_createkeys setup_gpio obs_systohc"
 		;;
 	obsa16*|obsfx1*)
 		pkglist="obs_createkeys obs_nicled setup_macether setup_gpio"
@@ -281,8 +284,11 @@ bullseye)
 	;;
 buster)
 	case $TARGET in
-	obsvx*|obsix*)
+	obsvx*|obsix9)
 		pkglist="instfirm setup_gpio"
+		;;
+	obsix9r)
+		pkglist="instfirm setup_gpio obs_systohc"
 		;;
 	*)
 		pkglist="setup_gpio"
