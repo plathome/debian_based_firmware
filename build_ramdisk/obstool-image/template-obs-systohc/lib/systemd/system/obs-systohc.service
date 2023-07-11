@@ -5,7 +5,7 @@ After=ssh.service
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/usr/sbin/hwclock
+ExecStart=true
 ExecStop=/usr/sbin/hwclock --systohc
 
 [Install]
