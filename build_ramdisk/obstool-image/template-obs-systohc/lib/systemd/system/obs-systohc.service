@@ -1,0 +1,12 @@
+[Unit]
+Description=Sync the system clock for OpenBlocks family
+After=ssh.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/sbin/hwclock
+ExecStop=/usr/sbin/hwclock --systohc
+
+[Install]
+WantedBy=multi-user.target
