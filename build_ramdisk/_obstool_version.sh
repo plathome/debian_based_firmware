@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2023 Plat'Home CO., LTD.
+# Copyright (c) 2013-2022 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -34,20 +34,20 @@ nitz_ver=5
 obs_util_ver=4
 obs_hwclock_ver=1
 obs_nicled_ver=1
-obs_nicrename_ver=3
+obs_nicrename_ver=2
 obs_createkeys_ver=1
 obs_macaddr_ver=1
 obs_systohc_ver=1
 obshx1_pshd_ver=1
 obshx1_runled_ver=1
 obshx1_wdt_ver=1
-obsiot_power_ver=6
+obsiot_power_ver=5
 obsvx1_gpio_ver=1
 obsvx1_modem_ver=3
 obsfx1_modem_ver=1
-pshd_ver=2
-runled_ver=2
+pshd_ver=1
+runled_ver=1
 setup_macether_ver=1
-setup_gpio_ver=2
+setup_gpio_ver=1
 wav_play_ver=1
 wd_keepalive_ver=1
