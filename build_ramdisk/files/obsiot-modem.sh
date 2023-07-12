@@ -203,21 +203,25 @@ obsvx*)
 	else
 		GPIOBASE=338
 	fi
-	OFFSET27=`expr ${GPIOBASE} + 27`
-	OFFSET28=`expr ${GPIOBASE} + 28`
-	OFFSET29=`expr ${GPIOBASE} + 29`
+	OFFSET22=`expr ${GPIOBASE} + 22`
+	OFFSET23=`expr ${GPIOBASE} + 23`
+	OFFSET24=`expr ${GPIOBASE} + 24`
 
-	for i in ${OFFSET27} ${OFFSET28} ${OFFSET29}
+	for i in ${OFFSET22} ${OFFSET23} ${OFFSET24}
 	do
 		[ ! -e $GPIOPATH/gpio${i} ] && echo ${i} > $GPIOPATH/export
 		echo in > $GPIOPATH/gpio${i}/direction
 		echo 1 > $GPIOPATH/gpio${i}/active_low
-		echo ${i} > $GPIOPATH/unexport
 	done
 
-	id0=`cat $GPIOPATH/gpio${OFFSET27}/value`
-	id1=`cat $GPIOPATH/gpio${OFFSET28}/value`
-	id2=`cat $GPIOPATH/gpio${OFFSET29}/value`
+	id0=`cat $GPIOPATH/gpio${OFFSET22}/value`
+	id1=`cat $GPIOPATH/gpio${OFFSET23}/value`
+	id2=`cat $GPIOPATH/gpio${OFFSET24}/value`
+
+	for i in ${OFFSET22} ${OFFSET23} ${OFFSET24}
+	do
+		echo ${i} > $GPIOPATH/unexport
+	done
 	;;
 *)
 	id0="F"
