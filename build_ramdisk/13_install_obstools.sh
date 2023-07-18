@@ -272,7 +272,7 @@ bullseye|bookworm)
 		pkglist="obs_createkeys obs_nicled setup_macether setup_gpio"
 		;;
 	obshx1*|obshx2*)
-		pkglist="obs_createkeys instfirm"
+		pkglist="obs_createkeys instfirm obs_systohc"
 		;;
 	*)
 		pkglist="obs_createkeys setup_gpio"

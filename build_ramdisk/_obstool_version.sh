@@ -37,6 +37,7 @@ obs_nicled_ver=1
 obs_nicrename_ver=2
 obs_createkeys_ver=1
 obs_macaddr_ver=1
+obs_systohc_ver=1
 obshx1_pshd_ver=1
 obshx1_runled_ver=1
 obshx1_wdt_ver=1
