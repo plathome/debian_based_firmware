@@ -523,8 +523,11 @@ bookworm)
 		KERNEL=6.1.22
 		PATCHLEVEL=0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=300
+		RAMDISK_SIZE=350
 		DTBFILE=imx8mp-evk-obsfx0.dtb
+		WIFI_DRIVER=laird-backport-11.39.0.18
+		WIFI_DEFCONFIG=lwb5p
+#		WIFI_DEFCONFIG=lwb5p_nrc
 		ARCH=arm64
 		COMP_LVL=9
 		COMP=gzip
@@ -536,9 +539,12 @@ bookworm)
 		KERNEL=6.1.22
 		PATCHLEVEL=0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=300
+		RAMDISK_SIZE=350
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
 #		DTBFILE=imx8mp-evk-obsfx1-rtl8211.dtb
+		WIFI_DRIVER=laird-backport-11.39.0.18
+		WIFI_DEFCONFIG=lwb5p
+#		WIFI_DEFCONFIG=lwb5p_nrc
 		ARCH=arm64
 		COMP_LVL=9
 		COMP=gzip
