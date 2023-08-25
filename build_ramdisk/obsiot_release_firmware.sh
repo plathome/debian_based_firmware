@@ -119,6 +119,11 @@ if [ -d ${FILESDIR}/firmware-${TARGET} ]; then
 	cp -a ${FILESDIR}/firmware-${TARGET}/* ${MOUNTDIR}/lib/firmware
 fi
 
+if [ -d ${FILESDIR}/firmware-${TARGET}-${DIST} ]; then
+	mkdir -p ${MOUNTDIR}/lib/firmware
+	cp -a ${FILESDIR}/firmware-${TARGET}-${DIST}/* ${MOUNTDIR}/lib/firmware
+fi
+
 	depmod -ae -b ${MOUNTDIR} -F ${MOUNTDIR}/boot/System.map ${KERNEL}${LOCAL_VER}
 
 if [ ! -d ${RELEASEDIR} ]; then
