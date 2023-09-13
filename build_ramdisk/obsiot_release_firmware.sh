@@ -106,7 +106,7 @@ obsfx0*|obsfx1*)
 		fi
 		if [ -f "${DRIVER_SRC}/.debian_version" ]; then
 			BUILD_DEBIAN_RELEASE=`cat ${DRIVER_SRC}/.debian_version | sed -e 's/\..*$$//'`
-			[ "$DEBIAN_RELEASE" != "$BUILD_DEBIAN_RELEASE" ] && (cd ${DRIVER_SRC}; make ${KERN_COMPILE_OPTS} mrpropero)
+			[ "$DEBIAN_RELEASE" != "$BUILD_DEBIAN_RELEASE" ] && (cd ${DRIVER_SRC}; make ${KERN_COMPILE_OPTS} mrproper)
 		fi
 		cp /etc/debian_version ${DRIVER_SRC}/.debian_version
 		(cd ${DRIVER_SRC}; [ ! -f .config ] && make defconfig-${WIFI_DEFCONFIG} ${KERN_COMPILE_OPTS})
