@@ -51,6 +51,12 @@ cd ${LINUX_SRC}
 #[ -f "${LINUX_SRC}/localversion-rt" ] && rm -f ${LINUX_SRC}/localversion-rt
 rm -f ${LINUX_SRC}/localversion*
 
+if [ -f "${LINUX_SRC}/.debian_version" ]; then
+	BUILD_DEBIAN_RELEASE=`cat ${LINUX_SRC}/.debian_version | sed -e 's/\..*$$//'`
+	[ "$DEBIAN_RELEASE" != "$BUILD_DEBIAN_RELEASE" ] && make ${MAKE_OPTION} mrproper
+fi
+cp /etc/debian_version ${LINUX_SRC}/.debian_version
+
 if [ ${DEFCONFIG} ]; then
 	make ${MAKE_OPTION} ${DEFCONFIG}
 else

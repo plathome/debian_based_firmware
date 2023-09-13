@@ -97,13 +97,18 @@ obsfx0*|obsfx1*)
 		DRIVER_DEFCONFIG=${WIFI_DEFCONFIG}
 
 		if [ ! -d ${DRIVER_SRC} ]; then
-		echo "${DRIVER_SRC} is not found."
-		exit 1
+			echo "${DRIVER_SRC} is not found."
+			exit 1
 		fi
 		if [ ! -f ${LINUX_SRC}/vmlinux ]; then
 			echo "Linux kernel build is not complete."
 			exit 1
 		fi
+		if [ -f "${DRIVER_SRC}/.debian_version" ]; then
+			BUILD_DEBIAN_RELEASE=`cat ${DRIVER_SRC}/.debian_version | sed -e 's/\..*$$//'`
+			[ "$DEBIAN_RELEASE" != "$BUILD_DEBIAN_RELEASE" ] && (cd ${DRIVER_SRC}; make ${KERN_COMPILE_OPTS} mrpropero)
+		fi
+		cp /etc/debian_version ${DRIVER_SRC}/.debian_version
 		(cd ${DRIVER_SRC}; [ ! -f .config ] && make defconfig-${WIFI_DEFCONFIG} ${KERN_COMPILE_OPTS})
 		(cd ${DRIVER_SRC}; make ${KERN_COMPILE_OPTS})
 		(cd ${DRIVER_SRC}; make modules_install ${KERN_COMPILE_OPTS} INSTALL_MOD_PATH=${MOUNTDIR})

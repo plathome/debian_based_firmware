@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2013-2022 Plat'Home CO., LTD.
+# Copyright (c) 2013-2023 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -44,6 +44,8 @@ ETCDIR=${PWD}/etc.${DIST}
 TOOLDIR=${WRKDIR}/tool
 SKALESDIR=${TOOLDIR}/skales
 OBSTOOLDIR=${WRKDIR}/build_ramdisk/obstool-image
+
+DEBIAN_RELEASE=`cat /etc/debian_version | sed -e 's/\..*$$//'`
 
 case $TARGET in
 bpv4*)
