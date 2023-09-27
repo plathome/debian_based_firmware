@@ -506,7 +506,7 @@ bookworm)
 		RAMDISK_SIZE=500
 	;;
 	obsa16)
-		KERNEL=6.1.22
+		KERNEL=6.1.36
 		PATCHLEVEL=0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=300
@@ -520,7 +520,7 @@ bookworm)
 #		UDEFCONFIG=obsa16_defconfig
 	;;
 	obsfx0)
-		KERNEL=6.1.22
+		KERNEL=6.1.36
 		PATCHLEVEL=0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=350
@@ -535,7 +535,7 @@ bookworm)
 #		UDEFCONFIG=obsfx0_defconfig
 	;;
 	obsfx1)
-		KERNEL=6.1.22
+		KERNEL=6.1.36
 		PATCHLEVEL=0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=350
