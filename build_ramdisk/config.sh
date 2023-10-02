@@ -426,7 +426,7 @@ bullseye)
 #		COMP=xz
 #		COMPEXT=xz
 #		COMPOPT="-C crc32"
-#		DEFCONFIG=obsfx0_defconfig
+		DEFCONFIG=obsfx0_defconfig
 		WIFI_DRIVER=laird-backport-9.15.0.14
 		WIFI_DEFCONFIG=lwb5p_nrc
 #		UBOOT_VER=2020.04
