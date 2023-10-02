@@ -248,7 +248,7 @@ obsa16r|obsfx0r|obsfx1r)
 		${FILESDIR}/uImage.its.in > ${RELEASEDIR}/${TARGET}-uImage.its
 
 	# Ramdisk Image
-	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/freescale/${DTBFILE} ${RELEASEDIR}${ALT_DTBFILE}
+	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/freescale/${DTBFILE} ${RELEASEDIR}/${ALT_DTBFILE}
 	(cd ${RELEASEDIR} && mkimage -f ${TARGET}-uImage.its uImage.initrd.${TARGET})
 
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
