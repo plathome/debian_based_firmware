@@ -29,11 +29,11 @@
 . `dirname $0`/config.sh
 
 DIST_LIST="(stretch|buster|bullseye|bookworm)"
-TARGET_LIST="(obshx1|obshx1r|obshx2|obshx2r|obsix9|obsix9r|obsa16|obsa16r|obsfx0|obsfx0r|obsfx1|obsfx1r|obsvx1|obsvx2|obsbx1|obsbx1s|obsa7|obsax3)"
+TARGET_LIST="(obshx1|obshx1r|obshx2|obshx2r|obsix9|obsix9r|obsa16|obsa16r|obsfx0|obsfx0r|obsfx1|obsfx1r|obstb3n|obstb3nr|obsvx1|obsvx2|obsbx1|obsbx1s|obsa7|obsax3)"
 
 function _usage(){
 	echo
-	echo "usage: $(basename $0) -M [obshx1|obshx1r|obshx2|obshx2r|obsix9|obsix9r|obsa16|obsa16r|obsfx0|obsfx0r|obsfx1|obsfx1r|obsvx1|obsvx2|obsbx1|obsbx1s|obsa7|obsax3] -D [stretch|buster|bullseye|bookworm]"
+	echo "usage: $(basename $0) -M [obshx1|obshx1r|obshx2|obshx2r|obsix9|obsix9r|obsa16|obsa16r|obsfx0|obsfx0r|obsfx1|obsfx1r|obsvx1|obstb3n|obstb3nr|obsvx2|obsbx1|obsbx1s|obsa7|obsax3] -D [stretch|buster|bullseye|bookworm]"
 	echo
 	exit 1
 }

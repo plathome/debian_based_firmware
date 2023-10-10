@@ -1,0 +1,9 @@
+deb http://ftp.jp.debian.org/debian/ bullseye main
+
+#deb http://ftp.jp.debian.org/debian/ bullseye-backports main
+
+deb http://ftp.jp.debian.org/debian/ bullseye-updates main
+
+deb http://security.debian.org bullseye-security main
+
+deb http://ftp.plathome.co.jp/pub/OBSTB3N/debian/bullseye ./
