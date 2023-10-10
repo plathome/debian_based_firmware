@@ -6,4 +6,4 @@ deb http://ftp.jp.debian.org/debian/ bullseye-updates main
 
 deb http://security.debian.org bullseye-security main
 
-deb http://ftp.plathome.co.jp/pub/OBSFX1UL/debian/bullseye ./
+deb http://ftp.plathome.co.jp/pub/OBSDX1/debian/bullseye ./
