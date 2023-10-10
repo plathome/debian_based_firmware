@@ -471,6 +471,7 @@ bullseye)
 	obstb3n)
 		KERNEL=5.10.160
 		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
+		RAMDISK_SIZE=260
 		PATCHLEVEL=0
 		DTBFILE=rk3568-tinker_board_3n.dtb
 		ARCH=arm64
