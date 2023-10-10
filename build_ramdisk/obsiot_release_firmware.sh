@@ -272,7 +272,7 @@ obstb3n)
 	umount ${MOUNTDIR}
 
 	# Make Images
-	(cd ${LINUX_SRC} && ./scripts/mkimg)
+	(cd ${LINUX_SRC} && ./scripts/mkimg --dtb ${DTBFILE})
 	cp -f ${LINUX_SRC}/boot.img ${RELEASEDIR}
 	cp -f ${LINUX_SRC}/resource.img ${RELEASEDIR}
 	cp -f ${LINUX_SRC}/zboot.img ${RELEASEDIR}
@@ -281,7 +281,7 @@ obstb3n)
 	cp -f ${FILESDIR}/update_ubootenv-${TARGET}-${DIST}.sh ${RELEASEDIR}/update_ubootenv.sh
 	# Device tree file
 	ALT_DTBFILE=${ALT_DTBFILE:-${DTBFILE}}
-	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/freescale/${DTBFILE} ${RELEASEDIR}/${ALT_DTBFILE}
+	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/rockchip/${DTBFILE} ${RELEASEDIR}/${ALT_DTBFILE}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs-dtb.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/Image ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/${ALT_DTBFILE} ${RELEASEDIR})
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
@@ -297,7 +297,7 @@ obstb3nr)
 	umount ${MOUNTDIR}
 
 	# Make Images
-	(cd ${LINUX_SRC} && ./scripts/mkimg)
+	(cd ${LINUX_SRC} && ./scripts/mkimg --dtb ${DTBFILE})
 	cp -f ${LINUX_SRC}/boot.img ${RELEASEDIR}
 	cp -f ${LINUX_SRC}/resource.img ${RELEASEDIR}
 	cp -f ${LINUX_SRC}/zboot.img ${RELEASEDIR}
@@ -306,7 +306,7 @@ obstb3nr)
 	cp -f ${FILESDIR}/update_ubootenv-${TARGET}-${DIST}.sh ${RELEASEDIR}/update_ubootenv.sh
 	# Device tree file
 	ALT_DTBFILE=${ALT_DTBFILE:-${DTBFILE}}
-	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/freescale/${DTBFILE} ${RELEASEDIR}/${ALT_DTBFILE}
+	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/rockchip/${DTBFILE} ${RELEASEDIR}/${ALT_DTBFILE}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs-dtb.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/Image ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/${ALT_DTBFILE} ${RELEASEDIR})
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
