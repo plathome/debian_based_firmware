@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2022 Plat'Home CO., LTD.
+# Copyright (c) 2013-2023 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -48,6 +48,6 @@ obsfx1_modem_ver=1
 pshd_ver=2
 runled_ver=2
 setup_macether_ver=1
-setup_gpio_ver=2
+setup_gpio_ver=3
 wav_play_ver=1
 wd_keepalive_ver=1
