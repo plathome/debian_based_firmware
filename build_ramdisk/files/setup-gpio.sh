@@ -45,16 +45,16 @@ obsvx*|obsix9)
 	OFFSET29=`expr ${GPIOBASE} + 29`
 
 	# runled
-	[ ! -d $GPIOPATH/gpio${OFFSET4} ] && echo ${OFFSET4} > $GPIOPATH/export; \
+	[ ! -d $GPIOPATH/gpio${OFFSET4} ] && echo ${OFFSET4} > $GPIOPATH/export &&
 		echo out > $GPIOPATH/gpio${OFFSET4}/direction
-	[ ! -d $GPIOPATH/gpio${OFFSET5} ] && echo ${OFFSET5} > $GPIOPATH/export; \
+	[ ! -d $GPIOPATH/gpio${OFFSET5} ] && echo ${OFFSET5} > $GPIOPATH/export &&
 		echo out > $GPIOPATH/gpio${OFFSET4}/direction
-	[ ! -d $GPIOPATH/gpio${OFFSET6} ] && echo ${OFFSET6} > $GPIOPATH/export; \
+	[ ! -d $GPIOPATH/gpio${OFFSET6} ] && echo ${OFFSET6} > $GPIOPATH/export &&
 		echo out > $GPIOPATH/gpio${OFFSET4}/direction
 
 	# pshd
-	[ ! -d $GPIOPATH/gpio${OFFSET7} ] && echo ${OFFSET7} > $GPIOPATH/export; \
-		echo in > $GPIOPATH/gpio${OFFSET7}/direction; \
+	[ ! -d $GPIOPATH/gpio${OFFSET7} ] && echo ${OFFSET7} > $GPIOPATH/export &&
+		echo in > $GPIOPATH/gpio${OFFSET7}/direction &&
 		echo both > $GPIOPATH/gpio${OFFSET7}/edge
 
 	# obsiot-power
@@ -64,16 +64,16 @@ obsvx*|obsix9)
 	;;
 obsbx*)
 	# runled
-	[ ! -d $GPIOPATH/gpio47 ] && echo 47 > $GPIOPATH/export; \
+	[ ! -d $GPIOPATH/gpio47 ] && echo 47 > $GPIOPATH/export &&
 		echo out > $GPIOPATH/gpio47/direction
-	[ ! -d $GPIOPATH/gpio48 ] && echo 48 > $GPIOPATH/export; \
+	[ ! -d $GPIOPATH/gpio48 ] && echo 48 > $GPIOPATH/export &&
 		echo out > $GPIOPATH/gpio48/direction
-	[ ! -d $GPIOPATH/gpio49 ] && echo 49 > $GPIOPATH/export; \
+	[ ! -d $GPIOPATH/gpio49 ] && echo 49 > $GPIOPATH/export &&
 		echo out > $GPIOPATH/gpio49/direction
 
 	# pshd
-	[ ! -d $GPIOPATH/gpio14 ] && echo 14 > $GPIOPATH/export; \
-		echo in > $GPIOPATH/gpio14/direction; \
+	[ ! -d $GPIOPATH/gpio14 ] && echo 14 > $GPIOPATH/export &&
+		echo in > $GPIOPATH/gpio14/direction &&
 		echo both > $GPIOPATH/gpio14/edge
 
 	# obsiot-power
@@ -83,35 +83,39 @@ obsbx*)
 	;;
 obsa16*)
 	# pshd
-	[ ! -d $GPIOPATH/gpio86 ] && echo 86 > $GPIOPATH/export; \
-		echo in > $GPIOPATH/gpio86/direction; \
+	[ ! -d $GPIOPATH/gpio86 ] && echo 86 > $GPIOPATH/export &&
+		echo in > $GPIOPATH/gpio86/direction &&
 		echo both > $GPIOPATH/gpio86/edge
 	;;
 obsfx0*)
 	# USB1_PWR_EN
-	[ ! -d $GPIOPATH/gpio0 ] && echo 0 > $GPIOPATH/export; \
-		echo out > $GPIOPATH/gpio0/direction
+	[ ! -d $GPIOPATH/gpio0 ] && echo 0 > $GPIOPATH/export &&
+		echo out > $GPIOPATH/gpio0/direction 
+	echo 1 > $GPIOPATH/gpio0/value 
 	# WL_DIS_N
-	[ ! -d $GPIOPATH/gpio10 ] && echo 10 > $GPIOPATH/export; \
+	[ ! -d $GPIOPATH/gpio10 ] && echo 10 > $GPIOPATH/export &&
 		echo out > $GPIOPATH/gpio10/direction
+	echo 1 > $GPIOPATH/gpio10/value 
 	# BT_DIS_N
-	[ ! -d $GPIOPATH/gpio11 ] && echo 11 > $GPIOPATH/export; \
+	[ ! -d $GPIOPATH/gpio11 ] && echo 11 > $GPIOPATH/export &&
 		echo out > $GPIOPATH/gpio11/direction
+	echo 1 > $GPIOPATH/gpio11/value 
 	# POWERLOST
-	[ ! -d $GPIOPATH/gpio13 ] && echo 13 > $GPIOPATH/export; \
+	[ ! -d $GPIOPATH/gpio13 ] && echo 13 > $GPIOPATH/export &&
 		echo in > $GPIOPATH/gpio13/direction
 	# USB1_PWR_EN
-	[ ! -d $GPIOPATH/gpio14 ] && echo 14 > $GPIOPATH/export; \
+	[ ! -d $GPIOPATH/gpio14 ] && echo 14 > $GPIOPATH/export &&
 		echo out > $GPIOPATH/gpio14/direction
+	echo 1 > $GPIOPATH/gpio14/value 
 	# pshd
-	[ ! -d $GPIOPATH/gpio86 ] && echo 86 > $GPIOPATH/export; \
-		echo in > $GPIOPATH/gpio86/direction; \
+	[ ! -d $GPIOPATH/gpio86 ] && echo 86 > $GPIOPATH/export &&
+		echo in > $GPIOPATH/gpio86/direction &&
 		echo both > $GPIOPATH/gpio86/edge
 	;;
 obsfx1*)
 	# pshd
-	[ ! -d $GPIOPATH/gpio86 ] && echo 86 > $GPIOPATH/export; \
-		echo in > $GPIOPATH/gpio86/direction; \
+	[ ! -d $GPIOPATH/gpio86 ] && echo 86 > $GPIOPATH/export &&
+		echo in > $GPIOPATH/gpio86/direction &&
 		echo both > $GPIOPATH/gpio86/edge
 	# i2c-gpio
 		# 496	WL_PWR_EN
@@ -119,19 +123,25 @@ obsfx1*)
 		# 498	BT_DIS_N
 		# 499	S1_PWR_EN
 		# 500	S1_PON
-	[ ! -d $GPIOPATH/gpio501 ] && echo 501 > $GPIOPATH/export; \
+	[ ! -d $GPIOPATH/gpio501 ] && echo 501 > $GPIOPATH/export &&
 		echo out > $GPIOPATH/gpio501/direction			# S1_RST_N
-	[ ! -d $GPIOPATH/gpio502 ] && echo 502 > $GPIOPATH/export; \
+	echo 1 > $GPIOPATH/gpio501/value
+	[ ! -d $GPIOPATH/gpio502 ] && echo 502 > $GPIOPATH/export &&
 		echo out > $GPIOPATH/gpio502/direction			# W_DISABLE
-	[ ! -d $GPIOPATH/gpio503 ] && echo 503 > $GPIOPATH/export; \
+	echo 0 > $GPIOPATH/gpio502/value
+	[ ! -d $GPIOPATH/gpio503 ] && echo 503 > $GPIOPATH/export &&
 		echo out > $GPIOPATH/gpio503/direction			# FULL_CD_POFF
-	[ ! -d $GPIOPATH/gpio504 ] && echo 504 > $GPIOPATH/export; \
+	echo 0 > $GPIOPATH/gpio503/value
+	[ ! -d $GPIOPATH/gpio504 ] && echo 504 > $GPIOPATH/export &&
 		echo out > $GPIOPATH/gpio504/direction			# S2_PWR_EN
-	[ ! -d $GPIOPATH/gpio505 ] && echo 505 > $GPIOPATH/export; \
+	echo 1 > $GPIOPATH/gpio504/value
+	[ ! -d $GPIOPATH/gpio505 ] && echo 505 > $GPIOPATH/export &&
 		echo out > $GPIOPATH/gpio505/direction			# S2_RST_N
-	[ ! -d $GPIOPATH/gpio506 ] && echo 506 > $GPIOPATH/export; \
+	echo 1 > $GPIOPATH/gpio505/value
+	[ ! -d $GPIOPATH/gpio506 ] && echo 506 > $GPIOPATH/export &&
 		echo out > $GPIOPATH/gpio506/direction			# USBHUB_RST_N
-	[ ! -d $GPIOPATH/gpio507 ] && echo 507 > $GPIOPATH/export; \
+	echo 1 > $GPIOPATH/gpio506/value
+	[ ! -d $GPIOPATH/gpio507 ] && echo 507 > $GPIOPATH/export &&
 		echo in > $GPIOPATH/gpio507/direction			# PWRFAIL_N
 	# 508 D.C.
 	# 509 D.C.
