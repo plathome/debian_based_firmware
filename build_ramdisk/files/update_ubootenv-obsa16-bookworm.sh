@@ -43,6 +43,7 @@ default_env(){
 	fw_setenv soc_type imx8mp
 	fw_setenv splashimage 0x50000000
 # remove add env
+	fw_setenv fdt_usb_boot_file
 	fw_setenv chkinit
 	fw_setenv loadusb
 	fw_setenv usbboot
@@ -55,10 +56,11 @@ default_env(){
 
 obsiot_env(){
 	fw_setenv env_version 'v01'
+	fw_setenv fdt_usb_boot_file imx8mp-evk-usb-boot.dtb
 	fw_setenv chkinit 'setenv noflashcfg; gpio input gpio3_22;if test ${$?} = 0; then setenv noflashcfg noflashcfg=1; fi;'
 	fw_setenv mmcargs 'setenv bootargs ${jh_clk} console=${console} root=${mmcroot} ${noflashcfg} ${miscargs}'
 	fw_setenv mmcboot 'echo Booting from mmc ...; run chkinit; run mmcargs; if test ${boot_fit} = yes || test ${boot_fit} = try; then bootm ${loadaddr}; else if run loadfdt; then booti ${loadaddr} - ${fdt_addr}; else echo WARN: Cannot load the DT; fi; fi;'
-	fw_setenv loadusb 'ext4load usb 0:1 ${loadaddr} /boot/${image}; ext4load usb 0:1 ${fdt_addr} /boot/${fdt_file}'
+	fw_setenv loadusb 'ext4load usb 0:1 ${loadaddr} /boot/${image}; ext4load usb 0:1 ${fdt_addr} /boot/${fdt_usb_boot_file}'
 	fw_setenv usbboot 'usb start; run loadusb; setenv mmcroot /dev/sda1; run chkinit; setenv miscargs ${miscargs} rootdelay=10; run mmcargs; booti ${loadaddr} - ${fdt_addr}'
 	fw_setenv nvmeboot 'echo Booting from NVMe ...; run chkinit; setenv mmcroot /dev/nvme0n1p1; run mmcargs; run loadimage; run loadfdt; booti ${loadaddr} - ${fdt_addr};'
 	fw_setenv rdboot 'echo Booting from Ramdisk ...; run chkinit; setenv mmcroot /dev/ram; run mmcargs; run loadimage; bootm ${loadaddr};'

@@ -27,11 +27,11 @@
 
 #set -x
 
-if [ "$#" -ne "8" ] ; then
+if [ "$#" -ne "9" ] ; then
 	echo
-	echo "usage: $0 [VERSION] [ARCH] [MODEL] [bzImage] [flashcfg] [MD5] [modules] [System.map] [DTB file] [uboot env file]"
+	echo "usage: $0 [VERSION] [ARCH] [MODEL] [bzImage] [flashcfg] [MD5] [modules] [System.map] [DTB file] [USB boot DTB file] [release_dir]"
 	echo
-	echo "ex) $0 1.0.0-0 arm64 obsa16 Image flashcfg MD5.obsa16 modules.tgz System.map dtbfile update_ubootenv.sh"
+	echo "ex) $0 1.0.0-0 arm64 obsa16 Image flashcfg MD5.obsa16 modules.tgz System.map dtbfile usb_bioot_dtbdile release_dir"
 	echo
 	exit 1
 fi
@@ -43,7 +43,8 @@ FIRM=$4
 FLASHCFG=$5
 MD5=$6
 DTB=$7
-RELDIR=$8
+USB_BOOT_DTB=$8
+RELDIR=$9
 FIRM_DIR=$(dirname $FIRM)
 DTB_DIR=$(dirname $DTB)
 
@@ -77,6 +78,7 @@ cp -f $MD5 $pkgdir/etc/
 cp -f ${RELDIR}/modules.tgz $pkgdir/etc/
 cp -f ${RELDIR}/System.map $pkgdir/etc/
 cp -f $DTB $pkgdir/etc/
+cp -f $USB_BOOT_DTB $pkgdir/etc/
 cp -f ${RELDIR}/update_ubootenv.sh $pkgdir/etc/
 cp -f $(find $DTB_DIR -name "*\.dtb") $pkgdir/etc/
 

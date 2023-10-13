@@ -1,1 +1,1 @@
-update_ubootenv-obsa16-bullseye.sh
+update_ubootenv-obsfx1-bullseye.sh

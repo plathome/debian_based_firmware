@@ -14,7 +14,7 @@ default_env(){
 	fw_setenv ethprime eth1
 	fw_setenv fastboot_dev mmc1
 	fw_setenv fdt_addr 0x43000000
-	fw_setenv fdt_file imx8mp-evk-obsfx0.dtb
+	fw_setenv fdt_file imx8mp-evk.dtb
 	fw_setenv fdt_high 0xffffffffffffffff
 	fw_setenv fdtcontroladdr bcbf73b8
 	fw_setenv image Image
@@ -45,6 +45,7 @@ default_env(){
 # remove add env
 	fw_setenv chkinit
 	fw_setenv loadusb
+	fw_setenv fdt_usb_boot_file
 	fw_setenv usbboot
 	fw_setenv bootdev
 	fw_setenv ethaddr
@@ -55,10 +56,12 @@ default_env(){
 
 obsiot_env(){
 	fw_setenv env_version 'v01'
+	fw_setenv fdt_file imx8mp-evk-obsfx0.dtb
+	fw_setenv fdt_usb_boot_file imx8mp-evk-obsfx0-usb-boot.dtb
 	fw_setenv chkinit 'setenv noflashcfg; gpio input gpio3_22;if test ${$?} = 0; then setenv noflashcfg noflashcfg=1; fi;'
 	fw_setenv mmcargs 'setenv bootargs ${jh_clk} console=${console} root=${mmcroot} ${noflashcfg} ${miscargs}'
 	fw_setenv mmcboot 'echo Booting from mmc ...; run chkinit; run mmcargs; if test ${boot_fit} = yes || test ${boot_fit} = try; then bootm ${loadaddr}; else if run loadfdt; then booti ${loadaddr} - ${fdt_addr}; else echo WARN: Cannot load the DT; fi; fi;'
-	fw_setenv loadusb 'ext4load usb 0:1 ${loadaddr} /boot/${image}; ext4load usb 0:1 ${fdt_addr} /boot/${fdt_file}'
+	fw_setenv loadusb 'ext4load usb 0:1 ${loadaddr} /boot/${image}; ext4load usb 0:1 ${fdt_addr} /boot/${fdt_usb_boot_file}'
 	fw_setenv usbboot 'usb start; run loadusb; setenv mmcroot /dev/sda1; run chkinit; setenv miscargs ${miscargs} rootdelay=10; run mmcargs; booti ${loadaddr} - ${fdt_addr}'
 	fw_setenv nvmeboot 'echo Booting from NVMe ...; run chkinit; setenv mmcroot /dev/nvme0n1p1; run mmcargs; run loadimage; run loadfdt; booti ${loadaddr} - ${fdt_addr};'
 	fw_setenv rdboot 'echo Booting from Ramdisk ...; run chkinit; setenv mmcroot /dev/ram; run mmcargs; run loadimage; bootm ${loadaddr};'
@@ -71,7 +74,7 @@ usage(){
 	echo
 	echo "usage: $(basename $0) [-a]"
 	echo
-	echo "	-a			OpenBlocks A16 default environment"
+	echo "	-a			OpenBlocks IoT DX1 default environment"
 	echo "	--imx8mp-default	imx8mp evk board default environment"
 	echo "	-h	This messages"
 }
