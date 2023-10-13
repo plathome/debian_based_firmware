@@ -220,7 +220,7 @@ obsa16|obsfx0|obsfx1)
 	cp -f ${FILESDIR}/update_ubootenv-${TARGET}-${DIST}.sh ${RELEASEDIR}/update_ubootenv.sh
 	# Device tree file
 	ALT_DTBFILE=${ALT_DTBFILE:-${DTBFILE}}
-	USB_BOOT_DTBFILE=``echo ${DTBFILE} | sed -e 's/\.dtb/-usb-boot\.dtb/'`
+	USB_BOOT_DTBFILE=`echo ${DTBFILE} | sed -e 's/\.dtb/-usb-boot\.dtb/'`
 	ALT_USB_BOOT_DTBFILE=``echo ${ALT_DTBFILE} | sed -e 's/\.dtb/-usb-boot\.dtb/'`
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/freescale/${DTBFILE} ${RELEASEDIR}/${ALT_DTBFILE}
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/freescale/${USB_BOOT_DTBFILE} ${RELEASEDIR}/${ALT_USB_BOOT_DTBFILE}
