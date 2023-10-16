@@ -43,6 +43,21 @@ obsfx0*)
 	array=($param)
 	ip link set dev eth0 address ${array[1]}
 	;;
+obsduo)
+	IFS='='
+	param=`fw_printenv eth0macaddr`
+	array=($param)
+	ip link set dev eth0 address ${array[1]}
+	param=`fw_printenv eth1macaddr`
+	array=($param)
+	ip link set dev eth1 address ${array[1]}
+	param=`fw_printenv eth2macaddr`
+	array=($param)
+	ip link set dev eth2 address ${array[1]}
+	param=`fw_printenv eth3macaddr`
+	array=($param)
+	ip link set dev eth3 address ${array[1]}
+	;;
 *) ;;
 esac
 

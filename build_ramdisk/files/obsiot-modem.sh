@@ -48,7 +48,7 @@ function _call_obsutil() {
 		fi
 		;;
 	04)
-		if [ "$1" != "obsfx0" -a "$1" != "obsfx1" ]; then
+		if [ "$1" != "obsfx0" -a "$1" != "obsfx1" -a "$1" != "obsduo" ]; then
 			echo "ERROR${LINENO}"
 			exit
 		fi
@@ -366,5 +366,8 @@ elif [ "$MODEL" == "obsfx0" ]; then
 	exit 10
 elif [ "$MODEL" == "obsfx1" ]; then
 	_call_obsutil "obsfx1"
+	exit 10
+elif [ "$MODEL" == "obsduo" ]; then
+	_call_obsutil "obsduo"
 	exit 10
 fi

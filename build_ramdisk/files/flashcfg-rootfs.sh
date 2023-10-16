@@ -161,7 +161,7 @@ firmware)
 		umount ${WORK_DIR}
 		rmdir ${WORK_DIR}
 		;;
-	obsa16|obsfx0|obsfx1)
+	obsa16|obsfx0|obsfx1|obsduo)
 		# check MD5
 		dtbfile=`find $FIRM_FILE -name "*\.dtb"`
 		for file in Image $dtbfile modules.tgz

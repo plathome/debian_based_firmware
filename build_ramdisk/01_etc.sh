@@ -105,7 +105,7 @@ obsbx*|obsvx*)
 		esac
 	fi
 	;;
-obsa16*|obsfx0*|obsfx1*)
+obsa16*|obsfx0*|obsfx1*|obsduo)
 	chroot ${DISTDIR} /usr/bin/systemctl disable apparmor
 	chroot ${DISTDIR} /usr/bin/systemctl disable nfs-server
 	;;

@@ -37,7 +37,7 @@ else
 	KERN_COMPILE_OPTS="ARCH=$KERN_ARCH"
 fi
 case $TARGET in
-obsa16*) KERN_COMPILE_OPTS=" $KERN_COMPILE_OPTS INSTALL_MOD_STRIP=1" ;;
+obsa16*|obsduo) KERN_COMPILE_OPTS=" $KERN_COMPILE_OPTS INSTALL_MOD_STRIP=1" ;;
 obsfx0*|obsfx1*) KERN_COMPILE_OPTS=" $KERN_COMPILE_OPTS INSTALL_MOD_STRIP=1 KLIB_BUILD=${LINUX_SRC} KLIB=${MOUNTDIR} " ;;
 obstb3n*) KERN_COMPILE_OPTS=" $KERN_COMPILE_OPTS INSTALL_MOD_STRIP=1" ;;
 esac
@@ -144,7 +144,7 @@ obsvx2)
 obsbx1s)
 	(cd ${MOUNTDIR}; tar cfzp ${RELEASEDIR}/modules.tgz etc/firmware lib/modules)
 	;;
-obsix9|obsa16|obsfx0|obsfx1|obstb3n|obshx1|obshx2)
+obsix9|obsa16|obsfx0|obsfx1|obsduo|obstb3n|obshx1|obshx2)
 	(cd ${MOUNTDIR}/lib; tar cfzp ${RELEASEDIR}/modules.tgz modules)
 	;;
 esac
@@ -206,7 +206,7 @@ obsvx2)
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
-obsa16|obsfx0|obsfx1)
+obsa16|obsfx0|obsfx1|obsduo)
 	# Linux kernel
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
 #	${OBJCOPY} -O binary -R .comment -S ${LINUX_SRC}/vmlinux ${RELEASEDIR}/${MAKE_IMAGE}

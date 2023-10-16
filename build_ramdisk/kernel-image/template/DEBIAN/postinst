@@ -51,6 +51,7 @@ configure)
 			rm -f /etc/obsa16-rootfs*
 			rm -f /etc/obsfx0-rootfs*
 			rm -f /etc/obsfx1-rootfs*
+			rm -f /etc/obsduo-rootfs*
 			rm -f /etc/uImage.initrd.*
 			if [ -e /etc/update_ubootenv.sh ];then
 				PATH=/etc:$PATH /bin/sh /etc/update_ubootenv.sh -a

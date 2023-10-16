@@ -576,6 +576,19 @@ bookworm)
 #		UBOOT_VER=2023.04
 #		UDEFCONFIG=obsa16_defconfig
 	;;
+	obsduo)
+		KERNEL=6.1.36
+		PATCHLEVEL=0
+		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
+		RAMDISK_SIZE=300
+		DTBFILE=imx8mp-evk-obsduo.dtb
+		ARCH=arm64
+		COMP_LVL=9
+		COMP=gzip
+		COMPEXT=gz
+#		UBOOT_VER=2023.04
+#		UDEFCONFIG=obsduo_defconfig
+	;;
 	*)
 	;;
 	esac
