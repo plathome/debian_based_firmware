@@ -481,19 +481,6 @@ bullseye)
 		COMPOPT=
 		DEFCONFIG=tinker_board_3n_defconfig
 	;;
-	obstb3nr)
-		KERNEL=5.10.160
-		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=230
-		PATCHLEVEL=0
-		DTBFILE=rk3568-tinker_board_3n.dtb
-		ARCH=arm64
-		COMP_LVL=9
-		COMP=gzip
-		COMPEXT=gz
-		COMPOPT=
-		DEFCONFIG=tinker_board_3n_defconfig
-	;;
 	*)
 	;;
 	esac

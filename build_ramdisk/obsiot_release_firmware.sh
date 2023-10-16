@@ -39,7 +39,7 @@ fi
 case $TARGET in
 obsa16*|obsduo) KERN_COMPILE_OPTS=" $KERN_COMPILE_OPTS INSTALL_MOD_STRIP=1" ;;
 obsfx0*|obsfx1*) KERN_COMPILE_OPTS=" $KERN_COMPILE_OPTS INSTALL_MOD_STRIP=1 KLIB_BUILD=${LINUX_SRC} KLIB=${MOUNTDIR} " ;;
-obstb3n*) KERN_COMPILE_OPTS=" $KERN_COMPILE_OPTS INSTALL_MOD_STRIP=1" ;;
+obstb3n) KERN_COMPILE_OPTS=" $KERN_COMPILE_OPTS INSTALL_MOD_STRIP=1" ;;
 esac
 
 _RAMDISK_IMG=${DISTDIR}/../${RAMDISK_IMG}
@@ -266,31 +266,6 @@ obsa16r|obsfx0r|obsfx1r)
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
 obstb3n)
-	# Linux kernel
-	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
-
-	# Debian rootfs
-	mount -o loop ${_RAMDISK_IMG} ${MOUNTDIR}
-	(cd ${MOUNTDIR}; tar cfzp ${RELEASEDIR}/${TARGET}-rootfs.tgz .)
-	umount ${MOUNTDIR}
-
-	# Make Images
-	(cd ${LINUX_SRC} && ./scripts/mkimg --dtb ${DTBFILE})
-	cp -f ${LINUX_SRC}/boot.img ${RELEASEDIR}
-	cp -f ${LINUX_SRC}/resource.img ${RELEASEDIR}
-	cp -f ${LINUX_SRC}/zboot.img ${RELEASEDIR}
-
-	# uboot env update script
-	cp -f ${FILESDIR}/update_ubootenv-${TARGET}-${DIST}.sh ${RELEASEDIR}/update_ubootenv.sh
-	# Device tree file
-	ALT_DTBFILE=${ALT_DTBFILE:-${DTBFILE}}
-	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/rockchip/${DTBFILE} ${RELEASEDIR}/${ALT_DTBFILE}
-	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
-	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs-dtb.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/Image ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/${ALT_DTBFILE} ${RELEASEDIR})
-	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
-	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
-	;;
-obstb3nr)
 	# Linux kernel
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
 

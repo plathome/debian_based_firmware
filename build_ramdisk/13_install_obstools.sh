@@ -73,7 +73,7 @@ obshx1*)
 obshx2*)
 	pkglist="obs_nicrename runled wav_play"
 	;;
-obstb3n*)
+obstb3n)
 	pkglist=""
 	;;
 *) exit 1 ;;
@@ -101,7 +101,7 @@ obsfx1*)
 obsduo)
 	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -fno-omit-frame-pointer -DCONFIG_OBSA16 -DCONFIG_OBSFX1 "
 	;;
-obstb3n*)
+obstb3n)
 	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -fno-omit-frame-pointer -DCONFIG_OBSTB3N "
 	;;
 obsix*)

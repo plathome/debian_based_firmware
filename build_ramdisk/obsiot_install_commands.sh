@@ -309,7 +309,7 @@ obsix*|obshx1*|obshx2*)
 	cp ${FILESDIR}/bin/resize ${DISTDIR}/usr/bin/
 	chmod 555 ${DISTDIR}/usr/bin/resize
 ;;
-obsa16*|obsfx0*|obsfx1*|obsduo|obstb3n*)
+obsa16*|obsfx0*|obsfx1*|obsduo|obstb3n)
 	BUILDDIR=/tmp/obstools.$$
 	LINUX_INC=$(dirname $0)/../source/${TARGET}/linux-${KERNEL}/include
 

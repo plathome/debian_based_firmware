@@ -109,7 +109,7 @@ obsa16*|obsfx0*|obsfx1*|obsduo)
 	chroot ${DISTDIR} /usr/bin/systemctl disable apparmor
 	chroot ${DISTDIR} /usr/bin/systemctl disable nfs-server
 	;;
-obstb3n*)
+obstb3n)
 	chroot ${DISTDIR} /usr/bin/systemctl disable apparmor
 	chroot ${DISTDIR} /usr/bin/systemctl disable nfs-server
 	;;
