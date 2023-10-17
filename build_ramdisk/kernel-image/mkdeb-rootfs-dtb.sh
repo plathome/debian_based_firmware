@@ -78,7 +78,9 @@ cp -f $MD5 $pkgdir/etc/
 cp -f ${RELDIR}/modules.tgz $pkgdir/etc/
 cp -f ${RELDIR}/System.map $pkgdir/etc/
 cp -f $DTB $pkgdir/etc/
-cp -f $USB_BOOT_DTB $pkgdir/etc/
+if [ "$USB_BOOT_DTB" != "none" ]; then
+	 cp -f $USB_BOOT_DTB $pkgdir/etc/
+fi
 cp -f ${RELDIR}/update_ubootenv.sh $pkgdir/etc/
 cp -f $(find $DTB_DIR -name "*\.dtb") $pkgdir/etc/
 
