@@ -274,12 +274,6 @@ obstb3n)
 	(cd ${MOUNTDIR}; tar cfzp ${RELEASEDIR}/${TARGET}-rootfs.tgz .)
 	umount ${MOUNTDIR}
 
-	# Make Images
-	(cd ${LINUX_SRC} && ./scripts/mkimg --dtb ${DTBFILE})
-	cp -f ${LINUX_SRC}/boot.img ${RELEASEDIR}
-	cp -f ${LINUX_SRC}/resource.img ${RELEASEDIR}
-	cp -f ${LINUX_SRC}/zboot.img ${RELEASEDIR}
-
 	# uboot env update script
 	cp -f ${FILESDIR}/update_ubootenv-${TARGET}-${DIST}.sh ${RELEASEDIR}/update_ubootenv.sh
 	# Device tree file
