@@ -269,6 +269,11 @@ obstb3n)
 	# Linux kernel
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
 
+	# boot.img 
+	lz4 ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE})
+	${LINUX_SRC}/script/mkimg --dtb ${DTBFILE}
+	cp -f ${LINUX_SRC}/boot.img ${RELEASEDIR}
+
 	# Debian rootfs
 	mount -o loop ${_RAMDISK_IMG} ${MOUNTDIR}
 	(cd ${MOUNTDIR}; tar cfzp ${RELEASEDIR}/${TARGET}-rootfs.tgz .)
