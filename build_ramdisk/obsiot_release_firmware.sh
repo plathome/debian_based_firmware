@@ -270,8 +270,8 @@ obstb3n)
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
 
 	# boot.img 
-	lz4 ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE}.lz4
-	${LINUX_SRC}/script/mkimg --dtb ${DTBFILE}
+	lz4 -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE}.lz4
+	${LINUX_SRC}/scripts/mkimg --dtb ${DTBFILE}
 	cp -f ${LINUX_SRC}/boot.img ${RELEASEDIR}
 
 	# Debian rootfs
