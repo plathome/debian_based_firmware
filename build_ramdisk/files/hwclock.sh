@@ -81,7 +81,11 @@ do_obs_hwclock()
 	esac
 }
 
-obs-hwclock --check
+if [ "$MODEL" == "obsfx0" ]; then
+	obs-hwclock --check > /dev/null 2>&1
+else
+	obs-hwclock --check
+fi
 if [ $? == 0 ]; then	# BX0 or EX1 rev2
 	do_obs_hwclock $@
 	if [ $? != 0 ]; then
