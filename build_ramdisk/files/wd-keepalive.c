@@ -1,7 +1,7 @@
 //#define DEBUG
 /*  $ssdlinux: wd_keepalive.c,v 0.01 2014/01/07 07:19:59 yamagata Exp $ */
 /*
- * Copyright (c) 2009-2022 Plat'Home CO., LTD.
+ * Copyright (c) 2009-2023 Plat'Home CO., LTD.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,7 +42,7 @@
 #include <errno.h>
 
 #define PID_FILE	"/var/run/wd-keepalive.pid"
-#if defined(CONFIG_OBSVX1) || defined(CONFIG_OBSIX9) || defined(CONFIG_OBSA16) || defined(CONFIG_OBSHX1)
+#if defined(CONFIG_OBSVX1) || defined(CONFIG_OBSIX9) || defined(CONFIG_OBSA16) || defined(CONFIG_OBSHX1) || defined(CONFIG_OBSTB3N)
 #define INTERVAL	20
 #define WD_FILE		"/dev/watchdog0"
 #else

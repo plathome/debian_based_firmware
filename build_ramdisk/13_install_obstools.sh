@@ -74,7 +74,7 @@ obshx2*)
 	pkglist="obs_nicrename runled wav_play"
 	;;
 obstb3n)
-	pkglist=""
+	pkglist="wd_keepalive"
 	;;
 *) exit 1 ;;
 esac
@@ -219,7 +219,7 @@ $CC -o ${OBSTOOLDIR}/template-wav-play/usr/sbin/wav-play ${FILESDIR}/wav-play.c 
 $STRIP ${OBSTOOLDIR}/template-wav-play/usr/sbin/wav-play
 
 case $TARGET in
-obsix*|obsvx*|obsbx*|obsa16*|obsfx0*|obsfx1*|obsduo|obshx2*)
+obsix*|obsvx*|obsbx*|obsa16*|obsfx0*|obsfx1*|obsduo|obshx2*|obstb3n)
 	echo "WD-KEEPALIVE"
 	mkdir -p ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
