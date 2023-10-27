@@ -162,6 +162,8 @@ obsduo)
 	# 510 D.C.
 	# 511 N.C.
 	;;
+obstb3n)
+	;;
 *)
 	exit 1
 	;;
