@@ -1,0 +1,52 @@
+##### Hardware Interface Config #####
+
+## Note: When there is any PIN conflict, enable the latter setting.  ##
+## | PIN | ALT Fun 1 | ALT Fun 2 | ALT Fun 3 | ALT Fun4 | ##
+## |   2 |  i2s3_2ch |      spi3 |     pwm14 |          | ##
+## |   4 |  i2s3_2ch |      spi3 |     pwm15 |          | ##
+## |   6 |  i2s3_2ch |      spi3 | spdif_8ch |          | ##
+## |   8 |  i2s3_2ch |      spi3 |     pwm12 |    uart9 | ##
+## |  10 |  i2s3_2ch |      spi3 |     pwm13 |    uart9 | ##
+
+#intf:uart4=off
+#intf:i2c5=off
+#intf:uart9=off
+#intf:pwm12=off
+#intf:pwm13=off
+#intf:pwm14=off
+#intf:pwm15=off
+#intf:spdif_8ch=off
+#intf:spi3=off
+#intf:i2s3_2ch=off
+
+##### Driver Config #####
+
+## Note: auto_ums: Auto enable ums mode if typeC port detect power. ##
+
+conf:auto_ums=on
+
+##### Tinker Power Management #####
+
+cpu_governor=ondemand
+a55_minfreq=408000
+a55_maxfreq=1992000
+
+gpu_governor=simple_ondemand
+g52_minfreq=200000000
+g52_maxfreq=800000000
+
+##### List of device tree overlays to load. Format: overlay=<dtbo name, no extension> <dtbo2> ... #####
+
+## Note: Put dtbo files under the overlays folder. ##
+
+#overlay=mipi2lvds2_G185XW01
+#overlay=mipi2lvds2_G156BGE-L01
+#overlay=mipi2lvds2_G240HVT01
+#overlay=mipi2lvds2_LM215WF3-SLN1
+#overlay=mipi2lvds2_G156HAN02
+#overlay=mipi2lvds2_AM1280800P2TZQW
+#overlay=mipi2lvds2_G215HAN01
+#overlay=edp_G156HAB02
+#overlay=asus_pwm_capture
+#overlay=rk809_factory_use
+overlay=
