@@ -240,6 +240,7 @@ firmware)
 
 						if [ -f ${FIRM_FILE}/bootfs.tgz ]; then
 							${TEST} tar xfzp ${FIRM_FILE}/bootfs.tgz -C ${WORK_DIR}
+							${TEST} chown -R root:root ${WORK_DIR}/.
 						fi
 
 						if [ -f ${FIRM_FILE}/modules.tgz ]; then
