@@ -266,9 +266,6 @@ obsa16r|obsfx0r|obsfx1r)
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
 obstb3n)
-	# Linux kernel
-	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
-
 	# boot.img 
 	lz4 -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE}.lz4
 	(cd ${LINUX_SRC} && ./scripts/mkimg --dtb ${DTBFILE})
@@ -281,11 +278,14 @@ obstb3n)
 
 	# uboot env update script
 	cp -f ${FILESDIR}/update_ubootenv-${TARGET}-${DIST}.sh ${RELEASEDIR}/update_ubootenv.sh
-	# Device tree file
-	ALT_DTBFILE=${ALT_DTBFILE:-${DTBFILE}}
-	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/rockchip/${DTBFILE} ${RELEASEDIR}/${ALT_DTBFILE}
+
+	# bootfs
+	tar -C ${FILESDIR}/bootfs.${TARGET}.${DIST} -czf ${RELEASEDIR}/bootfs.tgz .
+
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
-	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs-dtb.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/Image ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/${ALT_DTBFILE} none ${RELEASEDIR})
+
+	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs-boot_img.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/boot.img ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR})
+
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;

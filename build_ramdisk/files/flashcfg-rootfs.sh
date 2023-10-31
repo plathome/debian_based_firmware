@@ -204,6 +204,62 @@ firmware)
 		umount ${WORK_DIR}
 		rmdir ${WORK_DIR}
 		;;
+	obstb3n)
+		# check MD5
+		for file in boot.img modules.tgz bootfs.tgz
+		do
+			if [ -f ${FIRM_FILE}/${file} ]; then
+				_get_md5 ${file}
+				val=(`md5sum ${FIRM_FILE}/${file}`)
+				if [ "$MD5_RET" != $val ]; then
+					echo "$LINENO: ${file} is broken, write firmware failed."
+					[ "$DEBUG" == "yes" ] && echo "${FIRM_FILE}/${file}: MD5.${MODEL}=$MD5_RET, source=$val"
+					exit 1
+				fi
+			fi
+		done
+
+		for i in 0 1 2 3
+		do
+			dev=/dev/mmcblk${i}
+			if dmesg | grep -q "Waiting for root device ${dev}p8..."; then
+				if [ -b ${dev}p7 -a -b ${dev}p8 ] ; then
+					LABEL=`parted -s ${dev} -- print | grep '^ 3' | awk '{print $5}'`
+					if [ "$LABEL" = "boot" ] ; then
+
+						mkdir -p ${WORK_DIR}
+						mount ${dev}p7 ${WORK_DIR}
+
+						if [ -f ${FIRM_FILE}/boot.img ]; then
+							${TEST} dd if=${FIRM_FILE}/boot.img of=${dev} seek=32768 conv=fsync
+						fi
+
+						if [ -f ${FIRM_FILE}/openblocks-release ]; then
+							${TEST} cp -f ${FIRM_FILE}/openblocks-release ${WORK_DIR}
+						fi
+
+						if [ -f ${FIRM_FILE}/bootfs.tgz ]; then
+							${TEST} tar xfzp ${FIRM_FILE}/bootfs.tgz -C ${WORK_DIR}
+						fi
+
+						if [ -f ${FIRM_FILE}/modules.tgz ]; then
+							${TEST} tar xfzp ${FIRM_FILE}/modules.tgz -C /lib
+						fi
+
+						if [ -f ${FIRM_FILE}/System.map ]; then
+							${TEST} cp -f ${FIRM_FILE}/System.map /boot
+							${TEST} cp -f ${FIRM_FILE}/System.map ${WORK_DIR}
+						fi
+						sync
+
+						umount ${WORK_DIR}
+						rmdir ${WORK_DIR}
+						break
+					fi
+				fi
+			fi
+		done
+		;;
 	*)
 		;;
 	esac

@@ -59,6 +59,20 @@ configure)
 		else
 			exit 1
 		fi
+	elif [ -e /etc/boot.img ] ; then
+		if /bin/bash /etc/flashcfg.sh -y -f /etc; then
+			rm -f /etc/boot.img
+			rm -f /etc/flashcfg.sh
+			rm -f /etc/MD5.*
+			rm -f /etc/modules.tgz
+			rm -f /etc/bootfs.tgz
+			rm -f /etc/obstb3n-rootfs*
+			if [ -e /etc/update_ubootenv.sh ];then
+				PATH=/etc:$PATH /bin/sh /etc/update_ubootenv.sh -a
+			fi
+		else
+			exit 1
+		fi
 	fi
 	if [ -e /etc/rc2.d/S02power-saving.sh ]; then
 		/sbin/insserv -rf power-saving.sh
