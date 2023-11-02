@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2022 Plat'Home CO., LTD.
+# Copyright (c) 2013-2023 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -70,5 +70,5 @@ apt -y install $packages
 #
 # arm64 development tools
 #
-packages="gcc-aarch64-linux-gnu g++-aarch64-linux-gnu zlib1g-dev:arm64 libusb-dev:arm64 libasound2-dev:arm64 libusb-1.0-0-dev:arm64 libi2c0:arm64"
+packages="gcc-aarch64-linux-gnu g++-aarch64-linux-gnu zlib1g-dev:arm64 libusb-dev:arm64 libasound2-dev:arm64 libusb-1.0-0-dev:arm64 libi2c0:arm64 libgpiod-dev:arm64"
 apt -y install $packages
