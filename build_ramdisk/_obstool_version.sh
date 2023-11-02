@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2022 Plat'Home CO., LTD.
+# Copyright (c) 2013-2023 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,7 @@ disable_modem_ver=1
 hub_ctrl_ver=1
 instfirm_ver=2
 nitz_ver=5
-obs_util_ver=4
+obs_util_ver=5
 obs_hwclock_ver=2
 obs_nicled_ver=1
 obs_nicrename_ver=2

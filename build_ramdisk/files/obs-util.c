@@ -1,7 +1,7 @@
 //#define DEBUG 1
 /*	$ssdlinux: obs-util.c,v 1.17 2014/01/07 07:19:06 yamagata Exp $	*/
 /*
- * Copyright (c) 2008-2022 Plat'Home CO., LTD.
+ * Copyright (c) 2008-2023 Plat'Home CO., LTD.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,9 @@
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 19, 0)
 #include <i2c/smbus.h>
 #endif
+#if defined(CONFIG_OBSTB3N)
+#include<gpiod.h>
+#endif
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -51,13 +54,22 @@
 #define BSIZ 64
 #if defined(CONFIG_OBSVX1) || defined(CONFIG_OBSIX9)
 #define CHANNEL 7
+#elif defined(CONFIG_OBSTB3N)
+#define CHANNEL 2
 #else
 #define CHANNEL 1
 #endif
 #if defined(CONFIG_OBSIX9)
 const unsigned char slave = 0xae >> 1;
+#elif defined(CONFIG_OBSTB3N)
+const unsigned char slave = 0x51 >> 1;
 #else
 const unsigned char slave = 0xa0 >> 1;
+#endif
+
+#if defined(CONFIG_OBSTB3N)
+const char *chipname = "gpiochip1";
+const uint wp_offset = 10;
 #endif
 
 enum version{
@@ -106,8 +118,7 @@ unsigned short CRC16_CCITT(unsigned char const *data, int data_num, int seed)
 	return crc16;
 }
 
-int write_i2c(unsigned char i2cnum, unsigned char slave,
-								unsigned char addr, unsigned char data)
+int write_i2c(unsigned char i2cnum, unsigned char slave, unsigned char addr, unsigned char data)
 {
 	int fd;
 #if !defined(CONFIG_OBSVX1) && !defined(CONFIG_OBSIX9)
@@ -116,12 +127,40 @@ int write_i2c(unsigned char i2cnum, unsigned char slave,
 	char devname[16];
 	struct timespec req, rem;
 
+#if defined(CONFIG_OBSTB3N)
+	struct gpiod_chip *gchip;
+	struct gpiod_line *gline;
+
+	/* open gpio for eeprom write permition */
+	if ((gchip=gpiod_chip_open_by_name(chipname)) == NULL) {
+		printf("ERR%d\n", __LINE__);
+		return 0x80000000 | errno;
+	}
+
+	if ((gline=gpiod_chip_get_line(gchip, wp_offset)) == NULL) {
+		printf("ERR%d\n", __LINE__);
+		return 0x80000000 | errno;
+	}
+
+	/* enable eeprom write permition */
+	if (gpiod_line_request_output(gline, chipname, 0) != 0) {
+		printf("ERR%d\n", __LINE__);
+		gpiod_chip_close(gchip);
+		return 0x80000000 | errno;
+	}
+	
+#endif
+
 	sprintf(devname, "%s-%d", DEVNAME, i2cnum);
 	if((fd = open(devname, O_RDWR)) < 0){
 		printf("ERR%d\n", __LINE__);
 		return 0x80000000 | errno;
 	}
+#if defined(CONFIG_OBSTB3N)
+	if(ioctl(fd, I2C_SLAVE_FORCE, slave) < 0) {
+#else
 	if(ioctl(fd, I2C_SLAVE, slave) < 0) {
+#endif
 		printf("ERR%d\n", __LINE__);
 		close(fd);
 		return 0x80000000 | errno;
@@ -150,6 +189,15 @@ int write_i2c(unsigned char i2cnum, unsigned char slave,
 		req.tv_nsec = rem.tv_nsec;
 	}
 	close(fd);
+
+#if defined(CONFIG_OBSTB3N)
+	/* disable eeprom write permition */
+	if (gpiod_line_request_output(gline, chipname, 1) != 0) {
+		printf("ERR%d\n", __LINE__);
+	}
+	gpiod_chip_close(gchip);
+#endif
+
 	return (int)data;
 }
 
@@ -164,7 +212,11 @@ unsigned char read_i2c(unsigned char i2cnum, unsigned char slave, unsigned char 
 		printf("ERR%d\n", __LINE__);
 		return -1;
 	}
+#if defined(CONFIG_OBSTB3N)
+	if(ioctl(fd, I2C_SLAVE_FORCE, slave) < 0) {
+#else
 	if(ioctl(fd, I2C_SLAVE, slave) < 0) {
+#endif
 		printf("ERR%d\n", __LINE__);
 		close(fd);
 		return -1;
@@ -598,6 +650,7 @@ printf("mac_num=%d\n", mac_num);
 #ifdef DEBUG
 printf("%s-%d %x\n", DEVNAME, i2cnum, slave);
 #endif
+
 	/* Clear EEPROM */
 	if(clear){
 		if(clear_eeprom(i2cnum, av[0]) == -1)
