@@ -62,7 +62,7 @@
 #if defined(CONFIG_OBSIX9)
 const unsigned char slave = 0xae >> 1;
 #elif defined(CONFIG_OBSTB3N)
-const unsigned char slave = 0x51 >> 1;
+const unsigned char slave = 0x51;
 #else
 const unsigned char slave = 0xa0 >> 1;
 #endif
@@ -143,7 +143,7 @@ int write_i2c(unsigned char i2cnum, unsigned char slave, unsigned char addr, uns
 	}
 
 	/* enable eeprom write permition */
-	if (gpiod_line_request_output(gline, chipname, 0) != 0) {
+	if (gpiod_line_request_output(gline, chipname, 0) < 0) {
 		printf("ERR%d\n", __LINE__);
 		gpiod_chip_close(gchip);
 		return 0x80000000 | errno;
@@ -192,7 +192,7 @@ int write_i2c(unsigned char i2cnum, unsigned char slave, unsigned char addr, uns
 
 #if defined(CONFIG_OBSTB3N)
 	/* disable eeprom write permition */
-	if (gpiod_line_request_output(gline, chipname, 1) != 0) {
+	if (gpiod_line_set_value(gline, 1) < 0) {
 		printf("ERR%d\n", __LINE__);
 	}
 	gpiod_chip_close(gchip);
