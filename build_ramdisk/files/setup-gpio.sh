@@ -134,9 +134,45 @@ obsfx1*)
 	# 511 N.C.
 	;;
 obsduo)
-	# pshd
+	# USBSW_CTL
+	[ ! -d $GPIOPATH/gpio1 ] && echo 1 > $GPIOPATH/export; \
+		echo high > $GPIOPATH/gpio5/direction
+	# RDA_CTL_OUT_0
+	[ ! -d $GPIOPATH/gpio5 ] && echo 5 > $GPIOPATH/export; \
+		echo low > $GPIOPATH/gpio5/direction
+	# RDA_CTL_OUT_1
+	[ ! -d $GPIOPATH/gpio6 ] && echo 6 > $GPIOPATH/export; \
+		echo low > $GPIOPATH/gpio6/direction
+	# RDA_CTL_IN_0
+	[ ! -d $GPIOPATH/gpio7 ] && echo 7 > $GPIOPATH/export; \
+		echo in > $GPIOPATH/gpio7/direction
+	# RDA_CTL_IN_1
+	[ ! -d $GPIOPATH/gpio8 ] && echo 8 > $GPIOPATH/export; \
+		echo in > $GPIOPATH/gpio8/direction
+	# RST_Sx_N
+	[ ! -d $GPIOPATH/gpio9 ] && echo 9 > $GPIOPATH/export; \
+		echo high > $GPIOPATH/gpio9/direction
+	# PRIMARY_Sx
+	[ ! -d $GPIOPATH/gpio12 ] && echo 12 > $GPIOPATH/export; \
+		echo high > $GPIOPATH/gpio12/direction
+	# FAIL_Sx
+	[ ! -d $GPIOPATH/gpio15 ] && echo 15 > $GPIOPATH/export; \
+		echo high > $GPIOPATH/gpio15/direction
+	# BAT-L
+	[ ! -d $GPIOPATH/gpio40 ] && echo 40 > $GPIOPATH/export; \
+		echo in > $GPIOPATH/gpio40/direction
+	# SFCHG
+	[ ! -d $GPIOPATH/gpio41 ] && echo 41 > $GPIOPATH/export; \
+		echo in > $GPIOPATH/gpio41/direction
+	# PWRLOST
+	[ ! -d $GPIOPATH/gpio43 ] && echo 43 > $GPIOPATH/export; \
+		echo in > $GPIOPATH/gpio43/direction
+	# FUNC (pshd)
 	[ ! -d $GPIOPATH/gpio86 ] && echo 86 > $GPIOPATH/export; \
 		echo both > $GPIOPATH/gpio86/edge
+	# HBHUB_RST_N
+	[ ! -d $GPIOPATH/gpio124 ] && echo 124 > $GPIOPATH/export; \
+		echo high > $GPIOPATH/gpio124/direction
 	# i2c-gpio
 		# 496	WL_PWR_EN
 		# 497	WL_DIS_N
