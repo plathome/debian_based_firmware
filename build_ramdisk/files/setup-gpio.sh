@@ -170,7 +170,7 @@ obsduo)
 	# FUNC (pshd)
 	[ ! -d $GPIOPATH/gpio86 ] && echo 86 > $GPIOPATH/export; \
 		echo both > $GPIOPATH/gpio86/edge
-	# HBHUB_RST_N
+	# USBHUB_RST_N
 	[ ! -d $GPIOPATH/gpio124 ] && echo 124 > $GPIOPATH/export; \
 		echo high > $GPIOPATH/gpio124/direction
 	# i2c-gpio
