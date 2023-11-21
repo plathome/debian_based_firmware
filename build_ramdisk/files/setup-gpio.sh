@@ -136,7 +136,7 @@ obsfx1*)
 obsduo)
 	# USBSW_CTL
 	[ ! -d $GPIOPATH/gpio1 ] && echo 1 > $GPIOPATH/export; \
-		echo high > $GPIOPATH/gpio5/direction
+		echo high > $GPIOPATH/gpio1/direction
 	# RDA_CTL_OUT_0
 	[ ! -d $GPIOPATH/gpio5 ] && echo 5 > $GPIOPATH/export; \
 		echo low > $GPIOPATH/gpio5/direction
