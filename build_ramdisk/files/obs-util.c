@@ -137,7 +137,7 @@ int write_i2c(unsigned char i2cnum, unsigned char slave, unsigned char addr, uns
 		return 0x80000000 | errno;
 	}
 
-	if ((gline=gpiod_chip_get_line(gchip, wp_offset)) == NULL) {
+	if ((gline=gpiod_chip_get_line(gchip, wp_offset)) < 0) {
 		printf("ERR%d\n", __LINE__);
 		return 0x80000000 | errno;
 	}
