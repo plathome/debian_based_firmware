@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2023 Plat'Home CO., LTD.
+# Copyright (c) 2013-2024 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -64,6 +64,9 @@ obsfx0*)
 obsfx1*)
 	pkglist="atcmd cp210x_rs485 obs_util obs_hwclock obsiot_power pshd runled wav_play wd_keepalive"
 	;;
+obsgx4*)
+	pkglist="atcmd obs_util obs_hwclock pshd runled wav_play wd_keepalive"
+	;;
 obsduo)
 	pkglist="atcmd obs_util obs_hwclock obsiot_power pshd runled wav_play wd_keepalive"
 	;;
@@ -98,6 +101,9 @@ obsfx0*)
 obsfx1*)
 	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -fno-omit-frame-pointer -DCONFIG_OBSA16 -DCONFIG_OBSFX1 "
 	;;
+obsgx4*)
+	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -fno-omit-frame-pointer -DCONFIG_OBSA16 "
+	;;
 obsduo)
 	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -fno-omit-frame-pointer -DCONFIG_OBSA16 -DCONFIG_OBSFX1 "
 	;;
@@ -118,7 +124,7 @@ esac
 #
 
 case $TARGET in
-obsbx*|obsvx*|obsfx0*|obsfx1*|obsduo)
+obsbx*|obsvx*|obsfx0*|obsfx1*|obsgx4*|obsduo)
 	echo "ATCMD"
 	mkdir -p ${OBSTOOLDIR}/template-atcmd/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-atcmd/usr/sbin/atcmd ${FILESDIR}/atcmd.c $CFLAGS
@@ -141,7 +147,7 @@ obsbx*|obsvx*|obsfx0*|obsfx1*|obsduo)
 esac
 
 case $TARGET in
-obsbx*|obsvx*|obsa16*|obsfx0*|obsfx1*|obsduo)
+obsbx*|obsvx*|obsa16*|obsfx0*|obsfx1*|obsgx4*|obsduo)
 	echo "OBS-HWCLOCK"
 	mkdir -p ${OBSTOOLDIR}/template-obs-hwclock/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-obs-hwclock/usr/sbin/obs-hwclock ${FILESDIR}/obs-hwclock.c $CFLAGS
@@ -219,7 +225,7 @@ $CC -o ${OBSTOOLDIR}/template-wav-play/usr/sbin/wav-play ${FILESDIR}/wav-play.c 
 $STRIP ${OBSTOOLDIR}/template-wav-play/usr/sbin/wav-play
 
 case $TARGET in
-obsix*|obsvx*|obsbx*|obsa16*|obsfx0*|obsfx1*|obsduo|obshx2*|obstb3n)
+obsix*|obsvx*|obsbx*|obsa16*|obsfx0*|obsfx1*|obsgx4*|obsduo|obshx2*|obstb3n)
 	echo "WD-KEEPALIVE"
 	mkdir -p ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-wd-keepalive/usr/sbin/wd-keepalive ${FILESDIR}/wd-keepalive.c $CFLAGS
@@ -286,7 +292,7 @@ bullseye|bookworm)
 	obsa16*)
 		pkglist="obs_createkeys obs_nicled setup_macether setup_gpio"
 		;;
-	obsfx0*|obsfx1*|obsduo)
+	obsfx0*|obsfx1*|obsgx4*|obsduo)
 		pkglist="obs_createkeys setup_macether setup_gpio"
 		;;
 	obshx1*|obshx2*)
@@ -320,7 +326,7 @@ cp -f ${FILESDIR}/setup-gpio.sh ${OBSTOOLDIR}/template-setup-gpio/usr/sbin/
 chmod 555 ${OBSTOOLDIR}/template-setup-gpio/usr/sbin/setup-gpio.sh
 
 case $TARGET in
-obsbx*|obsvx*|obsix9*|obsa16*|obsfx1*|obsduo|obshx1*|obshx2*)
+obsbx*|obsvx*|obsix9*|obsa16*|obsfx1*|obsgx4*|obsduo|obshx1*|obshx2*)
 	echo "FLASHCFG"
 	case $TARGET in
 	obsvx1|obsix9r|obshx1r|obshx2r)
@@ -351,7 +357,7 @@ bullseye|bookworm)
 esac
 
 case $TARGET in
-obsa16*|obsfx0*|obsfx1*|obsduo)
+obsa16*|obsfx0*|obsfx1*|obsgx4*|obsduo)
 	echo "OBS-MACADDR"
 	mkdir -p ${OBSTOOLDIR}/template-obs-macaddr/usr/sbin/
 	cp -f ${FILESDIR}/obs-macaddr.sh ${OBSTOOLDIR}/template-obs-macaddr/usr/sbin/
@@ -389,7 +395,7 @@ for pkg in $pkglist; do
 done
 
 case $TARGET in
-obsa16*|obsduo)
+obsa16*|obsgx4*|obsduo)
 	chroot ${DISTDIR} systemctl disable wpa_supplicant
 	;;
 esac

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2023 Plat'Home CO., LTD.
+# Copyright (c) 2013-2024 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,7 @@ RELDIR=$9
 FIRM_DIR=$(dirname $FIRM)
 DTB_DIR=$(dirname $DTB)
 
-if [ "$MODEL" == "obsa16" -o "$MODEL" == "obsfx0" -o "$MODEL" == "obsfx1" -o "$MODEL" == "obsduo" ]; then
+if [ "$MODEL" == "obsa16" -o "$MODEL" == "obsfx0" -o "$MODEL" == "obsfx1" -o "$MODEL" == "obsgx4" -o "$MODEL" == "obsduo" ]; then
 	DESCRIPTION="Linux firmware for OpenBlocks A16 Famiry"
 	TARGET=$MODEL
 else

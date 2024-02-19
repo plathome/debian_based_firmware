@@ -6,7 +6,7 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 [ -e "/etc/default/openblocks" ] && . /etc/default/openblocks
 
 case $MODEL in
-obsa16*|obsfx0*|obsfx1*|obsduo) ;;
+obsa16*|obsfx0*|obsfx1*|obsgx4*|obsduo) ;;
 *) exit 0 ;;
 esac
 

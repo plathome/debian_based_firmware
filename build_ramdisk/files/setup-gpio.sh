@@ -1,6 +1,6 @@
 #! /bin/bash
 #
-# Copyright (c) 2013-2023 Plat'Home CO., LTD.
+# Copyright (c) 2013-2024 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -79,7 +79,7 @@ obsbx*)
 	[ ! -d $GPIOPATH/gpio41 ] && echo 41 > $GPIOPATH/export
 	[ ! -d $GPIOPATH/gpio42 ] && echo 42 > $GPIOPATH/export
 	;;
-obsa16*)
+obsa16*|obsgx4*)
 	# pshd
 	[ ! -d $GPIOPATH/gpio86 ] && echo 86 > $GPIOPATH/export; \
 		echo both > $GPIOPATH/gpio86/edge

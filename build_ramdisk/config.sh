@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2013-2023 Plat'Home CO., LTD.
+# Copyright (c) 2013-2024 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -562,6 +562,19 @@ bookworm)
 		COMPEXT=gz
 #		UBOOT_VER=2023.04
 #		UDEFCONFIG=obsa16_defconfig
+	;;
+	obsgx4)
+		KERNEL=6.1.55
+		PATCHLEVEL=0
+		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
+		RAMDISK_SIZE=300
+		DTBFILE=imx8mp-evk-obsgx4.dtb
+		ARCH=arm64
+		COMP_LVL=9
+		COMP=gzip
+		COMPEXT=gz
+#		UBOOT_VER=2023.04
+#		UDEFCONFIG=obsgx4_defconfig
 	;;
 	obsduo)
 		KERNEL=6.1.55

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2023 Plat'Home CO., LTD.
+# Copyright (c) 2013-2024 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -105,7 +105,7 @@ obsbx*|obsvx*)
 		esac
 	fi
 	;;
-obsa16*|obsfx0*|obsfx1*|obsduo)
+obsa16*|obsfx0*|obsfx1*|obsgx4*|obsduo)
 	chroot ${DISTDIR} /usr/bin/systemctl disable apparmor
 	chroot ${DISTDIR} /usr/bin/systemctl disable nfs-server
 	;;

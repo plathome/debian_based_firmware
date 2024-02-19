@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2023 Plat'Home CO., LTD.
+# Copyright (c) 2013-2024 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -78,7 +78,7 @@ function _get_md5() {
 		obj="bzImage"
 	elif [ $1 == "ramdisk" ]; then
 		case $MODEL in
-		obsbx1|obsvx1|obsix9|obsa16|obsfx0|obsfx1|obsduo|obshx*)
+		obsbx1|obsvx1|obsix9|obsa16|obsfx0|obsfx1|obsgx4|obsduo|obshx*)
 			if [ -e "${FIRM_FILE}/initrd.gz" ]; then
 				obj="initrd.gz"
 			else
@@ -158,7 +158,7 @@ case $MODEL in
 obsa*)
 	echo "usage: $(basename $0) [-f file] [-u list] [-bBeEpsSTly]"
 	;;
-obsbx1|bpv*|obsvx1|obsix9|obsa16|obsfx0|obsfx1|obsduo|obshx*)
+obsbx1|bpv*|obsvx1|obsix9|obsa16|obsfx0|obsfx1|obsgx4|obsduo|obshx*)
 	echo "usage: $(basename $0) [-f directory] [-u list] [-bBeEpsSTly]"
 	;;
 *)
@@ -178,7 +178,7 @@ obsa*)
 	echo "    -e      Erase FlashROM (header only)."
 	echo "    -E      Erase FlashROM (all clear)."
 	;;
-obsbx1|bpv*|obsvx1|obsix9|obsa16|obsfx0|obsfx1|obsduo|obshx*)
+obsbx1|bpv*|obsvx1|obsix9|obsa16|obsfx0|obsfx1|obsgx4|obsduo|obshx*)
 	echo "    -f directory Save firmware directory to eMMC."
 	echo "    -s      Save config to eMMC (${MTD_CONF_DEV})."
 	echo "    -S      Save userland and config to eMMC (${MTD_USER_DEV})."
@@ -361,7 +361,7 @@ obsax3|obs600)
 obsmv4)
 	GETOPTS_ARG="f:u:bBlhy"
 	;;
-bpv4*|bpv8|obsvx1|obsix9|obsa16|obsfx0|obsfx1|obsduo|obshx*)
+bpv4*|bpv8|obsvx1|obsix9|obsa16|obsfx0|obsfx1|obsgx4|obsduo|obshx*)
 	GETOPTS_ARG="f:u:bBeEsSlhy"
 	;;
 obsbx1)
@@ -376,7 +376,7 @@ while getopts $GETOPTS_ARG OPT;do
 	case $OPT in
 	c)
 		case $MODEL in
-		obsbx1|bpv*|obsvx1|obsix9|obsa16|obsfx0|obsfx1|obsduo|obshx*)
+		obsbx1|bpv*|obsvx1|obsix9|obsa16|obsfx0|obsfx1|obsgx4|obsduo|obshx*)
 			RUN=rootcfg; ROOT_TARGET=$2
 			;;
 		*)
@@ -398,7 +398,7 @@ while getopts $GETOPTS_ARG OPT;do
 			exit 1
 		fi
 		case $MODEL in
-		bpv4*|bpv8|obsbx1|obsvx1|obsix9|obsa16|obsfx0|obsfx1|obsduo|obshx*)
+		bpv4*|bpv8|obsbx1|obsvx1|obsix9|obsa16|obsfx0|obsfx1|obsgx4|obsduo|obshx*)
 			RUN=save_direct_etc
 			;;
 		*)
@@ -416,7 +416,7 @@ while getopts $GETOPTS_ARG OPT;do
 			exit 1
 		fi
 		case $MODEL in
-		bpv4*|bpv8|obsbx1|obsvx1|obsix9|obsa16|obsfx0|obsfx1|obsduo|obshx*)
+		bpv4*|bpv8|obsbx1|obsvx1|obsix9|obsa16|obsfx0|obsfx1|obsgx4|obsduo|obshx*)
 			RUN=save_direct_user
 			;;
 		*)
@@ -541,7 +541,7 @@ save)
 ;;
 delete)
 	case $MODEL in
-	bpv4*|bpv8|obsbx1|obsvx1|obsix9|obsa16|obsfx0|obsfx1|obsduo|obshx*)
+	bpv4*|bpv8|obsbx1|obsvx1|obsix9|obsa16|obsfx0|obsfx1|obsgx4|obsduo|obshx*)
 		_yesno "Erase userarea)."
 
 		mkdir -p ${WORK_DIR}
@@ -595,7 +595,7 @@ firmware)
 		umount ${WORK_DIR}
 		rm -rf ${WORK_DIR}
 	;;
-	obsbx1|obsvx1|obsix9|obsa16|obsfx0|obsfx1|obsduo|obshx*)
+	obsbx1|obsvx1|obsix9|obsa16|obsfx0|obsfx1|obsgx4|obsduo|obshx*)
 		if [ -e "${FIRM_FILE}/initrd.gz" ]; then
 			RAMDISK="initrd.gz"
 #			_RAMDISK="ramdisk-wheezy.obsbx1.img.gz"

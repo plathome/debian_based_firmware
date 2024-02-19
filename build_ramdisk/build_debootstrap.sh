@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2023 Plat'Home CO., LTD.
+# Copyright (c) 2013-2024 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -190,7 +190,7 @@ bookworm)
 		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,libnl-genl-3-200,initscripts,gnupg,strace,wget,apparmor,gdisk,dbus,systemd-timesyncd,rsyslog"
 		EXCLUDE="nano"
 		;;
-	obsa16*|obsfx0*|obsfx1*|obsduo)
+	obsa16*|obsfx0*|obsfx1*|obsgx4*|obsduo)
 		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,libnl-genl-3-200,initscripts,gnupg,strace,wget,apparmor,gdisk,dbus,systemd-timesyncd,rsyslog"
 		EXCLUDE="nano"
 		;;
