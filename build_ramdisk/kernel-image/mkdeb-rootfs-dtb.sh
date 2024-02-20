@@ -29,9 +29,9 @@
 
 if [ "$#" -ne "9" ] ; then
 	echo
-	echo "usage: $0 [VERSION] [ARCH] [MODEL] [bzImage] [flashcfg] [MD5] [modules] [System.map] [DTB file] [USB boot DTB file] [release_dir]"
+	echo "usage: $0 [VERSION] [ARCH] [MODEL] [bzImage] [flashcfg] [MD5] [DTB file] [USB boot DTB file] [release_dir]"
 	echo
-	echo "ex) $0 1.0.0-0 arm64 obsa16 Image flashcfg MD5.obsa16 modules.tgz System.map dtbfile usb_bioot_dtbdile release_dir"
+	echo "ex) $0 1.0.0-0 arm64 obsa16 Image flashcfg MD5.obsa16 dtbfile usb_bioot_dtbdile release_dir"
 	echo
 	exit 1
 fi
