@@ -6,4 +6,4 @@ deb http://ftp.jp.debian.org/debian/ bookworm-updates main
 
 deb http://security.debian.org bookworm-security main
 
-deb http://ftp.plathome.co.jp/pub/OBSFX1/debian/bookworm ./
+deb http://ftp.plathome.co.jp/pub/OBSGX4/debian/bookworm ./
