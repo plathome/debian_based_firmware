@@ -56,6 +56,7 @@ default_env(){
 
 obsiot_env(){
 	fw_setenv env_version 'v01'
+	fw_setenv miscargs
 	fw_setenv fdt_usb_boot_file imx8mp-evk-usb-boot.dtb
 	fw_setenv chkinit 'setenv noflashcfg; gpio input gpio3_22;if test ${$?} = 0; then setenv noflashcfg noflashcfg=1; fi;'
 	fw_setenv mmcargs 'setenv bootargs ${jh_clk} console=${console} root=${mmcroot} ${noflashcfg} ${miscargs}'

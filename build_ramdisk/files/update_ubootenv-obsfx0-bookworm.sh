@@ -56,6 +56,7 @@ default_env(){
 
 obsiot_env(){
 	fw_setenv env_version 'v01'
+	fw_setenv miscargs
 	fw_setenv fdt_file imx8mp-evk-obsfx0.dtb
 	fw_setenv fdt_usb_boot_file imx8mp-evk-obsfx0-usb-boot.dtb
 	fw_setenv chkinit 'setenv noflashcfg; gpio input gpio3_22;if test ${$?} = 0; then setenv noflashcfg noflashcfg=1; fi;'
