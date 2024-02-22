@@ -371,7 +371,7 @@ bullseye)
 	obsa16*)
 		KERNEL=5.4.70
 		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=350
+		RAMDISK_SIZE=300
 		PATCHLEVEL=2
 		DTBFILE=imx8mp-evk-obsa16.dtb
 		ALT_DTBFILE=imx8mp-evk.dtb
@@ -386,7 +386,7 @@ bullseye)
 	obsfx0*)
 		KERNEL=5.4.70
 		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=350
+		RAMDISK_SIZE=300
 		PATCHLEVEL=1
 		DTBFILE=imx8mp-evk-obsfx0.dtb
 		DEFCONFIG=obsfx0_defconfig
@@ -402,7 +402,7 @@ bullseye)
 	obsfx1*)
 		KERNEL=5.4.70
 		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=350
+		RAMDISK_SIZE=300
 		PATCHLEVEL=1
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
 #		DTBFILE=imx8mp-evk-obsfx1-rtl8211.dtb
@@ -470,7 +470,7 @@ bookworm)
 		KERNEL=6.1.55
 		PATCHLEVEL=0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=350
+		RAMDISK_SIZE=300
 		DTBFILE=imx8mp-evk-obsa16.dtb
 		ALT_DTBFILE=imx8mp-evk.dtb
 		DEFCONFIG=obsa16_defconfig
@@ -485,7 +485,7 @@ bookworm)
 		KERNEL=6.1.55
 		PATCHLEVEL=0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=350
+		RAMDISK_SIZE=300
 		DTBFILE=imx8mp-evk-obsfx0.dtb
 		DEFCONFIG=obsfx0_defconfig
 		WIFI_DRIVER=laird-backport-11.39.0.18
@@ -501,7 +501,7 @@ bookworm)
 		KERNEL=6.1.55
 		PATCHLEVEL=0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=350
+		RAMDISK_SIZE=300
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
 #		DTBFILE=imx8mp-evk-obsfx1-rtl8211.dtb
 		DEFCONFIG=obsfx1_defconfig
@@ -518,7 +518,7 @@ bookworm)
 		KERNEL=6.1.55
 		PATCHLEVEL=0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=350
+		RAMDISK_SIZE=300
 		DTBFILE=imx8mp-evk-obsgx4.dtb
 		DEFCONFIG=obsgx4_defconfig
 		ARCH=arm64
@@ -532,7 +532,7 @@ bookworm)
 		KERNEL=6.1.55
 		PATCHLEVEL=0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=350
+		RAMDISK_SIZE=300
 		DTBFILE=imx8mp-evk-obsduo.dtb
 		DEFCONFIG=obsduo_defconfig
 		ARCH=arm64
