@@ -368,101 +368,49 @@ bullseye)
 		PATCHLEVEL=400
 		RAMDISK_SIZE=250
 	;;
-	obsa16)
+	obsa16*)
 		KERNEL=5.4.70
 		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=260
+		RAMDISK_SIZE=350
 		PATCHLEVEL=2
 		DTBFILE=imx8mp-evk-obsa16.dtb
 		ALT_DTBFILE=imx8mp-evk.dtb
-		ARCH=arm64
-		COMP_LVL=9
-		COMP=gzip
-		COMPEXT=gz
-#		UBOOT_VER=2020.04
-#		UDEFCONFIG=obsa16_defconfig
-	;;
-	obsa16r)
-		KERNEL=5.4.70
-		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=260
-		PATCHLEVEL=0
-		DTBFILE=imx8mp-evk-obsa16.dtb
-		ALT_DTBFILE=imx8mp-evk.dtb
-		ARCH=arm64
-		COMP_LVL=9
-		COMP=gzip
-		COMPEXT=gz
 		DEFCONFIG=obsa16_defconfig
+		ARCH=arm64
+		COMP_LVL=9
+		COMP=gzip
+		COMPEXT=gz
 #		UBOOT_VER=2020.04
 #		UDEFCONFIG=obsa16_defconfig
 	;;
-	obsfx0)
+	obsfx0*)
 		KERNEL=5.4.70
 		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=260
+		RAMDISK_SIZE=350
 		PATCHLEVEL=1
 		DTBFILE=imx8mp-evk-obsfx0.dtb
-		ARCH=arm64
-		COMP_LVL=9
-		COMP=gzip
-		COMPEXT=gz
-		WIFI_DRIVER=laird-backport-9.15.0.14
-		WIFI_DEFCONFIG=lwb5p_nrc
-#		UBOOT_VER=2020.04
-#		UDEFCONFIG=obsa16_defconfig
-	;;
-	obsfx0r)
-		KERNEL=5.4.70
-		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=230
-		PATCHLEVEL=0
-		DTBFILE=imx8mp-evk-obsfx0.dtb
-		ARCH=arm64
-		COMP_LVL=9
-		COMP=gzip
-		COMPEXT=gz
-		COMPOPT=
-#		COMP=xz
-#		COMPEXT=xz
-#		COMPOPT="-C crc32"
 		DEFCONFIG=obsfx0_defconfig
+		ARCH=arm64
+		COMP_LVL=9
+		COMP=gzip
+		COMPEXT=gz
 		WIFI_DRIVER=laird-backport-9.15.0.14
 		WIFI_DEFCONFIG=lwb5p_nrc
 #		UBOOT_VER=2020.04
 #		UDEFCONFIG=obsa16_defconfig
 	;;
-	obsfx1)
+	obsfx1*)
 		KERNEL=5.4.70
 		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=260
+		RAMDISK_SIZE=350
 		PATCHLEVEL=1
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
 #		DTBFILE=imx8mp-evk-obsfx1-rtl8211.dtb
-		ARCH=arm64
-		COMP_LVL=9
-		COMP=gzip
-		COMPEXT=gz
-		WIFI_DRIVER=laird-backport-9.15.0.14
-		WIFI_DEFCONFIG=lwb5p_nrc
-#		UBOOT_VER=2020.04
-#		UDEFCONFIG=obsa16_defconfig
-	;;
-	obsfx1r)
-		KERNEL=5.4.70
-		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=230
-		PATCHLEVEL=0
-		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
-		ARCH=arm64
-		COMP_LVL=9
-		COMP=gzip
-		COMPEXT=gz
-		COMPOPT=
-#		COMP=xz
-#		COMPEXT=xz
-#		COMPOPT="-C crc32"
 		DEFCONFIG=obsfx1_defconfig
+		ARCH=arm64
+		COMP_LVL=9
+		COMP=gzip
+		COMPEXT=gz
 		WIFI_DRIVER=laird-backport-9.15.0.14
 		WIFI_DEFCONFIG=lwb5p_nrc
 #		UBOOT_VER=2020.04
@@ -474,12 +422,12 @@ bullseye)
 		RAMDISK_SIZE=260
 		PATCHLEVEL=0
 		DTBFILE=rk3568-tinker_board_3n.dtb
+		DEFCONFIG=tinker_board_3n_defconfig
 		ARCH=arm64
 		COMP_LVL=9
 		COMP=gzip
 		COMPEXT=gz
 		COMPOPT=
-		DEFCONFIG=tinker_board_3n_defconfig
 	;;
 	*)
 	;;
@@ -518,13 +466,14 @@ bookworm)
 		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
-	obsa16)
+	obsa16*)
 		KERNEL=6.1.55
 		PATCHLEVEL=0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=300
+		RAMDISK_SIZE=350
 		DTBFILE=imx8mp-evk-obsa16.dtb
 		ALT_DTBFILE=imx8mp-evk.dtb
+		DEFCONFIG=obsa16_defconfig
 		ARCH=arm64
 		COMP_LVL=9
 		COMP=gzip
@@ -532,12 +481,13 @@ bookworm)
 #		UBOOT_VER=2023.04
 #		UDEFCONFIG=obsa16_defconfig
 	;;
-	obsfx0)
+	obsfx0*)
 		KERNEL=6.1.55
 		PATCHLEVEL=0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=350
 		DTBFILE=imx8mp-evk-obsfx0.dtb
+		DEFCONFIG=obsfx0_defconfig
 		WIFI_DRIVER=laird-backport-11.39.0.18
 		WIFI_DEFCONFIG=lwb5p_nrc
 		ARCH=arm64
@@ -547,13 +497,14 @@ bookworm)
 #		UBOOT_VER=2023.04
 #		UDEFCONFIG=obsfx0_defconfig
 	;;
-	obsfx1)
+	obsfx1*)
 		KERNEL=6.1.55
 		PATCHLEVEL=0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=350
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
 #		DTBFILE=imx8mp-evk-obsfx1-rtl8211.dtb
+		DEFCONFIG=obsfx1_defconfig
 		WIFI_DRIVER=laird-backport-11.39.0.18
 		WIFI_DEFCONFIG=lwb5p_nrc
 		ARCH=arm64
@@ -563,12 +514,13 @@ bookworm)
 #		UBOOT_VER=2023.04
 #		UDEFCONFIG=obsa16_defconfig
 	;;
-	obsgx4)
+	obsgx4*)
 		KERNEL=6.1.55
 		PATCHLEVEL=0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=300
+		RAMDISK_SIZE=350
 		DTBFILE=imx8mp-evk-obsgx4.dtb
+		DEFCONFIG=obsgx4_defconfig
 		ARCH=arm64
 		COMP_LVL=9
 		COMP=gzip
@@ -576,12 +528,13 @@ bookworm)
 #		UBOOT_VER=2023.04
 #		UDEFCONFIG=obsgx4_defconfig
 	;;
-	obsduo)
+	obsduo*)
 		KERNEL=6.1.55
 		PATCHLEVEL=0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=300
+		RAMDISK_SIZE=350
 		DTBFILE=imx8mp-evk-obsduo.dtb
+		DEFCONFIG=obsduo_defconfig
 		ARCH=arm64
 		COMP_LVL=9
 		COMP=gzip

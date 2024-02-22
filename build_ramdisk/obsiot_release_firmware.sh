@@ -218,49 +218,56 @@ obsa16|obsfx0|obsfx1|obsgx4|obsduo)
 
 	# uboot env update script
 	cp -f ${FILESDIR}/update_ubootenv-${TARGET}-${DIST}.sh ${RELEASEDIR}/update_ubootenv.sh
+
 	# Device tree file
 	ALT_DTBFILE=${ALT_DTBFILE:-${DTBFILE}}
 	USB_BOOT_DTBFILE=`echo ${DTBFILE} | sed -e 's/\.dtb/-usb-boot\.dtb/'`
 	ALT_USB_BOOT_DTBFILE=`echo ${ALT_DTBFILE} | sed -e 's/\.dtb/-usb-boot\.dtb/'`
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/freescale/${DTBFILE} ${RELEASEDIR}/${ALT_DTBFILE}
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/freescale/${USB_BOOT_DTBFILE} ${RELEASEDIR}/${ALT_USB_BOOT_DTBFILE}
+
+	# build package
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
-	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs-dtb.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/Image ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/${ALT_DTBFILE} ${RELEASEDIR}/${ALT_USB_BOOT_DTBFILE} ${RELEASEDIR})
+	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs-dtb.sh \
+		${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/Image \
+		${FILESDIR}/flashcfg-rootfs.sh \
+		${RELEASEDIR}/MD5.${TARGET} \
+		${RELEASEDIR}/${ALT_DTBFILE} \
+		${RELEASEDIR}/${ALT_USB_BOOT_DTBFILE} \
+		${RELEASEDIR})
+
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
-obsa16r|obsfx0r|obsfx1r|obsgx4r)
+obsa16r|obsfx0r|obsfx1r|obsgx4r|obsduor)
 	# Linux kernel
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/${MAKE_IMAGE} ${RELEASEDIR}
 
-	# Debian rootfs
-	mount -o loop ${_RAMDISK_IMG} ${MOUNTDIR}
-	(cd ${MOUNTDIR} && find . -print0 | cpio -o -a0 ) | ${COMP} -${COMP_LVL:-3} ${COMPOPT} > ${RELEASEDIR}/${TARGET}-rootfs.cpio.${COMPEXT}
-	umount ${MOUNTDIR}
-
-	# Create .its
-	ALT_DTBFILE=${ALT_DTBFILE:-${DTBFILE}}
-	LOAD_ADDRESS=${LOAD_ADDRESS:-"0x80000000"}
-	ENTRY_ADDRESS=${ENTRY_ADDRESS:-${LOAD_ADDRESS}}
-	sed -e 's|@COMPEXT@|'${COMPEXT}'|' \
-	    -e 's|@ARCH@|'${ARCH}'|' \
-	    -e 's|@COMP@|'${COMP}'|' \
-	    -e 's|@LOAD_ADDRESS@|'${LOAD_ADDRESS}'|' \
-	    -e 's|@ENTRY_ADDRESS@|'${ENTRY_ADDRESS}'|' \
-	    -e 's|@DTBFILE@|'${ALT_DTBFILE}'|' \
-	    -e 's|@TARGET@|'${TARGET}'|' \
-		${FILESDIR}/uImage.its.in > ${RELEASEDIR}/${TARGET}-uImage.its
-
 	# Ramdisk Image
+	${COMP} -${COMP_LVL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/${RAMDISK_IMG}.${COMPEXT}
+	(cd ${RELEASEDIR} && mkimage -A ${KERN_ARCH} -O linux -T ramdisk -d ${RAMDISK_IMG}.${COMPEXT} initrd)
+
+	# uboot env update script
+	cp -f ${FILESDIR}/update_ubootenv-${TARGET}-${DIST}.sh ${RELEASEDIR}/update_ubootenv.sh
+
+	# Device tree file
+	ALT_DTBFILE=${ALT_DTBFILE:-${DTBFILE}}
+	USB_BOOT_DTBFILE=`echo ${DTBFILE} | sed -e 's/\.dtb/-usb-boot\.dtb/'`
+	ALT_USB_BOOT_DTBFILE=`echo ${ALT_DTBFILE} | sed -e 's/\.dtb/-usb-boot\.dtb/'`
 	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/freescale/${DTBFILE} ${RELEASEDIR}/${ALT_DTBFILE}
-	(cd ${RELEASEDIR} && mkimage -f ${TARGET}-uImage.its uImage.initrd.${TARGET})
+	cp -f ${LINUX_SRC}/arch/${KERN_ARCH}/boot/dts/freescale/${USB_BOOT_DTBFILE} ${RELEASEDIR}/${ALT_USB_BOOT_DTBFILE}
 
+	# build package
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
+	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-initrd-dtb.sh \
+		${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/Image \
+		${RELEASEDIR}/initrd \
+		${FILESDIR}/flashcfg-rootfs.sh \
+		${RELEASEDIR}/MD5.${TARGET} \
+		${RELEASEDIR}/${ALT_DTBFILE} \
+		${RELEASEDIR}/${ALT_USB_BOOT_DTBFILE} \
+		${RELEASEDIR})
 
-	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-obsiot.sh \
-	${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/uImage.initrd.${TARGET} \
-	${RELEASEDIR}/uImage.initrd.${TARGET} ${DIST} \
-	${FILESDIR}/flashcfg.sh ${RELEASEDIR}/MD5.${TARGET} ${FILESDIR})
 
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})

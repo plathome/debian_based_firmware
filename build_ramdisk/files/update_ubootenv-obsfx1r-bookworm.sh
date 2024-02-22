@@ -1,0 +1,1 @@
+update_ubootenv-obsfx1-bookworm.sh

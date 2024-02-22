@@ -1,0 +1,38 @@
+# Used by ifup(8) and ifdown(8). See the interfaces(5) manpage or
+# /usr/share/doc/ifupdown/examples for more information.
+
+auto lo
+iface lo inet loopback
+
+#auto eth0
+#iface eth0 inet dhcp
+
+auto eth0
+iface eth0 inet static
+address 192.168.254.254
+network 192.168.254.0
+netmask 255.255.255.0
+broadcast 192.168.254.255
+#gateway 192.168.254.1
+
+#auto eth1
+#iface eth1 inet dhcp
+
+auto eth1
+iface eth1 inet static
+address 192.168.253.254
+network 192.168.253.0
+netmask 255.255.255.0
+broadcast 192.168.253.255
+#gateway 192.168.253.1
+
+#auto wlan0
+#iface wlan0 inet dhcp
+#wpa-conf /etc/wpa_supplicant/wpa.conf
+
+auto wlan0
+iface wlan0 inet static
+	address 192.168.252.254
+	network 192.168.252.0
+	netmask 255.255.255.0
+#	broadcast 192.168.252.255

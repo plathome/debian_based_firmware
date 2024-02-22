@@ -204,6 +204,50 @@ firmware)
 		umount ${WORK_DIR}
 		rmdir ${WORK_DIR}
 		;;
+	obsa16r|obsfx0r|obsfx1r|obsgx4r|obsduor)
+		# check MD5
+		dtbfile=`find $FIRM_FILE -name "*\.dtb"`
+		for file in Image initrd $dtbfile
+		do
+			if [ -f ${FIRM_FILE}/${file} ]; then
+				_get_md5 ${file}
+				val=(`md5sum ${FIRM_FILE}/${file}`)
+				if [ "$MD5_RET" != $val ]; then
+					echo "$LINENO: ${file} is broken, write firmware failed."
+					[ "$DEBUG" == "yes" ] && echo "${FIRM_FILE}/${file}: MD5.${MODEL}=$MD5_RET, source=$val"
+					exit 1
+				fi
+			fi
+		done
+
+		# remove previous firmware
+		mkdir -p ${WORK_DIR}
+		mount ${FIRM_DIR} ${WORK_DIR}
+
+		# copy new firmware
+		if [ -f ${FIRM_FILE}/Image ]; then
+			${TEST} cp -f ${FIRM_FILE}/Image ${WORK_DIR}
+		fi
+
+		# copy new initrd
+		if [ -f ${FIRM_FILE}/${initrd} ]; then
+			${TEST} cp -f ${FIRM_FILE}/initrd ${WORK_DIR}
+		fi
+
+		${TEST} cp -f ${FIRM_FILE}/*.dtb ${WORK_DIR}
+
+		if [ -f ${FIRM_FILE}/openblocks-release ]; then
+			${TEST} cp -f ${FIRM_FILE}/openblocks-release ${WORK_DIR}
+		fi
+
+		if [ -f ${FIRM_FILE}/System.map ]; then
+			${TEST} cp -f ${FIRM_FILE}/System.map /boot
+		fi
+		sync
+
+		umount ${WORK_DIR}
+		rmdir ${WORK_DIR}
+		;;
 	obstb3n)
 		# check MD5
 		for file in boot.img modules.tgz bootfs.tgz

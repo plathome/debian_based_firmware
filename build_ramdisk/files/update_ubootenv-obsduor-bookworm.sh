@@ -1,0 +1,1 @@
+update_ubootenv-obsduo-bookworm.sh

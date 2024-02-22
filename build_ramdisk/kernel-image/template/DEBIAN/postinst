@@ -54,6 +54,7 @@ configure)
 			rm -f /etc/obsgx4-rootfs*
 			rm -f /etc/obsduo-rootfs*
 			rm -f /etc/uImage.initrd.*
+			rm -f /etc/initrd
 			if [ -e /etc/update_ubootenv.sh ];then
 				PATH=/etc:$PATH /bin/sh /etc/update_ubootenv.sh -a
 			fi

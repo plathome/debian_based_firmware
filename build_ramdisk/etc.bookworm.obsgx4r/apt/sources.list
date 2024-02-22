@@ -1,0 +1,9 @@
+deb http://ftp.jp.debian.org/debian/ bookworm main
+
+#deb http://ftp.jp.debian.org/debian/ bookworm-backports main
+
+deb http://ftp.jp.debian.org/debian/ bookworm-updates main
+
+deb http://security.debian.org bookworm-security main
+
+deb http://ftp.plathome.co.jp/pub/OBSGX4R/debian/bookworm ./
