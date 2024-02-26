@@ -63,11 +63,11 @@ MTREE_LIST="${MTREE_LIST:=/etc/mtree.list}"
 MTREE_DIRS="${MTREE_DIRS:=/var/log /var/run}"
 
 restore_func(){
-WORK_DIR=/tmp/_tmpfs.$$
+	WORK_DIR=/tmp/_tmpfs.$$
 
 	mkdir -p ${WORK_DIR}
 	case $MODEL in
-	obsvx1|obsix9|obshx*)
+	obsvx1|obsix9|obshx?)
 		mount `findfs LABEL=${SAVE_DIR}` ${WORK_DIR} -r
 		;;
 	*)
@@ -301,7 +301,7 @@ start)
 			echo "Don't extract files in FlashROM..."
 		else
 			case $MODEL in
-			obsbx1|obsvx1|obsix9|obsa16r|obsfx1|obshx2)
+			obsbx1|obsvx1|obsix9|obshx?|obsa16|obsfx?|obsgx4|obsduo)
 				restore_func
 			;;
 			esac
@@ -315,7 +315,7 @@ start)
 			echo "Don't extract files in FlashROM..."
 		else
 			case $MODEL in
-			obsbx1|obsvx1|obsix9|obsa16r|obsfx1|obshx2)
+			obsbx1|obsvx1|obsix9|obshx?|obsa16|obsfx?|obsgx4|obsduo)
 				restore_func
 			;;
 			esac
