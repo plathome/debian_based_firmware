@@ -1,0 +1,2 @@
+ACTION=="add", SUBSYSTEMS=="platform" , KERNEL=="ttymxc0" , SUBSYSTEM=="tty" , SYMLINK+="ttyRS232C-1"
+ACTION=="add", SUBSYSTEMS=="platform" , KERNEL=="ttymxc2" , SUBSYSTEM=="tty" , SYMLINK+="ttyRS232C-0"
