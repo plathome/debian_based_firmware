@@ -102,8 +102,17 @@ configure)
 		fi
 	fi
 
-	if [ "$MODEL" = "obsfx1" ]; then
+	if [ "$MODEL" = "obsfx1" -o "$MODEL" = "obsvx2" ]; then
 		udev_rules=/etc/udev/rules.d/30-rename-ttyex2.rules
+		if [ -e $udev_rules ]; then
+			cp $udev_rules $udev_rules.tmp
+			sed -e 's/SUBSYSTEMS==\"usb\", SYMLINK/SUBSYSTEMS==\"usb\", SUBSYSTEM==\"tty\", SYMLINK/' $udev_rules.tmp > $udev_rules
+			rm $udev_rules.tmp
+		fi
+	fi
+
+	if [ "$MODEL" = "obsvx2" ]; then
+		udev_rules=/etc/udev/rules.d/40-rename-ttyrs485.rules
 		if [ -e $udev_rules ]; then
 			cp $udev_rules $udev_rules.tmp
 			sed -e 's/SUBSYSTEMS==\"usb\", SYMLINK/SUBSYSTEMS==\"usb\", SUBSYSTEM==\"tty\", SYMLINK/' $udev_rules.tmp > $udev_rules
