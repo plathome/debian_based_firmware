@@ -1,7 +1,7 @@
 //#define DEBUG
 /*	$ssdlinux: obsiot-power.c,v 1.17 2014/01/07 07:19:06 yamagata Exp $	*/
 /*
- * Copyright (c) 2008-2023 Plat'Home CO., LTD.
+ * Copyright (c) 2008-2024 Plat'Home CO., LTD.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@ extern int errno;
 #define PID_FILE "/var/run/obsiot-power.pid"
 #if defined(CONFIG_OBSVX1)
 #define I2C_NAME	"/dev/i2c-2"
-#elif defined(CONFIG_OBSBX1) || defined(CONFIG_OBSFX1)
+#elif defined(CONFIG_OBSBX1) || defined(CONFIG_OBSFX1) || defined(CONFIG_OBSGX4)
 #define I2C_NAME	"/dev/i2c-1"
 #endif
 #define SLAVE		0x21
@@ -94,6 +94,8 @@ enum{
 #define POWER_DC	"/sys/class/gpio/gpio42/value"
 #elif defined(CONFIG_OBSFX1)
 #define POWER_AC	"/sys/class/gpio/gpio507/value"
+#elif defined(CONFIG_OBSGX4)
+#define POWER_AC	"/sys/class/gpio/gpio43/value"
 #endif
 
 int chg_charging(unsigned char, int stat);
@@ -116,7 +118,7 @@ extern int optreset;
 
 int INTERVAL		= 10;
 int LIMIT		= 300;
-#if defined(CONFIG_OBSVX1) || defined(CONFIG_OBSFX1)
+#if defined(CONFIG_OBSVX1) || defined(CONFIG_OBSFX1) || defined(CONFIG_OBSGX4)
 #define DEF_COMMAND	"/sbin/poweroff"
 #elif defined(CONFIG_OBSBX1)
 #define DEF_COMMAND	"/sbin/halt"
@@ -384,7 +386,7 @@ int get_power_input(char inp)
 	char val;
 	int usb=0, ac=0, dc=0;
 
-#if ! defined(CONFIG_OBSFX1)
+#if ! defined(CONFIG_OBSFX1) && ! defined(CONFIG_OBSGX4)
 	/* usb power */
 	if ((fd = open(POWER_USB, O_RDONLY)) != -1){
 		val=0;

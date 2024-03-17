@@ -79,7 +79,7 @@ obsbx*)
 	[ ! -d $GPIOPATH/gpio41 ] && echo 41 > $GPIOPATH/export
 	[ ! -d $GPIOPATH/gpio42 ] && echo 42 > $GPIOPATH/export
 	;;
-obsa16*|obsgx4*)
+obsa16*)
 	# pshd
 	[ ! -d $GPIOPATH/gpio86 ] && echo 86 > $GPIOPATH/export; \
 		echo both > $GPIOPATH/gpio86/edge
@@ -132,6 +132,14 @@ obsfx1*)
 	# 509 D.C.
 	# 510 D.C.
 	# 511 N.C.
+	;;
+obsgx4*)
+	# pshd
+	[ ! -d $GPIOPATH/gpio86 ] && echo 86 > $GPIOPATH/export; \
+		echo both > $GPIOPATH/gpio86/edge
+	# POWERLOST
+	[ ! -d $GPIOPATH/gpio43 ] && echo 43 > $GPIOPATH/export; \
+		echo in > $GPIOPATH/gpio43/direction
 	;;
 obsduo)
 	# USBSW_CTL

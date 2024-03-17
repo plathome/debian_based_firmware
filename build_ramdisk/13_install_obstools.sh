@@ -65,7 +65,7 @@ obsfx1*)
 	pkglist="atcmd cp210x_rs485 obs_util obs_hwclock obsiot_power pshd runled wav_play wd_keepalive"
 	;;
 obsgx4*)
-	pkglist="atcmd obs_util obs_hwclock pshd runled wav_play wd_keepalive"
+	pkglist="atcmd obs_util obs_hwclock obsiot_power pshd runled wav_play wd_keepalive"
 	;;
 obsduo)
 	pkglist="atcmd obs_util obs_hwclock obsiot_power pshd runled wav_play wd_keepalive"
@@ -102,7 +102,7 @@ obsfx1*)
 	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -fno-omit-frame-pointer -DCONFIG_OBSA16 -DCONFIG_OBSFX1 "
 	;;
 obsgx4*)
-	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -fno-omit-frame-pointer -DCONFIG_OBSA16 "
+	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -fno-omit-frame-pointer -DCONFIG_OBSA16 -DCONFIG_OBSGX4 "
 	;;
 obsduo)
 	CFLAGS="-Wall -I/usr/include/${KERN_ARCH}-linux-gnu${ABI}/ -L/usr/lib/${KERN_ARCH}-linux-gnu${ABI}/ -O2 -fno-omit-frame-pointer -DCONFIG_OBSA16 -DCONFIG_OBSFX1 "
