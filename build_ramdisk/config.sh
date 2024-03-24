@@ -488,8 +488,8 @@ bookworm)
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsfx0.dtb
 		DEFCONFIG=obsfx0_defconfig
-		WIFI_DRIVER=laird-backport-11.39.0.18
-		WIFI_DEFCONFIG=lwb5p_nrc
+		WIFI_DRIVER=laird-backport-11.171.0.24
+		WIFI_DEFCONFIG=lwb_nrc
 		ARCH=arm64
 		COMP_LVL=9
 		COMP=gzip
@@ -505,8 +505,8 @@ bookworm)
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
 #		DTBFILE=imx8mp-evk-obsfx1-rtl8211.dtb
 		DEFCONFIG=obsfx1_defconfig
-		WIFI_DRIVER=laird-backport-11.39.0.18
-		WIFI_DEFCONFIG=lwb5p_nrc
+		WIFI_DRIVER=laird-backport-11.171.0.24
+		WIFI_DEFCONFIG=lwb_nrc
 		ARCH=arm64
 		COMP_LVL=9
 		COMP=gzip
