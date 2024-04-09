@@ -5,6 +5,8 @@
 
 set -e
 
+. /etc/default/openblocks
+
 # summary of how this script can be called:
 #        * <new-preinst> `install'
 #        * <new-preinst> `install' <old-version>
@@ -18,6 +20,9 @@ case "$1" in
     install|upgrade)
 	rm -f /.rw/etc/openblocks-release
 	rm -f /.rw/var/lib/dpkg/info/kernel-image.*
+	if [ "$MODEL" = "obsfx0" -o "$MODEL" = "obsfx1" ]; then
+		rm -f /lib/firmware/brcm/*
+	fi
     ;;
 
     abort-upgrade)

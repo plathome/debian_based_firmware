@@ -231,6 +231,7 @@ obsa16|obsfx0|obsfx1|obsgx4|obsduo)
 	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs-dtb.sh \
 		${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/Image \
 		${FILESDIR}/flashcfg-rootfs.sh \
+		${FILESDIR}/firmware-${TARGET}-${DIST}/brcm \
 		${RELEASEDIR}/MD5.${TARGET} \
 		${RELEASEDIR}/${ALT_DTBFILE} \
 		${RELEASEDIR}/${ALT_USB_BOOT_DTBFILE} \
@@ -263,6 +264,7 @@ obsa16r|obsfx0r|obsfx1r|obsgx4r|obsduor)
 		${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/Image \
 		${RELEASEDIR}/initrd \
 		${FILESDIR}/flashcfg-rootfs.sh \
+		${FILESDIR}/firmware-${TARGET}-${DIST}/brcm \
 		${RELEASEDIR}/MD5.${TARGET} \
 		${RELEASEDIR}/${ALT_DTBFILE} \
 		${RELEASEDIR}/${ALT_USB_BOOT_DTBFILE} \

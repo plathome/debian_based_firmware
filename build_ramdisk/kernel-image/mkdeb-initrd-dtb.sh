@@ -27,11 +27,11 @@
 
 #set -x
 
-if [ "$#" -ne "10" ] ; then
+if [ "$#" -ne "11" ] ; then
 	echo
-	echo "usage: $0 [VERSION] [ARCH] [MODEL] [bzImage] [initrd] [flashcfg] [MD5] [DTB file] [USB boot DTB file] [release_dir]"
+	echo "usage: $0 [VERSION] [ARCH] [MODEL] [bzImage] [initrd] [flashcfg] [brcm_dir]  [MD5] [DTB file] [USB boot DTB file] [release_dir]"
 	echo
-	echo "ex) $0 1.0.0-0 arm64 obsa16 Image initrd flashcfg MD5.obsa16 dtbfile usb_bioot_dtbdile release_dir"
+	echo "ex) $0 1.0.0-0 arm64 obsa16 Image initrd flashcfg brcm_dir MD5.obsa16 dtbfile usb_bioot_dtbdile release_dir"
 	echo
 	exit 1
 fi
@@ -42,10 +42,11 @@ MODEL=$3
 FIRM=$4
 INITRD=$5
 FLASHCFG=$6
-MD5=$7
-DTB=$8
-USB_BOOT_DTB=$9
-RELDIR=${10}
+BRCM_DIR=$7
+MD5=$8
+DTB=$9
+USB_BOOT_DTB=${10}
+RELDIR=${11}
 FIRM_DIR=$(dirname $FIRM)
 DTB_DIR=$(dirname $DTB)
 
@@ -83,6 +84,10 @@ if [ "$USB_BOOT_DTB" != "none" ]; then
 fi
 cp -f ${RELDIR}/update_ubootenv.sh $pkgdir/etc/
 cp -f $(find $DTB_DIR -name "*\.dtb") $pkgdir/etc/
+if [ -d ${BRCM_DIR} ] ; then
+	mkdir -p $pkgdir/lib/firmware/brcm
+	(cd ${BRCM_DIR};tar -cf - .) | tar -xvf - -C $pkgdir/lib/firmware/brcm
+fi
 
 rm -rf ${pkgdir}.deb
 
