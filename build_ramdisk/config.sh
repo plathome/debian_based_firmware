@@ -323,7 +323,7 @@ bullseye)
 	case ${TARGET} in
 	obsvx2)
 		ISOFILE=debian-11.1.0-amd64-DVD-1.iso
-		PATCHLEVEL=1
+		PATCHLEVEL=1dev0
 #		DEFCONFIG=obsvx2_defconfig
 		RAMDISK_SIZE=500
 	;;
@@ -354,10 +354,10 @@ bullseye)
 		RAMDISK_SIZE=500
 	;;
 	obsbx1s)
-		KERNEL=3.10.17
+		KERNEL=3.10.98
 		ISOFILE=debian-11.1.0-i386-DVD-1.iso
 		ARCH=i386
-		PATCHLEVEL=400
+		PATCHLEVEL=400dev0
 		DEFCONFIG=obsbx1_defconfig
 		RAMDISK_SIZE=250
 	;;
