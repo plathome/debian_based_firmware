@@ -387,14 +387,14 @@ bullseye)
 		KERNEL=5.4.70
 		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=230
-		PATCHLEVEL=1
+		PATCHLEVEL=1dev0
 		DTBFILE=imx8mp-evk-obsfx0.dtb
 		DEFCONFIG=obsfx0_defconfig
 		ARCH=arm64
 		COMP_LVL=9
 		COMP=gzip
 		COMPEXT=gz
-		WIFI_DRIVER=laird-backport-9.15.0.14
+		WIFI_DRIVER=laird-backport-10.54.0.13
 		WIFI_DEFCONFIG=lwb5p_nrc
 #		UBOOT_VER=2020.04
 #		UDEFCONFIG=obsa16_defconfig
@@ -411,7 +411,7 @@ bullseye)
 		COMP_LVL=9
 		COMP=gzip
 		COMPEXT=gz
-		WIFI_DRIVER=laird-backport-9.15.0.14
+		WIFI_DRIVER=laird-backport-10.54.0.13
 		WIFI_DEFCONFIG=lwb5p_nrc
 #		UBOOT_VER=2020.04
 #		UDEFCONFIG=obsa16_defconfig
