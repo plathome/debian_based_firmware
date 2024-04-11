@@ -159,6 +159,7 @@ obsvx1)
 	${COMP} -${COMP_LVL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/initrd.${COMPEXT}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-obsiot.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/bzImage ${RELEASEDIR}/initrd.${COMPEXT} dummy ${FILESDIR}/flashcfg.sh ${RELEASEDIR}/MD5.${TARGET} dummy)
+	git show --format='%H' --no-patch > ${RELEASEDIR}/commit.id
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
@@ -203,6 +204,7 @@ obsvx2)
 		(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/bzImage ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/modules.tgz ${RELEASEDIR}/System.map)
 		;;
 	esac
+	git show --format='%H' --no-patch > ${RELEASEDIR}/commit.id
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
@@ -237,6 +239,7 @@ obsa16|obsfx0|obsfx1|obsgx4|obsduo)
 		${RELEASEDIR}/${ALT_USB_BOOT_DTBFILE} \
 		${RELEASEDIR})
 
+	git show --format='%H' --no-patch > ${RELEASEDIR}/commit.id
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
@@ -270,7 +273,7 @@ obsa16r|obsfx0r|obsfx1r|obsgx4r|obsduor)
 		${RELEASEDIR}/${ALT_USB_BOOT_DTBFILE} \
 		${RELEASEDIR})
 
-
+	git show --format='%H' --no-patch > ${RELEASEDIR}/commit.id
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
@@ -295,6 +298,7 @@ obstb3n)
 
 	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs-boot_img.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/boot.img ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR})
 
+	git show --format='%H' --no-patch > ${RELEASEDIR}/commit.id
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
@@ -308,6 +312,7 @@ obsbx1)
 	${RELEASEDIR}/initrd.${COMPEXT} ${FILESDIR}/grub/grub.cfg \
 	${FILESDIR}/flashcfg.sh ${RELEASEDIR}/MD5.${TARGET} ${FILESDIR})
 
+	git show --format='%H' --no-patch > ${RELEASEDIR}/commit.id
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 ;;
@@ -359,6 +364,7 @@ obsbx1s)
 	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/bzImage ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/modules.tgz ${RELEASEDIR}/System.map)
 		;;
 	esac
+	git show --format='%H' --no-patch > ${RELEASEDIR}/commit.id
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
@@ -373,6 +379,7 @@ obsix9|obshx1|obshx2)
 
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-rootfs.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/bzImage ${FILESDIR}/flashcfg-rootfs.sh ${RELEASEDIR}/MD5.${TARGET} ${RELEASEDIR}/modules.tgz ${RELEASEDIR}/System.map)
+	git show --format='%H' --no-patch > ${RELEASEDIR}/commit.id
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
@@ -381,6 +388,7 @@ obsix9r|obshx1r|obshx2r)
 	${COMP} -${COMP_LVL:-3} < ${_RAMDISK_IMG} > ${RELEASEDIR}/initrd.${COMPEXT}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-obsiot.sh ${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/bzImage ${RELEASEDIR}/initrd.${COMPEXT} dummy ${FILESDIR}/flashcfg.sh ${RELEASEDIR}/MD5.${TARGET} dummy)
+	git show --format='%H' --no-patch > ${RELEASEDIR}/commit.id
 	cp -f ${DISTDIR}/etc/openblocks-release ${RELEASEDIR}
 	(cd ${RELEASEDIR}; rm -f MD5.${TARGET}; md5sum * > MD5.${TARGET})
 	;;
