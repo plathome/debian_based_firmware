@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2023 Plat'Home CO., LTD.
+# Copyright (c) 2013-2024 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,7 @@ LED_VALUE=c102
 EEELED_VALUE=6001
 
 case $MODEL in
-obsa16*)
+obsa16*|obsgx4*|obsduo)
 	if dmesg | grep -q RTL8211F; then
 		ip link set eth0 up
 		echo ${EEELED_VALUE} > ${RTL8211F_ETH0}/rtl8211f_eeelcr
