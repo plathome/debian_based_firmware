@@ -65,7 +65,7 @@ obsfx1*)
 	pkglist="atcmd cp210x_rs485 obs_util obs_hwclock obsiot_power pshd runled wav_play wd_keepalive"
 	;;
 obsgx4*)
-	pkglist="atcmd obs_util obs_hwclock obsiot_power pshd runled wav_play wd_keepalive"
+	pkglist="atcmd obs_util obs_hwclock pshd runled wav_play wd_keepalive"
 	;;
 obsduo)
 	pkglist="atcmd obs_util obs_hwclock obsiot_power pshd runled wav_play wd_keepalive"
@@ -289,10 +289,10 @@ bullseye|bookworm)
 	obsix9r)
 		pkglist="instfirm obs_createkeys setup_gpio obs_systohc"
 		;;
-	obsa16*)
+	obsa16*|obsfx0*|obsgx4*|obsduo)
 		pkglist="obs_createkeys obs_nicled setup_macether setup_gpio"
 		;;
-	obsfx0*|obsfx1*|obsgx4*|obsduo)
+	obsfx1*)
 		pkglist="obs_createkeys setup_macether setup_gpio"
 		;;
 	obshx1*|obshx2*)
@@ -371,7 +371,7 @@ obsa16*|obsfx0*|obsfx1*|obsgx4*|obsduo)
 esac
 
 case $TARGET in
-obsa16*)
+obsa16*|obsfx0|obsgx4*|obsduo)
 	echo "OBS-NICLED"
 	mkdir -p ${OBSTOOLDIR}/template-obs-nicled/usr/sbin/
 	cp -f ${FILESDIR}/obs-nicled.sh ${OBSTOOLDIR}/template-obs-nicled/usr/sbin/
