@@ -65,7 +65,7 @@ obsfx1*)
 	pkglist="atcmd cp210x_rs485 obs_util obs_hwclock obsiot_power pshd runled wav_play wd_keepalive"
 	;;
 obsgx4*)
-	pkglist="atcmd obs_util obs_hwclock pshd runled wav_play wd_keepalive"
+	pkglist="atcmd obs_util obs_hwclock obsiot_power pshd runled wav_play wd_keepalive"
 	;;
 obsduo)
 	pkglist="atcmd obs_util obs_hwclock obsiot_power pshd runled wav_play wd_keepalive"
@@ -166,14 +166,13 @@ $CC -o ${OBSTOOLDIR}/template-obs-util/usr/sbin/kosanu ${FILESDIR}/kosanu.c $CFL
 $STRIP ${OBSTOOLDIR}/template-obs-util/usr/sbin/kosanu
 
 case $TARGET in
-obsbx*|obsvx*|obsfx1|obsduo)
+obsbx*|obsvx*|obsfx1*|obsgx4*|obsduo)
 	echo "OBSIOT-POWER"
 	mkdir -p ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/
 	$CC -o ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/obsiot-power ${FILESDIR}/obsiot-power.c $CFLAGS
 	$STRIP ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/obsiot-power
 	cp -f ${FILESDIR}/obsiot-power.sh ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/
 	chmod 555 ${OBSTOOLDIR}/template-obsiot-power/usr/sbin/obsiot-power.sh
-
 	;;
 esac
 
