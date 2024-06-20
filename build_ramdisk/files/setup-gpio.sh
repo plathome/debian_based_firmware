@@ -80,6 +80,12 @@ obsbx*)
 	[ ! -d $GPIOPATH/gpio42 ] && echo 42 > $GPIOPATH/export
 	;;
 obsa16*)
+	# USB1_PWR_EN (Lowre Port)
+	[ ! -d $GPIOPATH/gpio0 ] && echo 0 > $GPIOPATH/export; \
+		echo high > $GPIOPATH/gpio0/direction
+	# USB2_PWR_EN (Upper Port)
+	[ ! -d $GPIOPATH/gpio14 ] && echo 14 > $GPIOPATH/export; \
+		echo high > $GPIOPATH/gpio14/direction
 	# pshd
 	[ ! -d $GPIOPATH/gpio86 ] && echo 86 > $GPIOPATH/export; \
 		echo both > $GPIOPATH/gpio86/edge
@@ -97,7 +103,7 @@ obsfx0*)
 	# POWERLOST
 	[ ! -d $GPIOPATH/gpio13 ] && echo 13 > $GPIOPATH/export; \
 		echo in > $GPIOPATH/gpio13/direction
-	# USB1_PWR_EN
+	# USB2_PWR_EN
 	[ ! -d $GPIOPATH/gpio14 ] && echo 14 > $GPIOPATH/export; \
 		echo high > $GPIOPATH/gpio14/direction
 	# pshd
