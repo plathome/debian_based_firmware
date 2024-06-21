@@ -140,6 +140,12 @@ obsfx1*)
 	# 511 N.C.
 	;;
 obsgx4*)
+	# USB1_PWR_EN (Lowre Port)
+	[ ! -d $GPIOPATH/gpio0 ] && echo 0 > $GPIOPATH/export; \
+		echo high > $GPIOPATH/gpio0/direction
+	# USB2_PWR_EN (Upper Port)
+	[ ! -d $GPIOPATH/gpio14 ] && echo 14 > $GPIOPATH/export; \
+		echo high > $GPIOPATH/gpio14/direction
 	# pshd
 	[ ! -d $GPIOPATH/gpio86 ] && echo 86 > $GPIOPATH/export; \
 		echo both > $GPIOPATH/gpio86/edge
