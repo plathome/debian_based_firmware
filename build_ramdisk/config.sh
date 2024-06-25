@@ -517,7 +517,7 @@ bookworm)
 		KERNEL=6.1.55
 		PATCHLEVEL=0dev0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=300
+		RAMDISK_SIZE=360
 		DTBFILE=imx8mp-evk-obsgx4.dtb
 		DEFCONFIG=obsgx4_defconfig
 		ARCH=arm64
@@ -531,7 +531,7 @@ bookworm)
 		KERNEL=6.1.55
 		PATCHLEVEL=0dev0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=300
+		RAMDISK_SIZE=360
 		DTBFILE=imx8mp-evk-obsduo.dtb
 		DEFCONFIG=obsduo_defconfig
 		ARCH=arm64
