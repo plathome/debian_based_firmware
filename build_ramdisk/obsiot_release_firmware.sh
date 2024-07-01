@@ -266,7 +266,7 @@ obsa16r|obsfx0r|obsfx1r|obsgx4r|obsduor)
 	(cd ${WRKDIR}/build_ramdisk/kernel-image; ./mkdeb-initrd-dtb.sh \
 		${VERSION} ${ARCH} ${TARGET} ${RELEASEDIR}/Image \
 		${RELEASEDIR}/initrd \
-		${FILESDIR}/flashcfg-rootfs.sh \
+		${FILESDIR}/flashcfg.sh \
 		${FILESDIR}/firmware-${TARGET}-${DIST}/brcm \
 		${RELEASEDIR}/MD5.${TARGET} \
 		${RELEASEDIR}/${ALT_DTBFILE} \

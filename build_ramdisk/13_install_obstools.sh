@@ -289,13 +289,13 @@ bullseye|bookworm)
 		pkglist="instfirm obs_createkeys setup_gpio obs_systohc"
 		;;
 	obsa16*|obsfx0*|obsgx4*|obsduo)
-		pkglist="obs_createkeys obs_nicled setup_macether setup_gpio"
+		pkglist="instfirm obs_createkeys obs_nicled setup_macether setup_gpio"
 		;;
 	obsfx1*)
-		pkglist="obs_createkeys setup_macether setup_gpio"
+		pkglist="instfirm obs_createkeys setup_macether setup_gpio"
 		;;
 	obshx1*|obshx2*)
-		pkglist="obs_createkeys instfirm obs_systohc"
+		pkglist="instfirm obs_createkeys obs_systohc"
 		;;
 	*)
 		pkglist="obs_createkeys setup_gpio"
@@ -325,10 +325,10 @@ cp -f ${FILESDIR}/setup-gpio.sh ${OBSTOOLDIR}/template-setup-gpio/usr/sbin/
 chmod 555 ${OBSTOOLDIR}/template-setup-gpio/usr/sbin/setup-gpio.sh
 
 case $TARGET in
-obsbx*|obsvx*|obsix9*|obsa16*|obsfx1*|obsgx4*|obsduo|obshx1*|obshx2*)
+obsbx*|obsvx*|obsix9*|obshx1*|obshx2*|obsa16*|obsfx0*|obsfx1*|obsgx4*|obsduo*)
 	echo "FLASHCFG"
 	case $TARGET in
-	obsvx1|obsix9r|obshx1r|obshx2r)
+	obsvx1|obsix9r|obshx1r|obshx2r|obsa16r|obsfx0r|obsfx1r|obsgx4r|obsduor)
 		FLASHCFG=flashcfg.sh
 		;;
 	*)
