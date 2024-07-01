@@ -51,12 +51,15 @@ SAVE_FILE_REC=/etc/flashcfg.save
 USED_CONF="${USED_CONF:=unknown}"
 USED_USER="${USED_USER:=unknown}"
 
-_MTD_CONF_SIZE=$(mawk "/${MTD_CONF_DEV/block/}/ {print \$2}" /proc/mtd 2> /dev/null)
-MTD_CONF_SIZE=$(($(printf "%d" 0x${_MTD_CONF_SIZE:-0})/1024))
-MTD_CONF_SIZE_MB=$((${MTD_CONF_SIZE}/1024))
-_MTD_USER_SIZE=$(mawk "/${MTD_USER_DEV/block/}/ {print \$2}" /proc/mtd 2> /dev/null)
-MTD_USER_SIZE=$(($(printf "%d" 0x${_MTD_USER_SIZE:-0})/1024))
-MTD_USER_SIZE_MB=$((${MTD_USER_SIZE}/1024))
+
+if [ -n "${MTD_CONF_DEV}" ] ; then
+	_MTD_CONF_SIZE=$(mawk "/${MTD_CONF_DEV/block/}/ {print \$2}" /proc/mtd 2> /dev/null)
+	MTD_CONF_SIZE=$(($(printf "%d" 0x${_MTD_CONF_SIZE:-0})/1024))
+	MTD_CONF_SIZE_MB=$((${MTD_CONF_SIZE}/1024))
+	_MTD_USER_SIZE=$(mawk "/${MTD_USER_DEV/block/}/ {print \$2}" /proc/mtd 2> /dev/null)
+	MTD_USER_SIZE=$(($(printf "%d" 0x${_MTD_USER_SIZE:-0})/1024))
+	MTD_USER_SIZE_MB=$((${MTD_USER_SIZE}/1024))
+fi
 
 #if ! which flashcp > /dev/null 1>&1 ; then
 #	echo
@@ -114,7 +117,7 @@ function _get_md5() {
 
 function _all_protect_mtd() {
 	case $MODEL in
-	obsa*)
+	obsa6|obsa7|obsax3)
 	for mtd in $MTD_FIRM_DEV $MTD_CONF_DEV $MTD_USER_DEV $MTD_OPT_DEV;do
 		[ -f /sys/devices/virtual/mtd/${mtd}/flags ] && \
 		echo $MTD_RO > /sys/devices/virtual/mtd/${mtd}/flags
@@ -140,7 +143,7 @@ function _protect_mtd() {
 
 function _umount_wrkdir() {
 	case $MODEL in
-	obsa*)
+	obsa6|obsa7|obsax3)
 	if mount -n 2> /dev/null | grep -q "${WORK_DIR}" ; then
 		umount ${WORK_DIR}
 	fi
@@ -155,7 +158,7 @@ function _usage() {
 	echo "Archiving userland files to eMMC and some configuration."
 	echo
 case $MODEL in
-obsa*)
+obsa6|obsa7|obsax3)
 	echo "usage: $(basename $0) [-f file] [-u list] [-bBeEpsSTly]"
 	;;
 obsbx1|bpv*|obsvx1|obsix9|obsa16|obsfx0|obsfx1|obsgx4|obsduo|obshx*)
@@ -170,7 +173,7 @@ esac
 	echo "    -u list Save files from list to BACKUP(LABEL=DEB_CONFIG) storage."
 	#echo "    -c type Change boot setting [initrd|cf|sda[1-8]]."
 case $MODEL in
-obsa*)
+obsa6|obsa7|obsax3)
 	echo "    -f file Save firmware file to FlashROM."
 	echo "    -s      Save config to FlashROM (${MTD_CONF_DEV})."
 	echo "    -S      Save userland and config to FlashROM (${MTD_USER_DEV})."
@@ -178,10 +181,18 @@ obsa*)
 	echo "    -e      Erase FlashROM (header only)."
 	echo "    -E      Erase FlashROM (all clear)."
 	;;
-obsbx1|bpv*|obsvx1|obsix9|obsa16|obsfx0|obsfx1|obsgx4|obsduo|obshx*)
+obsbx1|bpv*|obsa16|obsfx0|obsfx1|obsgx4|obsduo)
 	echo "    -f directory Save firmware directory to eMMC."
-	echo "    -s      Save config to eMMC (${MTD_CONF_DEV})."
-	echo "    -S      Save userland and config to eMMC (${MTD_USER_DEV})."
+	echo "    -s      Save config to eMMC (${SAVE_DIR})."
+	echo "    -S      Save userland and config to eMMC (${SAVE_DIR})."
+	echo "            '-s' will run concurrently."
+	echo "    -e      Erase eMMC (header only)."
+	echo "    -E      Erase eMMC (all clear)."
+	;;
+obsvx*|obsix9|obshx*)
+	echo "    -f directory Save firmware directory to eMMC."
+	echo "    -s      Save config to eMMC (LABEL=${SAVE_DIR})."
+	echo "    -S      Save userland and config to eMMC (LABEL=${SAVE_DIR})."
 	echo "            '-s' will run concurrently."
 	echo "    -e      Erase eMMC (header only)."
 	echo "    -E      Erase eMMC (all clear)."
