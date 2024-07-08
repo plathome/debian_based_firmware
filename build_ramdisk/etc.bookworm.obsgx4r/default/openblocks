@@ -15,7 +15,7 @@ SAVE_DIR="/dev/mmcblk2p1"
 UNIONFS_DIRS="etc bin home lib sbin usr var root opt srv media"
 
 # Set tmpfs size for ramdisk mode. Recommend over to 384m.
-RW_TMPFS_SIZE="384m"
+RW_TMPFS_SIZE="2048m"
 
 # Set noatime option, when using SSD.
 NOATIME=false
