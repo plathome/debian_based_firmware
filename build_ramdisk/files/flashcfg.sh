@@ -78,10 +78,20 @@ function _get_md5() {
 	MD5_RET=""
 
 	if [ $1 == "kernel" ]; then
-		obj="bzImage"
+		case $MODEL in
+		obsa16|obsfx0|obsfx1|obsgx4|obsduo)
+			obj="Image"
+			;;
+		*)
+			obj="bzImage"
+			;;
+		esac
 	elif [ $1 == "ramdisk" ]; then
 		case $MODEL in
-		obsbx1|obsvx1|obsix9|obsa16|obsfx0|obsfx1|obsgx4|obsduo|obshx*)
+		obsa16|obsfx0|obsfx1|obsgx4|obsduo)
+			obj="initrd"
+			;;
+		obsbx1|obsvx1|obsix9|obshx*)
 			if [ -e "${FIRM_FILE}/initrd.gz" ]; then
 				obj="initrd.gz"
 			else
@@ -606,7 +616,7 @@ firmware)
 		umount ${WORK_DIR}
 		rm -rf ${WORK_DIR}
 	;;
-	obsbx1|obsvx1|obsix9|obsa16|obsfx0|obsfx1|obsgx4|obsduo|obshx*)
+	obsbx1|obsvx1|obsix9|obshx*)
 		if [ -e "${FIRM_FILE}/initrd.gz" ]; then
 			RAMDISK="initrd.gz"
 #			_RAMDISK="ramdisk-wheezy.obsbx1.img.gz"
@@ -679,6 +689,83 @@ firmware)
 			fi
 			IFS=$' '
 			val=(`md5sum ${WORK_DIR}/bzImage`)
+			if [ "$MD5_RET" == $val ]; then
+				break;
+			fi
+			if [ "$DEBUG" == "yes" ]; then
+				echo "MD5.${MODEL}=$MD5_RET, dest=$val"
+			fi
+		done
+		if [ $i == 5 ]; then
+			echo "$LINENO: retry over, write firmware failed."
+			exit 1
+		fi
+
+		if [ -f ${FIRM_FILE}/openblocks-release ]; then
+			cp -f ${FIRM_FILE}/openblocks-release ${WORK_DIR}
+		fi
+		umount ${WORK_DIR}
+		rmdir ${WORK_DIR}
+		;;
+	obsa16|obsfx0|obsfx1|obsgx4|obsduo)
+		RAMDISK="initrd"
+		# check MD5
+		_get_md5 ramdisk
+		val=(`md5sum ${FIRM_FILE}/${RAMDISK}`)
+		if [ "$MD5_RET" != $val ]; then
+			echo "$LINENO: ${RAMDISK} is broken, write firmware failed."
+			if [ "$DEBUG" == "yes" ]; then
+				echo "${FIRM_FILE}/${RAMDISK}: MD5.${MODEL}=$MD5_RET, source=$val"
+			fi
+			exit 1
+		fi
+		# check MD5
+		_get_md5 kernel
+		val=(`md5sum ${FIRM_FILE}/Image`)
+		if [ "$MD5_RET" != $val ]; then
+			echo "$LINENO: Image is broken, write firmware failed."
+			if [ "$DEBUG" == "yes" ]; then
+				echo "MD5.${MODEL}=$MD5_RET, source=$val"
+			fi
+			exit 1
+		fi
+
+		mkdir -p ${WORK_DIR}
+		mount ${FIRM_DIR} ${WORK_DIR}
+		rm -f ${WORK_DIR}/openblocks-release
+		rm -f ${WORK_DIR}/bzImage
+		rm -f ${WORK_DIR}/${RAMDISK}
+
+		# ramdisk
+		_get_md5 ramdisk
+		for i in {1..5}; do
+			cp -f ${FIRM_FILE}/${RAMDISK} ${WORK_DIR}
+			if [ $? != 0 ]; then
+				echo "$LINENO: cp command error, goto retry"
+			fi
+			IFS=$' '
+			val=(`md5sum ${WORK_DIR}/${RAMDISK}`)
+			if [ "$MD5_RET" == $val ]; then
+				break;
+			fi
+			if [ "$DEBUG" == "yes" ]; then
+				echo "${WORK_DIR}/${RAMDISK}: MD5.${MODEL}=$MD5_RET, dest=$val"
+			fi
+		done
+		if [ $i == 5 ]; then
+			echo "$LINENO: retry over, write firmware failed."
+			exit 1
+		fi
+
+		# kernel
+		_get_md5 kernel
+		for i in {1..5}; do
+			cp -f ${FIRM_FILE}/Image ${WORK_DIR}
+			if [ $? != 0 ]; then
+				echo "$LINENO: cp command error, goto retry"
+			fi
+			IFS=$' '
+			val=(`md5sum ${WORK_DIR}/Image`)
 			if [ "$MD5_RET" == $val ]; then
 				break;
 			fi
