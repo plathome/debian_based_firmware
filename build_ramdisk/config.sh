@@ -446,12 +446,12 @@ bookworm)
 		RAMDISK_SIZE=500
 	;;
 	obsix9)
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
 	obsix9r)
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
@@ -467,7 +467,7 @@ bookworm)
 	;;
 	obsa16*)
 		KERNEL=6.1.55
-		PATCHLEVEL=0dev0
+		PATCHLEVEL=1
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=300
 		DTBFILE=imx8mp-evk-obsa16.dtb
@@ -498,7 +498,7 @@ bookworm)
 	;;
 	obsfx1*)
 		KERNEL=6.1.55
-		PATCHLEVEL=0dev0
+		PATCHLEVEL=1
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
