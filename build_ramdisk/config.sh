@@ -436,12 +436,12 @@ bookworm)
 	KERNEL=6.1.92
 	case ${TARGET} in
 	obsvx1)
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=280
 	;;
 	obsvx2)
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
@@ -456,12 +456,12 @@ bookworm)
 		RAMDISK_SIZE=500
 	;;
 	obshx1)
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
 	obshx1r)
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
@@ -482,7 +482,7 @@ bookworm)
 	;;
 	obsfx0*)
 		KERNEL=6.1.55
-		PATCHLEVEL=0dev0
+		PATCHLEVEL=1
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsfx0.dtb
