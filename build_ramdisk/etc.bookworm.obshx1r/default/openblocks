@@ -5,7 +5,7 @@
 MODEL="obshx1"
 
 FIRM_DIR="BOOT"
-SAVE_DIR="BOOT"
+SAVE_DIR="primary"
 
 # Set union filesysytem target directories.
 # The first item is "etc" always.
