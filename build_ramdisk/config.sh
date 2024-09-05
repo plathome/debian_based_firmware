@@ -386,14 +386,15 @@ bullseye)
 		KERNEL=5.4.70
 		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=230
-		PATCHLEVEL=2
+		PATCHLEVEL=2dev0
 		DTBFILE=imx8mp-evk-obsfx0.dtb
 		DEFCONFIG=obsfx0_defconfig
 		ARCH=arm64
 		COMP_LVL=9
 		COMP=gzip
 		COMPEXT=gz
-		WIFI_DRIVER=laird-backport-11.171.0.24
+		WIFI_DRIVER=summit-backports-12.29.0.22
+#		WIFI_DRIVER=laird-backport-11.171.0.24
 		WIFI_DEFCONFIG=lwb
 #		UBOOT_VER=2020.04
 #		UDEFCONFIG=obsa16_defconfig
@@ -402,7 +403,7 @@ bullseye)
 		KERNEL=5.4.70
 		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=260
-		PATCHLEVEL=2
+		PATCHLEVEL=2dev0
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
 #		DTBFILE=imx8mp-evk-obsfx1-rtl8211.dtb
 		DEFCONFIG=obsfx1_defconfig
@@ -410,7 +411,8 @@ bullseye)
 		COMP_LVL=9
 		COMP=gzip
 		COMPEXT=gz
-		WIFI_DRIVER=laird-backport-11.171.0.24
+		WIFI_DRIVER=summit-backports-12.29.0.22
+#		WIFI_DRIVER=laird-backport-11.171.0.24
 		WIFI_DEFCONFIG=lwb
 #		UBOOT_VER=2020.04
 #		UDEFCONFIG=obsa16_defconfig
@@ -482,12 +484,13 @@ bookworm)
 	;;
 	obsfx0*)
 		KERNEL=6.1.55
-		PATCHLEVEL=1
+		PATCHLEVEL=1dev0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsfx0.dtb
 		DEFCONFIG=obsfx0_defconfig
-		WIFI_DRIVER=laird-backport-11.171.0.24
+		WIFI_DRIVER=summit-backports-12.29.0.22
+#		WIFI_DRIVER=laird-backport-11.171.0.24
 		WIFI_DEFCONFIG=lwb
 		ARCH=arm64
 		COMP_LVL=9
@@ -498,13 +501,14 @@ bookworm)
 	;;
 	obsfx1*)
 		KERNEL=6.1.55
-		PATCHLEVEL=1
+		PATCHLEVEL=1dev0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
 #		DTBFILE=imx8mp-evk-obsfx1-rtl8211.dtb
 		DEFCONFIG=obsfx1_defconfig
-		WIFI_DRIVER=laird-backport-11.171.0.24
+		WIFI_DRIVER=summit-backports-12.29.0.22
+#		WIFI_DRIVER=laird-backport-11.171.0.24
 		WIFI_DEFCONFIG=lwb
 		ARCH=arm64
 		COMP_LVL=9
