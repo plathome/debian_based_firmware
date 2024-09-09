@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 - 2023 Plat'Home CO., LTD.
+ * Copyright (c) 2018 - 2024 Plat'Home CO., LTD.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -86,10 +86,10 @@ int calcDecodeLength(char* b64input) {
 	return (int)len*0.75 - padding;
 }
 
-int Base64Decode(char* b64message, int *length, char** buffer) {
+int Base64Decode(char* b64message, int *length, unsigned char** buffer) {
 	BIO *bio, *b64;
 	int decodeLen = calcDecodeLength(b64message), len = 0;
-	*buffer = (char*)malloc(decodeLen+1);
+	*buffer = (unsigned char*)malloc(decodeLen+1);
 	FILE* stream = fmemopen(b64message, strlen(b64message), "r");
 
 	b64 = BIO_new(BIO_f_base64());
@@ -124,13 +124,13 @@ int encode_aes128_base64(unsigned char *inbuf , unsigned char *outbuf) {
         cten = EVP_CIPHER_CTX_new();
 
         if ( ! EVP_EncryptInit_ex(cten, EVP_aes_128_cbc(), NULL, (unsigned char*)key, iv) )
-                return 11 ;
+                return 13 ;
 
         if ( ! EVP_EncryptUpdate(cten, aesdest, &writelen, (unsigned char *)inbuf, strlen((const char *)inbuf)) )
-                return 12 ;
+                return 14 ;
 
         if ( ! EVP_EncryptFinal_ex(cten, (unsigned char *)(aesdest + writelen), &enpadlen) )
-                return 13 ;
+                return 15 ;
 
         EVP_CIPHER_CTX_cleanup(cten);
 
@@ -164,7 +164,7 @@ int decode_base64_aws128(char *inbuf , char *obuf) {
         EVP_CIPHER_CTX *ctdes;
 	unsigned char     aesdest  [AESSIZE] = { '\0' };
         int decode_buf_size = 0 ;
-        char* base64DecodeOutput;
+        unsigned char* base64DecodeOutput;
 
         int readlen      = 0 ;
         int rlastlen      = 0 ;
@@ -176,20 +176,21 @@ int decode_base64_aws128(char *inbuf , char *obuf) {
 #ifdef LDEBUG
         int i;
         printf("Output size: %d\n", decode_buf_size);
+	for(i=0;i<decode_buf_size;i++)
+		printf("[%02d] ; 0x%02x\n" , i , base64DecodeOutput[i]);
 #endif
 
         // AES decode
-
         ctdes = EVP_CIPHER_CTX_new();
 
         if ( ! EVP_DecryptInit_ex(ctdes, EVP_aes_128_cbc(), NULL, (unsigned char*)key, iv) )
-                return 21 ;
-
-        if ( ! EVP_DecryptUpdate(ctdes, aesdest, &readlen, (unsigned char *)base64DecodeOutput, decode_buf_size) )
-                return 22 ;
-
-        if ( ! EVP_DecryptFinal_ex(ctdes, (unsigned char *)(base64DecodeOutput + readlen), &rlastlen) )
                 return 23 ;
+
+        if ( ! EVP_DecryptUpdate(ctdes, aesdest, &readlen, base64DecodeOutput, decode_buf_size) )
+                return 24 ;
+
+        if ( ! EVP_DecryptFinal_ex(ctdes, aesdest + readlen, &rlastlen) )
+                return 25 ;
 
         memset(aesdest + readlen + rlastlen, 0x00 , sizeof(aesdest) - readlen - rlastlen);
 
@@ -201,8 +202,9 @@ int decode_base64_aws128(char *inbuf , char *obuf) {
         printf("DECODE READ LAST : [%d]\n" , rlastlen);
 
         printf("* DECODE BUF\n");
-        //for(i=0;i<strlen(inbuf);i++) {
-        for(i=0;i<strlen(aesdest);i++) {
+	//for(i=0;i<strlen(inbuf);i++) {
+	//for(i=0;i<sizeof(aesdest);i++) {
+	for(i=0;i<readlen + rlastlen;i++) {
                 printf("[%02d] ; 0x%02x , %c\n" , i , aesdest[i] , aesdest[i]);
         }
         //printf("[%02d] ; 0x%02x , %c\n" , 4 , aesdest[4] , aesdest[4]);
@@ -481,7 +483,7 @@ int read_env(char *devname) {
 
 #ifdef LDEBUG
 	printf("RAW READ BASE64 : [%s]\n" , buf);
-	printf("RAW READ SIZE   : [%d]\n" , strlen(buf));
+	//printf("RAW READ SIZE   : [%d]\n" , strlen(buf));
 #endif
 
 	// decode
