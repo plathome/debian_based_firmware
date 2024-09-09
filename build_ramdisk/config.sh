@@ -386,7 +386,7 @@ bullseye)
 		KERNEL=5.4.70
 		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=230
-		PATCHLEVEL=2dev0
+		PATCHLEVEL=3
 		DTBFILE=imx8mp-evk-obsfx0.dtb
 		DEFCONFIG=obsfx0_defconfig
 		ARCH=arm64
@@ -403,7 +403,7 @@ bullseye)
 		KERNEL=5.4.70
 		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=260
-		PATCHLEVEL=2dev0
+		PATCHLEVEL=3
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
 #		DTBFILE=imx8mp-evk-obsfx1-rtl8211.dtb
 		DEFCONFIG=obsfx1_defconfig
@@ -438,32 +438,32 @@ bookworm)
 	KERNEL=6.1.108
 	case ${TARGET} in
 	obsvx1)
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=280
 	;;
 	obsvx2)
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
 	obsix9)
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
 	obsix9r)
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
 	obshx1)
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
 	obshx1r)
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
@@ -484,7 +484,7 @@ bookworm)
 	;;
 	obsfx0*)
 		KERNEL=6.1.55
-		PATCHLEVEL=1dev0
+		PATCHLEVEL=2
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsfx0.dtb
@@ -501,7 +501,7 @@ bookworm)
 	;;
 	obsfx1*)
 		KERNEL=6.1.55
-		PATCHLEVEL=1dev0
+		PATCHLEVEL=2
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
@@ -519,7 +519,7 @@ bookworm)
 	;;
 	obsgx4*)
 		KERNEL=6.1.55
-		PATCHLEVEL=0dev0
+		PATCHLEVEL=0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=500
 		DTBFILE=imx8mp-evk-obsgx4.dtb
@@ -533,7 +533,7 @@ bookworm)
 	;;
 	obsduo*)
 		KERNEL=6.1.55
-		PATCHLEVEL=0dev0
+		PATCHLEVEL=0
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=360
 		DTBFILE=imx8mp-evk-obsduo.dtb
