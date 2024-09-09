@@ -519,7 +519,7 @@ bookworm)
 	;;
 	obsgx4*)
 		KERNEL=6.1.55
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=500
 		DTBFILE=imx8mp-evk-obsgx4.dtb
