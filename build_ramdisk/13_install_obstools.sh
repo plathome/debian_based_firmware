@@ -197,12 +197,12 @@ obsvx*)
 	$CC -o ${OBSTOOLDIR}/template-obsvx1-gpio/usr/sbin/obsvx1-gpio ${FILESDIR}/obsvx1-gpio.c $CFLAGS
 	$STRIP ${OBSTOOLDIR}/template-obsvx1-gpio/usr/sbin/obsvx1-gpio
 	;;
-obsfx0*|obsfx1*|obsduo)
-	echo "OBSFX1-MODEM"
-	mkdir -p ${OBSTOOLDIR}/template-obsfx1-modem/usr/sbin/
-	$CC -o ${OBSTOOLDIR}/template-obsfx1-modem/usr/sbin/obsfx1-modem ${FILESDIR}/obsfx1-modem.c $CFLAGS
-	$STRIP ${OBSTOOLDIR}/template-obsfx1-modem/usr/sbin/obsfx1-modem
-	;;
+#obsfx0*|obsfx1*|obsduo)
+#	echo "OBSFX1-MODEM"
+#	mkdir -p ${OBSTOOLDIR}/template-obsfx1-modem/usr/sbin/
+#	$CC -o ${OBSTOOLDIR}/template-obsfx1-modem/usr/sbin/obsfx1-modem ${FILESDIR}/obsfx1-modem.c $CFLAGS
+#	$STRIP ${OBSTOOLDIR}/template-obsfx1-modem/usr/sbin/obsfx1-modem
+#	;;
 esac
 
 echo "RUNLED"
