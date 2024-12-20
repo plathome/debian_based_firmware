@@ -14,6 +14,8 @@ OpenBlocks のファームウェアは、機種 (OpenBlocks シリーズ, OpenBl
 
 機種|Debian|TARGET|DIST|ARCH|ファームウェアを作成するホストのOS
 ---|---|---|---|---|---
+HX1|12|obshx1|bookworm|amd64|Debian GNU/Linux 12/amd64
+HX1|12|obshx1r|bookworm|amd64|Debian GNU/Linux 12/amd64
 IX9|12|obsix9|bookworm|amd64|Debian GNU/Linux 12/amd64
 IX9|11|obsix9|bullseye|amd64|Debian GNU/Linux 11/amd64
 IX9|10|obsix9|buster|amd64|Debian GNU/Linux 10/amd64
