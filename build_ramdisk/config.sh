@@ -323,7 +323,7 @@ bullseye)
 	case ${TARGET} in
 	obsvx2)
 		ISOFILE=debian-11.1.0-amd64-DVD-1.iso
-		PATCHLEVEL=2
+		PATCHLEVEL=3
 #		DEFCONFIG=obsvx2_defconfig
 		RAMDISK_SIZE=500
 	;;
@@ -357,7 +357,7 @@ bullseye)
 		KERNEL=3.10.98
 		ISOFILE=debian-11.1.0-i386-DVD-1.iso
 		ARCH=i386
-		PATCHLEVEL=400
+		PATCHLEVEL=401
 		RAMDISK_SIZE=250
 	;;
 	obsbx1)
@@ -403,7 +403,7 @@ bullseye)
 		KERNEL=5.4.70
 		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=260
-		PATCHLEVEL=3
+		PATCHLEVEL=4
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
 #		DTBFILE=imx8mp-evk-obsfx1-rtl8211.dtb
 		DEFCONFIG=obsfx1_defconfig
@@ -501,7 +501,7 @@ bookworm)
 	;;
 	obsfx1*)
 		KERNEL=6.1.55
-		PATCHLEVEL=2
+		PATCHLEVEL=3
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
