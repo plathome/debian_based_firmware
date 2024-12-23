@@ -443,8 +443,7 @@ bookworm)
 		RAMDISK_SIZE=280
 	;;
 	obsvx2)
-		KERNEL=6.1.92
-		PATCHLEVEL=2
+		PATCHLEVEL=1
 		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
