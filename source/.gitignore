@@ -1,3 +1,4 @@
 linux-*.tar.*
 *.patch
 backports-laird-*.tar.*
+summit-backports-*.tar.*
