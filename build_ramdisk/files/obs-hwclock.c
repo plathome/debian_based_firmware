@@ -1,6 +1,6 @@
 /*	$ssdlinux: obs-hwclock.c,v 0.01 2014/01/07 07:19:59 yamagata Exp $	*/
 /*
- * Copyright (c) 2009-2022 Plat'Home CO., LTD.
+ * Copyright (c) 2009-2025 Plat'Home CO., LTD.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -227,7 +227,7 @@ int do_systohc(char *str)
 {
 	struct tm *tm;
 	time_t sec;
-	unsigned char c[7], d[7];
+	unsigned char c[7], d[7], s1[1];
 	int i;
 	int fd;
 
@@ -255,6 +255,26 @@ int do_systohc(char *str)
 	if((fd = open(I2C_DEV, O_RDWR)) == -1){
 		printf("%d: %s\n", __LINE__, strerror(errno));
 		return -1;
+	}
+
+	/* check 12/24 bit */
+	if(ioctl(fd, I2C_SLAVE, STATUS1) == -1){
+		printf("%d: %s\n", __LINE__, strerror(errno));
+		return -1;
+	}
+
+	if(read(fd, s1, 1) == -1){
+		printf("%d: %s\n", __LINE__, strerror(errno));
+		return -1;
+	}
+
+	/* set 12/24 bit, if not set */
+	if(!(s1[0] & 0x40)) {
+		s1[0] |= 0x40;
+		if(write(fd, s1, 1) == -1){
+			printf("%d: %s\n", __LINE__, strerror(errno));
+			return -1;
+		}
 	}
 
 	if(ioctl(fd, I2C_SLAVE, DATE) == -1){
