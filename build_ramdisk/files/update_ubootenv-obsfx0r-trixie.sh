@@ -1,0 +1,1 @@
+update_ubootenv-obsfx0r-bullseye.sh
