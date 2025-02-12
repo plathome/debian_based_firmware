@@ -73,7 +73,7 @@ obsiot_env(){
 }
 
 usage(){
-	echo "Update uboot environment for OpenBlocks A16"
+	echo "Update uboot environment for OpenBlocks IoT DX1"
 	echo
 	echo "usage: $(basename $0) [-a]"
 	echo
