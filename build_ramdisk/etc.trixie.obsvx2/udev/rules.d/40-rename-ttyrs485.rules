@@ -1,0 +1,1 @@
+ACTION=="add", KERNELS=="1-4.1", SUBSYSTEM=="tty", SUBSYSTEMS=="usb", SYMLINK+="ttyRS485"

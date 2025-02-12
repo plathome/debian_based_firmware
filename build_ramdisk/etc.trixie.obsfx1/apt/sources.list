@@ -1,0 +1,9 @@
+deb http://ftp.jp.debian.org/debian/ trixie main
+
+#deb http://ftp.jp.debian.org/debian/ trixie-backports main
+
+deb http://ftp.jp.debian.org/debian/ trixie-updates main
+
+deb http://security.debian.org trixie-security main
+
+deb http://ftp.plathome.co.jp/pub/OBSFX1/debian/trixie ./

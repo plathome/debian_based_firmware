@@ -1,0 +1,4 @@
+/dev/ram	/		ext2	defaults	1 1
+#proc		/proc		proc	defaults	0 0
+none		/tmp		tmpfs	size=64m	0 0
+cgroup		/sys/fs/cgroup	cgroup	defaults	0 0
