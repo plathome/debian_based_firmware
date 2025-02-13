@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2024 Plat'Home CO., LTD.
+# Copyright (c) 2013-2025 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -53,7 +53,7 @@ fi
 
 case ${TARGET} in
 obsbx*|obsvx*)
-	if [ "$DIST" != "buster" ] && [ "$DIST" != "bullseye" ] && [ "$DIST" != "bookworm" ]; then
+	if [ "$DIST" != "buster" ] && [ "$DIST" != "bullseye" ] && [ "$DIST" != "bookworm" ] && [ "$DIST" != "trixie" ] ; then
 		chmod 755 ${DISTDIR}/etc/init.d/bluetooth
 		chroot ${DISTDIR} /sbin/insserv -rf bluetooth
 		chroot ${DISTDIR} /sbin/insserv bluetooth
@@ -152,7 +152,7 @@ if [ -f ${DISTDIR}/etc/modules ]; then
 fi
 
 case $DIST in
-stretch|buster|bullseye|bookworm)
+stretch|buster|bullseye|bookworm|trixie)
 	sed -e "s|^PermitRootLogin without-password|PermitRootLogin yes|" \
 		-e "s|^#PermitRootLogin prohibit-password|PermitRootLogin yes|" \
 		< ${DISTDIR}/etc/ssh/sshd_config > /tmp/sshd_config.new

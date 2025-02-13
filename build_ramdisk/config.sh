@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2013-2024 Plat'Home CO., LTD.
+# Copyright (c) 2013-2025 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -481,8 +481,6 @@ bookworm)
 		COMP_LVL=9
 		COMP=gzip
 		COMPEXT=gz
-#		UBOOT_VER=2023.04
-#		UDEFCONFIG=obsa16_defconfig
 	;;
 	obsfx0*)
 		KERNEL=6.1.55
@@ -499,8 +497,6 @@ bookworm)
 		COMP_LVL=9
 		COMP=gzip
 		COMPEXT=gz
-#		UBOOT_VER=2023.04
-#		UDEFCONFIG=obsfx0_defconfig
 	;;
 	obsfx1*)
 		KERNEL=6.1.55
@@ -518,8 +514,6 @@ bookworm)
 		COMP_LVL=9
 		COMP=gzip
 		COMPEXT=gz
-#		UBOOT_VER=2023.04
-#		UDEFCONFIG=obsa16_defconfig
 	;;
 	obsgx4*)
 		KERNEL=6.1.55
@@ -532,8 +526,6 @@ bookworm)
 		COMP_LVL=9
 		COMP=gzip
 		COMPEXT=gz
-#		UBOOT_VER=2023.04
-#		UDEFCONFIG=obsgx4_defconfig
 	;;
 	obsduo*)
 		KERNEL=6.1.55
@@ -546,8 +538,97 @@ bookworm)
 		COMP_LVL=9
 		COMP=gzip
 		COMPEXT=gz
-#		UBOOT_VER=2023.04
-#		UDEFCONFIG=obsduo_defconfig
+	;;
+	*)
+	;;
+	esac
+;;
+trixie)
+	KERNEL=6.12.13
+	case ${TARGET} in
+	obsvx1)
+		PATCHLEVEL=0
+		ISOFILE=debian-13.0.0-amd64-DVD-1.iso
+		RAMDISK_SIZE=280
+	;;
+	obsvx2)
+		PATCHLEVEL=0
+		ISOFILE=debian-13.0.0-amd64-DVD-1.iso
+		RAMDISK_SIZE=500
+	;;
+	obsix9)
+		PATCHLEVEL=0
+		ISOFILE=debian-13.0.0-amd64-DVD-1.iso
+		RAMDISK_SIZE=500
+	;;
+	obsix9r)
+		PATCHLEVEL=0
+		ISOFILE=debian-13.0.0-amd64-DVD-1.iso
+		RAMDISK_SIZE=500
+	;;
+	obshx1)
+		PATCHLEVEL=0
+		ISOFILE=debian-13.0.0-amd64-DVD-1.iso
+		RAMDISK_SIZE=500
+	;;
+	obshx1r)
+		PATCHLEVEL=0
+		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
+		RAMDISK_SIZE=500
+	;;
+	obsa16*)
+		KERNEL=6.12.13
+		PATCHLEVEL=1
+		ISOFILE=debian-13.0.0-arm64-DVD-1.iso
+		RAMDISK_SIZE=300
+		DTBFILE=imx8mp-evk-obsa16.dtb
+		ALT_DTBFILE=imx8mp-evk.dtb
+		DEFCONFIG=obsa16_defconfig
+		ARCH=arm64
+		COMP_LVL=9
+		COMP=gzip
+		COMPEXT=gz
+	;;
+	obsfx0*)
+		KERNEL=6.12.13
+		PATCHLEVEL=3
+		ISOFILE=debian-13.0.0-arm64-DVD-1.iso
+		RAMDISK_SIZE=320
+		DTBFILE=imx8mp-evk-obsfx0.dtb
+		DEFCONFIG=obsfx0_defconfig
+		WIFI_DRIVER=summit-backports-12.103.0.5
+		WIFI_DEFCONFIG=lwb
+		ARCH=arm64
+		COMP_LVL=9
+		COMP=gzip
+		COMPEXT=gz
+	;;
+	obsfx1*)
+		KERNEL=6.12.13
+		PATCHLEVEL=3
+		ISOFILE=debian-13.0.0-arm64-DVD-1.iso
+		RAMDISK_SIZE=320
+		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
+#		DTBFILE=imx8mp-evk-obsfx1-rtl8211.dtb
+		DEFCONFIG=obsfx1_defconfig
+		WIFI_DRIVER=summit-backports-12.103.0.5
+		WIFI_DEFCONFIG=lwb
+		ARCH=arm64
+		COMP_LVL=9
+		COMP=gzip
+		COMPEXT=gz
+	;;
+	obsgx4*)
+		KERNEL=6.12.13
+		PATCHLEVEL=1
+		ISOFILE=debian-13.0.0-arm64-DVD-1.iso
+		RAMDISK_SIZE=500
+		DTBFILE=imx8mp-evk-obsgx4.dtb
+		DEFCONFIG=obsgx4_defconfig
+		ARCH=arm64
+		COMP_LVL=9
+		COMP=gzip
+		COMPEXT=gz
 	;;
 	*)
 	;;

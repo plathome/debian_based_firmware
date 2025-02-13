@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2024 Plat'Home CO., LTD.
+# Copyright (c) 2013-2025 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,7 @@
 . `dirname $0`/_obstool_version.sh
 
 case $DIST in
-buster|bullseye|bookworm);;
+buster|bullseye|bookworm|trixie);;
 *) exit;;
 esac
 
@@ -47,7 +47,7 @@ obsbx*)
 	;;
 obsix*)
 	case $DIST in
-	bullseye|bookworm)
+	bullseye|bookworm|trixie)
 		pkglist="obs_util obs_hwclock obs_nicrename pshd runled wav_play wd_keepalive"
 		;;
 	*)
@@ -280,7 +280,7 @@ fi
 # all
 #
 case $DIST in
-bullseye|bookworm)
+bullseye|bookworm|trixie)
 	case $TARGET in
 	obsvx*|obsix9)
 		pkglist="instfirm obs_createkeys setup_gpio"
@@ -347,7 +347,7 @@ obsbx*|obsvx*|obsix9*|obshx1*|obshx2*|obsa16*|obsfx0*|obsfx1*|obsgx4*|obsduo*)
 esac
 
 case $DIST in
-bullseye|bookworm)
+bullseye|bookworm|trixie)
 	echo "OBS-CREATEKEYS"
 	mkdir -p ${OBSTOOLDIR}/template-obs-createkeys/usr/sbin/
 	cp -f ${FILESDIR}/obs-createkeys.sh ${OBSTOOLDIR}/template-obs-createkeys/usr/sbin/

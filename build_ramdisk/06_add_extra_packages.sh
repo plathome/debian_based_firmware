@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2023 Plat'Home CO., LTD.
+# Copyright (c) 2013-2025 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,7 @@ if [ $? -eq 0 ]; then
 	rm -f ${DISTDIR}/*.deb
 fi
 
-if [ "$DIST" == "buster" -o "$DIST" == "bullseye" -o "$DIST" == "bookworm" ]; then
+if [ "$DIST" == "buster" -o "$DIST" == "bullseye" -o "$DIST" == "bookworm" -o "$DIST" == "trixie" ]; then
 	chroot ${DISTDIR} systemctl disable rng-tools5
 	chroot ${DISTDIR} systemctl disable hostapd
 
@@ -63,7 +63,7 @@ fi
 #
 case $TARGET in
 obsvx*)
-	if [ "$DIST" == "buster" ] || [ "$DIST" == "bullseye" ] || [ "$DIST" == "bookworm" ]; then
+	if [ "$DIST" == "buster" ] || [ "$DIST" == "bullseye" ] || [ "$DIST" == "bookworm" ] || [ "$DIST" == "trixie" ]; then
 		mkdir -p ${DISTDIR}/usr/lib/crda/pubkeys
 		cp ${FILESDIR}/wireless-regdb/regulatory.bin ${DISTDIR}/usr/lib/crda
 		cp ${FILESDIR}/wireless-regdb/sforshee.key.pub.pem ${DISTDIR}/usr/lib/crda/pubkeys
