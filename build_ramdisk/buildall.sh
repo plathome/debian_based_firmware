@@ -106,6 +106,7 @@ trixie)
 		exit 1
 		;;
 	esac
+	;;
 *)
 	;;
 esac
