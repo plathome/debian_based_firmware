@@ -36,6 +36,13 @@ stretch|buster|bullseye|bookworm|trixie)
 	;;
 esac
 
-cp ${FILESDIR}/${keyfile} ${DISTDIR}/
-chroot ${DISTDIR} /usr/bin/apt-key add /${keyfile}
-rm -f ${DISTDIR}/${keyfile}
+case $DIST in
+trixie)
+	cp ${FILESDIR}/${keyfile} ${DISTDIR}/etc/apt/keyrings/plathome.asc
+	;;
+*)
+	cp ${FILESDIR}/${keyfile} ${DISTDIR}/
+	chroot ${DISTDIR} /usr/bin/apt-key add /${keyfile}
+	rm -f ${DISTDIR}/${keyfile}
+	;;
+esac
