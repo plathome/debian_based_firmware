@@ -549,7 +549,7 @@ trixie)
 	obsvx1)
 		PATCHLEVEL=0
 		ISOFILE=debian-13.0.0-amd64-DVD-1.iso
-		RAMDISK_SIZE=280
+		RAMDISK_SIZE=300
 	;;
 	obsvx2)
 		PATCHLEVEL=0
