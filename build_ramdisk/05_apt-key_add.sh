@@ -38,7 +38,7 @@ esac
 
 case $DIST in
 trixie)
-	cp ${FILESDIR}/${keyfile} ${DISTDIR}/etc/apt/keyrings/plathome.asc
+	cp ${FILESDIR}/${keyfile} ${DISTDIR}/etc/apt/trusted.gpg.d/plathome-ports-archive.asc
 	;;
 *)
 	cp ${FILESDIR}/${keyfile} ${DISTDIR}/
