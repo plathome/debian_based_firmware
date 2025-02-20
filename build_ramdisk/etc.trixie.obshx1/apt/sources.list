@@ -6,4 +6,4 @@ deb http://ftp.jp.debian.org/debian/ trixie-updates main
 
 deb http://security.debian.org trixie-security main
 
-deb [signed-by=/etc/apt/keyrings/plathome.asc] http://ftp.plathome.co.jp/pub/OBSHX1/debian/trixie ./
+deb http://ftp.plathome.co.jp/pub/OBSHX1/debian/trixie ./
