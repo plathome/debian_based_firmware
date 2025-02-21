@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013-2023 Plat'Home CO., LTD.
+# Copyright (c) 2013-2025 Plat'Home CO., LTD.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -177,6 +177,7 @@ function _call_obsutil() {
 
 GPIOPATH=/sys/class/gpio
 KERNEL_MAJOR_VERSION=`uname -r | cut -d '.' -f 1`
+KERNEL_MINOR_VERSION=`uname -r | cut -d '.' -f 2`
 
 [ -f /etc/default/openblocks ] && . /etc/default/openblocks
 case $MODEL in
@@ -198,7 +199,9 @@ obsbx1)
 	echo 46 > $GPIOPATH/unexport
 	;;
 obsvx*)
-	if [ ${KERNEL_MAJOR_VERSION} -ge 6 ] ; then
+	if [ ${KERNEL_MAJOR_VERSION} = 6 -a ${KERNEL_MINOR_VERSION} = 12 ] ; then
+		GPIOBASE=642
+	elif [ ${KERNEL_MAJOR_VERSION} = 6 -a ${KERNEL_MINOR_VERSION} = 1 ] ; then
 		GPIOBASE=850
 	else
 		GPIOBASE=338
