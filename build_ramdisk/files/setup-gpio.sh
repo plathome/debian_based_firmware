@@ -230,7 +230,7 @@ esac
 
 DEBIAN_MAJOR_VERSION=`cat /etc/debian_version | cut -d '.' -f 1`
 case $DEBIAN_MAJOR_VERSION in
-11|12|13) ;;
+11|12|13|trixie/sid) ;;
 *)
 	export DEBIAN_FRONTEND=noninteractive
 	dpkg-reconfigure openssh-server
