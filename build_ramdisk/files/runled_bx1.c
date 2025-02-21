@@ -1,7 +1,7 @@
 //#define DEBUG
 /*	$ssdlinux: runled_bx1.c,v 1.17 2014/01/07 07:19:06 yamagata Exp $	*/
 /*
- * Copyright (c) 2008-2023 Plat'Home CO., LTD.
+ * Copyright (c) 2008-2025 Plat'Home CO., LTD.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -49,7 +49,12 @@
 #define PID_FILE "/var/run/segled.pid"
 
 #if defined(CONFIG_OBSVX1) || defined(CONFIG_OBSIX9)
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 12, 0)
+#define SEGLED_DEV_R	"/sys/class/gpio/gpio646/value"
+#define SEGLED_DEV_G	"/sys/class/gpio/gpio647/value"
+#define SEGLED_DEV_B	"/sys/class/gpio/gpio648/value"
+#else
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 1, 0)
 #define SEGLED_DEV_R	"/sys/class/gpio/gpio854/value"
 #define SEGLED_DEV_G	"/sys/class/gpio/gpio855/value"
 #define SEGLED_DEV_B	"/sys/class/gpio/gpio856/value"
@@ -57,6 +62,7 @@
 #define SEGLED_DEV_R	"/sys/class/gpio/gpio342/value"
 #define SEGLED_DEV_G	"/sys/class/gpio/gpio343/value"
 #define SEGLED_DEV_B	"/sys/class/gpio/gpio344/value"
+#endif
 #endif
 #elif defined(CONFIG_OBSA16)
 #define SEGLED_DEV_R   "/sys/class/leds/red/brightness"
