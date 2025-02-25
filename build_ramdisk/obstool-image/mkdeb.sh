@@ -65,7 +65,7 @@ fi
 
 rm -rf ${pkgdir}.deb
 
-dpkg-deb --build ${pkgdir}
+dpkg-deb --build --root-owner-group ${pkgdir}
 
 mv -fv ${pkgdir}.deb ${REL_DIR}/
 

@@ -91,7 +91,7 @@ fi
 
 rm -rf ${pkgdir}.deb
 
-dpkg-deb --build $pkgdir
+dpkg-deb --build --root-owner-group $pkgdir
 
 [ "$FIRM_DIR" != "." ] && mv -fv $pkgdir.deb $FIRM_DIR/
 
