@@ -56,8 +56,8 @@ if [ "$CROSS" == "true" ]; then
 	FOREIGN="--foreign"
 fi
 
-[ -d ${DISTDIR}/proc ] && umount ${DISTDIR}/proc
-[ -d ${DISTDIR}/sys ] && umount ${DISTDIR}/sys
+umount -q ${DISTDIR}/proc
+umount -q ${DISTDIR}/sys
 rm -rf   ${DISTDIR}
 mkdir -p ${DISTDIR}
 
