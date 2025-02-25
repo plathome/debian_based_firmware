@@ -259,8 +259,10 @@ obshx1*)
 	;;
 esac
 
-mount -t proc none ${DISTDIR}/proc
-mount -o bind /sys ${DISTDIR}/sys
+if [ "$DIST" == "trixie" ]; then
+	mount -t proc none ${DISTDIR}/proc
+	mount -o bind /sys ${DISTDIR}/sys
+fi
 
 for pkg in $pkglist; do
 	eval version='$'${pkg}_ver
@@ -284,9 +286,6 @@ for pkg in $pkglist; do
 	fi
 	rm -f ${DISTDIR}/${pkgfile}
 done
-
-umount ${DISTDIR}/proc
-umount ${DISTDIR}/sys
 
 if [ "$TARGET" == "obsbx1" ] && [ "$DIST" == "bullseye" ]; then
 	chroot ${DISTDIR} systemctl disable wd-keepalive 
@@ -394,9 +393,6 @@ obsa16*|obsfx0|obsgx4*|obsduo)
 	;;
 esac
 
-mount -t proc none ${DISTDIR}/proc
-mount -o bind /sys ${DISTDIR}/sys
-
 for pkg in $pkglist; do
 	eval version='$'${pkg}_ver
 	pkg=${pkg//_/-}
@@ -419,9 +415,6 @@ for pkg in $pkglist; do
 	fi
 	rm -f ${DISTDIR}/${pkgfile}
 done
-
-umount ${DISTDIR}/proc
-umount ${DISTDIR}/sys
 
 case $TARGET in
 obsa16*|obsgx4*|obsduo)
@@ -449,3 +442,6 @@ obshx2*)
 	[ -f ${DISTDIR}/etc/watchdog.conf ] && cp ${FILESDIR}/watchdog.conf ${DISTDIR}/etc
 	;;
 esac
+
+umount -q ${DISTDIR}/proc
+umount -q ${DISTDIR}/sys

@@ -27,8 +27,10 @@
 
 . `dirname $0`/config.sh
 
-mount -t proc none ${DISTDIR}/proc
-mount -o bind /sys ${DISTDIR}/sys
+if [ "$DIST" == "trixie" ]; then
+	mount -t proc none ${DISTDIR}/proc
+	mount -o bind /sys ${DISTDIR}/sys
+fi
 
 ls ${EXTRADEBDIR}/*${ARCH}.deb 2> /dev/null
 if [ $? -eq 0 ]; then
@@ -75,8 +77,8 @@ if [ "$DIST" == "buster" -o "$DIST" == "bullseye" -o "$DIST" == "bookworm" -o "$
 	fi
 fi
 
-umount ${DISTDIR}/proc
-umount ${DISTDIR}/sys
+umount -q ${DISTDIR}/proc
+umount -q ${DISTDIR}/sys
 
 #
 # install wireless-regdb package

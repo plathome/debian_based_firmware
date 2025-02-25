@@ -48,8 +48,10 @@ esac
 (cd ${PWD}/kernel-image; ./mkdummy.sh ${KERNEL}-${PATCHLEVEL} ${ARCH} ${TARGET})
 
 cp -f ${PWD}/kernel-image/dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb ${DISTDIR}/
-mount -t proc none ${DISTDIR}/proc
-mount -o bind /sys ${DISTDIR}/sys
+if [ "$DIST" == "trixie" ]; then
+	mount -t proc none ${DISTDIR}/proc
+	mount -o bind /sys ${DISTDIR}/sys
+fi
 chroot ${DISTDIR} dpkg -r kernel-image
 chroot ${DISTDIR} dpkg -i /dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb
 if [ "$DIST" == "trixie" ]; then
@@ -63,8 +65,8 @@ if [ "$DIST" == "trixie" ]; then
 		fi
 	fi
 fi
-umount ${DISTDIR}/proc
-umount ${DISTDIR}/sys
+umount -q ${DISTDIR}/proc
+umount -q ${DISTDIR}/sys
 rm -f ${DISTDIR}/dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb
 rm -f ${PWD}/kernel-image/dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb
 
