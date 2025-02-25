@@ -95,6 +95,9 @@ obsbx*|obsvx*)
 			;;
 		esac
 	else
+		mount -t proc none ${DISTDIR}/proc
+		mount -o bind /sys ${DISTDIR}/sys
+
 		chroot ${DISTDIR} /usr/bin/systemctl enable acpid
 		case $TARGET in
 		obsvx1|obsbx1)
@@ -103,19 +106,40 @@ obsbx*|obsvx*)
 			chroot ${DISTDIR} /usr/bin/systemctl disable apparmor
 			;;
 		esac
+
+		umount ${DISTDIR}/proc
+		umount ${DISTDIR}/sys
 	fi
 	;;
 obsa16*|obsfx0*|obsfx1*|obsgx4*|obsduo)
+	mount -t proc none ${DISTDIR}/proc
+	mount -o bind /sys ${DISTDIR}/sys
+
 	chroot ${DISTDIR} /usr/bin/systemctl disable apparmor
 	chroot ${DISTDIR} /usr/bin/systemctl disable nfs-server
+
+	umount ${DISTDIR}/proc
+	umount ${DISTDIR}/sys
 	;;
 obstb3n)
+	mount -t proc none ${DISTDIR}/proc
+	mount -o bind /sys ${DISTDIR}/sys
+
 	chroot ${DISTDIR} /usr/bin/systemctl disable apparmor
 	chroot ${DISTDIR} /usr/bin/systemctl disable nfs-server
+
+	umount ${DISTDIR}/proc
+	umount ${DISTDIR}/sys
 	;;
 obsix*|obshx1*|obshx2*)
+	mount -t proc none ${DISTDIR}/proc
+	mount -o bind /sys ${DISTDIR}/sys
+
 	chroot ${DISTDIR} /usr/bin/systemctl disable apparmor
 	chroot ${DISTDIR} /usr/bin/systemctl enable acpid
+
+	umount ${DISTDIR}/proc
+	umount ${DISTDIR}/sys
 	;;
 *)	;;
 esac
