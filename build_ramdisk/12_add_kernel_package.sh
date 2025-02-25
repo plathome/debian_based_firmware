@@ -48,8 +48,23 @@ esac
 (cd ${PWD}/kernel-image; ./mkdummy.sh ${KERNEL}-${PATCHLEVEL} ${ARCH} ${TARGET})
 
 cp -f ${PWD}/kernel-image/dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb ${DISTDIR}/
+mount -t proc none ${DISTDIR}/proc
+mount -o bind /sys ${DISTDIR}/sys
 chroot ${DISTDIR} dpkg -r kernel-image
 chroot ${DISTDIR} dpkg -i /dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb
+if [ "$DIST" == "trixie" ]; then
+	evalpkg=`ar -p ${DISTDIR}/dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb control.tar.xz | \
+			tar -xJf - -O ./postinst | grep systemctl | \
+			grep enable | cut -d ' ' -f 3 | sed -e's/\.service//'`
+	if [ -n ${evalpkg} ] ; then
+		if [ -f ${DISTDIR}/lib/systemd/system/${evalpkg}.service ]; then
+			chroot ${DISTDIR} ln -sf /lib/systemd/system/${pkg}.service \
+			/etc/systemd/system/multi-user.target.wants/${pkg}.service
+		fi
+	fi
+fi
+umount ${DISTDIR}/proc
+umount ${DISTDIR}/sys
 rm -f ${DISTDIR}/dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb
 rm -f ${PWD}/kernel-image/dummy-kernel-image-${KERNEL}-${PATCHLEVEL}.deb
 

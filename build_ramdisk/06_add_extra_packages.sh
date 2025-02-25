@@ -27,6 +27,9 @@
 
 . `dirname $0`/config.sh
 
+mount -t proc none ${DISTDIR}/proc
+mount -o bind /sys ${DISTDIR}/sys
+
 ls ${EXTRADEBDIR}/*${ARCH}.deb 2> /dev/null
 if [ $? -eq 0 ]; then
 	rm -f ${DISTDIR}/*.deb
@@ -45,6 +48,20 @@ if [ $? -eq 0 ]; then
 
 	chroot ${DISTDIR} dpkg -i $debs
 
+	if [ "$DIST" == "trixie" ]; then
+		for $pkgfile in $debs
+		do
+			evalpkg=`ar -p ${DISTDIR}/${pkgfile} control.tar.xz | tar -xJf - -O ./postinst | \
+				grep systemctl | grep enable | cut -d ' ' -f 3 | sed -e's/\.service//'`
+			if [ -n ${evalpkg} ] ; then
+				if [ -f ${DISTDIR}/lib/systemd/system/${evalpkg}.service ]; then
+					chroot ${DISTDIR} ln -sf /lib/systemd/system/${pkg}.service \
+						/etc/systemd/system/multi-user.target.wants/${pkg}.service
+				fi
+			fi
+		done
+	fi
+
 	rm -f ${DISTDIR}/*.deb
 fi
 
@@ -57,6 +74,9 @@ if [ "$DIST" == "buster" -o "$DIST" == "bullseye" -o "$DIST" == "bookworm" -o "$
 		chroot ${DISTDIR} update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
 	fi
 fi
+
+umount ${DISTDIR}/proc
+umount ${DISTDIR}/sys
 
 #
 # install wireless-regdb package

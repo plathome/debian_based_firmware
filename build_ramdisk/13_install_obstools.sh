@@ -259,6 +259,9 @@ obshx1*)
 	;;
 esac
 
+mount -t proc none ${DISTDIR}/proc
+mount -o bind /sys ${DISTDIR}/sys
+
 for pkg in $pkglist; do
 	eval version='$'${pkg}_ver
 	pkg=${pkg//_/-}
@@ -269,8 +272,21 @@ for pkg in $pkglist; do
 	cp -f ${RELEASEDIR}/${pkgfile} ${DISTDIR}/
 	chroot ${DISTDIR} dpkg -r ${pkg}
 	chroot ${DISTDIR} dpkg -i ${pkgfile}
+	if [ "$DIST" == "trixie" ]; then
+		evalpkg=`ar -p ${DISTDIR}/${pkgfile} control.tar.xz | tar -xJf - -O ./postinst | \
+			grep systemctl | grep enable | cut -d ' ' -f 3 | sed -e's/\.service//'`
+		if [ -n ${evalpkg} ] ; then
+			if [ -f ${DISTDIR}/lib/systemd/system/${evalpkg}.service ]; then
+				chroot ${DISTDIR} ln -sf /lib/systemd/system/${pkg}.service \
+					/etc/systemd/system/multi-user.target.wants/${pkg}.service
+			fi
+		fi
+	fi
 	rm -f ${DISTDIR}/${pkgfile}
 done
+
+umount ${DISTDIR}/proc
+umount ${DISTDIR}/sys
 
 if [ "$TARGET" == "obsbx1" ] && [ "$DIST" == "bullseye" ]; then
 	chroot ${DISTDIR} systemctl disable wd-keepalive 
@@ -378,6 +394,9 @@ obsa16*|obsfx0|obsgx4*|obsduo)
 	;;
 esac
 
+mount -t proc none ${DISTDIR}/proc
+mount -o bind /sys ${DISTDIR}/sys
+
 for pkg in $pkglist; do
 	eval version='$'${pkg}_ver
 	pkg=${pkg//_/-}
@@ -388,10 +407,21 @@ for pkg in $pkglist; do
 	cp -f ${RELEASEDIR}/${pkgfile} ${DISTDIR}/
 	chroot ${DISTDIR} dpkg -r ${pkg}
 	chroot ${DISTDIR} dpkg -i ${pkgfile}
-	[ -f /lib/systemd/system/${pkg}.service ] && \
-		chroot ${DISTDIR} ln -sf /lib/systemd/system/${pkg}.service /etc/systemd/system/multi-user.target.wants/${pkg}.service
+	if [ "$DIST" == "trixie" ]; then
+		evalpkg=`ar -p ${DISTDIR}/${pkgfile} control.tar.xz | tar -xJf - -O ./postinst | \
+			grep systemctl | grep enable | cut -d ' ' -f 3 | sed -e's/\.service//'`
+		if [ -n ${evalpkg} ] ; then
+			if [ -f ${DISTDIR}/lib/systemd/system/${evalpkg}.service ]; then
+				chroot ${DISTDIR} ln -sf /lib/systemd/system/${pkg}.service \
+					/etc/systemd/system/multi-user.target.wants/${pkg}.service
+			fi
+		fi
+	fi
 	rm -f ${DISTDIR}/${pkgfile}
 done
+
+umount ${DISTDIR}/proc
+umount ${DISTDIR}/sys
 
 case $TARGET in
 obsa16*|obsgx4*|obsduo)
