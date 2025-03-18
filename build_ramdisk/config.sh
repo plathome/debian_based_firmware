@@ -577,7 +577,7 @@ trixie)
 		RAMDISK_SIZE=500
 	;;
 	obsa16*)
-		KERNEL=6.12.13
+		KERNEL=6.12.3
 		PATCHLEVEL=0
 		ISOFILE=debian-13.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=300
@@ -590,7 +590,7 @@ trixie)
 		COMPEXT=gz
 	;;
 	obsfx0*)
-		KERNEL=6.12.13
+		KERNEL=6.12.3
 		PATCHLEVEL=0
 		ISOFILE=debian-13.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
@@ -604,7 +604,7 @@ trixie)
 		COMPEXT=gz
 	;;
 	obsfx1*)
-		KERNEL=6.12.13
+		KERNEL=6.12.3
 		PATCHLEVEL=0
 		ISOFILE=debian-13.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
@@ -619,7 +619,7 @@ trixie)
 		COMPEXT=gz
 	;;
 	obsgx4*)
-		KERNEL=6.12.13
+		KERNEL=6.12.3
 		PATCHLEVEL=0
 		ISOFILE=debian-13.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=500
