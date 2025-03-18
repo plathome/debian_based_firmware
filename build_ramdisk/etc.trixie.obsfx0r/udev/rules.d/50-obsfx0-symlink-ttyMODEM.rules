@@ -1,7 +1,0 @@
-# DX1 / SIM7600
-ACTION=="add", KERNEL=="ttyUSB*", KERNELS=="1-1:1*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="02", SYMLINK+="ttyMODEM0"
-ACTION=="add", KERNEL=="ttyUSB*", KERNELS=="1-1:1*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="ff" , ATTRS{bInterfaceNumber}=="00", SYMLINK+="ttyMODEM1"
-ACTION=="add", KERNEL=="ttyUSB*", KERNELS=="1-1:1*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="01", SYMLINK+="ttyMODEM2"
-ACTION=="add", KERNEL=="ttyUSB*", KERNELS=="1-1:1*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="03", SYMLINK+="ttyMODEM3"
-ACTION=="add", KERNEL=="ttyUSB*", KERNELS=="1-1:1*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="04", SYMLINK+="ttyMODEM4"
-
