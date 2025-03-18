@@ -1,17 +1,17 @@
 # VX / LISA
-ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="u-blox Wireless Module Modem" , ATTRS{bInterfaceNumber}=="00", SYMLINK+="ttyMODEM0"
-ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="u-blox Wireless Module Port"  , ATTRS{bInterfaceNumber}=="02", SYMLINK+="ttyMODEM1"
-ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="u-blox Wireless Module Port"  , ATTRS{bInterfaceNumber}=="04", SYMLINK+="ttyMODEM2"
-ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="u-blox Wireless Module Port"  , ATTRS{bInterfaceNumber}=="06", SYMLINK+="ttyMODEM3"
-ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="u-blox Wireless Module Port"  , ATTRS{bInterfaceNumber}=="08", SYMLINK+="ttyMODEM4"
-ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="u-blox Wireless Module Port"  , ATTRS{bInterfaceNumber}=="0a", SYMLINK+="ttyMODEM5"
-ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="u-blox Wireless Module Port"  , ATTRS{bInterfaceNumber}=="0c", SYMLINK+="ttyMODEM6"
+ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="u-blox Wireless Module Modem" , ATTRS{bInterfaceNumber}=="00", SYMLINK+="ttyMODEM0", OWNER="uucp"
+ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="u-blox Wireless Module Port"  , ATTRS{bInterfaceNumber}=="02", SYMLINK+="ttyMODEM1", OWNER="uucp"
+ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="u-blox Wireless Module Port"  , ATTRS{bInterfaceNumber}=="04", SYMLINK+="ttyMODEM2", OWNER="uucp"
+ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="u-blox Wireless Module Port"  , ATTRS{bInterfaceNumber}=="06", SYMLINK+="ttyMODEM3", OWNER="uucp"
+ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="u-blox Wireless Module Port"  , ATTRS{bInterfaceNumber}=="08", SYMLINK+="ttyMODEM4", OWNER="uucp"
+ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="u-blox Wireless Module Port"  , ATTRS{bInterfaceNumber}=="0a", SYMLINK+="ttyMODEM5", OWNER="uucp"
+ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="u-blox Wireless Module Port"  , ATTRS{bInterfaceNumber}=="0c", SYMLINK+="ttyMODEM6", OWNER="uucp"
 
 # VX / KYM
-ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="ACM Communication Class Interface" , ATTRS{bInterfaceNumber}=="02", SYMLINK+="ttyMODEM0"
+ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="ACM Communication Class Interface" , ATTRS{bInterfaceNumber}=="02", SYMLINK+="ttyMODEM0", OWNER="uucp"
 
 # VX / TOBY & UM04
-ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="CDC Abstract Control Model (ACM)" , ATTRS{bInterfaceNumber}=="02", SYMLINK+="ttyMODEM0"
+ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="CDC Abstract Control Model (ACM)" , ATTRS{bInterfaceNumber}=="02", SYMLINK+="ttyMODEM0", OWNER="uucp"
 ACTION=="add", KERNEL=="ttyACM*", KERNELS=="1-2:1.*" , ATTRS{interface}=="CDC Abstract Control Model (ACM)" , ATTRS{bInterfaceNumber}=="04", SYMLINK+="ttyMODEM1"
 
 # Modem env setting / EC25 & SIM7100
@@ -19,13 +19,13 @@ KERNELS=="1-2", SUBSYSTEMS=="usb", ATTRS{product}=="Android" , ENV{local_product
 KERNELS=="1-2", SUBSYSTEMS=="usb", ATTRS{product}=="SimTech, Incorporated" , ENV{local_product}="Simcom_Modem"
 
 # VX / EC25
-ACTION=="add", ENV{local_product}=="Quectel_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="ff" , ATTRS{bInterfaceNumber}=="00", SYMLINK+="ttyMODEM2"
-ACTION=="add", ENV{local_product}=="Quectel_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="01", SYMLINK+="ttyMODEM3"
-ACTION=="add", ENV{local_product}=="Quectel_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="02", SYMLINK+="ttyMODEM0"
-ACTION=="add", ENV{local_product}=="Quectel_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="03", SYMLINK+="ttyMODEM1"
+ACTION=="add", ENV{local_product}=="Quectel_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="ff" , ATTRS{bInterfaceNumber}=="00", SYMLINK+="ttyMODEM2", OWNER="uucp"
+ACTION=="add", ENV{local_product}=="Quectel_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="01", SYMLINK+="ttyMODEM3", OWNER="uucp"
+ACTION=="add", ENV{local_product}=="Quectel_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="02", SYMLINK+="ttyMODEM0", OWNER="uucp"
+ACTION=="add", ENV{local_product}=="Quectel_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="03", SYMLINK+="ttyMODEM1", OWNER="uucp"
 # VX / SIM7100
-ACTION=="add", ENV{local_product}=="Simcom_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="02", SYMLINK+="ttyMODEM0"
-ACTION=="add", ENV{local_product}=="Simcom_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="ff" , ATTRS{bInterfaceNumber}=="00", SYMLINK+="ttyMODEM1"
-ACTION=="add", ENV{local_product}=="Simcom_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="01", SYMLINK+="ttyMODEM2"
-ACTION=="add", ENV{local_product}=="Simcom_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="03", SYMLINK+="ttyMODEM3"
-ACTION=="add", ENV{local_product}=="Simcom_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="04", SYMLINK+="ttyMODEM4"
+ACTION=="add", ENV{local_product}=="Simcom_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="02", SYMLINK+="ttyMODEM0", OWNER="uucp"
+ACTION=="add", ENV{local_product}=="Simcom_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="ff" , ATTRS{bInterfaceNumber}=="00", SYMLINK+="ttyMODEM1", OWNER="uucp"
+ACTION=="add", ENV{local_product}=="Simcom_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="01", SYMLINK+="ttyMODEM2", OWNER="uucp"
+ACTION=="add", ENV{local_product}=="Simcom_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="03", SYMLINK+="ttyMODEM3", OWNER="uucp"
+ACTION=="add", ENV{local_product}=="Simcom_Modem" , KERNEL=="ttyUSB*", KERNELS=="1-2*" , ATTRS{bInterfaceClass}=="ff" , ATTRS{bInterfaceProtocol}=="00" , ATTRS{bInterfaceNumber}=="04", SYMLINK+="ttyMODEM4", OWNER="uucp"
