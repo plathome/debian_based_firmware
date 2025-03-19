@@ -580,7 +580,7 @@ trixie)
 		KERNEL=6.12.3
 		PATCHLEVEL=0
 		ISOFILE=debian-13.0.0-arm64-DVD-1.iso
-		RAMDISK_SIZE=300
+		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsa16.dtb
 		ALT_DTBFILE=imx8mp-evk.dtb
 		DEFCONFIG=obsa16_defconfig
