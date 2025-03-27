@@ -445,3 +445,5 @@ esac
 
 umount -q ${DISTDIR}/proc
 umount -q ${DISTDIR}/sys
+
+exit 0
