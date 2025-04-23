@@ -11,9 +11,12 @@ case "$1" in
 configure)
 	[ -f /.chroot ] && exit 0
 	if systemctl is-active pshd; then
-		systemctl restart pshd
+		systemctl stop pshd && systemctl disable pshd
+	fi
+	if systemctl is-active obshx1-pshd; then
+		systemctl restart obshx1-pshd
 	else
-		systemctl enable pshd && systemctl start pshd
+		systemctl enable obshx1-pshd && systemctl start obshx1-pshd
 	fi
 	;;
 abort-upgrade|abort-remove|abort-deconfigure)
