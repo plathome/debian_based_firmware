@@ -1,5 +1,5 @@
 #!/bin/sh
-# preinst script for openblocks family
+# postinst script for openblocks family
 #
 # see: dh_installdeb(1)
 
@@ -10,9 +10,6 @@
 case "$1" in
 configure)
 	[ -f /.chroot ] && exit 0
-	if systemctl is-active runled; then
-		systemctl stop runled && systemctl disable runled
-	fi
 	if systemctl is-active obshx1-runled; then
 		systemctl restart obshx1-runled
 	else
