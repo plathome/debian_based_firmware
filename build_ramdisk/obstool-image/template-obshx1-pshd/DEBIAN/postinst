@@ -1,5 +1,5 @@
 #!/bin/sh
-# preinst script for openblocks family
+# postinst script for openblocks family
 #
 # see: dh_installdeb(1)
 
@@ -10,9 +10,6 @@
 case "$1" in
 configure)
 	[ -f /.chroot ] && exit 0
-	if systemctl is-active pshd; then
-		systemctl stop pshd && systemctl disable pshd
-	fi
 	if systemctl is-active obshx1-pshd; then
 		systemctl restart obshx1-pshd
 	else
