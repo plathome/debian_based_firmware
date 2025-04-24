@@ -118,29 +118,43 @@ obsfx1*)
 	[ ! -d $GPIOPATH/gpio86 ] && echo 86 > $GPIOPATH/export; \
 		echo both > $GPIOPATH/gpio86/edge
 	# i2c-gpio
-		# 496	WL_PWR_EN
-		# 497	WL_DIS_N
-		# 498	BT_DIS_N
-		# 499	S1_PWR_EN
-		# 500	S1_PON
-	[ ! -d $GPIOPATH/gpio501 ] && echo 501 > $GPIOPATH/export; \
-		echo high > $GPIOPATH/gpio501/direction			# S1_RST_N
-	[ ! -d $GPIOPATH/gpio502 ] && echo 502 > $GPIOPATH/export; \
-		echo low > $GPIOPATH/gpio502/direction			# W_DISABLE
-	[ ! -d $GPIOPATH/gpio503 ] && echo 503 > $GPIOPATH/export; \
-		echo low > $GPIOPATH/gpio503/direction			# FULL_CD_POFF
-	[ ! -d $GPIOPATH/gpio504 ] && echo 504 > $GPIOPATH/export; \
-		echo high > $GPIOPATH/gpio504/direction			# S2_PWR_EN
-	[ ! -d $GPIOPATH/gpio505 ] && echo 505 > $GPIOPATH/export; \
-		echo high > $GPIOPATH/gpio505/direction			# S2_RST_N
-	[ ! -d $GPIOPATH/gpio506 ] && echo 506 > $GPIOPATH/export; \
-		echo high > $GPIOPATH/gpio506/direction			# USBHUB_RST_N
-	[ ! -d $GPIOPATH/gpio507 ] && echo 507 > $GPIOPATH/export; \
-		echo in > $GPIOPATH/gpio507/direction			# PWRFAIL_N
-	# 508 D.C.
-	# 509 D.C.
-	# 510 D.C.
-	# 511 N.C.
+	if [ ${KERNEL_MAJOR_VERSION} = 6 -a ${KERNEL_MINOR_VERSION} = 12 ] ; then
+		GPIOBASE=512
+	else
+		GPIOBASE=496
+	fi
+
+	# OFFSET0=${GPIOBASE}			# WL_PWR_EN
+	# OFFSET1=`expr ${GPIOBASE} + 1`	# WL_DIS_N
+	# OFFSET2=`expr ${GPIOBASE} + 2`	# BT_DIS_N
+	# OFFSET3=`expr ${GPIOBASE} + 3`	# S1_PWR_EN
+	# OFFSET4=`expr ${GPIOBASE} + 4`	# S1_PON
+	OFFSET5=`expr ${GPIOBASE} + 5`		# S1_RST_N
+	OFFSET6=`expr ${GPIOBASE} + 6`		# W_DISABLE
+	OFFSET7=`expr ${GPIOBASE} + 7`		# FULL_CD_POFF
+	OFFSET8=`expr ${GPIOBASE} + 8`		# S2_PWR_EN
+	OFFSET9=`expr ${GPIOBASE} + 9`		# S2_RST_N
+	OFFSET10=`expr ${GPIOBASE} + 10`	# USBHUB_RST_N
+	OFFSET11=`expr ${GPIOBASE} + 11`	# PWRFAIL_N
+	# OFFSET12=`expr ${GPIOBASE} + 12`	# D.C.
+	# OFFSET13=`expr ${GPIOBASE} + 13`	# D.C.
+	# OFFSET14=`expr ${GPIOBASE} + 14`	# D.C.
+	# OFFSET15=`expr ${GPIOBASE} + 15`	# D.C.
+
+	[ ! -d $GPIOPATH/gpio${OFFSET5} ] && echo ${OFFSET5} > $GPIOPATH/export; \
+		echo high > $GPIOPATH/gpio${OFFSET5}/direction
+	[ ! -d $GPIOPATH/gpio${OFFSET6} ] && echo ${OFFSET6} > $GPIOPATH/export; \
+		echo low > $GPIOPATH/gpio${OFFSET6}/direction
+	[ ! -d $GPIOPATH/gpio${OFFSET7} ] && echo ${OFFSET7} > $GPIOPATH/export; \
+		echo low > $GPIOPATH/gpio${OFFSET7}/direction
+	[ ! -d $GPIOPATH/gpio${OFFSET8} ] && echo ${OFFSET8} > $GPIOPATH/export; \
+		echo high > $GPIOPATH/gpio${OFFSET8}/direction
+	[ ! -d $GPIOPATH/gpio${OFFSET9} ] && echo ${OFFSET9} > $GPIOPATH/export; \
+		echo high > $GPIOPATH/gpio${OFFSET9}/direction
+	[ ! -d $GPIOPATH/gpio${OFFSET10} ] && echo ${OFFSET10} > $GPIOPATH/export; \
+		echo high > $GPIOPATH/gpio${OFFSET10}/direction
+	[ ! -d $GPIOPATH/gpio${OFFSET11} ] && echo ${OFFSET11} > $GPIOPATH/export; \
+		echo in > $GPIOPATH/gpio${OFFSET11}/direction
 	;;
 obsgx4*)
 	# USB1_PWR_EN (Lowre Port)
