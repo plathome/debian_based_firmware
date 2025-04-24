@@ -99,7 +99,11 @@ enum{
 #define POWER_AC	"/sys/class/gpio/gpio41/value"
 #define POWER_DC	"/sys/class/gpio/gpio42/value"
 #elif defined(CONFIG_OBSFX1)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 12, 0)
+#define POWER_AC	"/sys/class/gpio/gpio523/value"
+#else
 #define POWER_AC	"/sys/class/gpio/gpio507/value"
+#endif
 #elif defined(CONFIG_OBSGX4)
 #define POWER_AC	"/sys/class/gpio/gpio43/value"
 #endif
