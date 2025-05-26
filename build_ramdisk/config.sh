@@ -544,7 +544,7 @@ bookworm)
 	esac
 ;;
 trixie)
-	KERNEL=6.12.13
+	KERNEL=6.12.30
 	case ${TARGET} in
 	obsvx1)
 		PATCHLEVEL=0
