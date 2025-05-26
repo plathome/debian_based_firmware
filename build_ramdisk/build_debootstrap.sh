@@ -213,29 +213,29 @@ bookworm)
 trixie)
 	case $TARGET in
 	obsvx1)
-		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,acpi-support-base,wpasupplicant,ppp,wireless-tools,bluez,iw,libusb-1.0-0,libnl-route-3-200,libnl-genl-3-200,gnupg,wget,dbus,systemd-timesyncd"
+		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2-data,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,libnl-genl-3-200,gnupg,wget,gdisk,dbus,systemd-timesyncd,util-linux-extra,rsyslog"
 		EXCLUDE="nano"
 		;;
 	obsvx2)
-		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,acpi-support-base,wpasupplicant,ppp,wireless-tools,bluez,iw,libusb-1.0-0,libnl-route-3-200,libnl-genl-3-200,gnupg,wget,apparmor,dbus,systemd-timesyncd"
+		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2-data,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,libnl-genl-3-200,gnupg,wget,apparmor,gdisk,dbus,systemd-timesyncd,util-linux-extra,rsyslog"
 		EXCLUDE="nano"
 		;;
 	obsa16*|obsgx4*)
-		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,wpasupplicant,ppp,wireless-tools,bluez,iw,libusb-1.0-0,libnl-route-3-200,libnl-genl-3-200,gnupg,wget,apparmor,dbus,systemd-timesyncd"
+		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,wpasupplicant,ppp,wireless-tools,bluez,iw,libasound2-data,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,libnl-genl-3-200,gnupg,wget,apparmor,gdisk,dbus,systemd-timesyncd,util-linux-extra,rsyslog,libubootenv-tool"
 		EXCLUDE="nano"
 		;;
 	obsfx0*|obsfx1*)
-		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,ppp,wireless-tools,bluez,iw,,libusb-1.0-0,libnl-route-3-200,libnl-genl-3-200,gnupg,wget,apparmor,dbus,systemd-timesyncd"
+		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,ppp,wireless-tools,bluez,iw,libasound2-data,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,libnl-genl-3-200,gnupg,wget,apparmor,gdisk,dbus,systemd-timesyncd,util-linux-extra,rsyslog,libubootenv-tool,libpcsclite1"
 		EXCLUDE="nano"
 		;;
 	obsix*|obshx1*)
-		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,acpi-support-base,libusb-1.0-0,libnl-route-3-200,libnl-genl-3-200,gnupg,wget,apparmor,dbus,systemd-timesyncd"
+		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,libasound2-data,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,libnl-genl-3-200,gnupg,wget,apparmor,gdisk,dbus,systemd-timesyncd,util-linux-extra,rsyslog"
 		EXCLUDE="nano"
 		;;
 	esac
 	;;
 esac
-
+util-linux-extra_2.41-4_arm64.deb
 if [ "$ENA_AUDIO" == "true" ]; then
 	INCLUDE="$INCLUDE,alsa-utils"
 fi
