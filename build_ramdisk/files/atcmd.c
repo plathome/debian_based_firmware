@@ -1,7 +1,7 @@
 //#define DEBUG
 /*	$ssdlinux: runled_bx1.c,v 1.17 2014/01/07 07:19:06 yamagata Exp $	*/
 /*
- * Copyright (c) 2008-2022 Plat'Home CO., LTD.
+ * Copyright (c) 2008-2025 Plat'Home CO., LTD.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,8 +46,13 @@
 #define RESETSW "/sys/class/gpio/gpio15/value"
 #define POWERSW_U200 "/sys/class/gpio/gpio200/value"
 #define RESETSW_U200 "/sys/class/gpio/gpio202/value"
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 12, 0)
+#define POWERSW_FX1_S760 "/sys/class/gpio/gpio519/value"
+#define RESETSW_FX1_S760 "/sys/class/gpio/gpio517/value"
+#else
 #define POWERSW_FX1_S760 "/sys/class/gpio/gpio503/value"
 #define RESETSW_FX1_S760 "/sys/class/gpio/gpio501/value"
+#endif
 #define LED_R "/sys/class/gpio/gpio47/value"
 #define LED_G "/sys/class/gpio/gpio48/value"
 #define LED_B "/sys/class/gpio/gpio49/value"
