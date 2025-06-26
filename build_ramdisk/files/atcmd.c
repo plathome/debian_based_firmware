@@ -39,6 +39,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <errno.h>
+#include <linux/version.h>
 
 #define OBSVX1_MODEM "/usr/sbin/obsvx1-modem"
 #define DEFAULT_MODEM "/dev/ttyMODEM0"
