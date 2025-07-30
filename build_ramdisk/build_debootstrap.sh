@@ -229,7 +229,7 @@ trixie)
 		EXCLUDE="nano"
 		;;
 	obsix*|obshx1*)
-		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,libasound2-data,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,libnl-genl-3-200,gnupg,wget,apparmor,gdisk,dbus,systemd-timesyncd,util-linux-extra,rsyslog"
+		INCLUDE="iptables,openssh-server,xz-utils,parted,dosfstools,ethtool,acpi-support-base,libasound2-data,libusb-1.0-0,libusb-0.1-4,libnl-route-3-200,libnl-genl-3-200,libiw30t64,gnupg,wget,apparmor,gdisk,dbus,systemd-timesyncd,util-linux-extra,rsyslog"
 		EXCLUDE="nano"
 		;;
 	esac
