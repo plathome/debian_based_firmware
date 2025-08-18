@@ -547,38 +547,38 @@ trixie)
 	KERNEL=6.12.40
 	case ${TARGET} in
 	obsvx1)
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		ISOFILE=debian-13.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=300
 	;;
 	obsvx2)
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		ISOFILE=debian-13.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
 	obsix9)
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		ISOFILE=debian-13.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
 	obsix9r)
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		ISOFILE=debian-13.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
 	obshx1)
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		ISOFILE=debian-13.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
 	obshx1r)
-		PATCHLEVEL=0
-		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
+		PATCHLEVEL=1
+		ISOFILE=debian-13.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
 	obsa16*)
 		KERNEL=6.12.20
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		ISOFILE=debian-13.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsa16.dtb
@@ -591,12 +591,12 @@ trixie)
 	;;
 	obsfx0*)
 		KERNEL=6.12.20
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		ISOFILE=debian-13.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsfx0.dtb
 		DEFCONFIG=obsfx0_defconfig
-		WIFI_DRIVER=summit-backports-12.103.0.5
+		WIFI_DRIVER=summit-backports-13.24.0.20
 		WIFI_DEFCONFIG=lwb
 		ARCH=arm64
 		COMP_LVL=9
@@ -605,13 +605,13 @@ trixie)
 	;;
 	obsfx1*)
 		KERNEL=6.12.20
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		ISOFILE=debian-13.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
 #		DTBFILE=imx8mp-evk-obsfx1-rtl8211.dtb
 		DEFCONFIG=obsfx1_defconfig
-		WIFI_DRIVER=summit-backports-12.103.0.5
+		WIFI_DRIVER=summit-backports-13.24.0.20
 		WIFI_DEFCONFIG=lwb
 		ARCH=arm64
 		COMP_LVL=9
@@ -620,7 +620,7 @@ trixie)
 	;;
 	obsgx4*)
 		KERNEL=6.12.20
-		PATCHLEVEL=0
+		PATCHLEVEL=1
 		ISOFILE=debian-13.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=500
 		DTBFILE=imx8mp-evk-obsgx4.dtb
