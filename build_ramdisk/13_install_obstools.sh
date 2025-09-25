@@ -275,7 +275,7 @@ for pkg in $pkglist; do
 	chroot ${DISTDIR} dpkg -i ${pkgfile}
 	if [ "$DIST" == "trixie" ]; then
 		evalpkg=`ar -p ${DISTDIR}/${pkgfile} control.tar.xz | tar -xJf - -O ./postinst 2> /dev/null | \
-			grep systemctl | grep enable | sed -e 's/\t/ /g' -e 's/^ *//' | cut -d ' ' -f 1`
+			grep systemctl | grep enable | sed -e 's/\t/ /g' -e 's/^ *//' | cut -d ' ' -f 3`
 		if [ -n "${evalpkg}" ] ; then
 			if [ -f ${DISTDIR}/lib/systemd/system/${evalpkg}.service ]; then
 				chroot ${DISTDIR} ln -sf /lib/systemd/system/${pkg}.service \
@@ -403,7 +403,7 @@ for pkg in $pkglist; do
         chroot ${DISTDIR} dpkg -i ${pkgfile}
         if [ "$DIST" == "trixie" ]; then
 		evalpkg=`ar -p ${DISTDIR}/${pkgfile} control.tar.xz | tar -xJf - -O ./postinst 2> /dev/null | \
-			grep systemctl | grep enable | sed -e 's/\t/ /g' -e 's/^ *//' | cut -d ' ' -f 1`
+			grep systemctl | grep enable | sed -e 's/\t/ /g' -e 's/^ *//' | cut -d ' ' -f 3`
                 if [ -n "${evalpkg}" ] ; then
                         if [ -f ${DISTDIR}/lib/systemd/system/${evalpkg}.service ]; then
                                 chroot ${DISTDIR} ln -sf /lib/systemd/system/${pkg}.service \
