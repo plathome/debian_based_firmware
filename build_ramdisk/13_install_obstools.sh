@@ -264,29 +264,6 @@ if [ "$DIST" == "trixie" ]; then
 	mount -o bind /sys ${DISTDIR}/sys
 fi
 
-for pkg in $pkglist; do
-	eval version='$'${pkg}_ver
-	pkg=${pkg//_/-}
-	pkgfile=${pkg}-${version}-${ARCH}.deb
-#	rm -f ${RELEASEDIR}/${pkgfile}
-	rm -f ${RELEASEDIR}/${pkg}-*.deb
-	(cd ${OBSTOOLDIR}/; ./mkdeb.sh ${version} ${ARCH} ${pkg} ${RELEASEDIR} "")
-	cp -f ${RELEASEDIR}/${pkgfile} ${DISTDIR}/
-	chroot ${DISTDIR} dpkg -r ${pkg}
-	chroot ${DISTDIR} dpkg -i ${pkgfile}
-	if [ "$DIST" == "trixie" ]; then
-		evalpkg=`ar -p ${DISTDIR}/${pkgfile} control.tar.xz | tar -xJf - -O ./postinst | \
-			grep systemctl | grep enable | cut -d ' ' -f 3 | sed -e's/\.service//'`
-		if [ -n ${evalpkg} ] ; then
-			if [ -f ${DISTDIR}/lib/systemd/system/${evalpkg}.service ]; then
-				chroot ${DISTDIR} ln -sf /lib/systemd/system/${pkg}.service \
-					/etc/systemd/system/multi-user.target.wants/${pkg}.service
-			fi
-		fi
-	fi
-	rm -f ${DISTDIR}/${pkgfile}
-done
-
 if [ "$TARGET" == "obsbx1" ] && [ "$DIST" == "bullseye" ]; then
 	chroot ${DISTDIR} systemctl disable wd-keepalive 
 fi
