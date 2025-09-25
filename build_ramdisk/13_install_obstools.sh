@@ -267,12 +267,9 @@ fi
 for pkg in $pkglist; do
 	eval version='$'${pkg}_ver
 	pkg=${pkg//_/-}
+	pkgfile=${pkg}-${version}-${ARCH}.deb
 	rm -f ${RELEASEDIR}/${pkg}-*.deb
-	(cd ${OBSTOOLDIR}/; ./mkdeb.sh ${version} "all" ${pkg} ${RELEASEDIR} "")
-	pkgfile=${pkg}-${version}-all.deb
-	if [ ! -f ${RELEASEDIR}/${pkgfile} ] ; then
-		pkgfile=${pkg}-${version}-${ARCH}.deb
-	fi
+	(cd ${OBSTOOLDIR}/; ./mkdeb.sh ${version} ${ARCH} ${pkg} ${RELEASEDIR} "")
 	cp -f ${RELEASEDIR}/${pkgfile} ${DISTDIR}/
 	chroot ${DISTDIR} dpkg -r ${pkg}
 	chroot ${DISTDIR} dpkg -i ${pkgfile}
@@ -396,28 +393,25 @@ obsa16*|obsfx0|obsgx4*|obsduo)
 esac
 
 for pkg in $pkglist; do
-	eval version='$'${pkg}_ver
-	pkg=${pkg//_/-}
-	rm -f ${RELEASEDIR}/${pkg}-*.deb
-	(cd ${OBSTOOLDIR}/; ./mkdeb.sh ${version} "all" ${pkg} ${RELEASEDIR} "")
-	pkgfile=${pkg}-${version}-all.deb
-	if [ ! -f ${RELEASEDIR}/${pkgfile} ] ; then
-		pkgfile=${pkg}-${version}-${ARCH}.deb
-	fi
-	cp -f ${RELEASEDIR}/${pkgfile} ${DISTDIR}/
-	chroot ${DISTDIR} dpkg -r ${pkg}
-	chroot ${DISTDIR} dpkg -i ${pkgfile}
-	if [ "$DIST" == "trixie" ]; then
+        eval version='$'${pkg}_ver
+        pkg=${pkg//_/-}
+        pkgfile=${pkg}-${version}-all.deb
+        rm -f ${RELEASEDIR}/${pkg}-*.deb
+        (cd ${OBSTOOLDIR}/; ./mkdeb.sh ${version} "all" ${pkg} ${RELEASEDIR} "")
+        cp -f ${RELEASEDIR}/${pkgfile} ${DISTDIR}/
+        chroot ${DISTDIR} dpkg -r ${pkg}
+        chroot ${DISTDIR} dpkg -i ${pkgfile}
+        if [ "$DIST" == "trixie" ]; then
 		evalpkg=`ar -p ${DISTDIR}/${pkgfile} control.tar.xz | tar -xJf - -O ./postinst | \
 			grep systemctl | grep enable | sed -e 's/\t/ /g' -e 's/^ *//' | cut -d ' ' -f 1`
-		if [ -n "${evalpkg}" ] ; then
-			if [ -f ${DISTDIR}/lib/systemd/system/${evalpkg}.service ]; then
-				chroot ${DISTDIR} ln -sf /lib/systemd/system/${pkg}.service \
-					/etc/systemd/system/multi-user.target.wants/${pkg}.service
-			fi
-		fi
-	fi
-	rm -f ${DISTDIR}/${pkgfile}
+                if [ -n "${evalpkg}" ] ; then
+                        if [ -f ${DISTDIR}/lib/systemd/system/${evalpkg}.service ]; then
+                                chroot ${DISTDIR} ln -sf /lib/systemd/system/${pkg}.service \
+                                        /etc/systemd/system/multi-user.target.wants/${pkg}.service
+                        fi
+                fi
+        fi
+        rm -f ${DISTDIR}/${pkgfile}
 done
 
 case $TARGET in
