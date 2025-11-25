@@ -471,7 +471,7 @@ bookworm)
 	;;
 	obsa16*)
 		KERNEL=6.1.55
-		PATCHLEVEL=2
+		PATCHLEVEL=3
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=300
 		DTBFILE=imx8mp-evk-obsa16.dtb
@@ -484,7 +484,7 @@ bookworm)
 	;;
 	obsfx0*)
 		KERNEL=6.1.55
-		PATCHLEVEL=4
+		PATCHLEVEL=5
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsfx0.dtb
@@ -500,7 +500,7 @@ bookworm)
 	;;
 	obsfx1*)
 		KERNEL=6.1.55
-		PATCHLEVEL=4
+		PATCHLEVEL=5
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
@@ -517,7 +517,7 @@ bookworm)
 	;;
 	obsgx4*)
 		KERNEL=6.1.55
-		PATCHLEVEL=2
+		PATCHLEVEL=3
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=500
 		DTBFILE=imx8mp-evk-obsgx4.dtb
@@ -578,7 +578,7 @@ trixie)
 	;;
 	obsa16*)
 		KERNEL=6.12.34
-		PATCHLEVEL=1
+		PATCHLEVEL=2
 		ISOFILE=debian-13.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsa16.dtb
@@ -591,7 +591,7 @@ trixie)
 	;;
 	obsfx0*)
 		KERNEL=6.12.34
-		PATCHLEVEL=1
+		PATCHLEVEL=2
 		ISOFILE=debian-13.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsfx0.dtb
@@ -605,7 +605,7 @@ trixie)
 	;;
 	obsfx1*)
 		KERNEL=6.12.34
-		PATCHLEVEL=1
+		PATCHLEVEL=2
 		ISOFILE=debian-13.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
@@ -620,7 +620,7 @@ trixie)
 	;;
 	obsgx4*)
 		KERNEL=6.12.34
-		PATCHLEVEL=1
+		PATCHLEVEL=2
 		ISOFILE=debian-13.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=500
 		DTBFILE=imx8mp-evk-obsgx4.dtb
