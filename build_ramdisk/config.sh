@@ -544,35 +544,35 @@ bookworm)
 	esac
 ;;
 trixie)
-	KERNEL=6.12.50
+	KERNEL=6.12.60
 	case ${TARGET} in
 	obsvx1)
-		PATCHLEVEL=1
+		PATCHLEVEL=0
 		ISOFILE=debian-13.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=300
 	;;
 	obsvx2)
-		PATCHLEVEL=1
+		PATCHLEVEL=0
 		ISOFILE=debian-13.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
 	obsix9)
-		PATCHLEVEL=1
+		PATCHLEVEL=0
 		ISOFILE=debian-13.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
 	obsix9r)
-		PATCHLEVEL=1
+		PATCHLEVEL=0
 		ISOFILE=debian-13.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
 	obshx1)
-		PATCHLEVEL=1
+		PATCHLEVEL=0
 		ISOFILE=debian-13.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
 	obshx1r)
-		PATCHLEVEL=1
+		PATCHLEVEL=0
 		ISOFILE=debian-13.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
