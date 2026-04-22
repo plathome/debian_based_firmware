@@ -235,7 +235,7 @@ trixie)
 	esac
 	;;
 esac
-util-linux-extra_2.41-4_arm64.deb
+
 if [ "$ENA_AUDIO" == "true" ]; then
 	INCLUDE="$INCLUDE,alsa-utils"
 fi
