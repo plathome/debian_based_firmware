@@ -28,15 +28,16 @@ default_env(){
 	fw_setenv loadfdt 'fatload mmc ${mmcdev}:${mmcpart} ${fdt_addr} ${fdt_file}'
 	fw_setenv loadimage 'fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${image}'
 	fw_setenv mfgtool_args 'setenv bootargs console=${console},${baudrate} rdinit=/linuxrc clk_ignore_unused'
-	fw_setenv mmcargs 'setenv bootargs ${jh_clk} console=${console} root=${mmcroot}'
+	fw_setenv mmcargs 'setenv bootargs ${jh_clk} console=${console} root=${mmcroot} preempt=${preempt}'
 	fw_setenv mmcautodetect yes
 	fw_setenv mmcboot 'echo Booting from mmc ...; run mmcargs; if test ${boot_fit} = yes || test ${boot_fit} = try; then bootm ${loadaddr}; else if run loadfdt; then booti ${loadaddr} - ${fdt_addr}; else echo WARN: Cannot load the DT; fi; fi;'
 	fw_setenv mmcdev 1
 	fw_setenv mmcpart 1
 	fw_setenv mmcroot /dev/mmcblk1p2 rootwait rw
 	fw_setenv nandfit_part yes
-	fw_setenv netargs 'setenv bootargs ${jh_clk} console=${console} root=/dev/nfs ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp'
+	fw_setenv netargs 'setenv bootargs ${jh_clk} console=${console} root=/dev/nfs preempt=${preempt} ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp'
 	fw_setenv netboot 'echo Booting from net ...; run netargs;  if test ${ip_dyn} = yes; then setenv get_cmd dhcp; else setenv get_cmd tftp; fi; ${get_cmd} ${loadaddr} ${image}; if test ${boot_fit} = yes || test ${boot_fit} = try; then bootm ${loadaddr}; else if ${get_cmd} ${fdt_addr} ${fdt_file}; then booti ${loadaddr} - ${fdt_addr}; else echo WARN: Cannot load the DT; fi; fi;'
+	fw_setenv preempt full
 	fw_setenv script boot.scr
 	fw_setenv sd_dev 1
 	fw_setenv serial# 140a7800dadb8cfc
@@ -62,7 +63,7 @@ obsiot_env(){
 	fw_setenv fdt_usb_boot_file imx8mp-evk-obsgx4-usb-boot.dtb
 	fw_setenv initrd_file initrd
 	fw_setenv chkinit 'setenv noflashcfg; gpio input gpio3_22;if test ${$?} = 0; then setenv noflashcfg noflashcfg=1; fi;'
-	fw_setenv mmcargs 'setenv bootargs ${jh_clk} console=${console} root=${mmcroot} ${noflashcfg} ${miscargs}'
+	fw_setenv mmcargs 'setenv bootargs ${jh_clk} console=${console} root=${mmcroot} preempt=${preempt} ${noflashcfg} ${miscargs}'
 	fw_setenv mmcboot 'echo Booting from mmc ...; run chkinit; run mmcargs; if test ${boot_fit} = yes || test ${boot_fit} = try; then bootm ${loadaddr}; else if run loadfdt; then booti ${loadaddr} - ${fdt_addr}; else echo WARN: Cannot load the DT; fi; fi;'
 	fw_setenv loadefi 'fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${efi_file}'
 	fw_setenv loadinitrd 'fatload mmc ${mmcdev}:${mmcpart} ${initrd_addr} ${initrd_file}'
