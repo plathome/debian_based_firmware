@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
+#include <linux/version.h>
 #include <alsa/asoundlib.h>
 
 #define ALSA_PCM_NEW_HW_PARAMS_API
@@ -238,6 +239,23 @@ int play_wave(char* fname, char *vol, struct WAVE* wave)
 	return 0;
 }
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 12, 0)
+/* For 'ALSA lib pcm.c:8772:(snd_pcm_recover) underrun occurred' */
+void alsa_warmup_dry_run(void) {
+	snd_pcm_t *tmp_handle;
+	short silent_buf[4096] = {0};
+	if (snd_pcm_open(&tmp_handle, "hw:0", SND_PCM_STREAM_PLAYBACK, 0) == 0) {
+		snd_pcm_set_params(tmp_handle, SND_PCM_FORMAT_S16_LE, 
+				   SND_PCM_ACCESS_RW_INTERLEAVED, 2, 44100, 1, 10000);
+		
+		snd_pcm_writei(tmp_handle, silent_buf, 1024);
+	
+		snd_pcm_drop(tmp_handle);
+		snd_pcm_close(tmp_handle);
+	}
+}
+#endif
+
 int main(int ac, char *av[])
 {
 	struct WAVE wave;
@@ -254,6 +272,10 @@ int main(int ac, char *av[])
 	}
 	printf("%s : %d Hz %d bit %s\n", av[1], wave.rate, wave.bit,
 					(wave.channel == 1) ? "mono" : "stereo");
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 12, 0)
+//	alsa_warmup_dry_run();
+#endif
 
 	if(av[2] != NULL){
 		control_volume(av[2]);
