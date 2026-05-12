@@ -319,11 +319,11 @@ buster)
 	esac
 ;;
 bullseye)
-	KERNEL=5.10.176
+	KERNEL=5.10.255
 	case ${TARGET} in
 	obsvx2)
 		ISOFILE=debian-11.1.0-amd64-DVD-1.iso
-		PATCHLEVEL=3
+		PATCHLEVEL=1
 #		DEFCONFIG=obsvx2_defconfig
 		RAMDISK_SIZE=500
 	;;
@@ -371,7 +371,7 @@ bullseye)
 		KERNEL=5.10.72
 		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=260
-		PATCHLEVEL=1
+		PATCHLEVEL=2
 		DTBFILE=imx8mp-evk-obsa16.dtb
 		ALT_DTBFILE=imx8mp-evk.dtb
 		DEFCONFIG=obsa16_defconfig
@@ -386,7 +386,7 @@ bullseye)
 		KERNEL=5.10.72
 		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=230
-		PATCHLEVEL=1
+		PATCHLEVEL=2
 		DTBFILE=imx8mp-evk-obsfx0.dtb
 		DEFCONFIG=obsfx0_defconfig
 		ARCH=arm64
@@ -404,7 +404,7 @@ bullseye)
 		KERNEL=5.10.72
 		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=260
-		PATCHLEVEL=1
+		PATCHLEVEL=2
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
 #		DTBFILE=imx8mp-evk-obsfx1-rtl8211.dtb
 		DEFCONFIG=obsfx1_defconfig
@@ -437,7 +437,7 @@ bullseye)
 	esac
 ;;
 bookworm)
-	KERNEL=6.1.123
+	KERNEL=6.1.172
 	case ${TARGET} in
 	obsvx1)
 		PATCHLEVEL=1
@@ -471,7 +471,7 @@ bookworm)
 	;;
 	obsa16*)
 		KERNEL=6.1.55
-		PATCHLEVEL=3
+		PATCHLEVEL=4
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=300
 		DTBFILE=imx8mp-evk-obsa16.dtb
@@ -484,7 +484,7 @@ bookworm)
 	;;
 	obsfx0*)
 		KERNEL=6.1.55
-		PATCHLEVEL=5
+		PATCHLEVEL=6
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsfx0.dtb
@@ -500,7 +500,7 @@ bookworm)
 	;;
 	obsfx1*)
 		KERNEL=6.1.55
-		PATCHLEVEL=5
+		PATCHLEVEL=6
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
@@ -517,7 +517,7 @@ bookworm)
 	;;
 	obsgx4*)
 		KERNEL=6.1.55
-		PATCHLEVEL=3
+		PATCHLEVEL=4
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=500
 		DTBFILE=imx8mp-evk-obsgx4.dtb
@@ -544,7 +544,7 @@ bookworm)
 	esac
 ;;
 trixie)
-	KERNEL=6.12.81
+	KERNEL=6.12.87
 	case ${TARGET} in
 	obsvx1)
 		PATCHLEVEL=1
@@ -578,7 +578,7 @@ trixie)
 	;;
 	obsa16*)
 		KERNEL=6.12.49
-		PATCHLEVEL=1
+		PATCHLEVEL=2
 		ISOFILE=debian-13.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsa16.dtb
@@ -591,12 +591,12 @@ trixie)
 	;;
 	obsfx0*)
 		KERNEL=6.12.49
-		PATCHLEVEL=1
+		PATCHLEVEL=2
 		ISOFILE=debian-13.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsfx0.dtb
 		DEFCONFIG=obsfx0_defconfig
-		WIFI_DRIVER=summit-backports-13.24.0.20
+		WIFI_DRIVER=summit-backports-13.98.12.4
 		WIFI_DEFCONFIG=lwb
 		ARCH=arm64
 		COMP_LVL=9
@@ -605,13 +605,13 @@ trixie)
 	;;
 	obsfx1*)
 		KERNEL=6.12.49
-		PATCHLEVEL=1
+		PATCHLEVEL=2
 		ISOFILE=debian-13.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
 #		DTBFILE=imx8mp-evk-obsfx1-rtl8211.dtb
 		DEFCONFIG=obsfx1_defconfig
-		WIFI_DRIVER=summit-backports-13.24.0.20
+		WIFI_DRIVER=summit-backports-13.98.12.4
 		WIFI_DEFCONFIG=lwb
 		ARCH=arm64
 		COMP_LVL=9
@@ -620,7 +620,7 @@ trixie)
 	;;
 	obsgx4*)
 		KERNEL=6.12.49
-		PATCHLEVEL=1
+		PATCHLEVEL=2
 		ISOFILE=debian-13.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=500
 		DTBFILE=imx8mp-evk-obsgx4.dtb
