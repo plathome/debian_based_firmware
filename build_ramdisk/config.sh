@@ -319,7 +319,7 @@ buster)
 	esac
 ;;
 bullseye)
-	KERNEL=5.10.255
+	KERNEL=5.10.256
 	case ${TARGET} in
 	obsvx2)
 		ISOFILE=debian-11.1.0-amd64-DVD-1.iso
@@ -437,7 +437,7 @@ bullseye)
 	esac
 ;;
 bookworm)
-	KERNEL=6.1.172
+	KERNEL=6.1.173
 	case ${TARGET} in
 	obsvx1)
 		PATCHLEVEL=1
@@ -544,7 +544,7 @@ bookworm)
 	esac
 ;;
 trixie)
-	KERNEL=6.12.87
+	KERNEL=6.12.90
 	case ${TARGET} in
 	obsvx1)
 		PATCHLEVEL=1
