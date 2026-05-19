@@ -357,7 +357,7 @@ bullseye)
 		KERNEL=3.10.98
 		ISOFILE=debian-11.1.0-i386-DVD-1.iso
 		ARCH=i386
-		PATCHLEVEL=402
+		PATCHLEVEL=401
 		RAMDISK_SIZE=250
 	;;
 	obsbx1)
