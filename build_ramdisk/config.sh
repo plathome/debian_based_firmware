@@ -319,11 +319,11 @@ buster)
 	esac
 ;;
 bullseye)
-	KERNEL=5.10.256
+	KERNEL=5.10.176
 	case ${TARGET} in
 	obsvx2)
 		ISOFILE=debian-11.1.0-amd64-DVD-1.iso
-		PATCHLEVEL=1
+		PATCHLEVEL=4
 #		DEFCONFIG=obsvx2_defconfig
 		RAMDISK_SIZE=500
 	;;
@@ -334,12 +334,12 @@ bullseye)
 	;;
 	obsix9r)
 		ISOFILE=debian-11.1.0-amd64-DVD-1.iso
-		PATCHLEVEL=1
+		PATCHLEVEL=2
 		RAMDISK_SIZE=500
 	;;
 	obsix9)
 		ISOFILE=debian-11.1.0-amd64-DVD-1.iso
-		PATCHLEVEL=1
+		PATCHLEVEL=2
 #		DEFCONFIG=obsvx2_defconfig
 		RAMDISK_SIZE=500
 	;;
