@@ -312,7 +312,7 @@ int main(int ac, char *av[])
 	}
 	else {
 		snprintf(pcm_device, sizeof(pcm_device), "hw:%d", card_idx);
-//		printf("Detected target device at: %s\n", pcm_device);
+		printf("Detected target device at: %s\n", pcm_device);
 	}
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 12, 0)
