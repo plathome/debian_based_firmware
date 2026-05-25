@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 #include <linux/version.h>
@@ -171,7 +172,7 @@ void control_volume(char *vol)
 	snd_mixer_close(mixer);
 }
 
-int play_wave(char* fname, char *vol, struct WAVE* wave)
+int play_wave(char *pcm_device, char *fname, char *vol, struct WAVE* wave)
 {
 	FILE *fp;
 	unsigned char *p;
@@ -199,8 +200,7 @@ int play_wave(char* fname, char *vol, struct WAVE* wave)
 	}
 	fclose(fp);
 
-	/* todo: */
-	if(snd_pcm_open(&handle, "hw:0", SND_PCM_STREAM_PLAYBACK, 0) < 0){
+	if(snd_pcm_open(&handle, pcm_device, SND_PCM_STREAM_PLAYBACK, 0) < 0){
 		printf("%d: %s(default)\n", __LINE__, strerror(errno));
 		free(p);
 		return -1;
@@ -241,10 +241,10 @@ int play_wave(char* fname, char *vol, struct WAVE* wave)
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 12, 0)
 /* For 'ALSA lib pcm.c:8772:(snd_pcm_recover) underrun occurred' */
-void alsa_warmup_dry_run(void) {
+void alsa_warmup_dry_run(const char *pcm_device) {
 	snd_pcm_t *tmp_handle;
 	short silent_buf[4096] = {0};
-	if (snd_pcm_open(&tmp_handle, "hw:0", SND_PCM_STREAM_PLAYBACK, 0) == 0) {
+	if (snd_pcm_open(&tmp_handle, pcm_device, SND_PCM_STREAM_PLAYBACK, 0) == 0) {
 		snd_pcm_set_params(tmp_handle, SND_PCM_FORMAT_S16_LE, 
 				   SND_PCM_ACCESS_RW_INTERLEAVED, 2, 44100, 1, 10000);
 		
@@ -256,8 +256,39 @@ void alsa_warmup_dry_run(void) {
 }
 #endif
 
+int find_usb_card_index(char *keyword) {
+	int card = -1;
+	char *shortname = NULL;
+	char *longname = NULL;
+	int found_index = -1;
+
+	while (snd_card_next(&card) == 0 && card >= 0) {
+		if (snd_card_get_name(card, &shortname) == 0) {
+			if (shortname && strstr(shortname, keyword)) {
+				found_index = card;
+				free(shortname);
+				break;
+			}
+			if (shortname) free(shortname);
+		}
+		
+		if (snd_card_get_longname(card, &longname) == 0) {
+			if (longname && strstr(longname, keyword)) {
+				found_index = card;
+				free(longname);
+				break;
+			}
+			if (longname) free(longname);
+		}
+	}
+
+	return found_index;
+}
+
 int main(int ac, char *av[])
 {
+	int card_idx;
+	char pcm_device[16];
 	struct WAVE wave;
 
 	if(ac != 2 && ac != 3){
@@ -273,14 +304,25 @@ int main(int ac, char *av[])
 	printf("%s : %d Hz %d bit %s\n", av[1], wave.rate, wave.bit,
 					(wave.channel == 1) ? "mono" : "stereo");
 
+	card_idx = find_usb_card_index("USB");
+
+	if (card_idx < 0) {
+		fprintf(stderr, "Target device not found. Fallback to hw:0\n");
+		strcpy(pcm_device, "hw:0");
+	}
+	else {
+		snprintf(pcm_device, sizeof(pcm_device), "hw:%d", card_idx);
+//		printf("Detected target device at: %s\n", pcm_device);
+	}
+
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 12, 0)
-//	alsa_warmup_dry_run();
+//	alsa_warmup_dry_run(pcm_device);
 #endif
 
 	if(av[2] != NULL){
 		control_volume(av[2]);
 	}
-	if(play_wave(av[1], av[2], &wave) == -1){
+	if(play_wave(pcm_device, av[1], av[2], &wave) == -1){
 		return -1;
 	}
 
