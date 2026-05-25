@@ -49,5 +49,5 @@ pshd_ver=2
 runled_ver=2
 setup_macether_ver=1
 setup_gpio_ver=2
-wav_play_ver=1
+wav_play_ver=2
 wd_keepalive_ver=1
