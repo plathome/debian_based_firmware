@@ -2,7 +2,7 @@
 
 ぷらっとホーム株式会社
 
-Copyright (c) 2013-2024 Plat'Home CO., LTD.
+Copyright (c) 2013-2026 Plat'Home CO., LTD.
 
 # 1. はじめに
 
@@ -16,15 +16,19 @@ OpenBlocks のファームウェアは、機種 (OpenBlocks シリーズ, OpenBl
 
 機種|Debian|TARGET|DIST|ARCH|ファームウェアを作成するホストのOS
 ---|---|---|---|---|---
+HX1|13|obshx1|trixie|amd64|Debian GNU/Linux 13/amd64
 HX1|12|obshx1|bookworm|amd64|Debian GNU/Linux 12/amd64
+HX1R|13|obshx1r|trixie|amd64|Debian GNU/Linux 13/amd64
 HX1R|12|obshx1r|bookworm|amd64|Debian GNU/Linux 12/amd64
 IX9|13|obsix9|trixie|amd64|Debian GNU/Linux 13/amd64
 IX9|12|obsix9|bookworm|amd64|Debian GNU/Linux 12/amd64
 IX9|11|obsix9|bullseye|amd64|Debian GNU/Linux 11/amd64
 IX9|10|obsix9|buster|amd64|Debian GNU/Linux 10/amd64
+IX9R|13|obsix9r|trixie|amd64|Debian GNU/Linux 13/amd64
 IX9R|12|obsix9r|bookworm|amd64|Debian GNU/Linux 12/amd64
 IX9R|11|obsix9r|bullseye|amd64|Debian GNU/Linux 11/amd64
 IX9R|10|obsix9r|buster|amd64|Debian GNU/Linux 10/amd64
+A16|13|obsa16|trixie|arm64|Debian GNU/Linux 13/amd64
 A16|12|obsa16|bookworm|arm64|Debian GNU/Linux 12/amd64
 A16|11|obsa16|bullseye|arm64|Debian GNU/Linux 11/amd64
 DX1|13|obsfx0|trixie|arm64|Debian GNU/Linux 13/amd64
