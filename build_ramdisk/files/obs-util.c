@@ -1,7 +1,7 @@
 //#define DEBUG 1
 /*	$ssdlinux: obs-util.c,v 1.17 2014/01/07 07:19:06 yamagata Exp $	*/
 /*
- * Copyright (c) 2008-2023 Plat'Home CO., LTD.
+ * Copyright (c) 2008-2026 Plat'Home CO., LTD.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -454,10 +454,12 @@ int read_macaddr(int i2cnum, char* fname, int num, unsigned char* data)
 #ifdef DEBUG
 printf("mac crc=%x\n", crc16.s);
 #endif
+#if 0	/* 20261007 CRC16 for the MAC address 0x000a85174175 is 0xffff. Therefore, */
 	if(crc16.s == 0xffff){
 		printf("blank\n");
 		return -1;
 	}
+#endif 
 	s = CRC16_CCITT(&data[32+(8*num)], 6, 0xffff);
 	swap(crc16.c[0], crc16.c[1]);
 	if(crc16.s != s){
