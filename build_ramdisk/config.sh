@@ -440,38 +440,38 @@ bookworm)
 	KERNEL=6.1.173
 	case ${TARGET} in
 	obsvx1)
-		PATCHLEVEL=1
+		PATCHLEVEL=2
 		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=280
 	;;
 	obsvx2)
-		PATCHLEVEL=1
+		PATCHLEVEL=2
 		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
 	obsix9)
-		PATCHLEVEL=1
+		PATCHLEVEL=2
 		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
 	obsix9r)
-		PATCHLEVEL=1
+		PATCHLEVEL=2
 		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
 	obshx1)
-		PATCHLEVEL=1
+		PATCHLEVEL=2
 		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
 	obshx1r)
-		PATCHLEVEL=1
+		PATCHLEVEL=2
 		ISOFILE=debian-12.0.0-amd64-DVD-1.iso
 		RAMDISK_SIZE=500
 	;;
 	obsa16*)
 		KERNEL=6.1.55
-		PATCHLEVEL=4
+		PATCHLEVEL=5
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=300
 		DTBFILE=imx8mp-evk-obsa16.dtb
@@ -484,7 +484,7 @@ bookworm)
 	;;
 	obsfx0*)
 		KERNEL=6.1.55
-		PATCHLEVEL=6
+		PATCHLEVEL=7
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsfx0.dtb
@@ -500,7 +500,7 @@ bookworm)
 	;;
 	obsfx1*)
 		KERNEL=6.1.55
-		PATCHLEVEL=6
+		PATCHLEVEL=7
 		ISOFILE=debian-12.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
@@ -544,7 +544,7 @@ bookworm)
 	esac
 ;;
 trixie)
-	KERNEL=6.12.90
+	KERNEL=6.12.115
 	case ${TARGET} in
 	obsvx1)
 		PATCHLEVEL=1
@@ -578,7 +578,7 @@ trixie)
 	;;
 	obsa16*)
 		KERNEL=6.12.49
-		PATCHLEVEL=2
+		PATCHLEVEL=3
 		ISOFILE=debian-13.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsa16.dtb
@@ -591,7 +591,7 @@ trixie)
 	;;
 	obsfx0*)
 		KERNEL=6.12.49
-		PATCHLEVEL=2
+		PATCHLEVEL=3
 		ISOFILE=debian-13.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsfx0.dtb
@@ -605,7 +605,7 @@ trixie)
 	;;
 	obsfx1*)
 		KERNEL=6.12.49
-		PATCHLEVEL=2
+		PATCHLEVEL=3
 		ISOFILE=debian-13.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=320
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
@@ -620,7 +620,7 @@ trixie)
 	;;
 	obsgx4*)
 		KERNEL=6.12.49
-		PATCHLEVEL=2
+		PATCHLEVEL=3
 		ISOFILE=debian-13.0.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=500
 		DTBFILE=imx8mp-evk-obsgx4.dtb
