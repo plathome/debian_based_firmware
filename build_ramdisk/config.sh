@@ -371,7 +371,7 @@ bullseye)
 		KERNEL=5.4.70
 		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=260
-		PATCHLEVEL=3
+		PATCHLEVEL=4
 		DTBFILE=imx8mp-evk-obsa16.dtb
 		ALT_DTBFILE=imx8mp-evk.dtb
 		DEFCONFIG=obsa16_defconfig
@@ -386,7 +386,7 @@ bullseye)
 		KERNEL=5.4.70
 		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=230
-		PATCHLEVEL=5
+		PATCHLEVEL=6
 		DTBFILE=imx8mp-evk-obsfx0.dtb
 		DEFCONFIG=obsfx0_defconfig
 		ARCH=arm64
@@ -404,7 +404,7 @@ bullseye)
 		KERNEL=5.4.70
 		ISOFILE=debian-11.1.0-arm64-DVD-1.iso
 		RAMDISK_SIZE=260
-		PATCHLEVEL=5
+		PATCHLEVEL=6
 		DTBFILE=imx8mp-evk-obsfx1-vsc8531.dtb
 #		DTBFILE=imx8mp-evk-obsfx1-rtl8211.dtb
 		DEFCONFIG=obsfx1_defconfig
